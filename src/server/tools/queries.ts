@@ -43,6 +43,40 @@ export async function listPublishedTools({
   return tools.map(toPublicToolCard);
 }
 
+export async function listFeaturedTools(
+  limit = 6
+): Promise<PublicToolCard[]> {
+  const tools = await prisma.tool.findMany({
+    where: {
+      status: PublishStatus.PUBLISHED
+    },
+    include: toolCardInclude,
+    orderBy: [
+      { isVerified: "desc" },
+      { hasFreePlan: "desc" },
+      { publishedAt: "desc" }
+    ],
+    take: Math.min(limit, 12)
+  });
+
+  return tools.map(toPublicToolCard);
+}
+
+export async function listRecentlyAddedTools(
+  limit = 4
+): Promise<PublicToolCard[]> {
+  const tools = await prisma.tool.findMany({
+    where: {
+      status: PublishStatus.PUBLISHED
+    },
+    include: toolCardInclude,
+    orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+    take: Math.min(limit, 12)
+  });
+
+  return tools.map(toPublicToolCard);
+}
+
 export async function getPublishedToolBySlug(
   slug: string
 ): Promise<PublicToolDetail | null> {
@@ -75,4 +109,3 @@ export async function getPublishedToolBySlug(
     )
   };
 }
-

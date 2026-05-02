@@ -1,8 +1,8 @@
 import Link from "next/link";
-import type { PublicCategory } from "@/shared/domain";
+import type { PublicCategory, PublicCategorySummary } from "@/shared/domain";
 
 type CategoryListProps = {
-  categories: PublicCategory[];
+  categories: Array<PublicCategory | PublicCategorySummary>;
 };
 
 export function CategoryList({ categories }: CategoryListProps) {
@@ -14,7 +14,12 @@ export function CategoryList({ categories }: CategoryListProps) {
           href={`/categories/${category.slug}`}
           key={category.id}
         >
-          {category.name}
+          <span>{category.name}</span>
+          {"toolCount" in category ? (
+            <span className="mt-1 block text-xs font-normal text-ink/50">
+              {category.toolCount} tools
+            </span>
+          ) : null}
         </Link>
       ))}
     </div>

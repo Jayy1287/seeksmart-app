@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import type { PublicCategory } from "@/shared/domain";
+import type { PublicCategory, PublicCategorySummary } from "@/shared/domain";
 
 export async function listCategories(): Promise<PublicCategory[]> {
   return prisma.category.findMany({
@@ -29,4 +29,35 @@ export async function getCategoryBySlug(
       description: true
     }
   });
+}
+
+export async function listCategorySummaries(): Promise<PublicCategorySummary[]> {
+  const categories = await prisma.category.findMany({
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true,
+      _count: {
+        select: {
+          tools: {
+            where: {
+              status: "PUBLISHED"
+            }
+          }
+        }
+      }
+    },
+    orderBy: {
+      name: "asc"
+    }
+  });
+
+  return categories.map((category) => ({
+    id: category.id,
+    name: category.name,
+    slug: category.slug,
+    description: category.description,
+    toolCount: category._count.tools
+  }));
 }

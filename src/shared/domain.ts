@@ -14,6 +14,10 @@ export type PublicCategory = {
   description: string | null;
 };
 
+export type PublicCategorySummary = PublicCategory & {
+  toolCount: number;
+};
+
 export type PublicToolCard = {
   id: string;
   name: string;
@@ -31,4 +35,3 @@ export type PublicToolDetail = PublicToolCard & {
   longDescription: string | null;
   alternatives: PublicToolCard[];
 };
-
