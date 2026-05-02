@@ -42,6 +42,8 @@ model Tool {
   startingPrice    Decimal?        @map("starting_price") @db.Decimal(10, 2)
   hasFreePlan      Boolean         @default(false) @map("has_free_plan")
   isVerified       Boolean         @default(false) @map("is_verified")
+  isFeatured       Boolean         @default(false) @map("is_featured")
+  popularityScore  Int             @default(0) @map("popularity_score")
   status           PublishStatus   @default(DRAFT)
   metaTitle        String?         @map("meta_title")
   metaDescription  String?         @map("meta_description")
@@ -51,12 +53,14 @@ model Tool {
 
   category         Category        @relation(fields: [categoryId], references: [id])
   toolUseCases     ToolUseCase[]
+  toolFeatures     ToolFeature[]
   sourceTools      ToolAlternative[] @relation("SourceTool")
   alternativeTools ToolAlternative[] @relation("AlternativeTool")
 
   @@index([categoryId])
   @@index([pricingType])
   @@index([status])
+  @@index([isFeatured, popularityScore])
   @@map("tools")
 }
 
@@ -86,6 +90,31 @@ model UseCase {
   toolUseCases ToolUseCase[]
 
   @@map("use_cases")
+}
+
+model Feature {
+  id           String        @id @default(cuid())
+  name         String
+  slug         String        @unique
+  description  String?
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  toolFeatures ToolFeature[]
+
+  @@map("features")
+}
+
+model ToolFeature {
+  toolId    String   @map("tool_id")
+  featureId String   @map("feature_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  feature   Feature  @relation(fields: [featureId], references: [id], onDelete: Cascade)
+
+  @@id([toolId, featureId])
+  @@map("tool_features")
 }
 
 model ToolUseCase {
