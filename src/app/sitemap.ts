@@ -4,6 +4,8 @@ import { listCategories } from "@/server/categories/queries";
 import { listPublishedTools } from "@/server/tools/queries";
 import { listUseCaseSummaries } from "@/server/use-cases/queries";
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [categories, tools, useCases] = await Promise.all([
     listCategories(),
