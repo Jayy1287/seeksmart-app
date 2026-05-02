@@ -17,3 +17,22 @@ export const toolSubmissionSchema = z.object({
   pricingType: pricingTypeSchema,
   submitterEmail: z.string().email()
 });
+
+const optionalTrimmedString = (maxLength: number) =>
+  z.preprocess(
+    (value) => {
+      if (typeof value !== "string") {
+        return value;
+      }
+
+      const trimmed = value.trim();
+      return trimmed.length > 0 ? trimmed : undefined;
+    },
+    z.string().max(maxLength).optional()
+  );
+
+export const listToolsQuerySchema = z.object({
+  q: optionalTrimmedString(120),
+  category: optionalTrimmedString(80),
+  pricing: pricingTypeSchema.optional()
+});
