@@ -48,3 +48,13 @@ export type PublicToolDetail = PublicToolCard & {
   useCases: PublicTaxonomyItem[];
   alternatives: PublicToolCard[];
 };
+
+export type PublicToolSearchResult = {
+  tools: PublicToolCard[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+};

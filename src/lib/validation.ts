@@ -34,5 +34,7 @@ const optionalTrimmedString = (maxLength: number) =>
 export const listToolsQuerySchema = z.object({
   q: optionalTrimmedString(120),
   category: optionalTrimmedString(80),
-  pricing: pricingTypeSchema.optional()
+  pricing: pricingTypeSchema.optional(),
+  page: z.coerce.number().int().min(1).max(100).catch(1),
+  limit: z.coerce.number().int().min(1).max(48).catch(24)
 });
