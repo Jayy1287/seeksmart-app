@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PricingType {
+  FREE
+  PAID
+  FREEMIUM
+}
+
+enum PublishStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  REJECTED
+  ARCHIVED
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SPAM
+}
+
+model Tool {
+  id               String          @id @default(cuid())
+  name             String
+  slug             String          @unique
+  shortDescription String          @map("short_description")
+  longDescription  String?         @map("long_description")
+  websiteUrl       String          @map("website_url")
+  logoUrl          String?         @map("logo_url")
+  categoryId       String          @map("category_id")
+  pricingType      PricingType     @map("pricing_type")
+  startingPrice    Decimal?        @map("starting_price") @db.Decimal(10, 2)
+  hasFreePlan      Boolean         @default(false) @map("has_free_plan")
+  isVerified       Boolean         @default(false) @map("is_verified")
+  status           PublishStatus   @default(DRAFT)
+  metaTitle        String?         @map("meta_title")
+  metaDescription  String?         @map("meta_description")
+  publishedAt      DateTime?       @map("published_at")
+  createdAt        DateTime        @default(now()) @map("created_at")
+  updatedAt        DateTime        @updatedAt @map("updated_at")
+
+  category         Category        @relation(fields: [categoryId], references: [id])
+  toolUseCases     ToolUseCase[]
+  sourceTools      ToolAlternative[] @relation("SourceTool")
+  alternativeTools ToolAlternative[] @relation("AlternativeTool")
+
+  @@index([categoryId])
+  @@index([pricingType])
+  @@index([status])
+  @@map("tools")
+}
+
+model Category {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique
+  description     String?
+  metaTitle       String?  @map("meta_title")
+  metaDescription String?  @map("meta_description")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  tools           Tool[]
+
+  @@map("categories")
+}
+
+model UseCase {
+  id           String        @id @default(cuid())
+  name         String
+  slug         String        @unique
+  description  String?
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  toolUseCases ToolUseCase[]
+
+  @@map("use_cases")
+}
+
+model ToolUseCase {
+  toolId    String   @map("tool_id")
+  useCaseId String   @map("use_case_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  useCase   UseCase  @relation(fields: [useCaseId], references: [id], onDelete: Cascade)
+
+  @@id([toolId, useCaseId])
+  @@map("tool_use_cases")
+}
+
+model ToolAlternative {
+  toolId            String   @map("tool_id")
+  alternativeToolId String   @map("alternative_tool_id")
+  note              String?
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  tool              Tool     @relation("SourceTool", fields: [toolId], references: [id], onDelete: Cascade)
+  alternativeTool   Tool     @relation("AlternativeTool", fields: [alternativeToolId], references: [id], onDelete: Cascade)
+
+  @@id([toolId, alternativeToolId])
+  @@map("tool_alternatives")
+}
+
+model Submission {
+  id             String           @id @default(cuid())
+  toolName       String           @map("tool_name")
+  websiteUrl     String           @map("website_url")
+  submitterEmail String           @map("submitter_email")
+  payload        Json
+  status         SubmissionStatus @default(PENDING)
+  reviewedAt     DateTime?        @map("reviewed_at")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+
+  @@index([status])
+  @@map("submissions")
+}
+
+model AdminUser {
+  id        String        @id @default(cuid())
+  email     String        @unique
+  name      String?
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  actions   AdminAction[]
+
+  @@map("admin_users")
+}
+
+model AdminAction {
+  id         String    @id @default(cuid())
+  actorId    String?   @map("actor_id")
+  action     String
+  entityType String    @map("entity_type")
+  entityId   String    @map("entity_id")
+  metadata   Json?
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  actor      AdminUser? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@map("admin_actions")
+}

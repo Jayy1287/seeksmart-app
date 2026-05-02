@@ -1,0 +1,10 @@
+node_modules
+.next
+out
+dist
+.vercel
+.env
+.env*.local
+*.tsbuildinfo
+coverage
+prisma/dev.db
