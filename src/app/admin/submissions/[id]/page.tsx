@@ -4,7 +4,11 @@ import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { SubmissionReviewActions } from "@/features/admin/submission-review-actions";
 import { isAdminAuthenticated } from "@/server/admin/auth";
-import { getAdminSubmissionById } from "@/server/admin/queries";
+import {
+  findSubmissionDuplicateCandidates,
+  getAdminSubmissionById,
+  listAdminTaxonomyOptions
+} from "@/server/admin/queries";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +50,11 @@ export default async function AdminSubmissionPage({
   if (!submission) {
     notFound();
   }
+
+  const [taxonomy, duplicateCandidates] = await Promise.all([
+    listAdminTaxonomyOptions(),
+    findSubmissionDuplicateCandidates(submission)
+  ]);
 
   return (
     <main className="mx-auto grid max-w-6xl gap-6 px-5 py-10">
@@ -97,8 +106,46 @@ export default async function AdminSubmissionPage({
         </div>
       </section>
 
+      <section className="rounded-md border border-line bg-white p-5">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="font-semibold">Duplicate check</h2>
+            <p className="mt-1 text-sm text-ink/60">
+              Review likely matches before approving a new public listing.
+            </p>
+          </div>
+          <span className="rounded-md bg-paper px-3 py-2 text-sm font-medium">
+            {duplicateCandidates.length} matches
+          </span>
+        </div>
+        {duplicateCandidates.length > 0 ? (
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {duplicateCandidates.map((candidate) => (
+              <div
+                className="rounded-md border border-line p-4 text-sm"
+                key={`${candidate.type}-${candidate.id}`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="font-medium">{candidate.label}</div>
+                  <span className="shrink-0 rounded-md bg-paper px-2 py-1 text-xs">
+                    {candidate.type} · {candidate.status}
+                  </span>
+                </div>
+                <p className="mt-2 break-words text-ink/55">
+                  {candidate.detail}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-4 text-sm text-ink/60">
+            No existing tools or submissions match this name or website.
+          </p>
+        )}
+      </section>
+
       {submission.status === "PENDING" ? (
-        <SubmissionReviewActions submission={submission} />
+        <SubmissionReviewActions submission={submission} taxonomy={taxonomy} />
       ) : (
         <section className="rounded-md border border-line bg-white p-8 text-center">
           <h2 className="font-semibold">Review complete</h2>

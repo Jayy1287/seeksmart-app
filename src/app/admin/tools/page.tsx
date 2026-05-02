@@ -4,39 +4,40 @@ import { redirect } from "next/navigation";
 import { AdminLogoutButton } from "@/features/admin/admin-logout-button";
 import { isAdminAuthenticated } from "@/server/admin/auth";
 import {
-  getAdminSubmissionCounts,
-  listAdminSubmissions,
-  type AdminSubmissionStatus
+  getAdminToolCounts,
+  listAdminTools,
+  type AdminToolStatus
 } from "@/server/admin/queries";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Admin Review Queue",
+  title: "Admin Tools",
   robots: {
     index: false,
     follow: false
   }
 };
 
-const statuses: AdminSubmissionStatus[] = [
-  "PENDING",
-  "APPROVED",
+const statuses: AdminToolStatus[] = [
+  "PUBLISHED",
+  "DRAFT",
+  "PENDING_REVIEW",
   "REJECTED",
-  "SPAM"
+  "ARCHIVED"
 ];
 
-type AdminPageProps = {
+type AdminToolsPageProps = {
   searchParams: Promise<{
     status?: string;
     q?: string;
   }>;
 };
 
-function parseStatus(value?: string): AdminSubmissionStatus {
-  return statuses.includes(value as AdminSubmissionStatus)
-    ? (value as AdminSubmissionStatus)
-    : "PENDING";
+function parseStatus(value?: string): AdminToolStatus {
+  return statuses.includes(value as AdminToolStatus)
+    ? (value as AdminToolStatus)
+    : "PUBLISHED";
 }
 
 function formatDate(value: Date) {
@@ -46,7 +47,9 @@ function formatDate(value: Date) {
   }).format(value);
 }
 
-export default async function AdminPage({ searchParams }: AdminPageProps) {
+export default async function AdminToolsPage({
+  searchParams
+}: AdminToolsPageProps) {
   if (!(await isAdminAuthenticated())) {
     redirect("/admin/login");
   }
@@ -54,9 +57,9 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   const { status: rawStatus, q } = await searchParams;
   const activeStatus = parseStatus(rawStatus);
   const query = q?.trim() || undefined;
-  const [counts, submissions] = await Promise.all([
-    getAdminSubmissionCounts(),
-    listAdminSubmissions(activeStatus, query)
+  const [counts, tools] = await Promise.all([
+    getAdminToolCounts(),
+    listAdminTools(activeStatus, query)
   ]);
 
   return (
@@ -64,18 +67,18 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
       <section className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm font-medium uppercase text-accent">Admin</p>
-          <h1 className="mt-2 text-4xl font-semibold">Review queue</h1>
+          <h1 className="mt-2 text-4xl font-semibold">Tool catalog</h1>
           <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-            Review submitted tools, publish high-quality entries, and keep a
-            simple audit trail for every decision.
+            Edit published tools, adjust taxonomy, and archive listings that
+            should no longer appear publicly.
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
             className="inline-flex min-h-10 items-center justify-center rounded-md border border-line bg-white px-3 text-sm font-medium"
-            href="/admin/tools"
+            href="/admin"
           >
-            Manage tools
+            Review queue
           </Link>
           <AdminLogoutButton />
         </div>
@@ -87,14 +90,14 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
           defaultValue={query ?? ""}
           name="q"
-          placeholder="Search submissions by tool, URL, or email"
+          placeholder="Search tools by name, URL, or description"
         />
         <button className="min-h-11 rounded-md bg-ink px-4 font-medium text-paper">
           Search
         </button>
       </form>
 
-      <nav className="grid gap-3 md:grid-cols-4">
+      <nav className="grid gap-3 md:grid-cols-5">
         {statuses.map((status) => {
           const isActive = status === activeStatus;
 
@@ -105,7 +108,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                   ? "rounded-md border border-accent bg-accent px-4 py-3 text-white"
                   : "rounded-md border border-line bg-white px-4 py-3"
               }
-              href={`/admin?status=${status}`}
+              href={`/admin/tools?status=${status}`}
               key={status}
             >
               <div className="text-sm font-medium">{status}</div>
@@ -119,42 +122,49 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
       <section className="rounded-md border border-line bg-white">
         <div className="border-b border-line px-5 py-4">
-          <h2 className="font-semibold">{activeStatus} submissions</h2>
+          <h2 className="font-semibold">{activeStatus} tools</h2>
         </div>
-        {submissions.length > 0 ? (
+        {tools.length > 0 ? (
           <div className="divide-y divide-line">
-            {submissions.map((submission) => (
+            {tools.map((tool) => (
               <Link
                 className="grid gap-3 px-5 py-4 transition hover:bg-paper md:grid-cols-[1fr_180px_140px]"
-                href={`/admin/submissions/${submission.id}`}
-                key={submission.id}
+                href={`/admin/tools/${tool.id}`}
+                key={tool.id}
               >
                 <div>
-                  <div className="font-semibold">{submission.toolName}</div>
-                  <p className="mt-1 line-clamp-2 text-sm leading-6 text-ink/60">
-                    {submission.description || "No description provided."}
-                  </p>
-                  <p className="mt-2 text-xs text-ink/45">
-                    {submission.websiteUrl}
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-semibold">{tool.name}</span>
+                    {tool.isFeatured ? (
+                      <span className="rounded-md bg-accent/10 px-2 py-1 text-xs font-medium text-accent">
+                        Featured
+                      </span>
+                    ) : null}
+                    {tool.isVerified ? (
+                      <span className="rounded-md bg-accent/10 px-2 py-1 text-xs font-medium text-accent">
+                        Verified
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-2 text-xs text-ink/45">{tool.websiteUrl}</p>
                 </div>
                 <div className="text-sm text-ink/60">
-                  <div>{submission.category}</div>
-                  <div className="mt-1">{submission.pricingType}</div>
+                  <div>{tool.categoryName}</div>
+                  <div className="mt-1">{tool.pricingType}</div>
                 </div>
                 <div className="text-sm text-ink/60 md:text-right">
-                  <div>{formatDate(submission.createdAt)}</div>
-                  <div className="mt-1">{submission.submitterEmail}</div>
+                  <div>Score {tool.popularityScore}</div>
+                  <div className="mt-1">{formatDate(tool.updatedAt)}</div>
                 </div>
               </Link>
             ))}
           </div>
         ) : (
           <div className="px-5 py-12 text-center">
-            <h2 className="font-semibold">Nothing to review here</h2>
+            <h2 className="font-semibold">No tools in this view</h2>
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
-              This queue is empty. New public submissions will appear here once
-              users send tools for review.
+              Change the status filter or approve a submission to create a new
+              public listing.
             </p>
           </div>
         )}

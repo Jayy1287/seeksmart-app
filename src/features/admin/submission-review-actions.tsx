@@ -2,17 +2,22 @@
 
 import { FormEvent, useState } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
-import type { AdminSubmissionDetail } from "@/server/admin/queries";
+import type {
+  AdminSubmissionDetail,
+  AdminTaxonomyOptions
+} from "@/server/admin/queries";
 import type { ApiResponse } from "@/shared/api";
 
 type ReviewState = "idle" | "submitting" | "success" | "error";
 
 type SubmissionReviewActionsProps = {
   submission: AdminSubmissionDetail;
+  taxonomy: AdminTaxonomyOptions;
 };
 
 export function SubmissionReviewActions({
-  submission
+  submission,
+  taxonomy
 }: SubmissionReviewActionsProps) {
   const [state, setState] = useState<ReviewState>("idle");
   const [message, setMessage] = useState("");
@@ -56,10 +61,17 @@ export function SubmissionReviewActions({
       shortDescription: String(formData.get("shortDescription") ?? ""),
       longDescription: String(formData.get("longDescription") ?? ""),
       websiteUrl: String(formData.get("websiteUrl") ?? ""),
+      categoryId: String(formData.get("categoryId") ?? ""),
       categoryName: String(formData.get("categoryName") ?? ""),
       pricingType: String(formData.get("pricingType") ?? ""),
       hasFreePlan: formData.get("hasFreePlan") === "on",
       isVerified: formData.get("isVerified") === "on",
+      isFeatured: formData.get("isFeatured") === "on",
+      popularityScore: Number(formData.get("popularityScore") ?? 0),
+      metaTitle: String(formData.get("metaTitle") ?? ""),
+      metaDescription: String(formData.get("metaDescription") ?? ""),
+      featureIds: formData.getAll("featureIds").map(String),
+      useCaseIds: formData.getAll("useCaseIds").map(String),
       reviewNote: String(formData.get("reviewNote") ?? "")
     });
   }
@@ -74,6 +86,12 @@ export function SubmissionReviewActions({
   }
 
   const isDisabled = state === "submitting" || submission.status !== "PENDING";
+  const matchingCategory = taxonomy.categories.find(
+    (category) =>
+      category.name.toLowerCase() === submission.category.toLowerCase()
+  );
+  const defaultMetaTitle = `${submission.toolName} Review, Pricing, and Alternatives`;
+  const defaultMetaDescription = submission.description.slice(0, 220);
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
@@ -121,14 +139,19 @@ export function SubmissionReviewActions({
         </label>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="grid gap-2">
-            <span className="text-sm font-medium">Category</span>
-            <input
-              className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
-              defaultValue={submission.category}
-              maxLength={80}
-              name="categoryName"
-              required
-            />
+            <span className="text-sm font-medium">Existing category</span>
+            <select
+              className="min-h-11 rounded-md border border-line bg-white px-3 outline-none focus:border-accent"
+              defaultValue={matchingCategory?.id ?? ""}
+              name="categoryId"
+            >
+              <option value="">Create from submitted category</option>
+              {taxonomy.categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
           </label>
           <label className="grid gap-2">
             <span className="text-sm font-medium">Pricing</span>
@@ -143,6 +166,15 @@ export function SubmissionReviewActions({
             </select>
           </label>
         </div>
+        <label className="grid gap-2">
+          <span className="text-sm font-medium">New category fallback</span>
+          <input
+            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            defaultValue={submission.category}
+            maxLength={80}
+            name="categoryName"
+          />
+        </label>
         <label className="grid gap-2">
           <span className="text-sm font-medium">Short description</span>
           <textarea
@@ -181,7 +213,100 @@ export function SubmissionReviewActions({
             />
             Verified
           </label>
+          <label className="inline-flex items-center gap-2">
+            <input
+              className="h-4 w-4 accent-accent"
+              name="isFeatured"
+              type="checkbox"
+            />
+            Featured
+          </label>
         </div>
+        <label className="grid gap-2">
+          <span className="text-sm font-medium">Popularity score</span>
+          <input
+            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            defaultValue={0}
+            max={100}
+            min={0}
+            name="popularityScore"
+            type="number"
+          />
+        </label>
+        <fieldset className="grid gap-3 rounded-md border border-line p-4">
+          <legend className="px-1 text-sm font-medium">Use cases</legend>
+          <div className="grid gap-2 md:grid-cols-2">
+            {taxonomy.useCases.map((useCase) => (
+              <label
+                className="inline-flex items-center gap-2 text-sm"
+                key={useCase.id}
+              >
+                <input
+                  className="h-4 w-4 accent-accent"
+                  name="useCaseIds"
+                  type="checkbox"
+                  value={useCase.id}
+                />
+                {useCase.name}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <fieldset className="grid gap-3 rounded-md border border-line p-4">
+          <legend className="px-1 text-sm font-medium">Features</legend>
+          <div className="grid gap-2 md:grid-cols-2">
+            {taxonomy.features.map((feature) => (
+              <label
+                className="inline-flex items-center gap-2 text-sm"
+                key={feature.id}
+              >
+                <input
+                  className="h-4 w-4 accent-accent"
+                  name="featureIds"
+                  type="checkbox"
+                  value={feature.id}
+                />
+                {feature.name}
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <section className="grid gap-4 rounded-md border border-line bg-paper p-4">
+          <div>
+            <h3 className="font-semibold">Public preview</h3>
+            <p className="mt-1 text-sm text-ink/60">
+              Check the slug and search metadata before publishing.
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <label className="grid gap-2">
+              <span className="text-sm font-medium">Meta title</span>
+              <input
+                className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+                defaultValue={defaultMetaTitle}
+                maxLength={120}
+                name="metaTitle"
+              />
+            </label>
+            <label className="grid gap-2">
+              <span className="text-sm font-medium">Public path</span>
+              <input
+                className="min-h-11 rounded-md border border-line px-3 text-ink/60 outline-none"
+                defaultValue={`/tools/${submission.suggestedSlug}`}
+                readOnly
+              />
+            </label>
+          </div>
+          <label className="grid gap-2">
+            <span className="text-sm font-medium">Meta description</span>
+            <textarea
+              className="min-h-20 rounded-md border border-line px-3 py-3 outline-none focus:border-accent"
+              defaultValue={defaultMetaDescription}
+              maxLength={220}
+              name="metaDescription"
+            />
+          </label>
+        </section>
         <label className="grid gap-2">
           <span className="text-sm font-medium">Review note</span>
           <input

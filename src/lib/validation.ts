@@ -51,19 +51,53 @@ export const adminSubmissionStatusSchema = z
   .enum(["PENDING", "APPROVED", "REJECTED", "SPAM"])
   .optional();
 
+export const adminToolStatusSchema = statusSchema.optional();
+
+const idListSchema = z.array(z.string().cuid()).max(20).default([]);
+
 export const approveSubmissionSchema = z.object({
   name: z.string().trim().min(2).max(120),
   slug: optionalTrimmedString(120),
   shortDescription: z.string().trim().min(20).max(220),
   longDescription: optionalTrimmedString(2000),
   websiteUrl: z.string().trim().url(),
-  categoryName: z.string().trim().min(2).max(80),
+  categoryId: optionalTrimmedString(120),
+  categoryName: optionalTrimmedString(80),
   pricingType: pricingTypeSchema,
   hasFreePlan: z.coerce.boolean().default(false),
   isVerified: z.coerce.boolean().default(false),
+  isFeatured: z.coerce.boolean().default(false),
+  popularityScore: z.coerce.number().int().min(0).max(100).default(0),
+  metaTitle: optionalTrimmedString(120),
+  metaDescription: optionalTrimmedString(220),
+  featureIds: idListSchema,
+  useCaseIds: idListSchema,
   reviewNote: optionalTrimmedString(500)
+}).refine((value) => value.categoryId || value.categoryName, {
+  message: "Choose an existing category or enter a new category.",
+  path: ["categoryId"]
 });
 
 export const rejectSubmissionSchema = z.object({
   reason: z.string().trim().min(5).max(500)
+});
+
+export const updateAdminToolSchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  slug: z.string().trim().min(2).max(120),
+  shortDescription: z.string().trim().min(20).max(220),
+  longDescription: optionalTrimmedString(2000),
+  websiteUrl: z.string().trim().url(),
+  logoUrl: optionalTrimmedString(500),
+  categoryId: z.string().cuid(),
+  pricingType: pricingTypeSchema,
+  hasFreePlan: z.coerce.boolean().default(false),
+  isVerified: z.coerce.boolean().default(false),
+  isFeatured: z.coerce.boolean().default(false),
+  popularityScore: z.coerce.number().int().min(0).max(100).default(0),
+  status: statusSchema,
+  metaTitle: optionalTrimmedString(120),
+  metaDescription: optionalTrimmedString(220),
+  featureIds: idListSchema,
+  useCaseIds: idListSchema
 });

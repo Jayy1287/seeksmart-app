@@ -149,24 +149,37 @@ export async function approveSubmission(
     throw new SubmissionNotReviewableError();
   }
 
-  await assertNoDuplicateSubmission(review.name, review.websiteUrl, submission.id);
+  await assertNoDuplicateSubmission(
+    review.name,
+    review.websiteUrl,
+    submission.id
+  );
 
-  const categorySlug = slugify(review.categoryName);
   const toolSlug = await createUniqueToolSlug(review.name, review.slug);
   const now = new Date();
 
   return prisma.$transaction(async (tx) => {
-    const category = await tx.category.upsert({
-      where: {
-        slug: categorySlug
-      },
-      update: {},
-      create: {
-        name: review.categoryName,
-        slug: categorySlug,
-        description: `AI tools for ${review.categoryName.toLowerCase()}.`
-      }
-    });
+    const category = review.categoryId
+      ? await tx.category.findUnique({
+          where: {
+            id: review.categoryId
+          }
+        })
+      : await tx.category.upsert({
+          where: {
+            slug: slugify(review.categoryName ?? "uncategorized")
+          },
+          update: {},
+          create: {
+            name: review.categoryName ?? "Uncategorized",
+            slug: slugify(review.categoryName ?? "uncategorized"),
+            description: `AI tools for ${(review.categoryName ?? "uncategorized").toLowerCase()}.`
+          }
+        });
+
+    if (!category) {
+      throw new SubmissionNotReviewableError("Selected category does not exist.");
+    }
 
     const tool = await tx.tool.create({
       data: {
@@ -182,10 +195,13 @@ export async function approveSubmission(
           review.pricingType === "FREE" ||
           review.pricingType === "FREEMIUM",
         isVerified: review.isVerified,
+        isFeatured: review.isFeatured,
         status: PublishStatus.PUBLISHED,
-        popularityScore: 0,
-        metaTitle: `${review.name} Review, Pricing, and Alternatives`,
-        metaDescription: review.shortDescription,
+        popularityScore: review.popularityScore,
+        metaTitle:
+          review.metaTitle ??
+          `${review.name} Review, Pricing, and Alternatives`,
+        metaDescription: review.metaDescription ?? review.shortDescription,
         publishedAt: now
       },
       select: {
@@ -194,6 +210,26 @@ export async function approveSubmission(
         slug: true
       }
     });
+
+    if (review.featureIds.length > 0) {
+      await tx.toolFeature.createMany({
+        data: review.featureIds.map((featureId) => ({
+          toolId: tool.id,
+          featureId
+        })),
+        skipDuplicates: true
+      });
+    }
+
+    if (review.useCaseIds.length > 0) {
+      await tx.toolUseCase.createMany({
+        data: review.useCaseIds.map((useCaseId) => ({
+          toolId: tool.id,
+          useCaseId
+        })),
+        skipDuplicates: true
+      });
+    }
 
     const updatedSubmission = await tx.submission.update({
       where: {
@@ -207,6 +243,8 @@ export async function approveSubmission(
           note: review.reviewNote ?? null,
           toolId: tool.id,
           toolSlug: tool.slug,
+          featureIds: review.featureIds,
+          useCaseIds: review.useCaseIds,
           reviewedAt: now.toISOString()
         })
       },
@@ -224,7 +262,9 @@ export async function approveSubmission(
         entityId: submission.id,
         metadata: {
           toolId: tool.id,
-          toolSlug: tool.slug
+          toolSlug: tool.slug,
+          featureIds: review.featureIds,
+          useCaseIds: review.useCaseIds
         }
       }
     });
