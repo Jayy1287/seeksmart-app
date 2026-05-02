@@ -7,6 +7,7 @@ const __dirname = path.dirname(__filename);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typedRoutes: true,
+  devIndicators: false,
   outputFileTracingRoot: __dirname
 };
 

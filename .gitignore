@@ -8,3 +8,5 @@ dist
 *.tsbuildinfo
 coverage
 prisma/dev.db
+tmp
+test-results

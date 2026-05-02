@@ -54,15 +54,18 @@ export default async function Home() {
               Browse curated AI tools by category, pricing, and fit. Start
               with a search or jump into a focused category.
             </p>
-            <form action="/tools" className="mt-8 flex max-w-2xl gap-3">
+            <form
+              action="/tools"
+              className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-[1fr_auto]"
+            >
               <input
-                className="min-h-12 flex-1 rounded-md border border-line bg-white px-4 text-base outline-none transition focus:border-accent"
+                className="min-h-12 min-w-0 rounded-md border border-line bg-white px-4 text-base outline-none transition focus:border-accent"
                 name="q"
                 placeholder="Search for writing, video, coding..."
                 type="search"
               />
               <button
-                className="inline-flex min-h-12 items-center gap-2 rounded-md bg-ink px-5 font-medium text-paper"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-ink px-5 font-medium text-paper"
                 type="submit"
               >
                 Search
