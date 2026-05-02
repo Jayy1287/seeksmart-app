@@ -1,6 +1,9 @@
 import { ZodError } from "zod";
 import { apiError, apiInternalError, apiOk } from "@/server/http/responses";
-import { createToolSubmission } from "@/server/submissions/mutations";
+import {
+  createToolSubmission,
+  DuplicateSubmissionError
+} from "@/server/submissions/mutations";
 
 export async function POST(request: Request) {
   try {
@@ -18,8 +21,11 @@ export async function POST(request: Request) {
       );
     }
 
+    if (error instanceof DuplicateSubmissionError) {
+      return apiError("CONFLICT", error.message, 409);
+    }
+
     console.error(error);
     return apiInternalError();
   }
 }
-

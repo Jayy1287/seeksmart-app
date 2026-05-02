@@ -10,12 +10,13 @@ export const statusSchema = z.enum([
 ]);
 
 export const toolSubmissionSchema = z.object({
-  toolName: z.string().min(2).max(120),
-  websiteUrl: z.string().url(),
-  description: z.string().min(20).max(1200),
-  category: z.string().min(2).max(80),
+  toolName: z.string().trim().min(2).max(120),
+  websiteUrl: z.string().trim().url(),
+  description: z.string().trim().min(20).max(1200),
+  category: z.string().trim().min(2).max(80),
   pricingType: pricingTypeSchema,
-  submitterEmail: z.string().email()
+  submitterEmail: z.string().trim().toLowerCase().email(),
+  companyName: z.string().max(0).optional()
 });
 
 const optionalTrimmedString = (maxLength: number) =>
@@ -37,4 +38,29 @@ export const listToolsQuerySchema = z.object({
   pricing: pricingTypeSchema.optional(),
   page: z.coerce.number().int().min(1).max(100).catch(1),
   limit: z.coerce.number().int().min(1).max(48).catch(24)
+});
+
+export const adminLoginSchema = z.object({
+  password: z.string().min(1)
+});
+
+export const adminSubmissionStatusSchema = z
+  .enum(["PENDING", "APPROVED", "REJECTED", "SPAM"])
+  .optional();
+
+export const approveSubmissionSchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  slug: optionalTrimmedString(120),
+  shortDescription: z.string().trim().min(20).max(220),
+  longDescription: optionalTrimmedString(2000),
+  websiteUrl: z.string().trim().url(),
+  categoryName: z.string().trim().min(2).max(80),
+  pricingType: pricingTypeSchema,
+  hasFreePlan: z.coerce.boolean().default(false),
+  isVerified: z.coerce.boolean().default(false),
+  reviewNote: optionalTrimmedString(500)
+});
+
+export const rejectSubmissionSchema = z.object({
+  reason: z.string().trim().min(5).max(500)
 });
