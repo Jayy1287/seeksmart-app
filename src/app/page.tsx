@@ -4,8 +4,8 @@ import { CategoryList } from "@/features/categories/category-list";
 import { ToolCard } from "@/features/tools/tool-card";
 import { listCategorySummaries } from "@/server/categories/queries";
 import {
-  listFeaturedTools,
-  listRecentlyAddedTools
+  listRecentlyAddedTools,
+  listTrendingTools
 } from "@/server/tools/queries";
 
 export const dynamic = "force-dynamic";
@@ -29,10 +29,10 @@ const principles = [
 ];
 
 export default async function Home() {
-  const [categories, featuredTools, recentTools] = await Promise.all([
+  const [categories, trendingTools, recentTools] = await Promise.all([
     listCategorySummaries(),
-    listFeaturedTools(6),
-    listRecentlyAddedTools(4)
+    listTrendingTools(6),
+    listRecentlyAddedTools(5)
   ]);
   const toolCount = categories.reduce(
     (total, category) => total + category.toolCount,
@@ -72,12 +72,12 @@ export default async function Home() {
             <div className="mt-8 grid max-w-xl grid-cols-3 gap-3">
               <Stat label="Published tools" value={toolCount} />
               <Stat label="Categories" value={categories.length} />
-              <Stat label="Verified picks" value={featuredTools.length} />
+              <Stat label="Trending picks" value={trendingTools.length} />
             </div>
           </div>
           <div className="rounded-md border border-line bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold">Popular categories</h2>
+              <h2 className="text-base font-semibold">Real categories</h2>
               <Link className="text-sm font-medium text-accent" href="/categories">
                 View all
               </Link>
@@ -91,9 +91,9 @@ export default async function Home() {
         <div className="mb-5 flex items-center justify-between gap-4">
           <div>
             <p className="text-sm font-medium uppercase text-accent">
-              Featured
+              Trending
             </p>
-            <h2 className="mt-2 text-2xl font-semibold">Tools worth checking</h2>
+            <h2 className="mt-2 text-2xl font-semibold">Trending tools</h2>
           </div>
           <Link
             className="inline-flex items-center gap-2 text-sm font-medium text-accent"
@@ -103,14 +103,14 @@ export default async function Home() {
             <ArrowRight aria-hidden="true" size={16} />
           </Link>
         </div>
-        {featuredTools.length > 0 ? (
+        {trendingTools.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {featuredTools.map((tool) => (
+            {trendingTools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
           </div>
         ) : (
-          <EmptyPanel message="Seed the database to start showing featured tools." />
+          <EmptyPanel message="Seed the database to start showing trending tools." />
         )}
       </section>
 

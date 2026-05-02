@@ -1,11 +1,12 @@
-import { PublishStatus, type Prisma } from "@prisma/client";
+import { PublishStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { toPublicToolCard } from "./mappers";
+import {
+  toPublicToolCard,
+  toPublicToolDetail,
+  toolCardInclude,
+  toolDetailInclude
+} from "./mappers";
 import type { PublicToolCard, PublicToolDetail } from "@/shared/domain";
-
-const toolCardInclude = {
-  category: true
-} satisfies Prisma.ToolInclude;
 
 type ListToolsInput = {
   query?: string;
@@ -36,7 +37,12 @@ export async function listPublishedTools({
         : {})
     },
     include: toolCardInclude,
-    orderBy: [{ isVerified: "desc" }, { publishedAt: "desc" }],
+    orderBy: [
+      { isFeatured: "desc" },
+      { popularityScore: "desc" },
+      { isVerified: "desc" },
+      { publishedAt: "desc" }
+    ],
     take: Math.min(limit, 100)
   });
 
@@ -48,13 +54,33 @@ export async function listFeaturedTools(
 ): Promise<PublicToolCard[]> {
   const tools = await prisma.tool.findMany({
     where: {
+      status: PublishStatus.PUBLISHED,
+      isFeatured: true
+    },
+    include: toolCardInclude,
+    orderBy: [
+      { popularityScore: "desc" },
+      { isVerified: "desc" },
+      { publishedAt: "desc" }
+    ],
+    take: Math.min(limit, 12)
+  });
+
+  return tools.map(toPublicToolCard);
+}
+
+export async function listTrendingTools(
+  limit = 6
+): Promise<PublicToolCard[]> {
+  const tools = await prisma.tool.findMany({
+    where: {
       status: PublishStatus.PUBLISHED
     },
     include: toolCardInclude,
     orderBy: [
-      { isVerified: "desc" },
-      { hasFreePlan: "desc" },
-      { publishedAt: "desc" }
+      { popularityScore: "desc" },
+      { isFeatured: "desc" },
+      { isVerified: "desc" }
     ],
     take: Math.min(limit, 12)
   });
@@ -85,27 +111,12 @@ export async function getPublishedToolBySlug(
       slug,
       status: PublishStatus.PUBLISHED
     },
-    include: {
-      category: true,
-      sourceTools: {
-        include: {
-          alternativeTool: {
-            include: toolCardInclude
-          }
-        }
-      }
-    }
+    include: toolDetailInclude
   });
 
   if (!tool) {
     return null;
   }
 
-  return {
-    ...toPublicToolCard(tool),
-    longDescription: tool.longDescription,
-    alternatives: tool.sourceTools.map((alternative) =>
-      toPublicToolCard(alternative.alternativeTool)
-    )
-  };
+  return toPublicToolDetail(tool);
 }

@@ -18,6 +18,13 @@ export type PublicCategorySummary = PublicCategory & {
   toolCount: number;
 };
 
+export type PublicTaxonomyItem = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+};
+
 export type PublicToolCard = {
   id: string;
   name: string;
@@ -28,10 +35,16 @@ export type PublicToolCard = {
   pricingType: PricingType;
   hasFreePlan: boolean;
   isVerified: boolean;
+  isFeatured: boolean;
+  popularityScore: number;
   category: PublicCategory;
 };
 
 export type PublicToolDetail = PublicToolCard & {
   longDescription: string | null;
+  metaTitle: string | null;
+  metaDescription: string | null;
+  features: PublicTaxonomyItem[];
+  useCases: PublicTaxonomyItem[];
   alternatives: PublicToolCard[];
 };

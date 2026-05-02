@@ -53,11 +53,50 @@ export async function listCategorySummaries(): Promise<PublicCategorySummary[]> 
     }
   });
 
-  return categories.map((category) => ({
+  return categories
+    .map((category) => ({
+      id: category.id,
+      name: category.name,
+      slug: category.slug,
+      description: category.description,
+      toolCount: category._count.tools
+    }))
+    .sort((categoryA, categoryB) => categoryB.toolCount - categoryA.toolCount);
+}
+
+export async function getCategorySummaryBySlug(
+  slug: string
+): Promise<PublicCategorySummary | null> {
+  const category = await prisma.category.findUnique({
+    where: {
+      slug
+    },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true,
+      _count: {
+        select: {
+          tools: {
+            where: {
+              status: "PUBLISHED"
+            }
+          }
+        }
+      }
+    }
+  });
+
+  if (!category) {
+    return null;
+  }
+
+  return {
     id: category.id,
     name: category.name,
     slug: category.slug,
     description: category.description,
     toolCount: category._count.tools
-  }));
+  };
 }
