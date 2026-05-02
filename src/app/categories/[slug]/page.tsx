@@ -31,7 +31,16 @@ export async function generateMetadata({
 
   return {
     title: `${category.name} AI Tools`,
-    description: category.description ?? `Browse ${category.name} AI tools.`
+    description: category.description ?? `Browse ${category.name} AI tools.`,
+    alternates: {
+      canonical: `/categories/${category.slug}`
+    },
+    openGraph: {
+      title: `${category.name} AI Tools`,
+      description: category.description ?? `Browse ${category.name} AI tools.`,
+      url: `/categories/${category.slug}`,
+      type: "website"
+    }
   };
 }
 

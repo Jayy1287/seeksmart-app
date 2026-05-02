@@ -36,9 +36,13 @@ export async function generateMetadata({
   return {
     title: tool.metaTitle ?? tool.name,
     description: tool.metaDescription ?? tool.shortDescription,
+    alternates: {
+      canonical: `/tools/${tool.slug}`
+    },
     openGraph: {
       title: tool.metaTitle ?? tool.name,
       description: tool.metaDescription ?? tool.shortDescription,
+      url: `/tools/${tool.slug}`,
       type: "website"
     }
   };

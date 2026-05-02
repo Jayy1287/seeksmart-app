@@ -2,23 +2,30 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Search } from "lucide-react";
+import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
-  ),
+  metadataBase: new URL(siteConfig.url),
   title: {
     default: "SeekSmart - Find the right AI tool",
     template: "%s | SeekSmart"
   },
-  description:
-    "Discover AI tools by category, use case, pricing, and alternatives.",
+  description: siteConfig.description,
+  alternates: {
+    canonical: "/"
+  },
   openGraph: {
+    siteName: siteConfig.name,
     title: "SeekSmart - Find the right AI tool",
-    description:
-      "Discover AI tools by category, use case, pricing, and alternatives.",
+    description: siteConfig.description,
+    url: "/",
     type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SeekSmart - Find the right AI tool",
+    description: siteConfig.description
   }
 };
 

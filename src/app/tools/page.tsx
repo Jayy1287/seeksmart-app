@@ -11,7 +11,16 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "AI Tools",
-  description: "Browse AI tools by category, pricing, and use case."
+  description: "Browse AI tools by category, pricing, and use case.",
+  alternates: {
+    canonical: "/tools"
+  },
+  openGraph: {
+    title: "AI Tools",
+    description: "Browse AI tools by category, pricing, and use case.",
+    url: "/tools",
+    type: "website"
+  }
 };
 
 type ToolsPageProps = {

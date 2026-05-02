@@ -6,7 +6,16 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "AI Tool Categories",
-  description: "Browse AI tools by category."
+  description: "Browse AI tools by category.",
+  alternates: {
+    canonical: "/categories"
+  },
+  openGraph: {
+    title: "AI Tool Categories",
+    description: "Browse AI tools by category.",
+    url: "/categories",
+    type: "website"
+  }
 };
 
 export default async function CategoriesPage() {

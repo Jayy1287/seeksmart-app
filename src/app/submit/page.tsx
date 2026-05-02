@@ -3,7 +3,16 @@ import { SubmitToolForm } from "@/features/submissions/submit-tool-form";
 
 export const metadata: Metadata = {
   title: "Submit an AI Tool",
-  description: "Submit an AI tool for review on SeekSmart."
+  description: "Submit an AI tool for review on SeekSmart.",
+  alternates: {
+    canonical: "/submit"
+  },
+  openGraph: {
+    title: "Submit an AI Tool",
+    description: "Submit an AI tool for review on SeekSmart.",
+    url: "/submit",
+    type: "website"
+  }
 };
 
 export default function SubmitPage() {

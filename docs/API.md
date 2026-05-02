@@ -51,12 +51,16 @@ Query params:
 - `q`
 - `category`
 - `pricing`
+- `page`
+- `limit`
 
 Example:
 
 ```http
 GET /api/v1/tools?q=writing&pricing=FREEMIUM
 ```
+
+Response includes `tools` and a `pagination` object.
 
 ### Get Tool
 
