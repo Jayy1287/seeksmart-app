@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ExternalLink, ShieldCheck } from "lucide-react";
+import {
+  CheckCircle2,
+  ExternalLink,
+  Layers3,
+  ShieldCheck,
+  Sparkles,
+  Target
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { getPublishedToolBySlug } from "@/server/tools/queries";
 import { ToolCard } from "@/features/tools/tool-card";
 
@@ -26,8 +34,13 @@ export async function generateMetadata({
   }
 
   return {
-    title: tool.name,
-    description: tool.shortDescription
+    title: tool.metaTitle ?? tool.name,
+    description: tool.metaDescription ?? tool.shortDescription,
+    openGraph: {
+      title: tool.metaTitle ?? tool.name,
+      description: tool.metaDescription ?? tool.shortDescription,
+      type: "website"
+    }
   };
 }
 
@@ -41,14 +54,19 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
 
   return (
     <main className="mx-auto max-w-6xl px-5 py-10">
-      <section className="grid gap-8 md:grid-cols-[1fr_320px]">
+      <section className="grid gap-8 md:grid-cols-[1fr_340px]">
         <div>
           <div className="flex flex-wrap items-center gap-3">
             <Link className="text-sm font-medium text-accent" href="/tools">
               Tools
             </Link>
             <span className="text-ink/30">/</span>
-            <span className="text-sm text-ink/55">{tool.category.name}</span>
+            <Link
+              className="text-sm text-ink/55 hover:text-accent"
+              href={`/categories/${tool.category.slug}`}
+            >
+              {tool.category.name}
+            </Link>
           </div>
           <h1 className="mt-5 text-5xl font-semibold">{tool.name}</h1>
           <p className="mt-5 max-w-3xl text-lg leading-8 text-ink/70">
@@ -56,7 +74,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
             <span className="rounded-md border border-line bg-white px-3 py-2 text-sm font-medium">
-              {tool.pricingType.toLowerCase()}
+              {formatPricing(tool.pricingType)}
             </span>
             {tool.hasFreePlan ? (
               <span className="rounded-md border border-line bg-white px-3 py-2 text-sm font-medium">
@@ -69,14 +87,38 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                 Verified
               </span>
             ) : null}
+            {tool.isFeatured ? (
+              <span className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-sm font-medium">
+                <Sparkles aria-hidden="true" size={16} />
+                Featured
+              </span>
+            ) : null}
           </div>
         </div>
         <aside className="rounded-md border border-line bg-white p-5">
-          <h2 className="font-semibold">Visit tool</h2>
+          <h2 className="font-semibold">Decision snapshot</h2>
           <p className="mt-2 text-sm leading-6 text-ink/60">
-            Open the official website to review current pricing and product
-            details.
+            A quick scan of pricing, category, and popularity before opening
+            the official site.
           </p>
+          <dl className="mt-5 grid gap-3 text-sm">
+            <div className="flex items-center justify-between border-b border-line pb-3">
+              <dt className="text-ink/55">Category</dt>
+              <dd className="font-medium">{tool.category.name}</dd>
+            </div>
+            <div className="flex items-center justify-between border-b border-line pb-3">
+              <dt className="text-ink/55">Pricing</dt>
+              <dd className="font-medium">{formatPricing(tool.pricingType)}</dd>
+            </div>
+            <div className="flex items-center justify-between border-b border-line pb-3">
+              <dt className="text-ink/55">Popularity</dt>
+              <dd className="font-medium">{tool.popularityScore}/100</dd>
+            </div>
+            <div className="flex items-center justify-between">
+              <dt className="text-ink/55">Verified</dt>
+              <dd className="font-medium">{tool.isVerified ? "Yes" : "No"}</dd>
+            </div>
+          </dl>
           <a
             className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-ink px-4 font-medium text-paper"
             href={tool.websiteUrl}
@@ -90,22 +132,98 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
       </section>
 
       <section className="mt-10 rounded-md border border-line bg-white p-6">
-        <h2 className="text-xl font-semibold">Overview</h2>
+        <div className="flex items-center gap-2">
+          <Layers3 aria-hidden="true" className="text-accent" size={20} />
+          <h2 className="text-xl font-semibold">Overview</h2>
+        </div>
         <p className="mt-4 leading-8 text-ink/70">
           {tool.longDescription ?? tool.shortDescription}
         </p>
       </section>
 
-      {tool.alternatives.length > 0 ? (
-        <section className="mt-10">
-          <h2 className="mb-4 text-xl font-semibold">Alternatives</h2>
+      <section className="mt-6 grid gap-6 md:grid-cols-2">
+        <InfoPanel
+          emptyLabel="Use cases will be added during curation."
+          icon={Target}
+          items={tool.useCases.map((useCase) => useCase.name)}
+          title="Use cases"
+        />
+        <InfoPanel
+          emptyLabel="Feature data will be added during curation."
+          icon={CheckCircle2}
+          items={tool.features.map((feature) => feature.name)}
+          title="Features"
+        />
+      </section>
+
+      <section className="mt-10">
+        <div className="mb-4 flex items-end justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium uppercase text-accent">
+              Compare
+            </p>
+            <h2 className="mt-2 text-xl font-semibold">Alternatives</h2>
+          </div>
+          <Link className="text-sm font-medium text-accent" href="/tools">
+            Browse all
+          </Link>
+        </div>
+        {tool.alternatives.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-3">
             {tool.alternatives.map((alternative) => (
               <ToolCard key={alternative.id} tool={alternative} />
             ))}
           </div>
-        </section>
-      ) : null}
+        ) : (
+          <div className="rounded-md border border-line bg-white p-6 text-sm text-ink/60">
+            Alternatives are not curated for this tool yet.
+          </div>
+        )}
+      </section>
     </main>
   );
+}
+
+type InfoPanelProps = {
+  emptyLabel: string;
+  icon: LucideIcon;
+  items: string[];
+  title: string;
+};
+
+function InfoPanel({ emptyLabel, icon: Icon, items, title }: InfoPanelProps) {
+  return (
+    <section className="rounded-md border border-line bg-white p-6">
+      <div className="flex items-center gap-2">
+        <Icon aria-hidden="true" className="text-accent" size={20} />
+        <h2 className="text-xl font-semibold">{title}</h2>
+      </div>
+      {items.length > 0 ? (
+        <div className="mt-4 flex flex-wrap gap-2">
+          {items.map((item) => (
+            <span
+              className="rounded-md border border-line px-3 py-2 text-sm font-medium"
+              key={item}
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <p className="mt-4 text-sm text-ink/60">{emptyLabel}</p>
+      )}
+    </section>
+  );
+}
+
+function formatPricing(pricingType: string) {
+  if (pricingType === "FREEMIUM") {
+    return "Freemium";
+  }
+
+  if (pricingType === "FREE") {
+    return "Free";
+  }
+
+  return "Paid";
 }
