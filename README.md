@@ -46,7 +46,12 @@ node -v
 npm -v
 ```
 
-Create a free PostgreSQL database using Supabase or Neon, then copy `.env.example` to `.env` and set `DATABASE_URL`.
+Create a free PostgreSQL database using Supabase or Neon, then copy `.env.example` to `.env` and set `DATABASE_URL` and `DIRECT_URL`.
+
+For Supabase with Prisma:
+
+- `DATABASE_URL` should use the pooled connection on port `6543` with `?pgbouncer=true`.
+- `DIRECT_URL` should use the direct/session connection on port `5432` for migrations.
 
 ## Local Development
 
