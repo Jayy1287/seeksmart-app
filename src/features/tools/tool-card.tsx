@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { PublicToolCard } from "@/shared/domain";
 
 type ToolCardProps = {
@@ -19,13 +20,12 @@ export function ToolCard({ tool }: ToolCardProps) {
       <p className="mt-4 text-sm leading-6 text-ink/70">
         {tool.shortDescription}
       </p>
-      <a
+      <Link
         className="mt-5 inline-flex text-sm font-medium text-accent"
         href={`/tools/${tool.slug}`}
       >
         View details
-      </a>
+      </Link>
     </article>
   );
 }
-

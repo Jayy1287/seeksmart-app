@@ -15,3 +15,18 @@ export async function listCategories(): Promise<PublicCategory[]> {
   });
 }
 
+export async function getCategoryBySlug(
+  slug: string
+): Promise<PublicCategory | null> {
+  return prisma.category.findUnique({
+    where: {
+      slug
+    },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true
+    }
+  });
+}

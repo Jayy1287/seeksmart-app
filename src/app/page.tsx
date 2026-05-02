@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowRight, Filter, Gauge, ShieldCheck } from "lucide-react";
 
 const categories = [
@@ -66,13 +67,13 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               {categories.map((category) => (
-                <a
+                <Link
                   className="rounded-md border border-line px-4 py-3 text-sm font-medium transition hover:border-accent hover:text-accent"
                   href="/categories"
                   key={category}
                 >
                   {category}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
