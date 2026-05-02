@@ -9,10 +9,10 @@ type ToolCardProps = {
 
 export function ToolCard({ tool }: ToolCardProps) {
   return (
-    <article className="group flex h-full flex-col rounded-md border border-line bg-white p-5 transition hover:border-accent hover:shadow-sm">
+    <article className="surface-panel group flex h-full flex-col rounded-lg p-5 transition hover:-translate-y-0.5 hover:border-accent">
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-ink text-sm font-semibold text-paper">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-ink to-accent text-sm font-semibold text-paper shadow-sm">
             {tool.name.slice(0, 1)}
           </div>
           <div className="min-w-0">
@@ -34,7 +34,7 @@ export function ToolCard({ tool }: ToolCardProps) {
             </Link>
           </div>
         </div>
-        <span className="shrink-0 rounded-md border border-line px-2 py-1 text-xs font-medium">
+        <span className="shrink-0 rounded-md border border-line bg-muted/60 px-2 py-1 text-xs font-medium">
           {formatPricing(tool.pricingType)}
         </span>
       </div>

@@ -4,8 +4,28 @@
 
 :root {
   color-scheme: light;
-  background: #fbfaf7;
-  color: #141414;
+  --color-ink: 13 18 28;
+  --color-paper: 246 248 251;
+  --color-surface: 255 255 255;
+  --color-muted: 238 242 247;
+  --color-line: 213 220 230;
+  --color-accent: 18 129 87;
+  --color-brand: 37 99 235;
+  --color-signal: 210 72 54;
+  background: rgb(var(--color-paper));
+  color: rgb(var(--color-ink));
+}
+
+.dark {
+  color-scheme: dark;
+  --color-ink: 236 241 248;
+  --color-paper: 7 10 18;
+  --color-surface: 15 21 32;
+  --color-muted: 25 33 48;
+  --color-line: 55 66 84;
+  --color-accent: 67 203 145;
+  --color-brand: 96 165 250;
+  --color-signal: 248 113 113;
 }
 
 * {
@@ -14,8 +34,16 @@
 
 body {
   margin: 0;
-  background: #fbfaf7;
-  color: #141414;
+  min-height: 100vh;
+  background:
+    linear-gradient(rgb(var(--color-line) / 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--color-line) / 0.18) 1px, transparent 1px),
+    linear-gradient(180deg, rgb(var(--color-paper)), rgb(var(--color-muted)));
+  background-size:
+    48px 48px,
+    48px 48px,
+    100% 100%;
+  color: rgb(var(--color-ink));
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -31,4 +59,56 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+input,
+select,
+textarea {
+  background-color: rgb(var(--color-surface));
+  color: rgb(var(--color-ink));
+}
+
+::selection {
+  background: rgb(var(--color-accent) / 0.22);
+}
+
+@layer utilities {
+  .bg-white {
+    background-color: rgb(var(--color-surface) / var(--tw-bg-opacity, 1));
+  }
+}
+
+@layer components {
+  .surface-panel {
+    border: 1px solid rgb(var(--color-line));
+    background:
+      linear-gradient(180deg, rgb(var(--color-surface) / 0.94), rgb(var(--color-surface) / 0.86));
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.45) inset,
+      0 18px 48px rgb(15 23 42 / 0.08);
+  }
+
+  .dark .surface-panel {
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.07) inset,
+      0 18px 48px rgb(0 0 0 / 0.28);
+  }
+
+  .control-field {
+    min-height: 2.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(var(--color-line));
+    background-color: rgb(var(--color-surface));
+    color: rgb(var(--color-ink));
+    outline: none;
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .control-field:focus {
+    border-color: rgb(var(--color-accent));
+    box-shadow: 0 0 0 3px rgb(var(--color-accent) / 0.14);
+  }
 }

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Search } from "lucide-react";
+import { Search, Sparkles } from "lucide-react";
+import { ThemeToggle } from "@/features/theme/theme-toggle";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
@@ -35,26 +36,79 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                const theme = localStorage.getItem("seeksmart-theme");
+                const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+                if (theme === "dark" || (!theme && prefersDark)) {
+                  document.documentElement.classList.add("dark");
+                }
+              } catch {}
+            `
+          }}
+        />
+      </head>
       <body>
         <div className="min-h-screen">
-          <header className="border-b border-line bg-paper/90">
+          <header className="sticky top-0 z-50 border-b border-line bg-paper/85 backdrop-blur-xl">
             <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <Link className="flex items-center gap-2 font-semibold" href="/">
-                <span className="flex h-8 w-8 items-center justify-center rounded-md bg-ink text-paper">
+              <Link className="flex items-center gap-3 font-semibold" href="/">
+                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-ink text-paper shadow-sm">
                   <Search aria-hidden="true" size={18} />
                 </span>
-                SeekSmart
+                <span className="leading-tight">
+                  <span className="block">SeekSmart</span>
+                  <span className="block text-xs font-medium text-ink/45">
+                    AI tool intelligence
+                  </span>
+                </span>
               </Link>
-              <nav className="flex w-full items-center justify-between gap-3 text-sm text-ink/70 sm:w-auto sm:justify-start sm:gap-5">
-                <Link href="/tools">Tools</Link>
-                <Link href="/categories">Categories</Link>
-                <Link href="/use-cases">Use cases</Link>
-                <Link href="/submit">Submit</Link>
-              </nav>
+              <div className="flex w-full items-center gap-3 sm:w-auto">
+                <nav className="flex flex-1 items-center justify-between gap-3 text-sm font-medium text-ink/70 sm:flex-none sm:justify-start sm:gap-5">
+                  <Link className="transition hover:text-accent" href="/tools">
+                    Tools
+                  </Link>
+                  <Link
+                    className="transition hover:text-accent"
+                    href="/categories"
+                  >
+                    Categories
+                  </Link>
+                  <Link
+                    className="transition hover:text-accent"
+                    href="/use-cases"
+                  >
+                    Use cases
+                  </Link>
+                  <Link className="transition hover:text-accent" href="/submit">
+                    Submit
+                  </Link>
+                </nav>
+                <ThemeToggle />
+              </div>
             </div>
           </header>
           {children}
+          <footer className="border-t border-line bg-paper/75">
+            <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-ink/55 md:flex-row md:items-center md:justify-between">
+              <div className="inline-flex items-center gap-2">
+                <Sparkles aria-hidden="true" className="text-accent" size={16} />
+                Curated AI discovery for practical teams.
+              </div>
+              <div className="flex gap-4">
+                <Link className="hover:text-accent" href="/tools">
+                  Directory
+                </Link>
+                <Link className="hover:text-accent" href="/submit">
+                  Submit tool
+                </Link>
+              </div>
+            </div>
+          </footer>
         </div>
       </body>
     </html>

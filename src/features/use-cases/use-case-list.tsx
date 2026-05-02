@@ -10,7 +10,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
     <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
       {useCases.map((useCase) => (
         <Link
-          className="rounded-md border border-line bg-white p-4 transition hover:border-accent"
+          className="surface-panel rounded-lg p-4 transition hover:-translate-y-0.5 hover:border-accent"
           href={`/use-cases/${useCase.slug}`}
           key={useCase.id}
         >

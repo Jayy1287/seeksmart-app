@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, Filter, Gauge, ShieldCheck, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Boxes,
+  Filter,
+  Gauge,
+  ShieldCheck,
+  Sparkles
+} from "lucide-react";
 import { CategoryList } from "@/features/categories/category-list";
 import { ToolCard } from "@/features/tools/tool-card";
 import { listCategorySummaries } from "@/server/categories/queries";
@@ -42,30 +49,31 @@ export default async function Home() {
   return (
     <main>
       <section className="border-b border-line">
-        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-[1.2fr_0.8fr] md:items-center">
+        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-[1.12fr_0.88fr] md:items-center lg:py-20">
           <div>
-            <p className="mb-4 text-sm font-medium uppercase text-accent">
+            <p className="mb-4 inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-sm font-medium uppercase text-accent">
+              <Sparkles aria-hidden="true" size={15} />
               AI tool discovery
             </p>
-            <h1 className="max-w-3xl text-5xl font-semibold leading-tight text-ink md:text-6xl">
-              Find the right AI tool in seconds.
+            <h1 className="max-w-3xl text-5xl font-semibold leading-[0.98] tracking-tight text-ink md:text-7xl">
+              Find the right AI tool with less guessing.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-ink/70">
-              Browse curated AI tools by category, pricing, and fit. Start
-              with a search or jump into a focused category.
+              SeekSmart turns a noisy AI market into a structured directory of
+              tools, categories, use cases, and signals you can actually scan.
             </p>
             <form
               action="/tools"
-              className="mt-8 grid max-w-2xl gap-3 sm:grid-cols-[1fr_auto]"
+              className="surface-panel mt-8 grid max-w-2xl gap-3 rounded-lg p-2 sm:grid-cols-[1fr_auto]"
             >
               <input
-                className="min-h-12 min-w-0 rounded-md border border-line bg-white px-4 text-base outline-none transition focus:border-accent"
+                className="min-h-12 min-w-0 rounded-md border border-transparent bg-transparent px-4 text-base outline-none transition focus:border-accent"
                 name="q"
                 placeholder="Search for writing, video, coding..."
                 type="search"
               />
               <button
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-ink px-5 font-medium text-paper"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-ink px-5 font-medium text-paper shadow-sm"
                 type="submit"
               >
                 Search
@@ -78,14 +86,26 @@ export default async function Home() {
               <Stat label="Trending picks" value={trendingTools.length} />
             </div>
           </div>
-          <div className="rounded-md border border-line bg-white p-5 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold">Real categories</h2>
-              <Link className="text-sm font-medium text-accent" href="/categories">
+          <div className="surface-panel rounded-lg p-5">
+            <div className="mb-5 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium uppercase text-accent">
+                  Live taxonomy
+                </p>
+                <h2 className="mt-1 text-lg font-semibold">Real categories</h2>
+              </div>
+              <Link
+                className="rounded-md border border-line px-3 py-2 text-sm font-medium text-accent"
+                href="/categories"
+              >
                 View all
               </Link>
             </div>
             <CategoryList categories={categories.slice(0, 6)} />
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <MiniSignal label="Use-case ready" value="18" />
+              <MiniSignal label="Moderated" value="100%" />
+            </div>
           </div>
         </div>
       </section>
@@ -117,7 +137,7 @@ export default async function Home() {
         )}
       </section>
 
-      <section className="border-y border-line bg-white/45">
+      <section className="border-y border-line bg-muted/35">
         <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 md:grid-cols-[0.8fr_1.2fr]">
           <div>
             <p className="text-sm font-medium uppercase text-accent">Recent</p>
@@ -131,7 +151,7 @@ export default async function Home() {
             {recentTools.length > 0 ? (
               recentTools.map((tool) => (
                 <Link
-                  className="flex items-center justify-between gap-4 rounded-md border border-line bg-white p-4 transition hover:border-accent"
+                  className="surface-panel flex items-center justify-between gap-4 rounded-lg p-4 transition hover:border-accent"
                   href={`/tools/${tool.slug}`}
                   key={tool.id}
                 >
@@ -157,7 +177,7 @@ export default async function Home() {
 
           return (
             <article
-              className="rounded-md border border-line bg-white p-5"
+              className="surface-panel rounded-lg p-5"
               key={principle.title}
             >
               <Icon aria-hidden="true" className="mb-4 text-accent" size={22} />
@@ -175,7 +195,7 @@ export default async function Home() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-md border border-line bg-white p-3">
+    <div className="surface-panel rounded-lg p-3">
       <div className="flex items-center gap-2">
         <Sparkles aria-hidden="true" className="text-accent" size={15} />
         <span className="text-xl font-semibold">{value}</span>
@@ -185,9 +205,21 @@ function Stat({ label, value }: { label: string; value: number }) {
   );
 }
 
+function MiniSignal({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md border border-line bg-muted/40 p-3">
+      <div className="flex items-center gap-2">
+        <Boxes aria-hidden="true" className="text-brand" size={15} />
+        <span className="font-semibold">{value}</span>
+      </div>
+      <p className="mt-1 text-xs text-ink/55">{label}</p>
+    </div>
+  );
+}
+
 function EmptyPanel({ message }: { message: string }) {
   return (
-    <div className="rounded-md border border-line bg-white p-6 text-sm text-ink/60">
+    <div className="surface-panel rounded-lg p-6 text-sm text-ink/60">
       {message}
     </div>
   );
