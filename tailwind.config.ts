@@ -18,7 +18,8 @@ const config: Config = {
         signal: "rgb(var(--color-signal) / <alpha-value>)",
         surface: "rgb(var(--color-surface) / <alpha-value>)",
         muted: "rgb(var(--color-muted) / <alpha-value>)",
-        brand: "rgb(var(--color-brand) / <alpha-value>)"
+        brand: "rgb(var(--color-brand) / <alpha-value>)",
+        warm: "rgb(var(--color-warm) / <alpha-value>)"
       }
     }
   },

@@ -316,7 +316,7 @@ export function SubmissionReviewActions({
           />
         </label>
         <button
-          className="primary-button bg-accent text-white disabled:opacity-60"
+          className="primary-button bg-accent text-paper disabled:opacity-60"
           disabled={isDisabled}
         >
           <CheckCircle2 aria-hidden="true" size={17} />

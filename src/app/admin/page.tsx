@@ -112,7 +112,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             <Link
               className={
                 isActive
-                  ? "rounded-xl border border-accent bg-accent px-4 py-3 text-white shadow-lg shadow-accent/15"
+                  ? "rounded-xl border border-accent bg-accent px-4 py-3 text-paper shadow-lg shadow-accent/15"
                   : "metric-tile rounded-xl px-4 py-3 transition hover:-translate-y-0.5 hover:border-accent"
               }
               href={`/admin?status=${status}`}

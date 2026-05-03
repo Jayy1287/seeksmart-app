@@ -4,30 +4,30 @@
 
 :root {
   color-scheme: light;
-  --color-ink: 11 18 32;
-  --color-paper: 244 247 251;
-  --color-surface: 255 255 255;
-  --color-muted: 233 238 246;
-  --color-line: 207 216 229;
-  --color-accent: 5 126 105;
-  --color-brand: 45 91 217;
-  --color-signal: 199 64 50;
-  --color-warm: 194 119 49;
+  --color-ink: 3 22 33;
+  --color-paper: 238 245 246;
+  --color-surface: 250 246 234;
+  --color-muted: 224 235 234;
+  --color-line: 194 214 212;
+  --color-accent: 52 95 101;
+  --color-brand: 15 125 189;
+  --color-signal: 167 130 37;
+  --color-warm: 209 163 46;
   background: rgb(var(--color-paper));
   color: rgb(var(--color-ink));
 }
 
 .dark {
   color-scheme: dark;
-  --color-ink: 236 243 250;
-  --color-paper: 7 11 20;
-  --color-surface: 15 22 35;
-  --color-muted: 27 37 55;
-  --color-line: 59 72 94;
-  --color-accent: 72 211 169;
-  --color-brand: 111 158 255;
-  --color-signal: 248 112 101;
-  --color-warm: 245 171 86;
+  --color-ink: 250 246 234;
+  --color-paper: 3 22 33;
+  --color-surface: 12 22 24;
+  --color-muted: 17 32 34;
+  --color-line: 35 64 67;
+  --color-accent: 154 197 203;
+  --color-brand: 66 176 240;
+  --color-signal: 227 200 130;
+  --color-warm: 227 200 130;
 }
 
 * {
@@ -40,8 +40,8 @@ body {
   background:
     linear-gradient(rgb(var(--color-line) / 0.16) 1px, transparent 1px),
     linear-gradient(90deg, rgb(var(--color-line) / 0.14) 1px, transparent 1px),
-    linear-gradient(115deg, rgb(var(--color-brand) / 0.08), transparent 34%),
-    linear-gradient(245deg, rgb(var(--color-accent) / 0.1), transparent 38%),
+    linear-gradient(115deg, rgb(var(--color-brand) / 0.1), transparent 34%),
+    linear-gradient(245deg, rgb(var(--color-warm) / 0.12), transparent 38%),
     linear-gradient(180deg, rgb(var(--color-paper)), rgb(var(--color-muted)));
   background-size:
     44px 44px,
@@ -105,18 +105,18 @@ textarea {
     pointer-events: none;
     content: "";
     background:
-      linear-gradient(125deg, rgb(var(--color-brand) / 0.05), transparent 30%),
-      linear-gradient(250deg, rgb(var(--color-warm) / 0.06), transparent 32%);
+      linear-gradient(125deg, rgb(var(--color-brand) / 0.08), transparent 30%),
+      linear-gradient(250deg, rgb(var(--color-warm) / 0.08), transparent 32%);
     mask-image: linear-gradient(180deg, black, transparent 72%);
   }
 
   .surface-panel {
     border: 1px solid rgb(var(--color-line));
     background:
-      linear-gradient(180deg, rgb(var(--color-surface) / 0.96), rgb(var(--color-surface) / 0.88));
+      linear-gradient(180deg, rgb(var(--color-surface) / 0.96), rgb(var(--color-surface) / 0.9));
     box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.45) inset,
-      0 18px 52px rgb(15 23 42 / 0.09);
+      0 1px 0 rgb(255 255 255 / 0.5) inset,
+      0 18px 52px rgb(var(--color-ink) / 0.1);
   }
 
   .dark .surface-panel {
@@ -129,10 +129,10 @@ textarea {
     border: 1px solid rgb(var(--color-line));
     background:
       linear-gradient(180deg, rgb(var(--color-surface) / 0.98), rgb(var(--color-surface) / 0.9)),
-      linear-gradient(135deg, rgb(var(--color-brand) / 0.06), rgb(var(--color-accent) / 0.05));
+      linear-gradient(135deg, rgb(var(--color-brand) / 0.08), rgb(var(--color-warm) / 0.08));
     box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.48) inset,
-      0 24px 70px rgb(15 23 42 / 0.11);
+      0 1px 0 rgb(255 255 255 / 0.52) inset,
+      0 24px 70px rgb(var(--color-ink) / 0.12);
   }
 
   .dark .surface-strong {
@@ -145,16 +145,18 @@ textarea {
     overflow: hidden;
     border: 1px solid rgb(var(--color-line));
     background:
-      linear-gradient(135deg, rgb(var(--color-ink) / 0.06), transparent 28%),
+      linear-gradient(135deg, rgb(var(--color-brand) / 0.1), transparent 28%),
+      linear-gradient(245deg, rgb(var(--color-warm) / 0.12), transparent 34%),
       linear-gradient(180deg, rgb(var(--color-surface) / 0.98), rgb(var(--color-surface) / 0.88));
     box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.5) inset,
-      0 30px 90px rgb(15 23 42 / 0.12);
+      0 1px 0 rgb(255 255 255 / 0.55) inset,
+      0 30px 90px rgb(var(--color-ink) / 0.13);
   }
 
   .dark .hero-panel {
     background:
-      linear-gradient(135deg, rgb(var(--color-brand) / 0.12), transparent 30%),
+      linear-gradient(135deg, rgb(var(--color-brand) / 0.16), transparent 30%),
+      linear-gradient(245deg, rgb(var(--color-warm) / 0.12), transparent 34%),
       linear-gradient(180deg, rgb(var(--color-surface) / 0.98), rgb(var(--color-surface) / 0.88));
   }
 
@@ -176,10 +178,10 @@ textarea {
     overflow: hidden;
     border: 1px solid rgb(var(--color-line));
     background:
-      linear-gradient(140deg, rgb(var(--color-brand) / 0.08), transparent 36%),
-      linear-gradient(240deg, rgb(var(--color-accent) / 0.08), transparent 38%),
+      linear-gradient(140deg, rgb(var(--color-brand) / 0.1), transparent 36%),
+      linear-gradient(240deg, rgb(var(--color-warm) / 0.12), transparent 38%),
       rgb(var(--color-surface) / 0.94);
-    box-shadow: 0 18px 52px rgb(15 23 42 / 0.08);
+    box-shadow: 0 18px 52px rgb(var(--color-ink) / 0.09);
   }
 
   .eyebrow {
@@ -188,7 +190,7 @@ textarea {
     gap: 0.5rem;
     border-radius: 999px;
     border: 1px solid rgb(var(--color-line));
-    background: rgb(var(--color-surface) / 0.82);
+    background: linear-gradient(180deg, rgb(var(--color-surface) / 0.88), rgb(var(--color-muted) / 0.58));
     padding: 0.5rem 0.75rem;
     color: rgb(var(--color-accent));
     font-size: 0.75rem;
@@ -198,6 +200,36 @@ textarea {
     box-shadow: 0 1px 0 rgb(255 255 255 / 0.55) inset;
   }
 
+  .brand-mark {
+    background:
+      linear-gradient(135deg, rgb(var(--color-ink)), rgb(var(--color-accent)) 58%, rgb(var(--color-warm)));
+    color: rgb(var(--color-surface));
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.18) inset,
+      0 12px 28px rgb(var(--color-ink) / 0.22);
+  }
+
+  .dark .brand-mark {
+    background:
+      linear-gradient(135deg, rgb(var(--color-warm)), rgb(var(--color-accent)) 55%, rgb(var(--color-brand)));
+    color: rgb(var(--color-paper));
+  }
+
+  .tool-mark {
+    background:
+      linear-gradient(135deg, rgb(var(--color-ink)), rgb(var(--color-accent)));
+    color: rgb(var(--color-surface));
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.16) inset,
+      0 10px 22px rgb(var(--color-ink) / 0.16);
+  }
+
+  .dark .tool-mark {
+    background:
+      linear-gradient(135deg, rgb(var(--color-surface)), rgb(var(--color-accent)));
+    color: rgb(var(--color-ink));
+  }
+
   .primary-button {
     display: inline-flex;
     min-height: 2.75rem;
@@ -205,13 +237,14 @@ textarea {
     justify-content: center;
     gap: 0.5rem;
     border-radius: 0.5rem;
-    background: rgb(var(--color-ink));
+    background:
+      linear-gradient(180deg, rgb(var(--color-ink)), rgb(var(--color-accent)));
     padding-inline: 1.25rem;
     color: rgb(var(--color-paper));
     font-weight: 650;
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.16) inset,
-      0 12px 28px rgb(var(--color-ink) / 0.18);
+      0 12px 28px rgb(var(--color-ink) / 0.2);
     transition:
       transform 160ms ease,
       box-shadow 160ms ease,
@@ -253,7 +286,7 @@ textarea {
   .metric-tile {
     border: 1px solid rgb(var(--color-line));
     background:
-      linear-gradient(180deg, rgb(var(--color-surface) / 0.92), rgb(var(--color-muted) / 0.5));
+      linear-gradient(180deg, rgb(var(--color-surface) / 0.94), rgb(var(--color-muted) / 0.62));
     box-shadow: 0 1px 0 rgb(255 255 255 / 0.35) inset;
   }
 
@@ -263,7 +296,7 @@ textarea {
     gap: 0.375rem;
     border-radius: 999px;
     border: 1px solid rgb(var(--color-line));
-    background: rgb(var(--color-surface) / 0.82);
+    background: linear-gradient(180deg, rgb(var(--color-surface) / 0.88), rgb(var(--color-muted) / 0.55));
     padding: 0.375rem 0.625rem;
     font-size: 0.75rem;
     font-weight: 650;

@@ -57,7 +57,7 @@ export default function RootLayout({
           <header className="sticky top-0 z-50 border-b border-line bg-paper/88 shadow-sm shadow-ink/5 backdrop-blur-xl">
             <div className="app-container flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
               <Link className="flex items-center gap-3 font-semibold" href="/">
-                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-ink text-paper shadow-sm">
+                <span className="brand-mark flex h-10 w-10 items-center justify-center rounded-lg">
                   <Search aria-hidden="true" size={18} />
                 </span>
                 <span className="leading-tight">

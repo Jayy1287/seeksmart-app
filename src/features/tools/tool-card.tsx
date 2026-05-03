@@ -12,7 +12,7 @@ export function ToolCard({ tool }: ToolCardProps) {
     <article className="surface-panel group flex h-full flex-col rounded-xl p-5 transition hover:-translate-y-1 hover:border-accent">
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-ink text-sm font-semibold text-paper shadow-sm ring-1 ring-line/40">
+          <div className="tool-mark flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-sm font-semibold ring-1 ring-line/40">
             {tool.name.slice(0, 1)}
           </div>
           <div className="min-w-0">
