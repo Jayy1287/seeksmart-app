@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { SiteAnalytics } from "@/features/analytics/site-analytics";
-import { ThemeToggle } from "@/features/theme/theme-toggle";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
@@ -62,30 +61,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                const theme = localStorage.getItem("seeksmart-theme");
-                const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-                if (theme === "dark" || (!theme && prefersDark)) {
-                  document.documentElement.classList.add("dark");
-                }
-              } catch {}
-            `
-          }}
-        />
-      </head>
+      <head />
       <body suppressHydrationWarning>
         <Suspense fallback={null}>
           <SiteAnalytics />
         </Suspense>
         <div className="min-h-screen">
-          <header className="site-header sticky top-0 z-50 border-b border-line bg-paper/92 shadow-sm shadow-ink/5 backdrop-blur-xl">
-            <div className="app-container grid grid-cols-[1fr_auto] items-center gap-3 py-4 md:grid-cols-[auto_1fr_auto] lg:py-5">
-              <Link className="brand-lockup flex items-center gap-3.5" href="/">
-                <span className="brand-mark flex h-12 w-12 items-center justify-center rounded-full lg:h-14 lg:w-14">
+          <header className="site-header sticky top-0 z-50">
+            <div className="app-container grid grid-cols-1 items-center gap-3 py-4 md:grid-cols-[auto_1fr_auto] lg:py-5">
+              <Link className="brand-lockup flex items-center gap-3" href="/">
+                <span className="brand-mark flex h-11 w-11 items-center justify-center">
                   <Image
                     alt=""
                     aria-hidden="true"
@@ -97,13 +82,15 @@ export default function RootLayout({
                   />
                 </span>
                 <span className="min-w-0 leading-tight">
-                  <span className="brand-word block">SeekSmart</span>
+                  <span className="brand-word block">
+                    Seek<span className="brand-accent">Smart</span>
+                  </span>
                   <span className="brand-tagline block">
                     AI decision intelligence
                   </span>
                 </span>
               </Link>
-              <nav className="header-nav order-3 col-span-2 flex flex-wrap items-center justify-center gap-1 rounded-2xl border border-line bg-surface/82 p-1.5 text-sm font-semibold shadow-sm md:order-none md:col-span-1 md:ml-auto md:justify-start md:gap-1.5 lg:rounded-full">
+              <nav className="header-nav flex flex-wrap items-center justify-center gap-1 rounded-xl p-1.5 text-sm font-semibold md:ml-auto md:justify-start md:gap-1.5">
                 {navigationLinks.map((link) => (
                   <Link
                     className="header-nav-link"
@@ -114,7 +101,9 @@ export default function RootLayout({
                   </Link>
                 ))}
               </nav>
-              <ThemeToggle />
+              <Link className="primary-button hidden min-h-10 px-4 md:inline-flex" href="/audit/start">
+                Start audit
+              </Link>
             </div>
           </header>
           {children}
