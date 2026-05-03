@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Boxes, Search } from "lucide-react";
 import { ThemeToggle } from "@/features/theme/theme-toggle";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
+
+const brandLogo = "/brand/seeksmart-logo.png";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -16,17 +18,30 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/"
   },
+  icons: {
+    icon: brandLogo,
+    apple: brandLogo
+  },
   openGraph: {
     siteName: siteConfig.name,
     title: "SeekSmart - Find the right AI tool",
     description: siteConfig.description,
     url: "/",
-    type: "website"
+    type: "website",
+    images: [
+      {
+        url: brandLogo,
+        width: 1024,
+        height: 1024,
+        alt: "SeekSmart logo"
+      }
+    ]
   },
   twitter: {
     card: "summary_large_image",
     title: "SeekSmart - Find the right AI tool",
-    description: siteConfig.description
+    description: siteConfig.description,
+    images: [brandLogo]
   }
 };
 
@@ -57,8 +72,16 @@ export default function RootLayout({
           <header className="sticky top-0 z-50 border-b border-line bg-paper/88 shadow-sm shadow-ink/5 backdrop-blur-xl">
             <div className="app-container flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
               <Link className="flex items-center gap-3 font-semibold" href="/">
-                <span className="brand-mark flex h-10 w-10 items-center justify-center rounded-lg">
-                  <Search aria-hidden="true" size={18} />
+                <span className="brand-mark flex h-11 w-11 items-center justify-center rounded-xl">
+                  <Image
+                    alt=""
+                    aria-hidden="true"
+                    className="brand-logo-image"
+                    height={44}
+                    priority
+                    src={brandLogo}
+                    width={44}
+                  />
                 </span>
                 <span className="leading-tight">
                   <span className="block">SeekSmart</span>
@@ -96,7 +119,16 @@ export default function RootLayout({
           <footer className="border-t border-line bg-paper/80">
             <div className="app-container flex flex-col gap-3 py-8 text-sm text-ink/55 md:flex-row md:items-center md:justify-between">
               <div className="inline-flex items-center gap-2">
-                <Boxes aria-hidden="true" className="text-brand" size={16} />
+                <span className="brand-mark brand-mark-compact flex h-7 w-7 items-center justify-center rounded-lg">
+                  <Image
+                    alt=""
+                    aria-hidden="true"
+                    className="brand-logo-image"
+                    height={28}
+                    src={brandLogo}
+                    width={28}
+                  />
+                </span>
                 Curated AI discovery for practical teams.
               </div>
               <div className="flex gap-4">

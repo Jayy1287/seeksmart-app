@@ -201,18 +201,33 @@ textarea {
   }
 
   .brand-mark {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     background:
-      linear-gradient(135deg, rgb(var(--color-ink)), rgb(var(--color-accent)) 58%, rgb(var(--color-warm)));
-    color: rgb(var(--color-surface));
+      radial-gradient(circle at 52% 45%, rgb(var(--color-accent) / 0.34), transparent 42%),
+      linear-gradient(135deg, rgb(var(--color-ink)), rgb(var(--color-accent)) 68%);
     box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.18) inset,
-      0 12px 28px rgb(var(--color-ink) / 0.22);
+      0 1px 0 rgb(255 255 255 / 0.16) inset,
+      0 0 0 1px rgb(var(--color-line)) inset,
+      0 14px 30px rgb(var(--color-ink) / 0.18);
   }
 
   .dark .brand-mark {
     background:
-      linear-gradient(135deg, rgb(var(--color-warm)), rgb(var(--color-accent)) 55%, rgb(var(--color-brand)));
-    color: rgb(var(--color-paper));
+      radial-gradient(circle at 52% 45%, rgb(var(--color-accent) / 0.48), transparent 44%),
+      linear-gradient(135deg, rgb(var(--color-ink)), rgb(var(--color-accent) / 0.72));
+  }
+
+  .brand-logo-image {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    transform: scale(1.42);
+  }
+
+  .brand-mark-compact .brand-logo-image {
+    transform: scale(1.48);
   }
 
   .tool-mark {
