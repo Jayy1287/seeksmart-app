@@ -1,0 +1,96 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { ArrowRight, ClipboardList, Database, LockKeyhole, Split } from "lucide-react";
+import { AuditAnalyticsEvent } from "@/features/audit/audit-analytics";
+
+export const metadata: Metadata = {
+  title: "Start AI Audit",
+  description:
+    "Start an anonymous rules-based AI audit for your business context.",
+  alternates: {
+    canonical: "/audit/start"
+  }
+};
+
+const principles = [
+  {
+    icon: Database,
+    title: "Structured intelligence",
+    description:
+      "Recommendations come from curated industries, functions, opportunities, use cases, and tool-fit records."
+  },
+  {
+    icon: Split,
+    title: "Deterministic scoring",
+    description:
+      "The same answers produce the same result because the audit uses versioned rules, not model output."
+  },
+  {
+    icon: LockKeyhole,
+    title: "Anonymous for V1",
+    description:
+      "Answers are passed through the page URL to generate the brief. This version does not save reports."
+  }
+];
+
+export default function AuditStartPage() {
+  return (
+    <main className="page-shell">
+      <AuditAnalyticsEvent event="audit_start_viewed" />
+      <div className="app-container">
+        <section className="surface-strong rounded-2xl p-6 md:p-8">
+          <p className="eyebrow">
+            <ClipboardList aria-hidden="true" size={14} />
+            Audit start
+          </p>
+          <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_320px] lg:items-end">
+            <div>
+              <h1 className="max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">
+                Answer business questions first. Compare tools second.
+              </h1>
+              <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
+                This audit is designed to help practical teams choose one clear
+                workflow to pilot before committing to a tool stack.
+              </p>
+            </div>
+            <Link className="primary-button min-h-12" href="/audit/questions">
+              Continue to questions
+              <ArrowRight aria-hidden="true" size={18} />
+            </Link>
+          </div>
+        </section>
+
+        <section className="mt-6 grid gap-4 md:grid-cols-3">
+          {principles.map((principle) => {
+            const Icon = principle.icon;
+
+            return (
+              <article className="surface-panel rounded-xl p-5" key={principle.title}>
+                <Icon aria-hidden="true" className="text-accent" size={22} />
+                <h2 className="mt-4 font-semibold">{principle.title}</h2>
+                <p className="mt-2 text-sm leading-6 text-ink/62">
+                  {principle.description}
+                </p>
+              </article>
+            );
+          })}
+        </section>
+
+        <section className="surface-panel mt-6 rounded-xl p-5">
+          <h2 className="text-xl font-semibold">What you will need</h2>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {[
+              "Your industry and team function",
+              "The business outcome you care about",
+              "Budget, urgency, technical comfort, and data sensitivity"
+            ].map((item) => (
+              <div className="metric-tile rounded-lg p-4 text-sm font-medium" key={item}>
+                {item}
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}

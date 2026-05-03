@@ -1,0 +1,65 @@
+"use client";
+
+import { useEffect } from "react";
+
+type AuditAnalyticsEventName =
+  | "audit_start_viewed"
+  | "audit_questions_viewed"
+  | "audit_questions_submitted"
+  | "audit_results_viewed";
+
+type AuditAnalyticsPayload = {
+  event: AuditAnalyticsEventName;
+  version: "audit-rules-v1";
+  properties?: Record<string, string | number | boolean | string[]>;
+};
+
+declare global {
+  interface Window {
+    dataLayer?: AuditAnalyticsPayload[];
+  }
+}
+
+export function AuditAnalyticsEvent({
+  event,
+  properties
+}: {
+  event: AuditAnalyticsEventName;
+  properties?: AuditAnalyticsPayload["properties"];
+}) {
+  useEffect(() => {
+    trackAuditEvent(event, properties);
+  }, [event, properties]);
+
+  return null;
+}
+
+export function AuditSubmitButton() {
+  return (
+    <button
+      className="primary-button min-h-12"
+      onClick={() => trackAuditEvent("audit_questions_submitted")}
+      type="submit"
+    >
+      Generate audit result
+    </button>
+  );
+}
+
+export function trackAuditEvent(
+  event: AuditAnalyticsEventName,
+  properties?: AuditAnalyticsPayload["properties"]
+) {
+  const payload: AuditAnalyticsPayload = {
+    event,
+    version: "audit-rules-v1",
+    properties
+  };
+
+  window.dispatchEvent(
+    new CustomEvent("seeksmart:analytics", {
+      detail: payload
+    })
+  );
+  window.dataLayer?.push(payload);
+}
