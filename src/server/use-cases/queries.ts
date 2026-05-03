@@ -20,6 +20,22 @@ export type PublicUseCaseDetail = PublicUseCaseSummary & {
   requiredInputs: string[];
   successMetrics: string[];
   implementationSteps: string[];
+  opportunities: Array<{
+    id: string;
+    name: string;
+    slug: string;
+    expectedBenefit: string | null;
+    startingPoint: string | null;
+  }>;
+};
+
+export type PublicUseCaseToolFit = PublicToolCard & {
+  fitScore: number;
+  recommendationNote: string | null;
+  bestFor: string | null;
+  limitations: string | null;
+  implementationNote: string | null;
+  pricingSuitability: string | null;
 };
 
 export async function listUseCaseSummaries(): Promise<PublicUseCaseSummary[]> {
@@ -108,6 +124,28 @@ export async function getUseCaseBySlug(
             }
           }
         }
+      },
+      opportunityUseCases: {
+        where: {
+          opportunity: {
+            status: PublishStatus.PUBLISHED
+          }
+        },
+        select: {
+          priority: true,
+          opportunity: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              expectedBenefit: true,
+              startingPoint: true
+            }
+          }
+        },
+        orderBy: {
+          priority: "asc"
+        }
       }
     }
   });
@@ -130,13 +168,14 @@ export async function getUseCaseBySlug(
     requiredInputs: useCase.requiredInputs,
     successMetrics: useCase.successMetrics,
     implementationSteps: useCase.implementationSteps,
-    toolCount: useCase._count.toolUseCases
+    toolCount: useCase._count.toolUseCases,
+    opportunities: useCase.opportunityUseCases.map(({ opportunity }) => opportunity)
   };
 }
 
 export async function listToolsForUseCase(
   slug: string
-): Promise<PublicToolCard[]> {
+): Promise<PublicUseCaseToolFit[]> {
   const toolUseCases = await prisma.toolUseCase.findMany({
     where: {
       useCase: {
@@ -165,5 +204,13 @@ export async function listToolsForUseCase(
     ]
   });
 
-  return toolUseCases.map((toolUseCase) => toPublicToolCard(toolUseCase.tool));
+  return toolUseCases.map((toolUseCase) => ({
+    ...toPublicToolCard(toolUseCase.tool),
+    fitScore: toolUseCase.fitScore,
+    recommendationNote: toolUseCase.recommendationNote,
+    bestFor: toolUseCase.bestFor,
+    limitations: toolUseCase.limitations,
+    implementationNote: toolUseCase.implementationNote,
+    pricingSuitability: toolUseCase.pricingSuitability
+  }));
 }
