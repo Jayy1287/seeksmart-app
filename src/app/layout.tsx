@@ -7,7 +7,7 @@ import { SiteAnalytics } from "@/features/analytics/site-analytics";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
-const brandLogo = "/brand/seeksmart-logo.png";
+const brandLogo = "/brand/seeksmart-logo-v3.png";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
         url: brandLogo,
         width: 500,
         height: 500,
-        alt: "SeekSmart logo"
+        alt: "SeekSmart logo mark"
       }
     ]
   },
@@ -61,25 +61,20 @@ export default function RootLayout({
         <div className="min-h-screen">
           <header className="site-header sticky top-0 z-50">
             <div className="app-container grid grid-cols-1 items-center gap-3 py-4 md:grid-cols-[auto_1fr_auto] lg:py-5">
-              <Link className="brand-lockup flex items-center gap-3" href="/">
-                <span className="brand-mark flex h-11 w-11 items-center justify-center">
+              <Link
+                aria-label="SeekSmart home"
+                className="brand-lockup flex items-center"
+                href="/"
+              >
+                <span className="brand-mark flex h-14 w-14 items-center justify-center">
                   <Image
-                    alt=""
-                    aria-hidden="true"
+                    alt="SeekSmart"
                     className="brand-logo-image"
-                    height={56}
+                    height={64}
                     priority
                     src={brandLogo}
-                    width={56}
+                    width={64}
                   />
-                </span>
-                <span className="min-w-0 leading-tight">
-                  <span className="brand-word block">
-                    Seek<span className="brand-accent">Smart</span>
-                  </span>
-                  <span className="brand-tagline block">
-                    Smarter AI Choices
-                  </span>
                 </span>
               </Link>
               <SiteNavigation />
@@ -94,8 +89,7 @@ export default function RootLayout({
               <div className="inline-flex items-center gap-2">
                 <span className="brand-mark flex h-7 w-7 items-center justify-center rounded-full">
                   <Image
-                    alt=""
-                    aria-hidden="true"
+                    alt="SeekSmart"
                     className="brand-logo-image"
                     height={28}
                     src={brandLogo}

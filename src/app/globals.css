@@ -100,39 +100,26 @@ textarea {
 
   .brand-mark {
     overflow: hidden;
-    border-radius: 0.85rem;
-    background: rgb(var(--color-ink));
-    box-shadow:
-      0 0 0 1px rgb(var(--color-ink) / 0.08),
-      0 16px 34px rgb(var(--color-accent) / 0.18);
+    border-radius: 1rem;
+    background: transparent;
   }
 
   .brand-logo-image {
     height: 100%;
     width: 100%;
     object-fit: contain;
-    transform: scale(1.06);
-  }
-
-  .brand-word {
-    color: rgb(var(--color-ink));
-    font-family:
-      "Avenir Next", "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui,
-      sans-serif;
-    font-size: clamp(1.12rem, 0.98rem + 0.42vw, 1.42rem);
-    font-weight: 850;
-    letter-spacing: 0;
-  }
-
-  .brand-word .brand-accent {
-    color: rgb(var(--color-accent));
+    filter: drop-shadow(0 14px 24px rgb(var(--color-accent) / 0.16));
   }
 
   .brand-tagline {
-    margin-top: 0.1rem;
     color: rgb(var(--color-muted-text) / 0.72);
-    font-size: clamp(0.68rem, 0.64rem + 0.12vw, 0.78rem);
-    font-weight: 650;
+    font-size: clamp(0.76rem, 0.72rem + 0.12vw, 0.86rem);
+    font-weight: 760;
+  }
+
+  .page-transition {
+    animation: page-enter 260ms ease-out both;
+    will-change: opacity, transform;
   }
 
   .header-nav {
@@ -392,5 +379,24 @@ textarea {
     border: 1px solid rgb(var(--color-line));
     background: rgb(var(--color-surface) / 0.92);
     box-shadow: 0 18px 46px rgb(var(--color-accent) / 0.08);
+  }
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition {
+    animation: none;
+    will-change: auto;
   }
 }
