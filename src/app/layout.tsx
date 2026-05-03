@@ -31,8 +31,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: brandLogo,
-        width: 1024,
-        height: 1024,
+        width: 500,
+        height: 500,
         alt: "SeekSmart logo"
       }
     ]
@@ -72,7 +72,7 @@ export default function RootLayout({
           <header className="sticky top-0 z-50 border-b border-line bg-paper/88 shadow-sm shadow-ink/5 backdrop-blur-xl">
             <div className="app-container flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
               <Link className="flex items-center gap-3 font-semibold" href="/">
-                <span className="brand-mark flex h-11 w-11 items-center justify-center rounded-xl">
+                <span className="brand-mark flex h-11 w-11 items-center justify-center rounded-full">
                   <Image
                     alt=""
                     aria-hidden="true"
@@ -119,7 +119,7 @@ export default function RootLayout({
           <footer className="border-t border-line bg-paper/80">
             <div className="app-container flex flex-col gap-3 py-8 text-sm text-ink/55 md:flex-row md:items-center md:justify-between">
               <div className="inline-flex items-center gap-2">
-                <span className="brand-mark brand-mark-compact flex h-7 w-7 items-center justify-center rounded-lg">
+                <span className="brand-mark flex h-7 w-7 items-center justify-center rounded-full">
                   <Image
                     alt=""
                     aria-hidden="true"
