@@ -96,7 +96,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             className="control-field w-full pl-10"
             defaultValue={query ?? ""}
             name="q"
-            placeholder="Search submissions by tool, URL, or email"
+            placeholder="Search submissions"
           />
         </label>
         <button className="primary-button">

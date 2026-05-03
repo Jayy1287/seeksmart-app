@@ -99,7 +99,7 @@ export default async function AdminToolsPage({
             className="control-field w-full pl-10"
             defaultValue={query ?? ""}
             name="q"
-            placeholder="Search tools by name, URL, or description"
+            placeholder="Search tools"
           />
         </label>
         <button className="primary-button">

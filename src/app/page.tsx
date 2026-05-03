@@ -70,7 +70,7 @@ export default async function Home() {
               action="/tools"
               className="surface-strong mt-8 grid max-w-2xl gap-3 rounded-xl p-2 sm:grid-cols-[1fr_auto]"
             >
-              <label className="relative">
+              <label className="relative w-full">
                 <span className="sr-only">Search AI tools</span>
                 <Search
                   aria-hidden="true"
@@ -78,9 +78,9 @@ export default async function Home() {
                   size={18}
                 />
                 <input
-                  className="min-h-12 min-w-0 rounded-lg border border-transparent bg-transparent pl-11 pr-4 text-base outline-none transition focus:border-accent"
+                  className="min-h-12 w-full min-w-0 rounded-lg border border-transparent bg-transparent pl-11 pr-4 text-base outline-none transition focus:border-accent"
                   name="q"
-                  placeholder="Search for writing, video, coding..."
+                  placeholder="Search writing, video, coding"
                   type="search"
                 />
               </label>
