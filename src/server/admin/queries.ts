@@ -72,6 +72,68 @@ export type AdminToolDetail = AdminToolSummary & {
   useCaseIds: string[];
 };
 
+export type AdminBusinessFunction = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  status: AdminToolStatus;
+  sortOrder: number;
+};
+
+export type AdminIndustry = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  startingPoint: string | null;
+  cautions: string | null;
+  status: AdminToolStatus;
+  sortOrder: number;
+  metaTitle: string | null;
+  metaDescription: string | null;
+};
+
+export type AdminOpportunity = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  painPoint: string | null;
+  expectedBenefit: string | null;
+  startingPoint: string | null;
+  effortLevel: string;
+  riskLevel: string;
+  timeToValue: string | null;
+  successMetrics: string[];
+  status: AdminToolStatus;
+  sortOrder: number;
+  businessFunctionId: string | null;
+  industryIds: string[];
+  useCaseIds: string[];
+  metaTitle: string | null;
+  metaDescription: string | null;
+};
+
+export type AdminUseCaseIntelligence = AdminTaxonomyOption & {
+  outcome: string | null;
+  painPoints: string[];
+  requiredInputs: string[];
+  successMetrics: string[];
+  implementationSteps: string[];
+  effortLevel: string;
+  riskLevel: string;
+  timeToValue: string | null;
+  businessFunctionId: string | null;
+};
+
+export type AdminIntelligenceWorkspace = {
+  businessFunctions: AdminBusinessFunction[];
+  industries: AdminIndustry[];
+  opportunities: AdminOpportunity[];
+  useCases: AdminUseCaseIntelligence[];
+};
+
 type SubmissionPayload = {
   category?: unknown;
   pricingType?: unknown;
@@ -377,5 +439,89 @@ export async function getAdminToolById(
     metaDescription: tool.metaDescription,
     featureIds: tool.toolFeatures.map((toolFeature) => toolFeature.featureId),
     useCaseIds: tool.toolUseCases.map((toolUseCase) => toolUseCase.useCaseId)
+  };
+}
+
+export async function getAdminIntelligenceWorkspace(): Promise<AdminIntelligenceWorkspace> {
+  const [businessFunctions, industries, opportunities, useCases] =
+    await Promise.all([
+      prisma.businessFunction.findMany({
+        orderBy: [{ sortOrder: "asc" }, { name: "asc" }]
+      }),
+      prisma.industry.findMany({
+        orderBy: [{ sortOrder: "asc" }, { name: "asc" }]
+      }),
+      prisma.opportunity.findMany({
+        include: {
+          industryOpportunities: true,
+          opportunityUseCases: true
+        },
+        orderBy: [{ sortOrder: "asc" }, { name: "asc" }]
+      }),
+      prisma.useCase.findMany({
+        orderBy: {
+          name: "asc"
+        }
+      })
+    ]);
+
+  return {
+    businessFunctions: businessFunctions.map((item) => ({
+      id: item.id,
+      name: item.name,
+      slug: item.slug,
+      description: item.description,
+      status: item.status,
+      sortOrder: item.sortOrder
+    })),
+    industries: industries.map((item) => ({
+      id: item.id,
+      name: item.name,
+      slug: item.slug,
+      description: item.description,
+      startingPoint: item.startingPoint,
+      cautions: item.cautions,
+      status: item.status,
+      sortOrder: item.sortOrder,
+      metaTitle: item.metaTitle,
+      metaDescription: item.metaDescription
+    })),
+    opportunities: opportunities.map((item) => ({
+      id: item.id,
+      name: item.name,
+      slug: item.slug,
+      description: item.description,
+      painPoint: item.painPoint,
+      expectedBenefit: item.expectedBenefit,
+      startingPoint: item.startingPoint,
+      effortLevel: item.effortLevel,
+      riskLevel: item.riskLevel,
+      timeToValue: item.timeToValue,
+      successMetrics: item.successMetrics,
+      status: item.status,
+      sortOrder: item.sortOrder,
+      businessFunctionId: item.businessFunctionId,
+      industryIds: item.industryOpportunities.map(
+        (relation) => relation.industryId
+      ),
+      useCaseIds: item.opportunityUseCases.map((relation) => relation.useCaseId),
+      metaTitle: item.metaTitle,
+      metaDescription: item.metaDescription
+    })),
+    useCases: useCases.map((item) => ({
+      id: item.id,
+      name: item.name,
+      slug: item.slug,
+      description: item.description,
+      outcome: item.outcome,
+      painPoints: item.painPoints,
+      requiredInputs: item.requiredInputs,
+      successMetrics: item.successMetrics,
+      implementationSteps: item.implementationSteps,
+      effortLevel: item.effortLevel,
+      riskLevel: item.riskLevel,
+      timeToValue: item.timeToValue,
+      businessFunctionId: item.businessFunctionId
+    }))
   };
 }

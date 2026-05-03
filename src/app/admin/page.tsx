@@ -75,6 +75,12 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
             className="secondary-button"
+            href="/admin/intelligence"
+          >
+            Intelligence
+          </Link>
+          <Link
+            className="secondary-button"
             href="/admin/tools"
           >
             Manage tools

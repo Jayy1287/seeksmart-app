@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -7,11 +8,19 @@ import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 const brandLogo = "/brand/seeksmart-logo.png";
+const navigationLinks: Array<{ href: Route; label: string }> = [
+  { href: "/tools", label: "Tools" },
+  { href: "/use-cases", label: "Use cases" },
+  { href: "/industries", label: "Industries" },
+  { href: "/playbooks", label: "Playbooks" },
+  { href: "/audit", label: "AI audit" },
+  { href: "/resources", label: "Resources" }
+];
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "SeekSmart - Find the right AI tool",
+    default: "SeekSmart - AI decisions for practical teams",
     template: "%s | SeekSmart"
   },
   description: siteConfig.description,
@@ -24,7 +33,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     siteName: siteConfig.name,
-    title: "SeekSmart - Find the right AI tool",
+    title: "SeekSmart - AI decisions for practical teams",
     description: siteConfig.description,
     url: "/",
     type: "website",
@@ -39,7 +48,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SeekSmart - Find the right AI tool",
+    title: "SeekSmart - AI decisions for practical teams",
     description: siteConfig.description,
     images: [brandLogo]
   }
@@ -86,29 +95,20 @@ export default function RootLayout({
                 <span className="min-w-0 leading-tight">
                   <span className="brand-word block">SeekSmart</span>
                   <span className="brand-tagline block">
-                    AI tool intelligence
+                    AI decision intelligence
                   </span>
                 </span>
               </Link>
-              <nav className="header-nav order-3 col-span-2 flex items-center justify-between gap-1 rounded-full border border-line bg-surface/82 p-1.5 text-sm font-semibold shadow-sm md:order-none md:col-span-1 md:ml-auto md:justify-start md:gap-2">
-                <Link className="header-nav-link" href="/tools">
-                  Tools
-                </Link>
-                <Link
-                  className="header-nav-link"
-                  href="/categories"
-                >
-                  Categories
-                </Link>
-                <Link
-                  className="header-nav-link"
-                  href="/use-cases"
-                >
-                  Use cases
-                </Link>
-                <Link className="header-nav-link" href="/submit">
-                  Submit
-                </Link>
+              <nav className="header-nav order-3 col-span-2 flex flex-wrap items-center justify-center gap-1 rounded-2xl border border-line bg-surface/82 p-1.5 text-sm font-semibold shadow-sm md:order-none md:col-span-1 md:ml-auto md:justify-start md:gap-1.5 lg:rounded-full">
+                {navigationLinks.map((link) => (
+                  <Link
+                    className="header-nav-link"
+                    href={link.href}
+                    key={link.href}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </nav>
               <ThemeToggle />
             </div>
@@ -127,11 +127,14 @@ export default function RootLayout({
                     width={28}
                   />
                 </span>
-                Curated AI discovery for practical teams.
+                AI decision intelligence for practical teams.
               </div>
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-4">
                 <Link className="hover:text-accent" href="/tools">
-                  Directory
+                  Tools
+                </Link>
+                <Link className="hover:text-accent" href="/methodology">
+                  Methodology
                 </Link>
                 <Link className="hover:text-accent" href="/submit">
                   Submit tool

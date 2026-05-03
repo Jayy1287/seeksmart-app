@@ -29,29 +29,135 @@ enum SubmissionStatus {
   SPAM
 }
 
-model Tool {
-  id               String          @id @default(cuid())
-  name             String
-  slug             String          @unique
-  shortDescription String          @map("short_description")
-  longDescription  String?         @map("long_description")
-  websiteUrl       String          @map("website_url")
-  logoUrl          String?         @map("logo_url")
-  categoryId       String          @map("category_id")
-  pricingType      PricingType     @map("pricing_type")
-  startingPrice    Decimal?        @map("starting_price") @db.Decimal(10, 2)
-  hasFreePlan      Boolean         @default(false) @map("has_free_plan")
-  isVerified       Boolean         @default(false) @map("is_verified")
-  isFeatured       Boolean         @default(false) @map("is_featured")
-  popularityScore  Int             @default(0) @map("popularity_score")
-  status           PublishStatus   @default(DRAFT)
-  metaTitle        String?         @map("meta_title")
-  metaDescription  String?         @map("meta_description")
-  publishedAt      DateTime?       @map("published_at")
-  createdAt        DateTime        @default(now()) @map("created_at")
-  updatedAt        DateTime        @updatedAt @map("updated_at")
+enum EffortLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
 
-  category         Category        @relation(fields: [categoryId], references: [id])
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model BusinessFunction {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  description String?
+  status      PublishStatus @default(PUBLISHED)
+  sortOrder   Int           @default(0) @map("sort_order")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  useCases      UseCase[]
+  opportunities Opportunity[]
+
+  @@index([status, sortOrder])
+  @@map("business_functions")
+}
+
+model Industry {
+  id              String        @id @default(cuid())
+  name            String
+  slug            String        @unique
+  description     String?
+  startingPoint   String?       @map("starting_point")
+  cautions        String?
+  status          PublishStatus @default(PUBLISHED)
+  sortOrder       Int           @default(0) @map("sort_order")
+  metaTitle       String?       @map("meta_title")
+  metaDescription String?       @map("meta_description")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  industryOpportunities IndustryOpportunity[]
+
+  @@index([status, sortOrder])
+  @@map("industries")
+}
+
+model Opportunity {
+  id                 String        @id @default(cuid())
+  name               String
+  slug               String        @unique
+  description        String?
+  painPoint          String?       @map("pain_point")
+  expectedBenefit    String?       @map("expected_benefit")
+  startingPoint      String?       @map("starting_point")
+  effortLevel        EffortLevel   @default(MEDIUM) @map("effort_level")
+  riskLevel          RiskLevel     @default(MEDIUM) @map("risk_level")
+  timeToValue        String?       @map("time_to_value")
+  successMetrics     String[]      @default([]) @map("success_metrics")
+  status             PublishStatus @default(PUBLISHED)
+  sortOrder          Int           @default(0) @map("sort_order")
+  businessFunctionId String?       @map("business_function_id")
+  metaTitle          String?       @map("meta_title")
+  metaDescription    String?       @map("meta_description")
+  createdAt          DateTime      @default(now()) @map("created_at")
+  updatedAt          DateTime      @updatedAt @map("updated_at")
+
+  businessFunction      BusinessFunction?     @relation(fields: [businessFunctionId], references: [id], onDelete: SetNull)
+  industryOpportunities IndustryOpportunity[]
+  opportunityUseCases   OpportunityUseCase[]
+
+  @@index([status, sortOrder])
+  @@index([businessFunctionId])
+  @@map("opportunities")
+}
+
+model IndustryOpportunity {
+  industryId    String   @map("industry_id")
+  opportunityId String   @map("opportunity_id")
+  priority      Int      @default(0)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  industry    Industry    @relation(fields: [industryId], references: [id], onDelete: Cascade)
+  opportunity Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+
+  @@id([industryId, opportunityId])
+  @@index([opportunityId])
+  @@map("industry_opportunities")
+}
+
+model OpportunityUseCase {
+  opportunityId String   @map("opportunity_id")
+  useCaseId     String   @map("use_case_id")
+  priority      Int      @default(0)
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  opportunity Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  useCase     UseCase     @relation(fields: [useCaseId], references: [id], onDelete: Cascade)
+
+  @@id([opportunityId, useCaseId])
+  @@index([useCaseId])
+  @@map("opportunity_use_cases")
+}
+
+model Tool {
+  id               String        @id @default(cuid())
+  name             String
+  slug             String        @unique
+  shortDescription String        @map("short_description")
+  longDescription  String?       @map("long_description")
+  websiteUrl       String        @map("website_url")
+  logoUrl          String?       @map("logo_url")
+  categoryId       String        @map("category_id")
+  pricingType      PricingType   @map("pricing_type")
+  startingPrice    Decimal?      @map("starting_price") @db.Decimal(10, 2)
+  hasFreePlan      Boolean       @default(false) @map("has_free_plan")
+  isVerified       Boolean       @default(false) @map("is_verified")
+  isFeatured       Boolean       @default(false) @map("is_featured")
+  popularityScore  Int           @default(0) @map("popularity_score")
+  status           PublishStatus @default(DRAFT)
+  metaTitle        String?       @map("meta_title")
+  metaDescription  String?       @map("meta_description")
+  publishedAt      DateTime?     @map("published_at")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  category         Category          @relation(fields: [categoryId], references: [id])
   toolUseCases     ToolUseCase[]
   toolFeatures     ToolFeature[]
   sourceTools      ToolAlternative[] @relation("SourceTool")
@@ -74,31 +180,43 @@ model Category {
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
-  tools           Tool[]
+  tools Tool[]
 
   @@map("categories")
 }
 
 model UseCase {
-  id           String        @id @default(cuid())
-  name         String
-  slug         String        @unique
-  description  String?
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
+  id                  String      @id @default(cuid())
+  name                String
+  slug                String      @unique
+  description         String?
+  outcome             String?
+  painPoints          String[]    @default([]) @map("pain_points")
+  requiredInputs      String[]    @default([]) @map("required_inputs")
+  successMetrics      String[]    @default([]) @map("success_metrics")
+  implementationSteps String[]    @default([]) @map("implementation_steps")
+  effortLevel         EffortLevel @default(MEDIUM) @map("effort_level")
+  riskLevel           RiskLevel   @default(MEDIUM) @map("risk_level")
+  timeToValue         String?     @map("time_to_value")
+  businessFunctionId  String?     @map("business_function_id")
+  createdAt           DateTime    @default(now()) @map("created_at")
+  updatedAt           DateTime    @updatedAt @map("updated_at")
 
-  toolUseCases ToolUseCase[]
+  businessFunction    BusinessFunction?    @relation(fields: [businessFunctionId], references: [id], onDelete: SetNull)
+  toolUseCases        ToolUseCase[]
+  opportunityUseCases OpportunityUseCase[]
 
+  @@index([businessFunctionId])
   @@map("use_cases")
 }
 
 model Feature {
-  id           String        @id @default(cuid())
-  name         String
-  slug         String        @unique
-  description  String?
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   toolFeatures ToolFeature[]
 
@@ -110,20 +228,26 @@ model ToolFeature {
   featureId String   @map("feature_id")
   createdAt DateTime @default(now()) @map("created_at")
 
-  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
-  feature   Feature  @relation(fields: [featureId], references: [id], onDelete: Cascade)
+  tool    Tool    @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  feature Feature @relation(fields: [featureId], references: [id], onDelete: Cascade)
 
   @@id([toolId, featureId])
   @@map("tool_features")
 }
 
 model ToolUseCase {
-  toolId    String   @map("tool_id")
-  useCaseId String   @map("use_case_id")
-  createdAt DateTime @default(now()) @map("created_at")
+  toolId             String   @map("tool_id")
+  useCaseId          String   @map("use_case_id")
+  fitScore           Int      @default(70) @map("fit_score")
+  recommendationNote String?  @map("recommendation_note")
+  bestFor            String?  @map("best_for")
+  limitations        String?
+  implementationNote String?  @map("implementation_note")
+  pricingSuitability String?  @map("pricing_suitability")
+  createdAt          DateTime @default(now()) @map("created_at")
 
-  tool      Tool     @relation(fields: [toolId], references: [id], onDelete: Cascade)
-  useCase   UseCase  @relation(fields: [useCaseId], references: [id], onDelete: Cascade)
+  tool    Tool    @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  useCase UseCase @relation(fields: [useCaseId], references: [id], onDelete: Cascade)
 
   @@id([toolId, useCaseId])
   @@map("tool_use_cases")
@@ -135,8 +259,8 @@ model ToolAlternative {
   note              String?
   createdAt         DateTime @default(now()) @map("created_at")
 
-  tool              Tool     @relation("SourceTool", fields: [toolId], references: [id], onDelete: Cascade)
-  alternativeTool   Tool     @relation("AlternativeTool", fields: [alternativeToolId], references: [id], onDelete: Cascade)
+  tool            Tool @relation("SourceTool", fields: [toolId], references: [id], onDelete: Cascade)
+  alternativeTool Tool @relation("AlternativeTool", fields: [alternativeToolId], references: [id], onDelete: Cascade)
 
   @@id([toolId, alternativeToolId])
   @@map("tool_alternatives")
@@ -158,27 +282,27 @@ model Submission {
 }
 
 model AdminUser {
-  id        String        @id @default(cuid())
-  email     String        @unique
+  id        String   @id @default(cuid())
+  email     String   @unique
   name      String?
-  createdAt DateTime      @default(now()) @map("created_at")
-  updatedAt DateTime      @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  actions   AdminAction[]
+  actions AdminAction[]
 
   @@map("admin_users")
 }
 
 model AdminAction {
-  id         String    @id @default(cuid())
-  actorId    String?   @map("actor_id")
+  id         String   @id @default(cuid())
+  actorId    String?  @map("actor_id")
   action     String
-  entityType String    @map("entity_type")
-  entityId   String    @map("entity_id")
+  entityType String   @map("entity_type")
+  entityId   String   @map("entity_id")
   metadata   Json?
-  createdAt  DateTime  @default(now()) @map("created_at")
+  createdAt  DateTime @default(now()) @map("created_at")
 
-  actor      AdminUser? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  actor AdminUser? @relation(fields: [actorId], references: [id], onDelete: SetNull)
 
   @@index([entityType, entityId])
   @@map("admin_actions")

@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import {
   CheckCircle2,
   ExternalLink,
+  Gauge,
   Layers3,
   ShieldCheck,
+  ShieldAlert,
   Sparkles,
   Target
 } from "lucide-react";
@@ -161,6 +163,75 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
         />
       </section>
 
+      {tool.useCases.length > 0 ? (
+        <section className="surface-strong mt-6 rounded-xl p-6">
+          <h2 className="text-xl font-semibold">Use-case fit reasons</h2>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {tool.useCases.map((useCase) => (
+              <Link
+                className="rounded-xl border border-line bg-surface/72 p-4 transition hover:border-accent"
+                href={`/use-cases/${useCase.slug}`}
+                key={useCase.id}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="font-semibold">{useCase.name}</h3>
+                  <span className="status-pill">Fit {useCase.fitScore}</span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-ink/62">
+                  {useCase.recommendationNote ??
+                    "Mapped to this use case by editorial taxonomy."}
+                </p>
+                {useCase.bestFor ? (
+                  <p className="mt-2 text-xs leading-5 text-ink/50">
+                    {useCase.bestFor}
+                  </p>
+                ) : null}
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      <section className="mt-6 grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
+        <div className="surface-strong rounded-xl p-6">
+          <div className="flex items-center gap-2">
+            <Gauge aria-hidden="true" className="text-accent" size={20} />
+            <h2 className="text-xl font-semibold">Fit guidance</h2>
+          </div>
+          <p className="mt-3 leading-7 text-ink/65">
+            Use {tool.name} when the matching workflow is clear, the team can
+            review outputs, and the pricing model fits the expected usage.
+          </p>
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            <FitSignal label="Use-case fit" value={tool.useCases.length > 0 ? "Mapped" : "Needs curation"} />
+            <FitSignal label="Setup effort" value="Validate" />
+            <FitSignal label="Decision stage" value="Shortlist" />
+          </div>
+        </div>
+        <div className="surface-panel rounded-xl p-6">
+          <div className="flex items-center gap-2">
+            <ShieldAlert aria-hidden="true" className="text-signal" size={20} />
+            <h2 className="text-xl font-semibold">Before adoption</h2>
+          </div>
+          <div className="mt-4 grid gap-3">
+            {[
+              "Confirm the workflow and success metric first.",
+              "Check data sensitivity before uploading business material.",
+              "Compare at least one alternative for price and fit."
+            ].map((item) => (
+              <div className="flex items-start gap-2 text-sm leading-6 text-ink/62" key={item}>
+                <CheckCircle2
+                  aria-hidden="true"
+                  className="mt-0.5 shrink-0 text-accent"
+                  size={15}
+                />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="mt-10">
         <div className="mb-4 flex items-end justify-between gap-4">
           <div>
@@ -187,6 +258,15 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
       </section>
       </div>
     </main>
+  );
+}
+
+function FitSignal({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="metric-tile rounded-xl p-4">
+      <div className="text-sm font-semibold">{value}</div>
+      <div className="mt-1 text-xs text-ink/50">{label}</div>
+    </div>
   );
 }
 

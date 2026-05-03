@@ -4,7 +4,22 @@ import { toPublicToolCard, toolCardInclude } from "@/server/tools/mappers";
 import type { PublicTaxonomyItem, PublicToolCard } from "@/shared/domain";
 
 export type PublicUseCaseSummary = PublicTaxonomyItem & {
+  businessFunction: {
+    name: string;
+    slug: string;
+  } | null;
+  effortLevel: string;
+  riskLevel: string;
+  timeToValue: string | null;
+  outcome: string | null;
   toolCount: number;
+};
+
+export type PublicUseCaseDetail = PublicUseCaseSummary & {
+  painPoints: string[];
+  requiredInputs: string[];
+  successMetrics: string[];
+  implementationSteps: string[];
 };
 
 export async function listUseCaseSummaries(): Promise<PublicUseCaseSummary[]> {
@@ -14,6 +29,16 @@ export async function listUseCaseSummaries(): Promise<PublicUseCaseSummary[]> {
       name: true,
       slug: true,
       description: true,
+      outcome: true,
+      effortLevel: true,
+      riskLevel: true,
+      timeToValue: true,
+      businessFunction: {
+        select: {
+          name: true,
+          slug: true
+        }
+      },
       _count: {
         select: {
           toolUseCases: {
@@ -37,6 +62,11 @@ export async function listUseCaseSummaries(): Promise<PublicUseCaseSummary[]> {
       name: useCase.name,
       slug: useCase.slug,
       description: useCase.description,
+      businessFunction: useCase.businessFunction,
+      effortLevel: useCase.effortLevel,
+      riskLevel: useCase.riskLevel,
+      timeToValue: useCase.timeToValue,
+      outcome: useCase.outcome,
       toolCount: useCase._count.toolUseCases
     }))
     .sort((useCaseA, useCaseB) => useCaseB.toolCount - useCaseA.toolCount);
@@ -44,7 +74,7 @@ export async function listUseCaseSummaries(): Promise<PublicUseCaseSummary[]> {
 
 export async function getUseCaseBySlug(
   slug: string
-): Promise<PublicUseCaseSummary | null> {
+): Promise<PublicUseCaseDetail | null> {
   const useCase = await prisma.useCase.findUnique({
     where: {
       slug
@@ -54,6 +84,20 @@ export async function getUseCaseBySlug(
       name: true,
       slug: true,
       description: true,
+      outcome: true,
+      painPoints: true,
+      requiredInputs: true,
+      successMetrics: true,
+      implementationSteps: true,
+      effortLevel: true,
+      riskLevel: true,
+      timeToValue: true,
+      businessFunction: {
+        select: {
+          name: true,
+          slug: true
+        }
+      },
       _count: {
         select: {
           toolUseCases: {
@@ -77,6 +121,15 @@ export async function getUseCaseBySlug(
     name: useCase.name,
     slug: useCase.slug,
     description: useCase.description,
+    businessFunction: useCase.businessFunction,
+    effortLevel: useCase.effortLevel,
+    riskLevel: useCase.riskLevel,
+    timeToValue: useCase.timeToValue,
+    outcome: useCase.outcome,
+    painPoints: useCase.painPoints,
+    requiredInputs: useCase.requiredInputs,
+    successMetrics: useCase.successMetrics,
+    implementationSteps: useCase.implementationSteps,
     toolCount: useCase._count.toolUseCases
   };
 }

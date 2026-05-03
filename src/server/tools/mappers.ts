@@ -80,11 +80,17 @@ export function toPublicToolDetail(tool: ToolDetailPayload): PublicToolDetail {
       slug: feature.slug,
       description: feature.description
     })),
-    useCases: tool.toolUseCases.map(({ useCase }) => ({
-      id: useCase.id,
-      name: useCase.name,
-      slug: useCase.slug,
-      description: useCase.description
+    useCases: tool.toolUseCases.map((toolUseCase) => ({
+      fitScore: toolUseCase.fitScore,
+      recommendationNote: toolUseCase.recommendationNote,
+      bestFor: toolUseCase.bestFor,
+      limitations: toolUseCase.limitations,
+      implementationNote: toolUseCase.implementationNote,
+      pricingSuitability: toolUseCase.pricingSuitability,
+      id: toolUseCase.useCase.id,
+      name: toolUseCase.useCase.name,
+      slug: toolUseCase.useCase.slug,
+      description: toolUseCase.useCase.description
     })),
     alternatives: tool.sourceTools.map(toPublicAlternativeTool)
   };

@@ -1,4 +1,10 @@
-import { PrismaClient, PricingType, PublishStatus } from "@prisma/client";
+import {
+  EffortLevel,
+  PrismaClient,
+  PricingType,
+  PublishStatus,
+  RiskLevel
+} from "@prisma/client";
 import { slugify } from "../src/lib/slug";
 
 const prisma = new PrismaClient();
@@ -107,6 +113,765 @@ const features = [
   "Brand kit",
   "Export options",
   "Integrations"
+];
+
+const businessFunctions = [
+  {
+    name: "Marketing",
+    description:
+      "Campaigns, content, SEO, brand, local marketing, and demand generation."
+  },
+  {
+    name: "Sales",
+    description:
+      "Outreach, qualification, proposals, CRM hygiene, and follow-up workflows."
+  },
+  {
+    name: "Customer Support",
+    description:
+      "Ticket response, help content, routing, escalation, and service quality."
+  },
+  {
+    name: "Operations",
+    description:
+      "Internal processes, reporting, handoffs, intake, and workflow automation."
+  },
+  {
+    name: "Finance",
+    description:
+      "Reporting, invoice handling, categorization, document review, and analysis."
+  },
+  {
+    name: "Human Resources",
+    description:
+      "Recruiting, onboarding, policies, employee support, and training workflows."
+  },
+  {
+    name: "Product and Engineering",
+    description:
+      "Product research, documentation, coding, QA, release work, and technical delivery."
+  },
+  {
+    name: "Knowledge Management",
+    description:
+      "Meeting notes, internal answers, documentation, training, and organizational memory."
+  }
+];
+
+const useCaseMetadata: Record<
+  string,
+  {
+    businessFunction: string;
+    outcome: string;
+    painPoints: string[];
+    requiredInputs: string[];
+    successMetrics: string[];
+    implementationSteps: string[];
+    effortLevel: EffortLevel;
+    riskLevel: RiskLevel;
+    timeToValue: string;
+  }
+> = {
+  "General assistant": {
+    businessFunction: "Knowledge Management",
+    outcome: "Faster drafting, analysis, and everyday decision support.",
+    painPoints: ["Scattered work", "Slow first drafts", "Manual research"],
+    requiredInputs: ["Prompt guidelines", "Review standards"],
+    successMetrics: ["Time saved", "Draft quality", "Review time"],
+    implementationSteps: [
+      "Choose approved use cases",
+      "Create prompt templates",
+      "Set human review rules"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks"
+  },
+  "Web research": {
+    businessFunction: "Knowledge Management",
+    outcome: "Faster source gathering and market understanding.",
+    painPoints: ["Slow research", "Unclear source quality"],
+    requiredInputs: ["Research question", "Source criteria"],
+    successMetrics: ["Research time", "Source quality", "Decision speed"],
+    implementationSteps: [
+      "Define source standards",
+      "Compare answer quality",
+      "Document citations"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1 week"
+  },
+  "Writing assistant": {
+    businessFunction: "Marketing",
+    outcome: "Clearer drafts, rewrites, and everyday business writing.",
+    painPoints: ["Blank-page friction", "Inconsistent tone"],
+    requiredInputs: ["Brand voice", "Example content"],
+    successMetrics: ["Draft turnaround", "Edit cycles", "Consistency"],
+    implementationSteps: [
+      "Create writing briefs",
+      "Define review rubric",
+      "Track edit time"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.LOW,
+    timeToValue: "1 week"
+  },
+  Copywriting: {
+    businessFunction: "Marketing",
+    outcome: "More consistent conversion copy across channels.",
+    painPoints: ["Slow campaign copy", "Inconsistent messaging"],
+    requiredInputs: ["Audience", "Offer", "Brand guidance"],
+    successMetrics: ["Copy output", "Campaign velocity", "Conversion lift"],
+    implementationSteps: [
+      "Create campaign templates",
+      "Generate variants",
+      "Review against brand rules"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks"
+  },
+  "SEO content": {
+    businessFunction: "Marketing",
+    outcome: "Repeatable search content briefs and drafts.",
+    painPoints: ["Slow briefs", "Thin content planning", "Inconsistent SEO structure"],
+    requiredInputs: ["Keyword theme", "Audience", "Source material"],
+    successMetrics: ["Brief time", "Content shipped", "Organic traffic"],
+    implementationSteps: [
+      "Define content template",
+      "Create briefs",
+      "Review claims and sources"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Code generation": {
+    businessFunction: "Product and Engineering",
+    outcome: "Faster implementation support and code scaffolding.",
+    painPoints: ["Slow boilerplate", "Context switching"],
+    requiredInputs: ["Repo context", "Coding standards", "Review process"],
+    successMetrics: ["Cycle time", "Review defects", "Developer throughput"],
+    implementationSteps: [
+      "Define accepted tasks",
+      "Pilot on low-risk changes",
+      "Review generated code"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-3 weeks"
+  },
+  "Code review": {
+    businessFunction: "Product and Engineering",
+    outcome: "Better review preparation and test ideas.",
+    painPoints: ["Slow reviews", "Missed edge cases"],
+    requiredInputs: ["Diffs", "Review checklist", "Security standards"],
+    successMetrics: ["Review time", "Defect discovery", "Test coverage"],
+    implementationSteps: [
+      "Create review prompts",
+      "Compare against human review",
+      "Document limits"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Image creation": {
+    businessFunction: "Marketing",
+    outcome: "Faster visual exploration and campaign assets.",
+    painPoints: ["Slow design iteration", "Asset bottlenecks"],
+    requiredInputs: ["Brand style", "Image brief"],
+    successMetrics: ["Asset turnaround", "Approval rate"],
+    implementationSteps: [
+      "Define image guidelines",
+      "Generate concepts",
+      "Review brand fit"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks"
+  },
+  "Video generation": {
+    businessFunction: "Marketing",
+    outcome: "Faster short-form and explainer video production.",
+    painPoints: ["High video production effort", "Limited content reuse"],
+    requiredInputs: ["Script", "Brand guidance", "Review workflow"],
+    successMetrics: ["Videos shipped", "Production time"],
+    implementationSteps: [
+      "Start with internal videos",
+      "Create review checklist",
+      "Publish controlled pilots"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Audio transcription": {
+    businessFunction: "Knowledge Management",
+    outcome: "Searchable calls, interviews, and source material.",
+    painPoints: ["Lost conversation detail", "Manual note taking"],
+    requiredInputs: ["Recording consent", "Storage policy"],
+    successMetrics: ["Transcription coverage", "Note time saved"],
+    implementationSteps: [
+      "Define recording policy",
+      "Pilot on internal calls",
+      "Review transcript quality"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1 week"
+  },
+  "Voice generation": {
+    businessFunction: "Marketing",
+    outcome: "Faster narration, demos, and audio assets.",
+    painPoints: ["Slow voice production", "Limited localization"],
+    requiredInputs: ["Script", "Voice policy", "Usage rights"],
+    successMetrics: ["Audio output", "Production time"],
+    implementationSteps: [
+      "Approve voice style",
+      "Generate drafts",
+      "Review usage rights"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks"
+  },
+  "Meeting summaries": {
+    businessFunction: "Knowledge Management",
+    outcome: "Cleaner notes, decisions, and action items.",
+    painPoints: ["Missed follow-ups", "Manual notes"],
+    requiredInputs: ["Meeting recordings or notes", "Action-item format"],
+    successMetrics: ["Follow-up time", "Missed actions", "Note quality"],
+    implementationSteps: [
+      "Define summary format",
+      "Pilot on recurring meetings",
+      "Review action accuracy"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.LOW,
+    timeToValue: "1 week"
+  },
+  "Presentation creation": {
+    businessFunction: "Marketing",
+    outcome: "Faster decks, proposals, and business storytelling.",
+    painPoints: ["Slow deck creation", "Inconsistent structure"],
+    requiredInputs: ["Narrative outline", "Brand kit"],
+    successMetrics: ["Deck turnaround", "Review cycles"],
+    implementationSteps: [
+      "Create deck templates",
+      "Draft from outline",
+      "Review brand and facts"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.LOW,
+    timeToValue: "1 week"
+  },
+  "Workflow automation": {
+    businessFunction: "Operations",
+    outcome: "Less repetitive manual routing and handoff work.",
+    painPoints: ["Manual handoffs", "Copy-paste work", "Status gaps"],
+    requiredInputs: ["Workflow map", "Trigger events", "Approval rules"],
+    successMetrics: ["Manual steps removed", "Error rate", "Cycle time"],
+    implementationSteps: [
+      "Map the workflow",
+      "Automate one low-risk step",
+      "Measure time saved"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Design assets": {
+    businessFunction: "Marketing",
+    outcome: "Faster brand-safe visuals and creative drafts.",
+    painPoints: ["Design bottlenecks", "Inconsistent assets"],
+    requiredInputs: ["Brand kit", "Asset brief"],
+    successMetrics: ["Asset volume", "Approval rate"],
+    implementationSteps: [
+      "Document brand rules",
+      "Generate draft assets",
+      "Review before publishing"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks"
+  },
+  "Knowledge management": {
+    businessFunction: "Knowledge Management",
+    outcome: "Faster internal answers and better documentation reuse.",
+    painPoints: ["Scattered docs", "Repeated questions", "Slow onboarding"],
+    requiredInputs: ["Document sources", "Access policy"],
+    successMetrics: ["Question resolution time", "Doc usage", "Onboarding speed"],
+    implementationSteps: [
+      "Choose source documents",
+      "Set permissions",
+      "Pilot common questions"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "3-6 weeks"
+  },
+  "Sales outreach": {
+    businessFunction: "Sales",
+    outcome: "Faster lead follow-up and more consistent outreach.",
+    painPoints: ["Slow follow-up", "Generic messages", "CRM friction"],
+    requiredInputs: ["Ideal customer profile", "Offer", "CRM fields"],
+    successMetrics: ["Response time", "Reply rate", "Meetings booked"],
+    implementationSteps: [
+      "Define outreach templates",
+      "Personalize with review",
+      "Track replies"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-3 weeks"
+  },
+  "Customer support": {
+    businessFunction: "Customer Support",
+    outcome: "Faster, more consistent customer replies.",
+    painPoints: ["Repeated questions", "Slow response", "Inconsistent answers"],
+    requiredInputs: ["Support history", "Approved answers", "Escalation rules"],
+    successMetrics: ["Response time", "Resolution rate", "Support hours saved"],
+    implementationSteps: [
+      "Group recent tickets",
+      "Draft approved answers",
+      "Pilot with human review"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  }
+};
+
+const industries = [
+  {
+    name: "Consulting and agencies",
+    description:
+      "Client-facing teams that need faster research, proposals, reporting, and campaign production.",
+    startingPoint:
+      "Start with repeatable client deliverables before automating client communication.",
+    cautions: "Protect client data and keep final recommendations human-reviewed."
+  },
+  {
+    name: "Ecommerce",
+    description:
+      "Online stores that need better product content, support triage, merchandising, and retention workflows.",
+    startingPoint:
+      "Start with product and support workflows because they are easy to measure.",
+    cautions: "Review generated product claims before publishing."
+  },
+  {
+    name: "SaaS teams",
+    description:
+      "Software teams balancing support, sales enablement, product documentation, and engineering workflows.",
+    startingPoint:
+      "Start where support questions repeat and documentation is already available.",
+    cautions: "Avoid exposing private customer data to tools without clear controls."
+  },
+  {
+    name: "Local services",
+    description:
+      "Service businesses that need faster lead response, scheduling support, reviews, and marketing output.",
+    startingPoint:
+      "Start with inbound lead and review workflows because speed directly affects revenue.",
+    cautions: "Keep customer-facing messages accurate, local, and brand-safe."
+  },
+  {
+    name: "Real estate",
+    description:
+      "Brokerages and agents improving listing content, lead follow-up, local research, and client communication.",
+    startingPoint:
+      "Start with listing content and lead follow-up workflows that can be reviewed before publishing.",
+    cautions: "Review fair-housing-sensitive language and local legal claims."
+  },
+  {
+    name: "Education and training",
+    description:
+      "Teams creating lessons, training content, feedback, and administrative support material.",
+    startingPoint:
+      "Start with internal training content and lesson planning before student-facing automation.",
+    cautions: "Protect student data and keep learning feedback human-supervised."
+  },
+  {
+    name: "Finance and accounting",
+    description:
+      "Teams improving reporting, invoice handling, categorization, and document review workflows.",
+    startingPoint:
+      "Start with summaries and categorization where human review is already part of the workflow.",
+    cautions: "Treat financial records, compliance, and sensitive data as high risk."
+  },
+  {
+    name: "Healthcare operations",
+    description:
+      "Non-clinical teams improving intake, scheduling, documentation, and administrative workflows.",
+    startingPoint:
+      "Start with non-clinical admin workflows and strict data handling boundaries.",
+    cautions: "Avoid clinical claims and protect health data."
+  }
+];
+
+const opportunities = [
+  {
+    name: "Reduce support response time",
+    businessFunction: "Customer Support",
+    description:
+      "Use AI-assisted drafting, routing, and knowledge snippets to answer repeated customer questions faster.",
+    painPoint: "Support teams lose time answering the same questions repeatedly.",
+    expectedBenefit: "Faster replies, better consistency, and fewer repeated manual answers.",
+    startingPoint: "Group the last 50-100 support questions by topic.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Response time", "First-contact resolution", "Support hours saved"],
+    industries: ["Ecommerce", "SaaS teams", "Local services"],
+    useCases: ["Customer support", "Knowledge management", "Workflow automation"]
+  },
+  {
+    name: "Turn repeated questions into a knowledge base",
+    businessFunction: "Customer Support",
+    description:
+      "Convert recurring support and sales questions into reusable help content.",
+    painPoint: "Knowledge is trapped in tickets, calls, and individual team members.",
+    expectedBenefit: "Better self-service and lower support load.",
+    startingPoint: "Identify the top recurring questions and draft approved answers.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-3 weeks",
+    successMetrics: ["Article coverage", "Ticket deflection", "Answer quality"],
+    industries: ["Ecommerce", "SaaS teams", "Education and training"],
+    useCases: ["Knowledge management", "Customer support", "Writing assistant"]
+  },
+  {
+    name: "Draft product descriptions faster",
+    businessFunction: "Marketing",
+    description:
+      "Create product descriptions, feature copy, and marketplace content from structured product inputs.",
+    painPoint: "Product content slows launches and is often inconsistent.",
+    expectedBenefit: "Faster product publishing with clearer review checkpoints.",
+    startingPoint: "Create a reusable product brief with claims that must be verified.",
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks",
+    successMetrics: ["Descriptions shipped", "Editing time", "Launch speed"],
+    industries: ["Ecommerce", "Real estate"],
+    useCases: ["Copywriting", "SEO content", "Writing assistant"]
+  },
+  {
+    name: "Repurpose content across channels",
+    businessFunction: "Marketing",
+    description:
+      "Turn one source asset into posts, emails, summaries, and short-form creative.",
+    painPoint: "Teams create good source material but struggle to reuse it consistently.",
+    expectedBenefit: "More output from existing expertise and assets.",
+    startingPoint: "Choose one source format and define channel-specific templates.",
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.LOW,
+    timeToValue: "1-2 weeks",
+    successMetrics: ["Assets repurposed", "Publishing frequency", "Review cycles"],
+    industries: ["Consulting and agencies", "SaaS teams", "Education and training"],
+    useCases: ["Copywriting", "Design assets", "Video generation"]
+  },
+  {
+    name: "Create SEO content briefs",
+    businessFunction: "Marketing",
+    description:
+      "Generate repeatable SEO briefs with audience, structure, terms, and source guidance.",
+    painPoint: "SEO content planning takes too long and often starts from scratch.",
+    expectedBenefit: "Faster briefs and more consistent article planning.",
+    startingPoint: "Define one content template and review criteria.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Brief creation time", "Content shipped", "Organic visits"],
+    industries: ["Consulting and agencies", "Ecommerce", "Local services"],
+    useCases: ["SEO content", "Web research", "Writing assistant"]
+  },
+  {
+    name: "Improve lead follow-up speed",
+    businessFunction: "Sales",
+    description:
+      "Use templates, routing, and automated reminders to respond to leads faster.",
+    painPoint: "Slow lead response causes missed revenue opportunities.",
+    expectedBenefit: "Faster response times and more booked conversations.",
+    startingPoint: "Map every inbound channel and current response time.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-3 weeks",
+    successMetrics: ["Lead response time", "Booking rate", "Follow-up coverage"],
+    industries: ["Local services", "Real estate", "Consulting and agencies"],
+    useCases: ["Sales outreach", "Workflow automation", "Customer support"]
+  },
+  {
+    name: "Generate first-draft proposals",
+    businessFunction: "Sales",
+    description:
+      "Create first drafts of proposals from reusable service descriptions, discovery notes, and scope templates.",
+    painPoint: "Proposal creation is repetitive but still requires expert review.",
+    expectedBenefit: "Faster proposal turnaround with consistent structure.",
+    startingPoint: "Create a proposal template and approved service library.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Proposal turnaround", "Win rate", "Review cycles"],
+    industries: ["Consulting and agencies", "Local services", "SaaS teams"],
+    useCases: ["Writing assistant", "Presentation creation", "Sales outreach"]
+  },
+  {
+    name: "Summarize sales and client calls",
+    businessFunction: "Sales",
+    description:
+      "Capture decisions, objections, action items, and follow-ups from calls.",
+    painPoint: "Important next steps are missed or manually rewritten after calls.",
+    expectedBenefit: "Cleaner handoffs and faster follow-up.",
+    startingPoint: "Define an action-item and summary format.",
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.LOW,
+    timeToValue: "1 week",
+    successMetrics: ["Follow-up time", "Missed actions", "CRM completeness"],
+    industries: ["Consulting and agencies", "SaaS teams", "Real estate"],
+    useCases: ["Meeting summaries", "Audio transcription", "Knowledge management"]
+  },
+  {
+    name: "Automate intake and routing",
+    businessFunction: "Operations",
+    description:
+      "Route requests, forms, leads, and internal tasks to the right destination.",
+    painPoint: "Manual routing creates delays and dropped handoffs.",
+    expectedBenefit: "Faster processing and fewer missed tasks.",
+    startingPoint: "Map one intake workflow and define routing rules.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Cycle time", "Manual steps removed", "Routing errors"],
+    industries: ["Local services", "Healthcare operations", "Finance and accounting"],
+    useCases: ["Workflow automation", "Customer support", "Sales outreach"]
+  },
+  {
+    name: "Summarize operational reports",
+    businessFunction: "Operations",
+    description:
+      "Turn recurring data exports, updates, and notes into concise operational summaries.",
+    painPoint: "Leaders spend time reading scattered updates and reports.",
+    expectedBenefit: "Faster awareness and clearer operating decisions.",
+    startingPoint: "Choose one recurring report and define summary fields.",
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.LOW,
+    timeToValue: "1-2 weeks",
+    successMetrics: ["Summary time", "Decision speed", "Report readership"],
+    industries: ["SaaS teams", "Finance and accounting", "Healthcare operations"],
+    useCases: ["General assistant", "Knowledge management", "Web research"]
+  },
+  {
+    name: "Build reusable workflow templates",
+    businessFunction: "Operations",
+    description:
+      "Document and templatize repeated workflows so automation and delegation become easier.",
+    painPoint: "Teams repeat work without a documented process.",
+    expectedBenefit: "Better consistency and easier automation later.",
+    startingPoint: "Choose one repeated workflow and document the current process.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "3-5 weeks",
+    successMetrics: ["Templates created", "Error reduction", "Training time"],
+    industries: ["Consulting and agencies", "Local services", "Education and training"],
+    useCases: ["Workflow automation", "Knowledge management", "Writing assistant"]
+  },
+  {
+    name: "Create meeting notes and action items",
+    businessFunction: "Knowledge Management",
+    description:
+      "Automatically create structured notes, decisions, and action items from recurring meetings.",
+    painPoint: "Meetings create work that is not captured cleanly.",
+    expectedBenefit: "Faster follow-up and clearer accountability.",
+    startingPoint: "Pilot on internal recurring meetings first.",
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.LOW,
+    timeToValue: "1 week",
+    successMetrics: ["Note completion", "Action-item closure", "Follow-up time"],
+    industries: ["Consulting and agencies", "SaaS teams", "Education and training"],
+    useCases: ["Meeting summaries", "Audio transcription", "Knowledge management"]
+  },
+  {
+    name: "Make internal knowledge searchable",
+    businessFunction: "Knowledge Management",
+    description:
+      "Improve access to internal documents, policies, past work, and answers.",
+    painPoint: "People waste time finding information or asking repeated questions.",
+    expectedBenefit: "Faster onboarding and better self-service.",
+    startingPoint: "Choose approved source documents and define access rules.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "3-6 weeks",
+    successMetrics: ["Answer time", "Repeated questions", "Document usage"],
+    industries: ["SaaS teams", "Education and training", "Healthcare operations"],
+    useCases: ["Knowledge management", "General assistant", "Web research"]
+  },
+  {
+    name: "Improve onboarding documentation",
+    businessFunction: "Human Resources",
+    description:
+      "Create clearer onboarding guides, FAQs, and training content from existing materials.",
+    painPoint: "New team members repeatedly need the same explanations.",
+    expectedBenefit: "Faster onboarding and fewer repeated admin questions.",
+    startingPoint: "List the top repeated onboarding questions.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Onboarding time", "FAQ coverage", "Manager questions"],
+    industries: ["Education and training", "SaaS teams", "Healthcare operations"],
+    useCases: ["Knowledge management", "Writing assistant", "Presentation creation"]
+  },
+  {
+    name: "Screen resumes and draft interview notes",
+    businessFunction: "Human Resources",
+    description:
+      "Support recruiting workflows with structured summaries and interview-note drafts.",
+    painPoint: "Recruiting creates repetitive review and note-taking work.",
+    expectedBenefit: "Faster recruiting administration with structured review.",
+    startingPoint: "Define fair evaluation criteria before using any tool.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "3-5 weeks",
+    successMetrics: ["Review time", "Criteria consistency", "Hiring team feedback"],
+    industries: ["SaaS teams", "Healthcare operations", "Education and training"],
+    useCases: ["Writing assistant", "Knowledge management", "Meeting summaries"]
+  },
+  {
+    name: "Draft finance summaries",
+    businessFunction: "Finance",
+    description:
+      "Summarize financial reports, budget notes, and recurring business updates.",
+    painPoint: "Finance information is hard for non-finance stakeholders to scan.",
+    expectedBenefit: "Clearer financial communication and faster review.",
+    startingPoint: "Start with non-sensitive summary templates and human review.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Summary time", "Review accuracy", "Stakeholder clarity"],
+    industries: ["Finance and accounting", "Consulting and agencies"],
+    useCases: ["General assistant", "Writing assistant", "Knowledge management"]
+  },
+  {
+    name: "Categorize invoices and receipts",
+    businessFunction: "Finance",
+    description:
+      "Use AI-assisted extraction and categorization to reduce finance admin.",
+    painPoint: "Manual finance document processing is slow and error-prone.",
+    expectedBenefit: "Less manual categorization and faster bookkeeping support.",
+    startingPoint: "Pilot on low-risk documents with manual verification.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "3-6 weeks",
+    successMetrics: ["Processing time", "Error rate", "Manual corrections"],
+    industries: ["Finance and accounting", "Local services", "Ecommerce"],
+    useCases: ["Workflow automation", "Knowledge management"]
+  },
+  {
+    name: "Speed up code scaffolding",
+    businessFunction: "Product and Engineering",
+    description:
+      "Use coding assistants for boilerplate, prototypes, and repetitive implementation support.",
+    painPoint: "Engineering teams spend time on repetitive setup and examples.",
+    expectedBenefit: "Faster implementation starts and better developer flow.",
+    startingPoint: "Pilot on low-risk internal tasks with code review.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-3 weeks",
+    successMetrics: ["Cycle time", "Review quality", "Developer satisfaction"],
+    industries: ["SaaS teams"],
+    useCases: ["Code generation", "Code review"]
+  },
+  {
+    name: "Improve code review preparation",
+    businessFunction: "Product and Engineering",
+    description:
+      "Generate review summaries, test ideas, and risk prompts before human review.",
+    painPoint: "Code reviews can miss context or edge cases.",
+    expectedBenefit: "Better review readiness and clearer handoffs.",
+    startingPoint: "Create an accepted checklist for AI-assisted review prep.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Review time", "Defects caught", "Test ideas adopted"],
+    industries: ["SaaS teams"],
+    useCases: ["Code review", "Code generation", "Knowledge management"]
+  },
+  {
+    name: "Draft product release notes",
+    businessFunction: "Product and Engineering",
+    description:
+      "Turn product changes into release notes, customer updates, and internal summaries.",
+    painPoint: "Release communication is often rushed or inconsistent.",
+    expectedBenefit: "Clearer product communication with less manual drafting.",
+    startingPoint: "Standardize release-note inputs from product and engineering.",
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.LOW,
+    timeToValue: "1 week",
+    successMetrics: ["Draft time", "Release note coverage", "Review cycles"],
+    industries: ["SaaS teams"],
+    useCases: ["Writing assistant", "Knowledge management"]
+  },
+  {
+    name: "Create training content",
+    businessFunction: "Knowledge Management",
+    description:
+      "Turn expertise and process notes into lessons, guides, scripts, and slides.",
+    painPoint: "Training material takes time to create and update.",
+    expectedBenefit: "Faster training content production with reviewable outputs.",
+    startingPoint: "Choose one training topic and define the learner outcome.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Training assets created", "Learner feedback", "Update time"],
+    industries: ["Education and training", "Consulting and agencies", "Healthcare operations"],
+    useCases: ["Presentation creation", "Video generation", "Writing assistant"]
+  },
+  {
+    name: "Improve local review responses",
+    businessFunction: "Marketing",
+    description:
+      "Draft thoughtful responses to local reviews while preserving human judgment.",
+    painPoint: "Public reviews need fast, consistent, and sensitive replies.",
+    expectedBenefit: "Better public trust and faster review handling.",
+    startingPoint: "Create templates for positive, neutral, and negative reviews.",
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks",
+    successMetrics: ["Response coverage", "Response time", "Review rating trend"],
+    industries: ["Local services", "Real estate", "Healthcare operations"],
+    useCases: ["Copywriting", "Customer support", "Writing assistant"]
+  },
+  {
+    name: "Draft listing and property content",
+    businessFunction: "Marketing",
+    description:
+      "Create reviewed drafts for listings, descriptions, social posts, and local market updates.",
+    painPoint: "Listing and property content is repetitive but brand-sensitive.",
+    expectedBenefit: "Faster publishing with consistent structure.",
+    startingPoint: "Create an approved listing brief and compliance checklist.",
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks",
+    successMetrics: ["Draft time", "Listings published", "Review corrections"],
+    industries: ["Real estate"],
+    useCases: ["Copywriting", "SEO content", "Design assets"]
+  },
+  {
+    name: "Summarize customer feedback",
+    businessFunction: "Operations",
+    description:
+      "Analyze support notes, reviews, and survey responses to identify repeated issues.",
+    painPoint: "Feedback arrives in many places and is hard to synthesize.",
+    expectedBenefit: "Better product, support, and operations decisions.",
+    startingPoint: "Collect feedback from one channel for the last 30 days.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Themes found", "Issues prioritized", "Decision speed"],
+    industries: ["Ecommerce", "SaaS teams", "Local services"],
+    useCases: ["Web research", "Knowledge management", "Workflow automation"]
+  }
 ];
 
 const tools = [
@@ -626,7 +1391,10 @@ type ToolSeed = (typeof tools)[number];
 
 async function main() {
   const categoryRecords = new Map<string, string>();
+  const businessFunctionRecords = new Map<string, string>();
+  const industryRecords = new Map<string, string>();
   const useCaseRecords = new Map<string, string>();
+  const opportunityRecords = new Map<string, string>();
   const featureRecords = new Map<string, string>();
   const toolRecords = new Map<string, string>();
 
@@ -651,19 +1419,180 @@ async function main() {
     categoryRecords.set(category.name, record.id);
   }
 
+  for (const [index, businessFunction] of businessFunctions.entries()) {
+    const record = await prisma.businessFunction.upsert({
+      where: { slug: slugify(businessFunction.name) },
+      update: {
+        name: businessFunction.name,
+        description: businessFunction.description,
+        status: PublishStatus.PUBLISHED,
+        sortOrder: index
+      },
+      create: {
+        name: businessFunction.name,
+        slug: slugify(businessFunction.name),
+        description: businessFunction.description,
+        status: PublishStatus.PUBLISHED,
+        sortOrder: index
+      }
+    });
+
+    businessFunctionRecords.set(businessFunction.name, record.id);
+  }
+
+  for (const [index, industry] of industries.entries()) {
+    const record = await prisma.industry.upsert({
+      where: { slug: slugify(industry.name) },
+      update: {
+        name: industry.name,
+        description: industry.description,
+        startingPoint: industry.startingPoint,
+        cautions: industry.cautions,
+        status: PublishStatus.PUBLISHED,
+        sortOrder: index,
+        metaTitle: `${industry.name} AI roadmap`,
+        metaDescription: industry.description
+      },
+      create: {
+        name: industry.name,
+        slug: slugify(industry.name),
+        description: industry.description,
+        startingPoint: industry.startingPoint,
+        cautions: industry.cautions,
+        status: PublishStatus.PUBLISHED,
+        sortOrder: index,
+        metaTitle: `${industry.name} AI roadmap`,
+        metaDescription: industry.description
+      }
+    });
+
+    industryRecords.set(industry.name, record.id);
+  }
+
   for (const useCase of useCases) {
+    const metadata = useCaseMetadata[useCase];
+    const businessFunctionId = metadata
+      ? getRecordId(
+          businessFunctionRecords,
+          metadata.businessFunction,
+          "business function"
+        )
+      : undefined;
     const record = await prisma.useCase.upsert({
       where: { slug: slugify(useCase) },
       update: {
-        name: useCase
+        name: useCase,
+        description: metadata?.outcome,
+        outcome: metadata?.outcome,
+        painPoints: metadata?.painPoints ?? [],
+        requiredInputs: metadata?.requiredInputs ?? [],
+        successMetrics: metadata?.successMetrics ?? [],
+        implementationSteps: metadata?.implementationSteps ?? [],
+        effortLevel: metadata?.effortLevel ?? EffortLevel.MEDIUM,
+        riskLevel: metadata?.riskLevel ?? RiskLevel.MEDIUM,
+        timeToValue: metadata?.timeToValue,
+        businessFunctionId
       },
       create: {
         name: useCase,
-        slug: slugify(useCase)
+        slug: slugify(useCase),
+        description: metadata?.outcome,
+        outcome: metadata?.outcome,
+        painPoints: metadata?.painPoints ?? [],
+        requiredInputs: metadata?.requiredInputs ?? [],
+        successMetrics: metadata?.successMetrics ?? [],
+        implementationSteps: metadata?.implementationSteps ?? [],
+        effortLevel: metadata?.effortLevel ?? EffortLevel.MEDIUM,
+        riskLevel: metadata?.riskLevel ?? RiskLevel.MEDIUM,
+        timeToValue: metadata?.timeToValue,
+        businessFunctionId
       }
     });
 
     useCaseRecords.set(useCase, record.id);
+  }
+
+  for (const [index, opportunity] of opportunities.entries()) {
+    const record = await prisma.opportunity.upsert({
+      where: { slug: slugify(opportunity.name) },
+      update: {
+        name: opportunity.name,
+        description: opportunity.description,
+        painPoint: opportunity.painPoint,
+        expectedBenefit: opportunity.expectedBenefit,
+        startingPoint: opportunity.startingPoint,
+        effortLevel: opportunity.effortLevel,
+        riskLevel: opportunity.riskLevel,
+        timeToValue: opportunity.timeToValue,
+        successMetrics: opportunity.successMetrics,
+        status: PublishStatus.PUBLISHED,
+        sortOrder: index,
+        businessFunctionId: getRecordId(
+          businessFunctionRecords,
+          opportunity.businessFunction,
+          "business function"
+        ),
+        metaTitle: `${opportunity.name} AI opportunity`,
+        metaDescription: opportunity.description
+      },
+      create: {
+        name: opportunity.name,
+        slug: slugify(opportunity.name),
+        description: opportunity.description,
+        painPoint: opportunity.painPoint,
+        expectedBenefit: opportunity.expectedBenefit,
+        startingPoint: opportunity.startingPoint,
+        effortLevel: opportunity.effortLevel,
+        riskLevel: opportunity.riskLevel,
+        timeToValue: opportunity.timeToValue,
+        successMetrics: opportunity.successMetrics,
+        status: PublishStatus.PUBLISHED,
+        sortOrder: index,
+        businessFunctionId: getRecordId(
+          businessFunctionRecords,
+          opportunity.businessFunction,
+          "business function"
+        ),
+        metaTitle: `${opportunity.name} AI opportunity`,
+        metaDescription: opportunity.description
+      }
+    });
+
+    opportunityRecords.set(opportunity.name, record.id);
+
+    await prisma.industryOpportunity.deleteMany({
+      where: {
+        opportunityId: record.id
+      }
+    });
+
+    if (opportunity.industries.length > 0) {
+      await prisma.industryOpportunity.createMany({
+        data: opportunity.industries.map((industryName, priority) => ({
+          industryId: getRecordId(industryRecords, industryName, "industry"),
+          opportunityId: record.id,
+          priority
+        })),
+        skipDuplicates: true
+      });
+    }
+
+    await prisma.opportunityUseCase.deleteMany({
+      where: {
+        opportunityId: record.id
+      }
+    });
+
+    if (opportunity.useCases.length > 0) {
+      await prisma.opportunityUseCase.createMany({
+        data: opportunity.useCases.map((useCase, priority) => ({
+          opportunityId: record.id,
+          useCaseId: getRecordId(useCaseRecords, useCase, "use case"),
+          priority
+        })),
+        skipDuplicates: true
+      });
+    }
   }
 
   for (const feature of features) {
@@ -700,7 +1629,20 @@ async function main() {
     await prisma.toolUseCase.createMany({
       data: tool.useCases.map((useCase) => ({
         toolId: record.id,
-        useCaseId: getRecordId(useCaseRecords, useCase, "use case")
+        useCaseId: getRecordId(useCaseRecords, useCase, "use case"),
+        fitScore: tool.isFeatured ? 86 : 74,
+        recommendationNote: `${tool.name} is mapped to ${useCase.toLowerCase()} based on current curated use-case data.`,
+        bestFor: tool.hasFreePlan
+          ? "Teams that want to pilot this use case before committing budget."
+          : "Teams with a clear workflow and budget for a paid tool.",
+        limitations: tool.isVerified
+          ? "Validate fit against your workflow before rollout."
+          : "Needs additional editorial verification before high-confidence adoption.",
+        implementationNote:
+          "Start with one narrow workflow, define a review point, and measure time saved.",
+        pricingSuitability: tool.hasFreePlan
+          ? "Good fit for early experiments."
+          : "Best after the workflow value is validated."
       })),
       skipDuplicates: true
     });

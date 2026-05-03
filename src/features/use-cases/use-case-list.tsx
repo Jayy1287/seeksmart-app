@@ -20,12 +20,26 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
               {useCase.toolCount}
             </span>
           </div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {useCase.businessFunction ? (
+              <span className="status-pill">
+                {useCase.businessFunction.name}
+              </span>
+            ) : null}
+            <span className="status-pill">{formatLevel(useCase.effortLevel)} effort</span>
+            <span className="status-pill">{formatLevel(useCase.riskLevel)} risk</span>
+          </div>
           <p className="mt-2 text-sm leading-6 text-ink/60">
-            {useCase.description ??
+            {useCase.outcome ??
+              useCase.description ??
               `Browse AI tools for ${useCase.name.toLowerCase()}.`}
           </p>
         </Link>
       ))}
     </div>
   );
+}
+
+function formatLevel(value: string) {
+  return value.charAt(0) + value.slice(1).toLowerCase();
 }

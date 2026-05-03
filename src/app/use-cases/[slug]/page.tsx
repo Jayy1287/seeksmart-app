@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Target } from "lucide-react";
+import { ArrowRight, CheckCircle2, Gauge, ShieldAlert, Target } from "lucide-react";
 import { ToolCard } from "@/features/tools/tool-card";
 import {
   getUseCaseBySlug,
@@ -70,9 +70,26 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
               {useCase.name} AI tools
             </h1>
             <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-              {useCase.description ??
+              {useCase.outcome ??
+                useCase.description ??
                 `Browse AI tools for ${useCase.name.toLowerCase()}.`}
             </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {useCase.businessFunction ? (
+                <span className="status-pill">
+                  {useCase.businessFunction.name}
+                </span>
+              ) : null}
+              <span className="status-pill">
+                {formatLevel(useCase.effortLevel)} effort
+              </span>
+              <span className="status-pill">
+                {formatLevel(useCase.riskLevel)} risk
+              </span>
+              {useCase.timeToValue ? (
+                <span className="status-pill">{useCase.timeToValue}</span>
+              ) : null}
+            </div>
           </div>
           <div className="metric-tile rounded-xl p-4">
             <div className="flex items-center gap-2">
@@ -82,6 +99,66 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
               </span>
             </div>
             <p className="mt-1 text-sm text-ink/55">Matching tools</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mt-6 grid gap-4 md:grid-cols-3">
+        <AdvisoryTile
+          icon={Target}
+          title="When to use this"
+          body={
+            useCase.painPoints.length > 0
+              ? useCase.painPoints.join(", ")
+              : `Use this path when ${useCase.name.toLowerCase()} is a repeated workflow with clear review checkpoints.`
+          }
+        />
+        <AdvisoryTile
+          icon={Gauge}
+          title="Expected impact"
+          body={
+            useCase.successMetrics.length > 0
+              ? useCase.successMetrics.join(", ")
+              : "Look for time saved, faster response cycles, more consistent output, or better decision quality."
+          }
+        />
+        <AdvisoryTile
+          icon={ShieldAlert}
+          title="Risk check"
+          body="Review data sensitivity, customer-facing claims, and whether outputs need human approval."
+        />
+      </section>
+
+      <section className="surface-strong mt-6 rounded-xl p-5">
+        <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+          <div>
+            <h2 className="text-xl font-semibold">Implementation path</h2>
+            <p className="mt-2 text-sm leading-6 text-ink/60">
+              Treat this use case as a workflow decision before it becomes a
+              software decision.
+            </p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            {(useCase.implementationSteps.length > 0
+              ? useCase.implementationSteps
+              : [
+                  "Document the current workflow",
+                  "Define the review point",
+                  "Shortlist tools by fit"
+                ]
+            ).map((step) => (
+              <div
+                className="flex items-start gap-2 rounded-lg border border-line bg-surface/70 p-3 text-sm leading-6"
+                key={step}
+              >
+                <CheckCircle2
+                  aria-hidden="true"
+                  className="mt-0.5 shrink-0 text-accent"
+                  size={15}
+                />
+                <span>{step}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -116,5 +193,27 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
       </section>
       </div>
     </main>
+  );
+}
+
+function formatLevel(value: string) {
+  return value.charAt(0) + value.slice(1).toLowerCase();
+}
+
+function AdvisoryTile({
+  body,
+  icon: Icon,
+  title
+}: {
+  body: string;
+  icon: typeof Target;
+  title: string;
+}) {
+  return (
+    <article className="surface-panel rounded-xl p-5">
+      <Icon aria-hidden="true" className="text-accent" size={21} />
+      <h2 className="mt-4 font-semibold">{title}</h2>
+      <p className="mt-2 text-sm leading-6 text-ink/62">{body}</p>
+    </article>
   );
 }

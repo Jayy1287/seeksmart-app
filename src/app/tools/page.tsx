@@ -10,14 +10,16 @@ import { ToolCard } from "@/features/tools/tool-card";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "AI Tools",
-  description: "Browse AI tools by category, pricing, and use case.",
+  title: "AI Tool Directory",
+  description:
+    "Browse curated AI tools after identifying the business workflow you want to improve.",
   alternates: {
     canonical: "/tools"
   },
   openGraph: {
-    title: "AI Tools",
-    description: "Browse AI tools by category, pricing, and use case.",
+    title: "AI Tool Directory",
+    description:
+      "Browse curated AI tools after identifying the business workflow you want to improve.",
     url: "/tools",
     type: "website"
   }
@@ -64,11 +66,14 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
         <div>
           <p className="eyebrow">
             <SlidersHorizontal aria-hidden="true" size={14} />
-            Directory
+            Tool directory
           </p>
-          <h1 className="mt-3 text-4xl font-semibold">AI tools</h1>
+          <h1 className="mt-3 text-4xl font-semibold">
+            AI tools for known workflows
+          </h1>
           <p className="mt-3 max-w-2xl text-ink/65">
-            Browse curated tools by category, pricing, and fit.
+            Browse curated tools by category, pricing, and fit once the
+            business use case is clear.
           </p>
         </div>
         <div className="metric-tile rounded-xl px-4 py-3 text-sm text-ink/60">

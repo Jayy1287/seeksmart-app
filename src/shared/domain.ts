@@ -45,7 +45,16 @@ export type PublicToolDetail = PublicToolCard & {
   metaTitle: string | null;
   metaDescription: string | null;
   features: PublicTaxonomyItem[];
-  useCases: PublicTaxonomyItem[];
+  useCases: Array<
+    PublicTaxonomyItem & {
+      fitScore: number;
+      recommendationNote: string | null;
+      bestFor: string | null;
+      limitations: string | null;
+      implementationNote: string | null;
+      pricingSuitability: string | null;
+    }
+  >;
   alternatives: PublicToolCard[];
 };
 

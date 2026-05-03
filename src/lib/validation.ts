@@ -101,3 +101,61 @@ export const updateAdminToolSchema = z.object({
   featureIds: idListSchema,
   useCaseIds: idListSchema
 });
+
+export const effortLevelSchema = z.enum(["LOW", "MEDIUM", "HIGH"]);
+export const riskLevelSchema = z.enum(["LOW", "MEDIUM", "HIGH"]);
+
+const stringListSchema = z.array(z.string().trim().min(1).max(120)).max(12);
+
+export const adminBusinessFunctionSchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  slug: optionalTrimmedString(120),
+  description: optionalTrimmedString(1000),
+  status: statusSchema.default("PUBLISHED"),
+  sortOrder: z.coerce.number().int().min(0).max(999).default(0)
+});
+
+export const adminIndustrySchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  slug: optionalTrimmedString(120),
+  description: optionalTrimmedString(1200),
+  startingPoint: optionalTrimmedString(1200),
+  cautions: optionalTrimmedString(1200),
+  status: statusSchema.default("PUBLISHED"),
+  sortOrder: z.coerce.number().int().min(0).max(999).default(0),
+  metaTitle: optionalTrimmedString(120),
+  metaDescription: optionalTrimmedString(220)
+});
+
+export const adminOpportunitySchema = z.object({
+  name: z.string().trim().min(2).max(140),
+  slug: optionalTrimmedString(140),
+  description: optionalTrimmedString(1400),
+  painPoint: optionalTrimmedString(1000),
+  expectedBenefit: optionalTrimmedString(1000),
+  startingPoint: optionalTrimmedString(1000),
+  effortLevel: effortLevelSchema.default("MEDIUM"),
+  riskLevel: riskLevelSchema.default("MEDIUM"),
+  timeToValue: optionalTrimmedString(80),
+  successMetrics: stringListSchema.default([]),
+  status: statusSchema.default("PUBLISHED"),
+  sortOrder: z.coerce.number().int().min(0).max(999).default(0),
+  businessFunctionId: optionalTrimmedString(120),
+  industryIds: idListSchema,
+  useCaseIds: idListSchema,
+  metaTitle: optionalTrimmedString(120),
+  metaDescription: optionalTrimmedString(220)
+});
+
+export const adminUseCaseIntelligenceSchema = z.object({
+  description: optionalTrimmedString(1000),
+  outcome: optionalTrimmedString(1000),
+  painPoints: stringListSchema.default([]),
+  requiredInputs: stringListSchema.default([]),
+  successMetrics: stringListSchema.default([]),
+  implementationSteps: stringListSchema.default([]),
+  effortLevel: effortLevelSchema.default("MEDIUM"),
+  riskLevel: riskLevelSchema.default("MEDIUM"),
+  timeToValue: optionalTrimmedString(80),
+  businessFunctionId: optionalTrimmedString(120)
+});
