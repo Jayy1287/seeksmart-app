@@ -175,12 +175,21 @@ textarea {
     box-shadow: 0 1px 0 rgb(255 255 255 / 0.55) inset;
   }
 
+  .site-header {
+    background-image:
+      linear-gradient(180deg, rgb(var(--color-surface) / 0.5), transparent);
+  }
+
+  .brand-lockup {
+    min-width: max-content;
+  }
+
   .brand-mark {
     overflow: hidden;
     background: rgb(3 22 33);
     box-shadow:
       0 0 0 1px rgb(var(--color-line) / 0.72),
-      0 10px 18px rgb(var(--color-ink) / 0.16);
+      0 12px 24px rgb(var(--color-ink) / 0.18);
   }
 
   .brand-logo-image {
@@ -188,6 +197,93 @@ textarea {
     width: 100%;
     object-fit: contain;
     transform: scale(1.12);
+  }
+
+  .brand-word {
+    color: rgb(var(--color-ink));
+    font-family:
+      "Avenir Next", Avenir, "Inter", ui-sans-serif, system-ui, -apple-system,
+      BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: clamp(1.18rem, 0.98rem + 0.5vw, 1.55rem);
+    font-weight: 800;
+    letter-spacing: 0;
+  }
+
+  .brand-tagline {
+    margin-top: 0.125rem;
+    color: rgb(var(--color-ink) / 0.52);
+    font-size: clamp(0.74rem, 0.68rem + 0.16vw, 0.84rem);
+    font-weight: 600;
+  }
+
+  .header-nav {
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.5) inset,
+      0 10px 24px rgb(var(--color-ink) / 0.08);
+  }
+
+  .dark .header-nav {
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.07) inset,
+      0 12px 28px rgb(0 0 0 / 0.24);
+  }
+
+  .header-nav-link {
+    display: inline-flex;
+    min-height: 2.35rem;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding-inline: clamp(0.45rem, 1.5vw, 1rem);
+    color: rgb(var(--color-ink) / 0.68);
+    white-space: nowrap;
+    transition:
+      background-color 160ms ease,
+      box-shadow 160ms ease,
+      color 160ms ease,
+      transform 160ms ease;
+  }
+
+  .header-nav-link:hover {
+    background-color: rgb(var(--color-ink));
+    color: rgb(var(--color-paper));
+    box-shadow: 0 10px 20px rgb(var(--color-ink) / 0.16);
+    transform: translateY(-1px);
+  }
+
+  .header-icon-button {
+    display: inline-flex;
+    height: 3rem;
+    width: 3rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid rgb(var(--color-line));
+    background: rgb(var(--color-surface) / 0.86);
+    color: rgb(var(--color-ink) / 0.72);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.5) inset,
+      0 10px 24px rgb(var(--color-ink) / 0.08);
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease,
+      transform 160ms ease;
+  }
+
+  @media (min-width: 768px) {
+    .header-nav-link {
+      flex: 0 0 auto;
+    }
+  }
+
+  .header-icon-button:hover {
+    border-color: rgb(var(--color-accent));
+    background: rgb(var(--color-ink));
+    color: rgb(var(--color-paper));
+    transform: translateY(-1px);
   }
 
   .tool-mark {

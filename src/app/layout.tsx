@@ -69,50 +69,48 @@ export default function RootLayout({
       </head>
       <body>
         <div className="min-h-screen">
-          <header className="sticky top-0 z-50 border-b border-line bg-paper/88 shadow-sm shadow-ink/5 backdrop-blur-xl">
-            <div className="app-container flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
-              <Link className="flex items-center gap-3 font-semibold" href="/">
-                <span className="brand-mark flex h-11 w-11 items-center justify-center rounded-full">
+          <header className="site-header sticky top-0 z-50 border-b border-line bg-paper/92 shadow-sm shadow-ink/5 backdrop-blur-xl">
+            <div className="app-container grid grid-cols-[1fr_auto] items-center gap-3 py-4 md:grid-cols-[auto_1fr_auto] lg:py-5">
+              <Link className="brand-lockup flex items-center gap-3.5" href="/">
+                <span className="brand-mark flex h-12 w-12 items-center justify-center rounded-full lg:h-14 lg:w-14">
                   <Image
                     alt=""
                     aria-hidden="true"
                     className="brand-logo-image"
-                    height={44}
+                    height={56}
                     priority
                     src={brandLogo}
-                    width={44}
+                    width={56}
                   />
                 </span>
-                <span className="leading-tight">
-                  <span className="block">SeekSmart</span>
-                  <span className="block text-xs font-medium text-ink/45">
+                <span className="min-w-0 leading-tight">
+                  <span className="brand-word block">SeekSmart</span>
+                  <span className="brand-tagline block">
                     AI tool intelligence
                   </span>
                 </span>
               </Link>
-              <div className="flex w-full items-center gap-3 sm:w-auto">
-                <nav className="flex flex-1 items-center justify-between gap-3 rounded-full border border-line bg-surface/70 px-3 py-2 text-sm font-medium text-ink/70 shadow-sm sm:flex-none sm:justify-start sm:gap-5">
-                  <Link className="transition hover:text-accent" href="/tools">
-                    Tools
-                  </Link>
-                  <Link
-                    className="transition hover:text-accent"
-                    href="/categories"
-                  >
-                    Categories
-                  </Link>
-                  <Link
-                    className="transition hover:text-accent"
-                    href="/use-cases"
-                  >
-                    Use cases
-                  </Link>
-                  <Link className="transition hover:text-accent" href="/submit">
-                    Submit
-                  </Link>
-                </nav>
-                <ThemeToggle />
-              </div>
+              <nav className="header-nav order-3 col-span-2 flex items-center justify-between gap-1 rounded-full border border-line bg-surface/82 p-1.5 text-sm font-semibold shadow-sm md:order-none md:col-span-1 md:ml-auto md:justify-start md:gap-2">
+                <Link className="header-nav-link" href="/tools">
+                  Tools
+                </Link>
+                <Link
+                  className="header-nav-link"
+                  href="/categories"
+                >
+                  Categories
+                </Link>
+                <Link
+                  className="header-nav-link"
+                  href="/use-cases"
+                >
+                  Use cases
+                </Link>
+                <Link className="header-nav-link" href="/submit">
+                  Submit
+                </Link>
+              </nav>
+              <ThemeToggle />
             </div>
           </header>
           {children}
