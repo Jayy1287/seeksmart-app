@@ -96,7 +96,7 @@ export function SubmissionReviewActions({
   return (
     <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
       <form
-        className="grid gap-4 rounded-md border border-line bg-white p-5"
+        className="surface-panel grid gap-4 rounded-xl p-5"
         onSubmit={handleApprove}
       >
         <div>
@@ -110,7 +110,7 @@ export function SubmissionReviewActions({
           <label className="grid gap-2">
             <span className="text-sm font-medium">Tool name</span>
             <input
-              className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+              className="control-field"
               defaultValue={submission.toolName}
               maxLength={120}
               name="name"
@@ -120,7 +120,7 @@ export function SubmissionReviewActions({
           <label className="grid gap-2">
             <span className="text-sm font-medium">Slug</span>
             <input
-              className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+              className="control-field"
               defaultValue={submission.suggestedSlug}
               maxLength={120}
               name="slug"
@@ -130,7 +130,7 @@ export function SubmissionReviewActions({
         <label className="grid gap-2">
           <span className="text-sm font-medium">Website URL</span>
           <input
-            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={submission.websiteUrl}
             name="websiteUrl"
             required
@@ -141,7 +141,7 @@ export function SubmissionReviewActions({
           <label className="grid gap-2">
             <span className="text-sm font-medium">Existing category</span>
             <select
-              className="min-h-11 rounded-md border border-line bg-white px-3 outline-none focus:border-accent"
+              className="control-field"
               defaultValue={matchingCategory?.id ?? ""}
               name="categoryId"
             >
@@ -156,7 +156,7 @@ export function SubmissionReviewActions({
           <label className="grid gap-2">
             <span className="text-sm font-medium">Pricing</span>
             <select
-              className="min-h-11 rounded-md border border-line bg-white px-3 outline-none focus:border-accent"
+              className="control-field"
               defaultValue={submission.pricingType}
               name="pricingType"
             >
@@ -169,7 +169,7 @@ export function SubmissionReviewActions({
         <label className="grid gap-2">
           <span className="text-sm font-medium">New category fallback</span>
           <input
-            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={submission.category}
             maxLength={80}
             name="categoryName"
@@ -178,7 +178,7 @@ export function SubmissionReviewActions({
         <label className="grid gap-2">
           <span className="text-sm font-medium">Short description</span>
           <textarea
-            className="min-h-24 rounded-md border border-line px-3 py-3 outline-none focus:border-accent"
+            className="control-field min-h-24 py-3"
             defaultValue={submission.description}
             maxLength={220}
             minLength={20}
@@ -189,7 +189,7 @@ export function SubmissionReviewActions({
         <label className="grid gap-2">
           <span className="text-sm font-medium">Long description</span>
           <textarea
-            className="min-h-32 rounded-md border border-line px-3 py-3 outline-none focus:border-accent"
+            className="control-field min-h-32 py-3"
             defaultValue={submission.description}
             maxLength={2000}
             name="longDescription"
@@ -225,7 +225,7 @@ export function SubmissionReviewActions({
         <label className="grid gap-2">
           <span className="text-sm font-medium">Popularity score</span>
           <input
-            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={0}
             max={100}
             min={0}
@@ -233,7 +233,7 @@ export function SubmissionReviewActions({
             type="number"
           />
         </label>
-        <fieldset className="grid gap-3 rounded-md border border-line p-4">
+        <fieldset className="metric-tile grid gap-3 rounded-xl p-4">
           <legend className="px-1 text-sm font-medium">Use cases</legend>
           <div className="grid gap-2 md:grid-cols-2">
             {taxonomy.useCases.map((useCase) => (
@@ -252,7 +252,7 @@ export function SubmissionReviewActions({
             ))}
           </div>
         </fieldset>
-        <fieldset className="grid gap-3 rounded-md border border-line p-4">
+        <fieldset className="metric-tile grid gap-3 rounded-xl p-4">
           <legend className="px-1 text-sm font-medium">Features</legend>
           <div className="grid gap-2 md:grid-cols-2">
             {taxonomy.features.map((feature) => (
@@ -271,7 +271,7 @@ export function SubmissionReviewActions({
             ))}
           </div>
         </fieldset>
-        <section className="grid gap-4 rounded-md border border-line bg-paper p-4">
+        <section className="metric-tile grid gap-4 rounded-xl p-4">
           <div>
             <h3 className="font-semibold">Public preview</h3>
             <p className="mt-1 text-sm text-ink/60">
@@ -282,7 +282,7 @@ export function SubmissionReviewActions({
             <label className="grid gap-2">
               <span className="text-sm font-medium">Meta title</span>
               <input
-                className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+                className="control-field"
                 defaultValue={defaultMetaTitle}
                 maxLength={120}
                 name="metaTitle"
@@ -291,7 +291,7 @@ export function SubmissionReviewActions({
             <label className="grid gap-2">
               <span className="text-sm font-medium">Public path</span>
               <input
-                className="min-h-11 rounded-md border border-line px-3 text-ink/60 outline-none"
+                className="control-field text-ink/60"
                 defaultValue={`/tools/${submission.suggestedSlug}`}
                 readOnly
               />
@@ -300,7 +300,7 @@ export function SubmissionReviewActions({
           <label className="grid gap-2">
             <span className="text-sm font-medium">Meta description</span>
             <textarea
-              className="min-h-20 rounded-md border border-line px-3 py-3 outline-none focus:border-accent"
+              className="control-field min-h-20 py-3"
               defaultValue={defaultMetaDescription}
               maxLength={220}
               name="metaDescription"
@@ -310,13 +310,13 @@ export function SubmissionReviewActions({
         <label className="grid gap-2">
           <span className="text-sm font-medium">Review note</span>
           <input
-            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            className="control-field"
             maxLength={500}
             name="reviewNote"
           />
         </label>
         <button
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-accent px-5 font-medium text-white disabled:opacity-60"
+          className="primary-button bg-accent text-white disabled:opacity-60"
           disabled={isDisabled}
         >
           <CheckCircle2 aria-hidden="true" size={17} />
@@ -325,7 +325,7 @@ export function SubmissionReviewActions({
       </form>
 
       <form
-        className="grid content-start gap-4 rounded-md border border-line bg-white p-5"
+        className="surface-panel grid content-start gap-4 rounded-xl p-5"
         onSubmit={handleReject}
       >
         <div>
@@ -337,7 +337,7 @@ export function SubmissionReviewActions({
         <label className="grid gap-2">
           <span className="text-sm font-medium">Reason</span>
           <textarea
-            className="min-h-32 rounded-md border border-line px-3 py-3 outline-none focus:border-accent"
+            className="control-field min-h-32 py-3"
             maxLength={500}
             minLength={5}
             name="reason"
@@ -345,7 +345,7 @@ export function SubmissionReviewActions({
           />
         </label>
         <button
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-signal px-5 font-medium text-signal disabled:opacity-60"
+          className="secondary-button min-h-11 border-signal text-signal disabled:opacity-60"
           disabled={isDisabled}
         >
           <XCircle aria-hidden="true" size={17} />

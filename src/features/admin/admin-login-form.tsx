@@ -45,21 +45,21 @@ export function AdminLoginForm() {
 
   return (
     <form
-      className="grid gap-4 rounded-md border border-line bg-white p-5"
+      className="surface-panel grid gap-4 rounded-xl p-5"
       onSubmit={handleSubmit}
     >
       <label className="grid gap-2">
         <span className="text-sm font-medium">Admin password</span>
         <input
           autoComplete="current-password"
-          className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+          className="control-field"
           name="password"
           required
           type="password"
         />
       </label>
       <button
-        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-ink px-5 font-medium text-paper disabled:opacity-60"
+        className="primary-button disabled:opacity-60"
         disabled={state === "submitting"}
       >
         <LockKeyhole aria-hidden="true" size={17} />

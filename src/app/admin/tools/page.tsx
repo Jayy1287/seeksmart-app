@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Search } from "lucide-react";
 import { AdminLogoutButton } from "@/features/admin/admin-logout-button";
 import { isAdminAuthenticated } from "@/server/admin/auth";
 import {
@@ -63,10 +64,11 @@ export default async function AdminToolsPage({
   ]);
 
   return (
-    <main className="mx-auto grid max-w-6xl gap-6 px-5 py-10">
-      <section className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <main className="page-shell">
+      <div className="app-container grid gap-6">
+      <section className="surface-strong flex flex-col gap-4 rounded-2xl p-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-medium uppercase text-accent">Admin</p>
+          <p className="eyebrow">Admin</p>
           <h1 className="mt-2 text-4xl font-semibold">Tool catalog</h1>
           <p className="mt-3 max-w-2xl leading-7 text-ink/65">
             Edit published tools, adjust taxonomy, and archive listings that
@@ -75,7 +77,7 @@ export default async function AdminToolsPage({
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Link
-            className="inline-flex min-h-10 items-center justify-center rounded-md border border-line bg-white px-3 text-sm font-medium"
+            className="secondary-button"
             href="/admin"
           >
             Review queue
@@ -84,15 +86,23 @@ export default async function AdminToolsPage({
         </div>
       </section>
 
-      <form className="grid gap-3 rounded-md border border-line bg-white p-4 md:grid-cols-[1fr_160px]">
+      <form className="surface-panel grid gap-3 rounded-xl p-4 md:grid-cols-[1fr_160px]">
         <input name="status" type="hidden" value={activeStatus} />
-        <input
-          className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
-          defaultValue={query ?? ""}
-          name="q"
-          placeholder="Search tools by name, URL, or description"
-        />
-        <button className="min-h-11 rounded-md bg-ink px-4 font-medium text-paper">
+        <label className="relative">
+          <span className="sr-only">Search tools</span>
+          <Search
+            aria-hidden="true"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40"
+            size={18}
+          />
+          <input
+            className="control-field w-full pl-10"
+            defaultValue={query ?? ""}
+            name="q"
+            placeholder="Search tools by name, URL, or description"
+          />
+        </label>
+        <button className="primary-button">
           Search
         </button>
       </form>
@@ -105,8 +115,8 @@ export default async function AdminToolsPage({
             <Link
               className={
                 isActive
-                  ? "rounded-md border border-accent bg-accent px-4 py-3 text-white"
-                  : "rounded-md border border-line bg-white px-4 py-3"
+                  ? "rounded-xl border border-accent bg-accent px-4 py-3 text-white shadow-lg shadow-accent/15"
+                  : "metric-tile rounded-xl px-4 py-3 transition hover:-translate-y-0.5 hover:border-accent"
               }
               href={`/admin/tools?status=${status}`}
               key={status}
@@ -120,7 +130,7 @@ export default async function AdminToolsPage({
         })}
       </nav>
 
-      <section className="rounded-md border border-line bg-white">
+      <section className="admin-table-shell rounded-xl">
         <div className="border-b border-line px-5 py-4">
           <h2 className="font-semibold">{activeStatus} tools</h2>
         </div>
@@ -128,7 +138,7 @@ export default async function AdminToolsPage({
           <div className="divide-y divide-line">
             {tools.map((tool) => (
               <Link
-                className="grid gap-3 px-5 py-4 transition hover:bg-paper md:grid-cols-[1fr_180px_140px]"
+                className="grid gap-3 px-5 py-4 transition hover:bg-muted/40 md:grid-cols-[1fr_180px_140px]"
                 href={`/admin/tools/${tool.id}`}
                 key={tool.id}
               >
@@ -136,12 +146,12 @@ export default async function AdminToolsPage({
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-semibold">{tool.name}</span>
                     {tool.isFeatured ? (
-                      <span className="rounded-md bg-accent/10 px-2 py-1 text-xs font-medium text-accent">
+                      <span className="rounded-full bg-accent/10 px-2.5 py-1 text-xs font-medium text-accent ring-1 ring-accent/15">
                         Featured
                       </span>
                     ) : null}
                     {tool.isVerified ? (
-                      <span className="rounded-md bg-accent/10 px-2 py-1 text-xs font-medium text-accent">
+                      <span className="rounded-full bg-accent/10 px-2.5 py-1 text-xs font-medium text-accent ring-1 ring-accent/15">
                         Verified
                       </span>
                     ) : null}
@@ -169,6 +179,7 @@ export default async function AdminToolsPage({
           </div>
         )}
       </section>
+      </div>
     </main>
   );
 }

@@ -107,7 +107,7 @@ export default async function Home() {
                 <h2 className="mt-1 text-lg font-semibold">Real categories</h2>
               </div>
               <Link
-                className="rounded-md border border-line px-3 py-2 text-sm font-medium text-accent"
+                className="secondary-button"
                 href="/categories"
               >
                 View all

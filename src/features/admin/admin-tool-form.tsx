@@ -78,14 +78,14 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
 
   return (
     <form
-      className="grid gap-5 rounded-md border border-line bg-white p-5"
+      className="surface-panel grid gap-5 rounded-xl p-5"
       onSubmit={handleSubmit}
     >
       <div className="grid gap-4 md:grid-cols-2">
         <label className="grid gap-2">
           <span className="text-sm font-medium">Tool name</span>
           <input
-            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={tool.name}
             maxLength={120}
             name="name"
@@ -95,7 +95,7 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
         <label className="grid gap-2">
           <span className="text-sm font-medium">Slug</span>
           <input
-            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={tool.slug}
             maxLength={120}
             name="slug"
@@ -108,7 +108,7 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
         <label className="grid gap-2">
           <span className="text-sm font-medium">Website URL</span>
           <input
-            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={tool.websiteUrl}
             name="websiteUrl"
             required
@@ -118,7 +118,7 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
         <label className="grid gap-2">
           <span className="text-sm font-medium">Logo URL</span>
           <input
-            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={tool.logoUrl ?? ""}
             name="logoUrl"
             type="url"
@@ -130,7 +130,7 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
         <label className="grid gap-2">
           <span className="text-sm font-medium">Category</span>
           <select
-            className="min-h-11 rounded-md border border-line bg-white px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={tool.categoryId}
             name="categoryId"
             required
@@ -145,7 +145,7 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
         <label className="grid gap-2">
           <span className="text-sm font-medium">Pricing</span>
           <select
-            className="min-h-11 rounded-md border border-line bg-white px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={tool.pricingType}
             name="pricingType"
           >
@@ -157,7 +157,7 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
         <label className="grid gap-2">
           <span className="text-sm font-medium">Status</span>
           <select
-            className="min-h-11 rounded-md border border-line bg-white px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={tool.status}
             name="status"
           >
@@ -173,7 +173,7 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
       <label className="grid gap-2">
         <span className="text-sm font-medium">Short description</span>
         <textarea
-          className="min-h-24 rounded-md border border-line px-3 py-3 outline-none focus:border-accent"
+          className="control-field min-h-24 py-3"
           defaultValue={tool.shortDescription}
           maxLength={220}
           minLength={20}
@@ -184,7 +184,7 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
       <label className="grid gap-2">
         <span className="text-sm font-medium">Long description</span>
         <textarea
-          className="min-h-32 rounded-md border border-line px-3 py-3 outline-none focus:border-accent"
+          className="control-field min-h-32 py-3"
           defaultValue={tool.longDescription ?? ""}
           maxLength={2000}
           name="longDescription"
@@ -195,7 +195,7 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
         <label className="grid gap-2">
           <span className="text-sm font-medium">Meta title</span>
           <input
-            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={tool.metaTitle ?? ""}
             maxLength={120}
             name="metaTitle"
@@ -204,7 +204,7 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
         <label className="grid gap-2">
           <span className="text-sm font-medium">Popularity score</span>
           <input
-            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue={tool.popularityScore}
             max={100}
             min={0}
@@ -216,7 +216,7 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
       <label className="grid gap-2">
         <span className="text-sm font-medium">Meta description</span>
         <textarea
-          className="min-h-20 rounded-md border border-line px-3 py-3 outline-none focus:border-accent"
+          className="control-field min-h-20 py-3"
           defaultValue={tool.metaDescription ?? ""}
           maxLength={220}
           name="metaDescription"
@@ -268,14 +268,14 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
 
       <div className="flex flex-col gap-3 border-t border-line pt-4 sm:flex-row sm:justify-between">
         <button
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-ink px-5 font-medium text-paper disabled:opacity-60"
+          className="primary-button disabled:opacity-60"
           disabled={isSubmitting}
         >
           <Save aria-hidden="true" size={17} />
           {isSubmitting ? "Saving" : "Save tool"}
         </button>
         <button
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-signal px-5 font-medium text-signal disabled:opacity-60"
+          className="secondary-button min-h-11 border-signal text-signal disabled:opacity-60"
           disabled={isSubmitting}
           onClick={(event) => {
             const form = event.currentTarget.form;
@@ -317,7 +317,7 @@ function TaxonomyCheckboxes({
   title
 }: TaxonomyCheckboxesProps) {
   return (
-    <fieldset className="grid gap-3 rounded-md border border-line p-4">
+    <fieldset className="metric-tile grid gap-3 rounded-xl p-4">
       <legend className="px-1 text-sm font-medium">{title}</legend>
       <div className="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (

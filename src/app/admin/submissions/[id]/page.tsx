@@ -57,8 +57,9 @@ export default async function AdminSubmissionPage({
   ]);
 
   return (
-    <main className="mx-auto grid max-w-6xl gap-6 px-5 py-10">
-      <section className="rounded-md border border-line bg-white p-5">
+    <main className="page-shell">
+      <div className="app-container grid gap-6">
+      <section className="surface-strong rounded-2xl p-6">
         <Link
           className="inline-flex items-center gap-2 text-sm font-medium text-accent"
           href="/admin"
@@ -87,7 +88,7 @@ export default async function AdminSubmissionPage({
               <ExternalLink aria-hidden="true" size={15} />
             </a>
           </div>
-          <div className="grid gap-3 rounded-md border border-line p-4 text-sm">
+          <div className="metric-tile grid gap-3 rounded-xl p-4 text-sm">
             <div>
               <div className="text-ink/50">Submitted</div>
               <div className="font-medium">{formatDate(submission.createdAt)}</div>
@@ -106,7 +107,7 @@ export default async function AdminSubmissionPage({
         </div>
       </section>
 
-      <section className="rounded-md border border-line bg-white p-5">
+      <section className="surface-panel rounded-xl p-5">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div>
             <h2 className="font-semibold">Duplicate check</h2>
@@ -114,7 +115,7 @@ export default async function AdminSubmissionPage({
               Review likely matches before approving a new public listing.
             </p>
           </div>
-          <span className="rounded-md bg-paper px-3 py-2 text-sm font-medium">
+          <span className="status-pill">
             {duplicateCandidates.length} matches
           </span>
         </div>
@@ -122,12 +123,12 @@ export default async function AdminSubmissionPage({
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {duplicateCandidates.map((candidate) => (
               <div
-                className="rounded-md border border-line p-4 text-sm"
+                className="metric-tile rounded-xl p-4 text-sm"
                 key={`${candidate.type}-${candidate.id}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="font-medium">{candidate.label}</div>
-                  <span className="shrink-0 rounded-md bg-paper px-2 py-1 text-xs">
+                  <span className="shrink-0 rounded-full bg-muted px-2.5 py-1 text-xs">
                     {candidate.type} · {candidate.status}
                   </span>
                 </div>
@@ -147,7 +148,7 @@ export default async function AdminSubmissionPage({
       {submission.status === "PENDING" ? (
         <SubmissionReviewActions submission={submission} taxonomy={taxonomy} />
       ) : (
-        <section className="rounded-md border border-line bg-white p-8 text-center">
+        <section className="surface-panel rounded-xl p-8 text-center">
           <h2 className="font-semibold">Review complete</h2>
           <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
             This submission has already been reviewed and cannot be changed from
@@ -155,6 +156,7 @@ export default async function AdminSubmissionPage({
           </p>
         </section>
       )}
+      </div>
     </main>
   );
 }

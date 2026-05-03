@@ -13,7 +13,7 @@ export function AdminLogoutButton() {
 
   return (
     <button
-      className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-line bg-white px-3 text-sm font-medium"
+      className="secondary-button"
       onClick={handleLogout}
       type="button"
     >

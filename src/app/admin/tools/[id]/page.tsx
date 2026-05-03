@@ -41,8 +41,9 @@ export default async function AdminToolPage({ params }: AdminToolPageProps) {
   }
 
   return (
-    <main className="mx-auto grid max-w-6xl gap-6 px-5 py-10">
-      <section className="rounded-md border border-line bg-white p-5">
+    <main className="page-shell">
+      <div className="app-container grid gap-6">
+      <section className="surface-strong rounded-2xl p-6">
         <Link
           className="inline-flex items-center gap-2 text-sm font-medium text-accent"
           href="/admin/tools"
@@ -62,7 +63,7 @@ export default async function AdminToolPage({ params }: AdminToolPageProps) {
           </div>
           {tool.status === "PUBLISHED" ? (
             <Link
-              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-md border border-line px-3 text-sm font-medium"
+              className="secondary-button"
               href={`/tools/${tool.slug}`}
               target="_blank"
             >
@@ -74,6 +75,7 @@ export default async function AdminToolPage({ params }: AdminToolPageProps) {
       </section>
 
       <AdminToolForm taxonomy={taxonomy} tool={tool} />
+      </div>
     </main>
   );
 }
