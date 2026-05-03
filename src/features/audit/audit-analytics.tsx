@@ -16,7 +16,7 @@ type AuditAnalyticsPayload = {
 
 declare global {
   interface Window {
-    dataLayer?: AuditAnalyticsPayload[];
+    dataLayer?: Array<Record<string, unknown>>;
   }
 }
 
@@ -61,5 +61,5 @@ export function trackAuditEvent(
       detail: payload
     })
   );
-  window.dataLayer?.push(payload);
+  window.dataLayer?.push(payload as unknown as Record<string, unknown>);
 }

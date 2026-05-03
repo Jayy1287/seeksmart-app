@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { Send } from "lucide-react";
+import { trackEvent } from "@/features/analytics/site-analytics";
 import type { ApiResponse } from "@/shared/api";
 
 type SubmitState = "idle" | "submitting" | "success" | "error";
@@ -39,15 +40,22 @@ export function SubmitToolForm() {
       if (!result.ok) {
         setState("error");
         setMessage(result.error.message);
+        trackEvent("submission_failed", {
+          reason: result.error.code
+        });
         return;
       }
 
       event.currentTarget.reset();
       setState("success");
       setMessage("Submission received. It will appear after review.");
+      trackEvent("submission_completed");
     } catch {
       setState("error");
       setMessage("Unable to submit right now. Please try again.");
+      trackEvent("submission_failed", {
+        reason: "NETWORK_ERROR"
+      });
     }
   }
 

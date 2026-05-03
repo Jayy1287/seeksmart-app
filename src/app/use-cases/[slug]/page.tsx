@@ -17,6 +17,7 @@ import {
   listToolsForUseCase,
   type PublicUseCaseToolFit
 } from "@/server/use-cases/queries";
+import { TrackedExternalLink } from "@/features/analytics/tracked-link";
 
 export const dynamic = "force-dynamic";
 
@@ -295,14 +296,19 @@ function ToolFitCard({ tool }: { tool: PublicUseCaseToolFit }) {
         <Link className="secondary-button" href={`/tools/${tool.slug}`}>
           Details
         </Link>
-        <a
+        <TrackedExternalLink
           className="secondary-button"
+          event="tool_website_clicked"
           href={tool.websiteUrl}
+          properties={{
+            source: "use_case_tool_fit",
+            toolSlug: tool.slug
+          }}
           rel="noreferrer"
           target="_blank"
         >
           Website
-        </a>
+        </TrackedExternalLink>
       </div>
     </article>
   );

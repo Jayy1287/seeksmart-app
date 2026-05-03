@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "test:recommendations": "tsx src/server/recommendations/scoring.test.ts",
+    "test:smoke": "node scripts/smoke.mjs",
     "typecheck": "next typegen && tsc --noEmit",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",

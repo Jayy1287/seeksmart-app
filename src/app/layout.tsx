@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
+import { SiteAnalytics } from "@/features/analytics/site-analytics";
 import { ThemeToggle } from "@/features/theme/theme-toggle";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
@@ -77,6 +78,9 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
+        <Suspense fallback={null}>
+          <SiteAnalytics />
+        </Suspense>
         <div className="min-h-screen">
           <header className="site-header sticky top-0 z-50 border-b border-line bg-paper/92 shadow-sm shadow-ink/5 backdrop-blur-xl">
             <div className="app-container grid grid-cols-[1fr_auto] items-center gap-3 py-4 md:grid-cols-[auto_1fr_auto] lg:py-5">
@@ -138,6 +142,15 @@ export default function RootLayout({
                 </Link>
                 <Link className="hover:text-accent" href="/submit">
                   Submit tool
+                </Link>
+                <Link className="hover:text-accent" href="/feedback">
+                  Feedback
+                </Link>
+                <Link className="hover:text-accent" href="/privacy">
+                  Privacy
+                </Link>
+                <Link className="hover:text-accent" href="/terms">
+                  Terms
                 </Link>
               </div>
             </div>

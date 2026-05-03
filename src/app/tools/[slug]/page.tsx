@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   Sparkles
 } from "lucide-react";
+import { TrackedExternalLink } from "@/features/analytics/tracked-link";
 import { ToolCard } from "@/features/tools/tool-card";
 import { getPublishedToolBySlug } from "@/server/tools/queries";
 import type { PublicToolDetail } from "@/shared/domain";
@@ -130,15 +131,20 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                 value={tool.isVerified ? "Verified listing" : "Needs verification"}
               />
             </dl>
-            <a
+            <TrackedExternalLink
               className="primary-button mt-5 w-full"
+              event="tool_website_clicked"
               href={tool.websiteUrl}
+              properties={{
+                toolSlug: tool.slug,
+                source: "tool_detail_snapshot"
+              }}
               rel="noreferrer"
               target="_blank"
             >
               Visit website
               <ExternalLink aria-hidden="true" size={17} />
-            </a>
+            </TrackedExternalLink>
           </aside>
         </section>
 

@@ -2,6 +2,7 @@ export type ApiErrorCode =
   | "BAD_REQUEST"
   | "CONFLICT"
   | "UNAUTHORIZED"
+  | "RATE_LIMITED"
   | "NOT_FOUND"
   | "INTERNAL_SERVER_ERROR";
 
