@@ -4,15 +4,19 @@
 
 :root {
   color-scheme: light;
-  --color-ink: 7 25 35;
-  --color-paper: 244 248 247;
+  --color-ink: 16 41 76;
+  --color-paper: 232 242 250;
   --color-surface: 255 255 255;
-  --color-muted: 232 240 238;
-  --color-line: 209 224 221;
-  --color-accent: 13 104 108;
-  --color-brand: 14 111 114;
-  --color-signal: 181 119 31;
-  --color-warm: 216 155 43;
+  --color-muted: 219 232 247;
+  --color-line: 194 211 232;
+  --color-accent: 37 70 143;
+  --color-brand: 37 70 143;
+  --color-signal: 255 145 43;
+  --color-warm: 255 174 115;
+  --color-success: 115 180 113;
+  --color-primary-light: 107 152 246;
+  --color-secondary: 137 155 250;
+  --color-muted-text: 30 56 101;
   background: rgb(var(--color-paper));
   color: rgb(var(--color-ink));
 }
@@ -29,7 +33,7 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    linear-gradient(180deg, rgb(250 252 251), rgb(var(--color-paper)) 18rem),
+    linear-gradient(180deg, rgb(248 251 255), rgb(var(--color-paper)) 19rem),
     rgb(var(--color-paper));
   color: rgb(var(--color-ink));
   font-family:
@@ -62,7 +66,7 @@ textarea {
 }
 
 ::selection {
-  background: rgb(var(--color-accent) / 0.18);
+  background: rgb(var(--color-primary-light) / 0.28);
 }
 
 @layer utilities {
@@ -84,8 +88,8 @@ textarea {
   }
 
   .site-header {
-    border-bottom: 1px solid rgb(var(--color-line) / 0.78);
-    background: rgb(250 252 251 / 0.92);
+    border-bottom: 1px solid rgb(var(--color-line) / 0.86);
+    background: rgb(248 251 255 / 0.9);
     box-shadow: 0 1px 0 rgb(255 255 255 / 0.7) inset;
     backdrop-filter: blur(18px);
   }
@@ -100,7 +104,7 @@ textarea {
     background: rgb(var(--color-ink));
     box-shadow:
       0 0 0 1px rgb(var(--color-ink) / 0.08),
-      0 16px 34px rgb(var(--color-ink) / 0.14);
+      0 16px 34px rgb(var(--color-accent) / 0.18);
   }
 
   .brand-logo-image {
@@ -126,15 +130,15 @@ textarea {
 
   .brand-tagline {
     margin-top: 0.1rem;
-    color: rgb(var(--color-ink) / 0.54);
+    color: rgb(var(--color-muted-text) / 0.72);
     font-size: clamp(0.68rem, 0.64rem + 0.12vw, 0.78rem);
     font-weight: 650;
   }
 
   .header-nav {
     border: 1px solid rgb(var(--color-line) / 0.88);
-    background: rgb(var(--color-surface) / 0.82);
-    box-shadow: 0 12px 32px rgb(var(--color-ink) / 0.06);
+    background: rgb(var(--color-surface) / 0.9);
+    box-shadow: 0 12px 32px rgb(var(--color-accent) / 0.08);
   }
 
   .header-nav-link {
@@ -145,7 +149,7 @@ textarea {
     justify-content: center;
     border-radius: 0.55rem;
     padding-inline: clamp(0.45rem, 1.5vw, 0.9rem);
-    color: rgb(var(--color-ink) / 0.66);
+    color: rgb(var(--color-muted-text) / 0.8);
     white-space: nowrap;
     transition:
       background-color 160ms ease,
@@ -154,8 +158,8 @@ textarea {
   }
 
   .header-nav-link:hover {
-    background-color: rgb(var(--color-muted) / 0.78);
-    color: rgb(var(--color-ink));
+    background-color: rgb(var(--color-primary-light) / 0.12);
+    color: rgb(var(--color-accent));
     transform: translateY(-1px);
   }
 
@@ -180,12 +184,12 @@ textarea {
     background: rgb(var(--color-surface) / 0.94);
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.82) inset,
-      0 18px 46px rgb(var(--color-ink) / 0.055);
+      0 18px 46px rgb(var(--color-accent) / 0.07);
   }
 
   .surface-strong {
     background:
-      linear-gradient(180deg, rgb(var(--color-surface)), rgb(250 252 251)),
+      linear-gradient(180deg, rgb(var(--color-surface)), rgb(247 250 255)),
       rgb(var(--color-surface));
   }
 
@@ -193,12 +197,13 @@ textarea {
     position: relative;
     overflow: hidden;
     background:
-      linear-gradient(90deg, rgb(255 255 255 / 0.98), rgb(255 255 255 / 0.86)),
-      linear-gradient(135deg, rgb(var(--color-accent) / 0.1), transparent 45%),
+      linear-gradient(90deg, rgb(255 255 255 / 0.98), rgb(255 255 255 / 0.9)),
+      linear-gradient(135deg, rgb(var(--color-primary-light) / 0.18), transparent 46%),
+      linear-gradient(315deg, rgb(var(--color-signal) / 0.12), transparent 54%),
       rgb(var(--color-surface));
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.9) inset,
-      0 30px 80px rgb(var(--color-ink) / 0.075);
+      0 30px 80px rgb(var(--color-accent) / 0.1);
   }
 
   .hero-panel::after {
@@ -217,7 +222,7 @@ textarea {
     position: relative;
     overflow: hidden;
     background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.95), rgb(248 251 250)),
+      linear-gradient(180deg, rgb(255 255 255 / 0.96), rgb(247 250 255)),
       rgb(var(--color-surface));
   }
 
@@ -226,7 +231,7 @@ textarea {
     inset: 0;
     pointer-events: none;
     content: "";
-    border-top: 4px solid rgb(var(--color-accent));
+    border-top: 4px solid rgb(var(--color-signal));
   }
 
   .eyebrow {
@@ -235,7 +240,7 @@ textarea {
     gap: 0.5rem;
     border-radius: 999px;
     border: 1px solid rgb(var(--color-line));
-    background: rgb(var(--color-muted) / 0.62);
+    background: rgb(var(--color-primary-light) / 0.12);
     padding: 0.45rem 0.7rem;
     color: rgb(var(--color-accent));
     font-size: 0.72rem;
@@ -251,15 +256,15 @@ textarea {
     justify-content: center;
     gap: 0.5rem;
     border-radius: 0.6rem;
-    border: 1px solid rgb(var(--color-ink));
+    border: 1px solid rgb(var(--color-accent));
     background:
-      linear-gradient(180deg, rgb(13 55 61), rgb(var(--color-ink)));
+      linear-gradient(180deg, rgb(var(--color-primary-light)), rgb(var(--color-accent)));
     padding-inline: 1.2rem;
     color: white;
     font-weight: 760;
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.15) inset,
-      0 16px 30px rgb(var(--color-ink) / 0.16);
+      0 16px 30px rgb(var(--color-accent) / 0.2);
     transition:
       transform 160ms ease,
       box-shadow 160ms ease,
@@ -270,7 +275,7 @@ textarea {
     transform: translateY(-1px);
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.18) inset,
-      0 20px 34px rgb(var(--color-ink) / 0.18);
+      0 20px 34px rgb(var(--color-accent) / 0.24);
   }
 
   .secondary-button {
@@ -283,7 +288,7 @@ textarea {
     border: 1px solid rgb(var(--color-line));
     background: rgb(var(--color-surface) / 0.82);
     padding-inline: 0.95rem;
-    color: rgb(var(--color-ink) / 0.78);
+    color: rgb(var(--color-muted-text) / 0.86);
     font-size: 0.875rem;
     font-weight: 720;
     transition:
@@ -295,7 +300,7 @@ textarea {
 
   .secondary-button:hover {
     border-color: rgb(var(--color-accent));
-    background: rgb(var(--color-muted) / 0.6);
+    background: rgb(var(--color-primary-light) / 0.1);
     color: rgb(var(--color-accent));
     transform: translateY(-1px);
   }
@@ -303,7 +308,7 @@ textarea {
   .metric-tile {
     border: 1px solid rgb(var(--color-line));
     background:
-      linear-gradient(180deg, rgb(255 255 255), rgb(247 251 250));
+      linear-gradient(180deg, rgb(255 255 255), rgb(247 250 255));
     box-shadow: 0 1px 0 rgb(255 255 255 / 0.75) inset;
   }
 
@@ -313,9 +318,9 @@ textarea {
     gap: 0.375rem;
     border-radius: 999px;
     border: 1px solid rgb(var(--color-line));
-    background: rgb(var(--color-muted) / 0.6);
+    background: rgb(var(--color-primary-light) / 0.1);
     padding: 0.34rem 0.62rem;
-    color: rgb(var(--color-ink) / 0.82);
+    color: rgb(var(--color-muted-text) / 0.92);
     font-size: 0.73rem;
     font-weight: 760;
   }
@@ -336,21 +341,21 @@ textarea {
 
   .control-field:focus {
     border-color: rgb(var(--color-accent));
-    box-shadow: 0 0 0 3px rgb(var(--color-accent) / 0.12);
+    box-shadow: 0 0 0 3px rgb(var(--color-primary-light) / 0.22);
   }
 
   .tool-mark {
-    background: rgb(var(--color-ink));
+    background: rgb(var(--color-accent));
     color: white;
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.16) inset,
-      0 10px 22px rgb(var(--color-ink) / 0.13);
+      0 10px 22px rgb(var(--color-accent) / 0.16);
   }
 
   .admin-table-shell {
     overflow: hidden;
     border: 1px solid rgb(var(--color-line));
     background: rgb(var(--color-surface) / 0.92);
-    box-shadow: 0 18px 46px rgb(var(--color-ink) / 0.06);
+    box-shadow: 0 18px 46px rgb(var(--color-accent) / 0.08);
   }
 }

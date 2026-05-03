@@ -46,22 +46,13 @@ export function HomepageLottieVisual() {
   }, []);
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-line bg-white">
-      <div className="absolute left-0 top-0 h-1 w-full bg-accent" />
+    <div className="relative mx-auto w-full max-w-[34rem]">
+      <div className="absolute inset-x-8 bottom-2 h-10 rounded-[50%] bg-accent/10 blur-xl" />
       <div
         aria-hidden="true"
-        className="mx-auto aspect-[1002/632] w-full max-w-[34rem]"
+        className="relative aspect-[1002/632] w-full"
         ref={containerRef}
       />
-      <div className="border-t border-line bg-muted/36 px-4 py-3">
-        <p className="text-xs font-bold uppercase text-accent">
-          Collaborative decision mapping
-        </p>
-        <p className="mt-1 text-sm leading-6 text-ink/62">
-          Align the team around opportunities, workflows, and feedback before
-          selecting a tool.
-        </p>
-      </div>
     </div>
   );
 }

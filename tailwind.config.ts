@@ -15,10 +15,14 @@ const config: Config = {
         line: "rgb(var(--color-line) / <alpha-value>)",
         accent: "rgb(var(--color-accent) / <alpha-value>)",
         signal: "rgb(var(--color-signal) / <alpha-value>)",
+        success: "rgb(var(--color-success) / <alpha-value>)",
+        secondary: "rgb(var(--color-secondary) / <alpha-value>)",
         surface: "rgb(var(--color-surface) / <alpha-value>)",
         muted: "rgb(var(--color-muted) / <alpha-value>)",
         brand: "rgb(var(--color-brand) / <alpha-value>)",
-        warm: "rgb(var(--color-warm) / <alpha-value>)"
+        warm: "rgb(var(--color-warm) / <alpha-value>)",
+        "primary-light": "rgb(var(--color-primary-light) / <alpha-value>)",
+        "muted-text": "rgb(var(--color-muted-text) / <alpha-value>)"
       }
     }
   },
