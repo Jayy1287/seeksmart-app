@@ -1,21 +1,13 @@
 import type { Metadata } from "next";
-import type { Route } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
+import { SiteNavigation } from "@/components/site-navigation";
 import { SiteAnalytics } from "@/features/analytics/site-analytics";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 const brandLogo = "/brand/seeksmart-logo.png";
-const navigationLinks: Array<{ href: Route; label: string }> = [
-  { href: "/tools", label: "Tools" },
-  { href: "/use-cases", label: "Use cases" },
-  { href: "/industries", label: "Industries" },
-  { href: "/playbooks", label: "Playbooks" },
-  { href: "/audit", label: "AI audit" },
-  { href: "/resources", label: "Resources" }
-];
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -86,21 +78,11 @@ export default function RootLayout({
                     Seek<span className="brand-accent">Smart</span>
                   </span>
                   <span className="brand-tagline block">
-                    AI decision intelligence
+                    Smarter AI Choices
                   </span>
                 </span>
               </Link>
-              <nav className="header-nav flex flex-wrap items-center justify-center gap-1 rounded-xl p-1.5 text-sm font-semibold md:ml-auto md:justify-start md:gap-1.5">
-                {navigationLinks.map((link) => (
-                  <Link
-                    className="header-nav-link"
-                    href={link.href}
-                    key={link.href}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </nav>
+              <SiteNavigation />
               <Link className="primary-button hidden min-h-10 px-4 md:inline-flex" href="/audit/start">
                 Start audit
               </Link>
@@ -120,7 +102,7 @@ export default function RootLayout({
                     width={28}
                   />
                 </span>
-                AI decision intelligence for practical teams.
+                Smarter AI Choices for practical teams.
               </div>
               <div className="flex flex-wrap gap-4">
                 <Link className="hover:text-accent" href="/tools">

@@ -65,7 +65,7 @@ export default async function Home() {
           <div className="relative z-10">
             <p className="eyebrow">
               <ShieldCheck aria-hidden="true" size={15} />
-              AI decision intelligence
+              Smarter AI Choices
             </p>
             <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.02em] text-ink md:text-7xl">
               Decide where AI belongs before you buy another tool.
@@ -102,7 +102,7 @@ export default async function Home() {
                   type="search"
                 />
               </label>
-              <button className="primary-button min-h-12" type="submit">
+              <button className="search-button min-h-12" type="submit">
                 Search
               </button>
             </form>
