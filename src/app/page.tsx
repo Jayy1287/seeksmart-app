@@ -290,8 +290,24 @@ export default async function Home() {
                         {tool.shortDescription}
                       </p>
                     </div>
-                    <div className="metric-tile rounded-lg px-4 py-3 text-sm md:text-right">
-                      Score {tool.popularityScore}
+                    <div className="rounded-lg border border-line bg-primary-light/10 px-3 py-2 md:w-28">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <span className="text-[0.68rem] font-extrabold uppercase text-muted-text/70">
+                          Signal
+                        </span>
+                        <span className="text-lg font-semibold text-ink">
+                          {tool.popularityScore}
+                        </span>
+                      </div>
+                      <div
+                        aria-hidden="true"
+                        className="mt-2 h-1.5 overflow-hidden rounded-full bg-white"
+                      >
+                        <div
+                          className="h-full rounded-full bg-signal"
+                          style={{ width: `${tool.popularityScore}%` }}
+                        />
+                      </div>
                     </div>
                   </Link>
                 ))}
