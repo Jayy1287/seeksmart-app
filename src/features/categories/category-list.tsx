@@ -10,7 +10,7 @@ export function CategoryList({ categories }: CategoryListProps) {
     <div className="grid grid-cols-2 gap-3">
       {categories.map((category) => (
         <Link
-          className="flex min-h-16 flex-col justify-center rounded-md border border-line bg-muted/25 px-4 py-3 text-sm font-medium transition hover:-translate-y-0.5 hover:border-accent hover:bg-accent/5 hover:text-accent"
+          className="flex min-h-16 flex-col justify-center rounded-xl border border-line bg-surface/72 px-4 py-3 text-sm font-medium shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:bg-accent/5 hover:text-accent"
           href={`/categories/${category.slug}`}
           key={category.id}
         >

@@ -26,9 +26,10 @@ export default async function UseCasesPage() {
   );
 
   return (
-    <main className="mx-auto max-w-6xl px-5 py-10">
-      <section className="rounded-md border border-line bg-white p-6">
-        <p className="text-sm font-medium uppercase text-accent">Use cases</p>
+    <main className="page-shell">
+      <div className="app-container">
+      <section className="surface-strong rounded-2xl p-6">
+        <p className="eyebrow">Use cases</p>
         <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <h1 className="text-4xl font-semibold">Browse by job to be done</h1>
@@ -37,7 +38,7 @@ export default async function UseCasesPage() {
               workflow.
             </p>
           </div>
-          <div className="rounded-md border border-line px-4 py-3 text-sm">
+          <div className="metric-tile rounded-xl px-4 py-3 text-sm">
             <div className="text-2xl font-semibold">{useCases.length}</div>
             <div className="text-ink/55">Use cases</div>
           </div>
@@ -50,6 +51,7 @@ export default async function UseCasesPage() {
       <section className="mt-6">
         <UseCaseList useCases={useCases} />
       </section>
+      </div>
     </main>
   );
 }

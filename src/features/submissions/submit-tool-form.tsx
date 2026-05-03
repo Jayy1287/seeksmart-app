@@ -53,7 +53,7 @@ export function SubmitToolForm() {
 
   return (
     <form
-      className="grid gap-4 rounded-md border border-line bg-white p-5"
+      className="surface-panel grid gap-4 rounded-xl p-5"
       onSubmit={handleSubmit}
     >
       <label className="hidden">
@@ -63,7 +63,7 @@ export function SubmitToolForm() {
       <label className="grid gap-2">
         <span className="text-sm font-medium">Tool name</span>
         <input
-          className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+          className="control-field"
           maxLength={120}
           name="toolName"
           required
@@ -72,7 +72,7 @@ export function SubmitToolForm() {
       <label className="grid gap-2">
         <span className="text-sm font-medium">Website URL</span>
         <input
-          className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+          className="control-field"
           maxLength={300}
           name="websiteUrl"
           required
@@ -83,7 +83,7 @@ export function SubmitToolForm() {
         <label className="grid gap-2">
           <span className="text-sm font-medium">Category</span>
           <input
-            className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+            className="control-field"
             maxLength={80}
             name="category"
             required
@@ -92,7 +92,7 @@ export function SubmitToolForm() {
         <label className="grid gap-2">
           <span className="text-sm font-medium">Pricing</span>
           <select
-            className="min-h-11 rounded-md border border-line bg-white px-3 outline-none focus:border-accent"
+            className="control-field"
             defaultValue="FREEMIUM"
             name="pricingType"
           >
@@ -105,7 +105,7 @@ export function SubmitToolForm() {
       <label className="grid gap-2">
         <span className="text-sm font-medium">Description</span>
         <textarea
-          className="min-h-32 rounded-md border border-line px-3 py-3 outline-none focus:border-accent"
+          className="control-field min-h-32 py-3"
           maxLength={1200}
           minLength={20}
           name="description"
@@ -115,7 +115,7 @@ export function SubmitToolForm() {
       <label className="grid gap-2">
         <span className="text-sm font-medium">Your email</span>
         <input
-          className="min-h-11 rounded-md border border-line px-3 outline-none focus:border-accent"
+          className="control-field"
           maxLength={180}
           name="submitterEmail"
           required
@@ -123,7 +123,7 @@ export function SubmitToolForm() {
         />
       </label>
       <button
-        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-ink px-5 font-medium text-paper disabled:opacity-60"
+        className="primary-button disabled:opacity-60"
         disabled={state === "submitting"}
       >
         {state === "submitting" ? "Submitting" : "Submit tool"}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Search, Sparkles } from "lucide-react";
+import { Boxes, Search } from "lucide-react";
 import { ThemeToggle } from "@/features/theme/theme-toggle";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
@@ -54,10 +54,10 @@ export default function RootLayout({
       </head>
       <body>
         <div className="min-h-screen">
-          <header className="sticky top-0 z-50 border-b border-line bg-paper/85 backdrop-blur-xl">
-            <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <header className="sticky top-0 z-50 border-b border-line bg-paper/88 shadow-sm shadow-ink/5 backdrop-blur-xl">
+            <div className="app-container flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
               <Link className="flex items-center gap-3 font-semibold" href="/">
-                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-ink text-paper shadow-sm">
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-ink text-paper shadow-sm">
                   <Search aria-hidden="true" size={18} />
                 </span>
                 <span className="leading-tight">
@@ -68,7 +68,7 @@ export default function RootLayout({
                 </span>
               </Link>
               <div className="flex w-full items-center gap-3 sm:w-auto">
-                <nav className="flex flex-1 items-center justify-between gap-3 text-sm font-medium text-ink/70 sm:flex-none sm:justify-start sm:gap-5">
+                <nav className="flex flex-1 items-center justify-between gap-3 rounded-full border border-line bg-surface/70 px-3 py-2 text-sm font-medium text-ink/70 shadow-sm sm:flex-none sm:justify-start sm:gap-5">
                   <Link className="transition hover:text-accent" href="/tools">
                     Tools
                   </Link>
@@ -93,10 +93,10 @@ export default function RootLayout({
             </div>
           </header>
           {children}
-          <footer className="border-t border-line bg-paper/75">
-            <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-8 text-sm text-ink/55 md:flex-row md:items-center md:justify-between">
+          <footer className="border-t border-line bg-paper/80">
+            <div className="app-container flex flex-col gap-3 py-8 text-sm text-ink/55 md:flex-row md:items-center md:justify-between">
               <div className="inline-flex items-center gap-2">
-                <Sparkles aria-hidden="true" className="text-accent" size={16} />
+                <Boxes aria-hidden="true" className="text-brand" size={16} />
                 Curated AI discovery for practical teams.
               </div>
               <div className="flex gap-4">

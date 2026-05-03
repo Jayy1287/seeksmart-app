@@ -57,8 +57,9 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-5 py-10">
-      <section className="grid gap-8 md:grid-cols-[1fr_340px]">
+    <main className="page-shell">
+      <div className="app-container">
+      <section className="surface-strong grid gap-8 rounded-2xl p-6 md:grid-cols-[1fr_340px]">
         <div>
           <div className="flex flex-wrap items-center gap-3">
             <Link className="text-sm font-medium text-accent" href="/tools">
@@ -77,29 +78,29 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             {tool.shortDescription}
           </p>
           <div className="mt-6 flex flex-wrap gap-2">
-            <span className="rounded-md border border-line bg-white px-3 py-2 text-sm font-medium">
+            <span className="status-pill">
               {formatPricing(tool.pricingType)}
             </span>
             {tool.hasFreePlan ? (
-              <span className="rounded-md border border-line bg-white px-3 py-2 text-sm font-medium">
+              <span className="status-pill">
                 Free plan
               </span>
             ) : null}
             {tool.isVerified ? (
-              <span className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-sm font-medium">
+              <span className="status-pill">
                 <ShieldCheck aria-hidden="true" size={16} />
                 Verified
               </span>
             ) : null}
             {tool.isFeatured ? (
-              <span className="inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-sm font-medium">
+              <span className="status-pill">
                 <Sparkles aria-hidden="true" size={16} />
                 Featured
               </span>
             ) : null}
           </div>
         </div>
-        <aside className="rounded-md border border-line bg-white p-5">
+        <aside className="surface-panel rounded-xl p-5">
           <h2 className="font-semibold">Decision snapshot</h2>
           <p className="mt-2 text-sm leading-6 text-ink/60">
             A quick scan of pricing, category, and popularity before opening
@@ -124,7 +125,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             </div>
           </dl>
           <a
-            className="mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-ink px-4 font-medium text-paper"
+            className="primary-button mt-5 w-full"
             href={tool.websiteUrl}
             rel="noreferrer"
             target="_blank"
@@ -135,7 +136,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
         </aside>
       </section>
 
-      <section className="mt-10 rounded-md border border-line bg-white p-6">
+      <section className="surface-panel mt-10 rounded-xl p-6">
         <div className="flex items-center gap-2">
           <Layers3 aria-hidden="true" className="text-accent" size={20} />
           <h2 className="text-xl font-semibold">Overview</h2>
@@ -179,11 +180,12 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             ))}
           </div>
         ) : (
-          <div className="rounded-md border border-line bg-white p-6 text-sm text-ink/60">
+          <div className="surface-panel rounded-xl p-6 text-sm text-ink/60">
             Alternatives are not curated for this tool yet.
           </div>
         )}
       </section>
+      </div>
     </main>
   );
 }
@@ -197,7 +199,7 @@ type InfoPanelProps = {
 
 function InfoPanel({ emptyLabel, icon: Icon, items, title }: InfoPanelProps) {
   return (
-    <section className="rounded-md border border-line bg-white p-6">
+    <section className="surface-panel rounded-xl p-6">
       <div className="flex items-center gap-2">
         <Icon aria-hidden="true" className="text-accent" size={20} />
         <h2 className="text-xl font-semibold">{title}</h2>
@@ -206,7 +208,7 @@ function InfoPanel({ emptyLabel, icon: Icon, items, title }: InfoPanelProps) {
         <div className="mt-4 flex flex-wrap gap-2">
           {items.map((item) => (
             <span
-              className="rounded-md border border-line px-3 py-2 text-sm font-medium"
+              className="status-pill"
               key={item}
             >
               {item}

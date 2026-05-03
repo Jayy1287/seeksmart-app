@@ -2,10 +2,14 @@ import Link from "next/link";
 import {
   ArrowRight,
   Boxes,
+  CheckCircle2,
   Filter,
   Gauge,
+  Layers3,
+  Search,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  Target
 } from "lucide-react";
 import { CategoryList } from "@/features/categories/category-list";
 import { ToolCard } from "@/features/tools/tool-card";
@@ -47,15 +51,15 @@ export default async function Home() {
   );
 
   return (
-    <main>
-      <section className="border-b border-line">
-        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-[1.12fr_0.88fr] md:items-center lg:py-20">
+    <main className="page-shell">
+      <section className="app-container">
+        <div className="hero-panel relative grid gap-10 rounded-2xl p-5 md:grid-cols-[1.08fr_0.92fr] md:items-center md:p-8 lg:p-10">
           <div>
-            <p className="mb-4 inline-flex items-center gap-2 rounded-md border border-line bg-white px-3 py-2 text-sm font-medium uppercase text-accent">
+            <p className="eyebrow mb-5">
               <Sparkles aria-hidden="true" size={15} />
               AI tool discovery
             </p>
-            <h1 className="max-w-3xl text-5xl font-semibold leading-[0.98] tracking-tight text-ink md:text-7xl">
+            <h1 className="max-w-3xl text-4xl font-semibold leading-[1.02] text-ink md:text-6xl">
               Find the right AI tool with less guessing.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-ink/70">
@@ -64,16 +68,24 @@ export default async function Home() {
             </p>
             <form
               action="/tools"
-              className="surface-panel mt-8 grid max-w-2xl gap-3 rounded-lg p-2 sm:grid-cols-[1fr_auto]"
+              className="surface-strong mt-8 grid max-w-2xl gap-3 rounded-xl p-2 sm:grid-cols-[1fr_auto]"
             >
-              <input
-                className="min-h-12 min-w-0 rounded-md border border-transparent bg-transparent px-4 text-base outline-none transition focus:border-accent"
-                name="q"
-                placeholder="Search for writing, video, coding..."
-                type="search"
-              />
+              <label className="relative">
+                <span className="sr-only">Search AI tools</span>
+                <Search
+                  aria-hidden="true"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/38"
+                  size={18}
+                />
+                <input
+                  className="min-h-12 min-w-0 rounded-lg border border-transparent bg-transparent pl-11 pr-4 text-base outline-none transition focus:border-accent"
+                  name="q"
+                  placeholder="Search for writing, video, coding..."
+                  type="search"
+                />
+              </label>
               <button
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md bg-ink px-5 font-medium text-paper shadow-sm"
+                className="primary-button min-h-12"
                 type="submit"
               >
                 Search
@@ -86,8 +98,8 @@ export default async function Home() {
               <Stat label="Trending picks" value={trendingTools.length} />
             </div>
           </div>
-          <div className="surface-panel rounded-lg p-5">
-            <div className="mb-5 flex items-center justify-between">
+          <div className="data-panel relative rounded-2xl p-5">
+            <div className="relative z-10 mb-5 flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium uppercase text-accent">
                   Live taxonomy
@@ -101,25 +113,44 @@ export default async function Home() {
                 View all
               </Link>
             </div>
-            <CategoryList categories={categories.slice(0, 6)} />
-            <div className="mt-5 grid grid-cols-2 gap-3">
+            <div className="relative z-10">
+              <CategoryList categories={categories.slice(0, 6)} />
+            </div>
+            <div className="relative z-10 mt-5 grid grid-cols-2 gap-3">
               <MiniSignal label="Use-case ready" value="18" />
               <MiniSignal label="Moderated" value="100%" />
+            </div>
+            <div className="relative z-10 mt-5 rounded-xl border border-line bg-surface/70 p-4">
+              <div className="flex items-center gap-2 text-sm font-medium">
+                <Layers3 aria-hidden="true" className="text-brand" size={17} />
+                Discovery signal map
+              </div>
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                {["Category", "Pricing", "Use case"].map((label) => (
+                  <div
+                    className="rounded-lg border border-line bg-muted/45 px-3 py-2 text-xs font-medium text-ink/65"
+                    key={label}
+                  >
+                    {label}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-10">
+      <section className="app-container py-10">
         <div className="mb-5 flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm font-medium uppercase text-accent">
+            <p className="eyebrow">
+              <Target aria-hidden="true" size={14} />
               Trending
             </p>
             <h2 className="mt-2 text-2xl font-semibold">Trending tools</h2>
           </div>
           <Link
-            className="inline-flex items-center gap-2 text-sm font-medium text-accent"
+            className="secondary-button"
             href="/tools"
           >
             Browse tools
@@ -138,9 +169,9 @@ export default async function Home() {
       </section>
 
       <section className="border-y border-line bg-muted/35">
-        <div className="mx-auto grid max-w-6xl gap-6 px-5 py-10 md:grid-cols-[0.8fr_1.2fr]">
+        <div className="app-container grid gap-6 py-10 md:grid-cols-[0.8fr_1.2fr]">
           <div>
-            <p className="text-sm font-medium uppercase text-accent">Recent</p>
+            <p className="eyebrow">Recent</p>
             <h2 className="mt-2 text-2xl font-semibold">Recently added</h2>
             <p className="mt-3 text-sm leading-6 text-ink/60">
               New published listings appear here first, giving returning users a
@@ -151,7 +182,7 @@ export default async function Home() {
             {recentTools.length > 0 ? (
               recentTools.map((tool) => (
                 <Link
-                  className="surface-panel flex items-center justify-between gap-4 rounded-lg p-4 transition hover:border-accent"
+                  className="surface-panel flex items-center justify-between gap-4 rounded-xl p-4 transition hover:-translate-y-0.5 hover:border-accent"
                   href={`/tools/${tool.slug}`}
                   key={tool.id}
                 >
@@ -171,13 +202,13 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-4 px-5 py-10 md:grid-cols-3">
+      <section className="app-container grid gap-4 py-10 md:grid-cols-3">
         {principles.map((principle) => {
           const Icon = principle.icon;
 
           return (
             <article
-              className="surface-panel rounded-lg p-5"
+              className="surface-panel rounded-xl p-5"
               key={principle.title}
             >
               <Icon aria-hidden="true" className="mb-4 text-accent" size={22} />
@@ -195,9 +226,9 @@ export default async function Home() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="surface-panel rounded-lg p-3">
+    <div className="metric-tile rounded-xl p-3">
       <div className="flex items-center gap-2">
-        <Sparkles aria-hidden="true" className="text-accent" size={15} />
+        <CheckCircle2 aria-hidden="true" className="text-accent" size={15} />
         <span className="text-xl font-semibold">{value}</span>
       </div>
       <p className="mt-1 text-xs text-ink/55">{label}</p>
@@ -207,7 +238,7 @@ function Stat({ label, value }: { label: string; value: number }) {
 
 function MiniSignal({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md border border-line bg-muted/40 p-3">
+    <div className="metric-tile rounded-xl p-3">
       <div className="flex items-center gap-2">
         <Boxes aria-hidden="true" className="text-brand" size={15} />
         <span className="font-semibold">{value}</span>
@@ -219,7 +250,7 @@ function MiniSignal({ label, value }: { label: string; value: string }) {
 
 function EmptyPanel({ message }: { message: string }) {
   return (
-    <div className="surface-panel rounded-lg p-6 text-sm text-ink/60">
+    <div className="surface-panel rounded-xl p-6 text-sm text-ink/60">
       {message}
     </div>
   );

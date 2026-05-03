@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { UrlObject } from "node:url";
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Filter, Search, SlidersHorizontal } from "lucide-react";
 import { listToolsQuerySchema } from "@/lib/validation";
 import { listCategories } from "@/server/categories/queries";
 import { searchPublishedTools } from "@/server/tools/queries";
@@ -58,22 +58,26 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
   const endResult = Math.min(result.page * result.limit, result.total);
 
   return (
-    <main className="mx-auto max-w-6xl px-5 py-10">
-      <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+    <main className="page-shell">
+      <section className="app-container">
+      <div className="surface-strong mb-8 flex flex-col gap-5 rounded-2xl p-6 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-sm font-medium uppercase text-accent">Directory</p>
-          <h1 className="mt-2 text-4xl font-semibold">AI tools</h1>
+          <p className="eyebrow">
+            <SlidersHorizontal aria-hidden="true" size={14} />
+            Directory
+          </p>
+          <h1 className="mt-3 text-4xl font-semibold">AI tools</h1>
           <p className="mt-3 max-w-2xl text-ink/65">
             Browse curated tools by category, pricing, and fit.
           </p>
         </div>
-        <div className="rounded-md border border-line bg-white px-4 py-3 text-sm text-ink/60">
+        <div className="metric-tile rounded-xl px-4 py-3 text-sm text-ink/60">
           <span className="font-semibold text-ink">{result.total}</span>{" "}
           matching tools
         </div>
       </div>
 
-      <form className="grid gap-3 rounded-md border border-line bg-white p-4 md:grid-cols-[1fr_180px_160px_auto]">
+      <form className="surface-panel grid gap-3 rounded-xl p-4 md:grid-cols-[1fr_180px_160px_auto]">
         <label className="relative">
           <span className="sr-only">Search tools</span>
           <Search
@@ -82,7 +86,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
             size={18}
           />
           <input
-            className="min-h-11 w-full rounded-md border border-line pl-10 pr-3 outline-none focus:border-accent"
+            className="control-field w-full pl-10"
             defaultValue={params.q}
             name="q"
             placeholder="Search tools"
@@ -92,7 +96,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
         <label>
           <span className="sr-only">Category</span>
           <select
-            className="min-h-11 w-full rounded-md border border-line bg-white px-3 outline-none focus:border-accent"
+            className="control-field w-full"
             defaultValue={params.category ?? ""}
             name="category"
           >
@@ -107,7 +111,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
         <label>
           <span className="sr-only">Pricing</span>
           <select
-            className="min-h-11 w-full rounded-md border border-line bg-white px-3 outline-none focus:border-accent"
+            className="control-field w-full"
             defaultValue={params.pricing ?? ""}
             name="pricing"
           >
@@ -117,7 +121,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
             <option value="PAID">Paid</option>
           </select>
         </label>
-        <button className="min-h-11 rounded-md bg-ink px-5 font-medium text-paper">
+        <button className="primary-button">
           Apply
         </button>
       </form>
@@ -132,7 +136,10 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
             <FilterChip label={`Pricing: ${formatPricing(params.pricing)}`} />
           ) : null}
           {activeFilterCount === 0 ? (
-            <span className="text-ink/55">Showing all published tools</span>
+            <span className="inline-flex items-center gap-2 text-ink/55">
+              <Filter aria-hidden="true" size={15} />
+              Showing all published tools
+            </span>
           ) : null}
         </div>
         {activeFilterCount > 0 ? (
@@ -161,27 +168,28 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
           />
         </>
       ) : (
-        <div className="rounded-md border border-line bg-white p-8 text-center">
+        <div className="surface-panel rounded-xl p-8 text-center">
           <h2 className="font-semibold">No tools found</h2>
           <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
             No published tools match the current filters. Try a broader search
             or reset the filters to scan the full directory.
           </p>
           <Link
-            className="mt-5 inline-flex min-h-11 items-center rounded-md bg-ink px-5 font-medium text-paper"
+            className="primary-button mt-5"
             href="/tools"
           >
             Reset filters
           </Link>
         </div>
       )}
+      </section>
     </main>
   );
 }
 
 function FilterChip({ label }: { label: string }) {
   return (
-    <span className="rounded-md bg-accent/10 px-3 py-1.5 font-medium text-accent">
+    <span className="rounded-full bg-accent/10 px-3 py-1.5 font-medium text-accent ring-1 ring-accent/15">
       {label}
     </span>
   );
@@ -214,7 +222,7 @@ function Pagination({
   return (
     <nav
       aria-label="Tool results pagination"
-      className="mt-8 flex items-center justify-between rounded-md border border-line bg-white p-4 text-sm"
+      className="surface-panel mt-8 flex items-center justify-between rounded-xl p-4 text-sm"
     >
       {hasPreviousPage ? (
         <Link

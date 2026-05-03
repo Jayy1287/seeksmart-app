@@ -58,8 +58,9 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-5 py-10">
-      <section className="rounded-md border border-line bg-white p-6">
+    <main className="page-shell">
+      <div className="app-container">
+      <section className="surface-strong rounded-2xl p-6">
         <Link className="text-sm font-medium text-accent" href="/use-cases">
           Use cases
         </Link>
@@ -73,7 +74,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
                 `Browse AI tools for ${useCase.name.toLowerCase()}.`}
             </p>
           </div>
-          <div className="rounded-md border border-line p-4">
+          <div className="metric-tile rounded-xl p-4">
             <div className="flex items-center gap-2">
               <Target aria-hidden="true" className="text-accent" size={18} />
               <span className="text-2xl font-semibold">
@@ -91,7 +92,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
             <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <h2 className="text-xl font-semibold">Recommended tools</h2>
               <Link
-                className="inline-flex items-center gap-2 text-sm font-medium text-accent"
+                className="secondary-button"
                 href="/tools"
               >
                 Browse all tools
@@ -105,7 +106,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
             </div>
           </>
         ) : (
-          <div className="rounded-md border border-line bg-white p-8 text-center">
+          <div className="surface-panel rounded-xl p-8 text-center">
             <h2 className="font-semibold">No mapped tools yet</h2>
             <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
               This use case is ready for curated tool mappings.
@@ -113,6 +114,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
           </div>
         )}
       </section>
+      </div>
     </main>
   );
 }

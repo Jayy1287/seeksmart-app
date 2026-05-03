@@ -56,8 +56,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   return (
-    <main className="mx-auto max-w-6xl px-5 py-10">
-      <section className="rounded-md border border-line bg-white p-6">
+    <main className="page-shell">
+      <div className="app-container">
+      <section className="surface-strong rounded-2xl p-6">
         <Link className="text-sm font-medium text-accent" href="/categories">
           Categories
         </Link>
@@ -72,7 +73,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               </p>
             ) : null}
           </div>
-          <div className="rounded-md border border-line p-4">
+          <div className="metric-tile rounded-xl p-4">
             <div className="flex items-center gap-2">
               <Boxes aria-hidden="true" className="text-accent" size={18} />
               <span className="text-2xl font-semibold">
@@ -90,7 +91,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <h2 className="text-xl font-semibold">Recommended tools</h2>
               <Link
-                className="inline-flex items-center gap-2 text-sm font-medium text-accent"
+                className="secondary-button"
                 href={`/tools?category=${category.slug}`}
               >
                 Search this category
@@ -104,7 +105,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             </div>
           </>
         ) : (
-          <div className="rounded-md border border-line bg-white p-8 text-center">
+          <div className="surface-panel rounded-xl p-8 text-center">
             <Search
               aria-hidden="true"
               className="mx-auto mb-4 text-accent"
@@ -115,7 +116,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
               This category is ready for curated listings.
             </p>
             <Link
-              className="mt-5 inline-flex min-h-11 items-center justify-center rounded-md bg-ink px-5 font-medium text-paper"
+              className="primary-button mt-5"
               href="/submit"
             >
               Submit a tool
@@ -123,6 +124,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           </div>
         )}
       </section>
+      </div>
     </main>
   );
 }
