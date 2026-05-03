@@ -16,6 +16,7 @@ import {
   methodologySignals,
   playbooks
 } from "@/lib/platform-content";
+import { HomepageLottieVisual } from "@/features/home/homepage-lottie-visual";
 import { listCategorySummaries } from "@/server/categories/queries";
 import {
   listIndustrySummaries,
@@ -60,7 +61,7 @@ export default async function Home() {
   return (
     <main>
       <section className="app-container py-8 md:py-12">
-        <div className="hero-panel grid gap-10 rounded-2xl p-6 md:p-8 lg:grid-cols-[1fr_440px] lg:p-10">
+        <div className="hero-panel grid gap-10 rounded-2xl p-6 md:p-8 lg:grid-cols-[1fr_460px] lg:p-10">
           <div className="relative z-10">
             <p className="eyebrow">
               <ShieldCheck aria-hidden="true" size={15} />
@@ -97,7 +98,7 @@ export default async function Home() {
                 <input
                   className="min-h-12 w-full min-w-0 rounded-lg border border-transparent bg-transparent pl-11 pr-4 text-base outline-none transition focus:border-accent"
                   name="q"
-                  placeholder="Search curated tools after choosing the workflow"
+                  placeholder="Search AI tools"
                   type="search"
                 />
               </label>
@@ -107,52 +108,48 @@ export default async function Home() {
             </form>
           </div>
 
-          <div className="data-panel relative z-10 rounded-xl p-5">
-            <div className="flex items-start justify-between gap-4 border-b border-line pb-5">
-              <div>
-                <p className="text-xs font-extrabold uppercase text-accent">
-                  Audit output
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold">
-                  First workflow brief
-                </h2>
-              </div>
-              <span className="rounded-lg bg-ink px-2.5 py-1.5 text-xs font-bold text-white">
-                V1
-              </span>
-            </div>
-            <div className="mt-5 grid gap-3">
-              {decisionPath.map((step, index) => (
-                <div
-                  className="grid grid-cols-[2.5rem_1fr] gap-3 rounded-lg border border-line bg-white/72 p-3"
-                  key={step.title}
-                >
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-ink text-sm font-semibold text-white">
-                    {index + 1}
-                  </span>
-                  <div>
-                    <h3 className="font-semibold">{step.title}</h3>
-                    <p className="mt-1 text-sm leading-6 text-ink/58">
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 grid grid-cols-3 gap-2">
-              <MiniSignal label="Impact" value="92" />
-              <MiniSignal label="Effort" value="Low" />
-              <MiniSignal label="Risk" value="Clear" />
-            </div>
+          <div className="relative z-10 self-center">
+            <HomepageLottieVisual />
           </div>
         </div>
       </section>
 
       <section className="app-container pb-8">
-        <div className="grid gap-3 md:grid-cols-3">
-          <Stat label="Curated tools" value={toolCount} />
-          <Stat label="Business opportunities" value={opportunities.length} />
-          <Stat label="In-app model calls" value="0" />
+        <div className="grid gap-3 lg:grid-cols-[1.35fr_0.65fr]">
+          <div className="data-panel rounded-xl p-5">
+            <div className="flex flex-col gap-2 border-b border-line pb-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-extrabold uppercase text-accent">
+                  Audit output
+                </p>
+                <h2 className="mt-1 text-2xl font-semibold">
+                  First workflow brief
+                </h2>
+              </div>
+              <span className="status-pill w-fit">Rules-based V1</span>
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              {decisionPath.map((step, index) => (
+                <div
+                  className="rounded-lg border border-line bg-white/72 p-4"
+                  key={step.title}
+                >
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ink text-sm font-semibold text-white">
+                    {index + 1}
+                  </span>
+                  <h3 className="mt-3 font-semibold">{step.title}</h3>
+                  <p className="mt-1 text-sm leading-6 text-ink/58">
+                    {step.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            <Stat label="Curated tools" value={toolCount} />
+            <Stat label="Business opportunities" value={opportunities.length} />
+            <Stat label="In-app model calls" value="0" />
+          </div>
         </div>
       </section>
 
@@ -414,15 +411,6 @@ function Stat({ label, value }: { label: number | string; value: number | string
     <div className="metric-tile rounded-xl px-5 py-4">
       <div className="text-2xl font-semibold">{value}</div>
       <div className="mt-1 text-xs font-bold uppercase text-ink/48">{label}</div>
-    </div>
-  );
-}
-
-function MiniSignal({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="metric-tile rounded-lg px-3 py-3">
-      <div className="text-sm font-semibold">{value}</div>
-      <div className="mt-1 text-xs text-ink/50">{label}</div>
     </div>
   );
 }
