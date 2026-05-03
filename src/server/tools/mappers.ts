@@ -19,7 +19,24 @@ export const toolDetailInclude = {
   },
   toolUseCases: {
     include: {
-      useCase: true
+      useCase: {
+        include: {
+          opportunityUseCases: {
+            include: {
+              opportunity: {
+                select: {
+                  id: true,
+                  name: true,
+                  slug: true
+                }
+              }
+            },
+            orderBy: {
+              priority: "asc"
+            }
+          }
+        }
+      }
     },
     orderBy: {
       useCase: {
@@ -90,7 +107,14 @@ export function toPublicToolDetail(tool: ToolDetailPayload): PublicToolDetail {
       id: toolUseCase.useCase.id,
       name: toolUseCase.useCase.name,
       slug: toolUseCase.useCase.slug,
-      description: toolUseCase.useCase.description
+      description: toolUseCase.useCase.description,
+      outcome: toolUseCase.useCase.outcome,
+      effortLevel: toolUseCase.useCase.effortLevel,
+      riskLevel: toolUseCase.useCase.riskLevel,
+      timeToValue: toolUseCase.useCase.timeToValue,
+      opportunities: toolUseCase.useCase.opportunityUseCases.map(
+        ({ opportunity }) => opportunity
+      )
     })),
     alternatives: tool.sourceTools.map(toPublicAlternativeTool)
   };

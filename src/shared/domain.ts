@@ -47,12 +47,21 @@ export type PublicToolDetail = PublicToolCard & {
   features: PublicTaxonomyItem[];
   useCases: Array<
     PublicTaxonomyItem & {
+      outcome: string | null;
+      effortLevel: string;
+      riskLevel: string;
+      timeToValue: string | null;
       fitScore: number;
       recommendationNote: string | null;
       bestFor: string | null;
       limitations: string | null;
       implementationNote: string | null;
       pricingSuitability: string | null;
+      opportunities: Array<{
+        id: string;
+        name: string;
+        slug: string;
+      }>;
     }
   >;
   alternatives: PublicToolCard[];

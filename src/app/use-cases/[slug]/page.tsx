@@ -12,7 +12,6 @@ import {
   Target
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { ToolCard } from "@/features/tools/tool-card";
 import {
   getUseCaseBySlug,
   listToolsForUseCase,

@@ -1,19 +1,21 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
+  ArrowRight,
   CheckCircle2,
   ExternalLink,
   Gauge,
+  GitCompareArrows,
   Layers3,
-  ShieldCheck,
   ShieldAlert,
-  Sparkles,
-  Target
+  ShieldCheck,
+  Sparkles
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-import { getPublishedToolBySlug } from "@/server/tools/queries";
 import { ToolCard } from "@/features/tools/tool-card";
+import { getPublishedToolBySlug } from "@/server/tools/queries";
+import type { PublicToolDetail } from "@/shared/domain";
 
 export const dynamic = "force-dynamic";
 
@@ -36,13 +38,13 @@ export async function generateMetadata({
   }
 
   return {
-    title: tool.metaTitle ?? tool.name,
+    title: tool.metaTitle ?? `${tool.name} Fit, Use Cases, and Alternatives`,
     description: tool.metaDescription ?? tool.shortDescription,
     alternates: {
       canonical: `/tools/${tool.slug}`
     },
     openGraph: {
-      title: tool.metaTitle ?? tool.name,
+      title: tool.metaTitle ?? `${tool.name} Fit, Use Cases, and Alternatives`,
       description: tool.metaDescription ?? tool.shortDescription,
       url: `/tools/${tool.slug}`,
       type: "website"
@@ -58,248 +60,427 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
     notFound();
   }
 
+  const topUseCase = [...tool.useCases].sort(
+    (a, b) => b.fitScore - a.fitScore
+  )[0];
+  const averageFit =
+    tool.useCases.length > 0
+      ? Math.round(
+          tool.useCases.reduce((total, useCase) => total + useCase.fitScore, 0) /
+            tool.useCases.length
+        )
+      : null;
+
   return (
     <main className="page-shell">
       <div className="app-container">
-      <section className="surface-strong grid gap-8 rounded-2xl p-6 md:grid-cols-[1fr_340px]">
-        <div>
-          <div className="flex flex-wrap items-center gap-3">
-            <Link className="text-sm font-medium text-accent" href="/tools">
-              Tools
-            </Link>
-            <span className="text-ink/30">/</span>
-            <Link
-              className="text-sm text-ink/55 hover:text-accent"
-              href={`/categories/${tool.category.slug}`}
-            >
-              {tool.category.name}
-            </Link>
-          </div>
-          <h1 className="mt-5 text-5xl font-semibold">{tool.name}</h1>
-          <p className="mt-5 max-w-3xl text-lg leading-8 text-ink/70">
-            {tool.shortDescription}
-          </p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            <span className="status-pill">
-              {formatPricing(tool.pricingType)}
-            </span>
-            {tool.hasFreePlan ? (
-              <span className="status-pill">
-                Free plan
-              </span>
-            ) : null}
-            {tool.isVerified ? (
-              <span className="status-pill">
-                <ShieldCheck aria-hidden="true" size={16} />
-                Verified
-              </span>
-            ) : null}
-            {tool.isFeatured ? (
-              <span className="status-pill">
-                <Sparkles aria-hidden="true" size={16} />
-                Featured
-              </span>
-            ) : null}
-          </div>
-        </div>
-        <aside className="surface-panel rounded-xl p-5">
-          <h2 className="font-semibold">Decision snapshot</h2>
-          <p className="mt-2 text-sm leading-6 text-ink/60">
-            A quick scan of pricing, category, and popularity before opening
-            the official site.
-          </p>
-          <dl className="mt-5 grid gap-3 text-sm">
-            <div className="flex items-center justify-between border-b border-line pb-3">
-              <dt className="text-ink/55">Category</dt>
-              <dd className="font-medium">{tool.category.name}</dd>
-            </div>
-            <div className="flex items-center justify-between border-b border-line pb-3">
-              <dt className="text-ink/55">Pricing</dt>
-              <dd className="font-medium">{formatPricing(tool.pricingType)}</dd>
-            </div>
-            <div className="flex items-center justify-between border-b border-line pb-3">
-              <dt className="text-ink/55">Popularity</dt>
-              <dd className="font-medium">{tool.popularityScore}/100</dd>
-            </div>
-            <div className="flex items-center justify-between">
-              <dt className="text-ink/55">Verified</dt>
-              <dd className="font-medium">{tool.isVerified ? "Yes" : "No"}</dd>
-            </div>
-          </dl>
-          <a
-            className="primary-button mt-5 w-full"
-            href={tool.websiteUrl}
-            rel="noreferrer"
-            target="_blank"
-          >
-            Website
-            <ExternalLink aria-hidden="true" size={17} />
-          </a>
-        </aside>
-      </section>
-
-      <section className="surface-panel mt-10 rounded-xl p-6">
-        <div className="flex items-center gap-2">
-          <Layers3 aria-hidden="true" className="text-accent" size={20} />
-          <h2 className="text-xl font-semibold">Overview</h2>
-        </div>
-        <p className="mt-4 leading-8 text-ink/70">
-          {tool.longDescription ?? tool.shortDescription}
-        </p>
-      </section>
-
-      <section className="mt-6 grid gap-6 md:grid-cols-2">
-        <InfoPanel
-          emptyLabel="Use cases will be added during curation."
-          icon={Target}
-          items={tool.useCases.map((useCase) => useCase.name)}
-          title="Use cases"
-        />
-        <InfoPanel
-          emptyLabel="Feature data will be added during curation."
-          icon={CheckCircle2}
-          items={tool.features.map((feature) => feature.name)}
-          title="Features"
-        />
-      </section>
-
-      {tool.useCases.length > 0 ? (
-        <section className="surface-strong mt-6 rounded-xl p-6">
-          <h2 className="text-xl font-semibold">Use-case fit reasons</h2>
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
-            {tool.useCases.map((useCase) => (
-              <Link
-                className="rounded-xl border border-line bg-surface/72 p-4 transition hover:border-accent"
-                href={`/use-cases/${useCase.slug}`}
-                key={useCase.id}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-semibold">{useCase.name}</h3>
-                  <span className="status-pill">Fit {useCase.fitScore}</span>
-                </div>
-                <p className="mt-2 text-sm leading-6 text-ink/62">
-                  {useCase.recommendationNote ??
-                    "Mapped to this use case by editorial taxonomy."}
-                </p>
-                {useCase.bestFor ? (
-                  <p className="mt-2 text-xs leading-5 text-ink/50">
-                    {useCase.bestFor}
-                  </p>
-                ) : null}
+        <section className="surface-strong grid gap-8 rounded-2xl p-6 lg:grid-cols-[1fr_360px]">
+          <div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Link className="text-sm font-medium text-accent" href="/tools">
+                Tools
               </Link>
-            ))}
+              <span className="text-ink/30">/</span>
+              <Link
+                className="text-sm text-ink/55 hover:text-accent"
+                href={`/categories/${tool.category.slug}`}
+              >
+                {tool.category.name}
+              </Link>
+            </div>
+            <h1 className="mt-5 text-4xl font-semibold leading-tight md:text-5xl">
+              {tool.name}
+            </h1>
+            <p className="mt-5 max-w-3xl text-lg leading-8 text-ink/70">
+              {tool.shortDescription}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              <span className="status-pill">{formatPricing(tool.pricingType)}</span>
+              {tool.hasFreePlan ? <span className="status-pill">Free plan</span> : null}
+              {tool.isVerified ? (
+                <span className="status-pill">
+                  <ShieldCheck aria-hidden="true" size={16} />
+                  Verified
+                </span>
+              ) : null}
+              {tool.isFeatured ? (
+                <span className="status-pill">
+                  <Sparkles aria-hidden="true" size={16} />
+                  Featured
+                </span>
+              ) : null}
+            </div>
+          </div>
+
+          <aside className="surface-panel rounded-xl p-5">
+            <h2 className="font-semibold">Decision snapshot</h2>
+            <p className="mt-2 text-sm leading-6 text-ink/60">
+              Evaluate this tool by workflow fit, budget fit, and review needs
+              before opening the vendor site.
+            </p>
+            <dl className="mt-5 grid gap-3 text-sm">
+              <SnapshotRow label="Category" value={tool.category.name} />
+              <SnapshotRow label="Pricing" value={formatPricing(tool.pricingType)} />
+              <SnapshotRow
+                label="Best mapped fit"
+                value={topUseCase ? `${topUseCase.name} (${topUseCase.fitScore})` : "Needs curation"}
+              />
+              <SnapshotRow
+                label="Editorial confidence"
+                value={tool.isVerified ? "Verified listing" : "Needs verification"}
+              />
+            </dl>
+            <a
+              className="primary-button mt-5 w-full"
+              href={tool.websiteUrl}
+              rel="noreferrer"
+              target="_blank"
+            >
+              Visit website
+              <ExternalLink aria-hidden="true" size={17} />
+            </a>
+          </aside>
+        </section>
+
+        <section className="mt-6 grid gap-4 md:grid-cols-4">
+          <DecisionMetric
+            label="Average fit"
+            value={averageFit ? `${averageFit}/100` : "Unmapped"}
+          />
+          <DecisionMetric label="Pricing" value={formatPricing(tool.pricingType)} />
+          <DecisionMetric
+            label="Setup effort"
+            value={estimateSetupEffort(tool)}
+          />
+          <DecisionMetric
+            label="Decision stage"
+            value={tool.useCases.length > 0 ? "Shortlist" : "Research"}
+          />
+        </section>
+
+        <section className="mt-6 grid gap-6 lg:grid-cols-[1fr_0.86fr]">
+          <div className="surface-panel rounded-xl p-6">
+            <div className="flex items-center gap-2">
+              <Layers3 aria-hidden="true" className="text-accent" size={20} />
+              <h2 className="text-xl font-semibold">Overview</h2>
+            </div>
+            <p className="mt-4 leading-8 text-ink/70">
+              {tool.longDescription ?? tool.shortDescription}
+            </p>
+          </div>
+          <div className="surface-panel rounded-xl p-6">
+            <h2 className="text-xl font-semibold">Best for</h2>
+            <div className="mt-4 grid gap-3">
+              {bestForSignals(tool).map((signal) => (
+                <ChecklistItem key={signal}>{signal}</ChecklistItem>
+              ))}
+            </div>
           </div>
         </section>
-      ) : null}
 
-      <section className="mt-6 grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
-        <div className="surface-strong rounded-xl p-6">
-          <div className="flex items-center gap-2">
-            <Gauge aria-hidden="true" className="text-accent" size={20} />
-            <h2 className="text-xl font-semibold">Fit guidance</h2>
-          </div>
-          <p className="mt-3 leading-7 text-ink/65">
-            Use {tool.name} when the matching workflow is clear, the team can
-            review outputs, and the pricing model fits the expected usage.
-          </p>
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
-            <FitSignal label="Use-case fit" value={tool.useCases.length > 0 ? "Mapped" : "Needs curation"} />
-            <FitSignal label="Setup effort" value="Validate" />
-            <FitSignal label="Decision stage" value="Shortlist" />
-          </div>
-        </div>
-        <div className="surface-panel rounded-xl p-6">
-          <div className="flex items-center gap-2">
-            <ShieldAlert aria-hidden="true" className="text-signal" size={20} />
-            <h2 className="text-xl font-semibold">Before adoption</h2>
-          </div>
-          <div className="mt-4 grid gap-3">
-            {[
-              "Confirm the workflow and success metric first.",
-              "Check data sensitivity before uploading business material.",
-              "Compare at least one alternative for price and fit."
-            ].map((item) => (
-              <div className="flex items-start gap-2 text-sm leading-6 text-ink/62" key={item}>
-                <CheckCircle2
-                  aria-hidden="true"
-                  className="mt-0.5 shrink-0 text-accent"
-                  size={15}
-                />
-                <span>{item}</span>
+        {tool.useCases.length > 0 ? (
+          <section className="surface-strong mt-6 rounded-xl p-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-sm font-semibold uppercase text-accent">
+                  Fit matrix
+                </p>
+                <h2 className="mt-1 text-xl font-semibold">
+                  Use-case, budget, and risk fit
+                </h2>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              {topUseCase ? (
+                <Link
+                  className="secondary-button"
+                  href={`/use-cases/${topUseCase.slug}`}
+                >
+                  Open top use case
+                  <ArrowRight aria-hidden="true" size={16} />
+                </Link>
+              ) : null}
+            </div>
 
-      <section className="mt-10">
-        <div className="mb-4 flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-medium uppercase text-accent">
-              Compare
-            </p>
-            <h2 className="mt-2 text-xl font-semibold">Alternatives</h2>
+            <div className="mt-5 overflow-x-auto rounded-xl border border-line">
+              <table className="w-full min-w-[760px] border-collapse bg-surface/70 text-left text-sm">
+                <thead className="border-b border-line text-xs uppercase text-ink/50">
+                  <tr>
+                    <th className="px-4 py-3">Use case</th>
+                    <th className="px-4 py-3">Fit</th>
+                    <th className="px-4 py-3">Effort</th>
+                    <th className="px-4 py-3">Risk</th>
+                    <th className="px-4 py-3">Budget note</th>
+                    <th className="px-4 py-3">Why it fits</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tool.useCases.map((useCase) => (
+                    <tr className="border-b border-line last:border-b-0" key={useCase.id}>
+                      <td className="px-4 py-4">
+                        <Link
+                          className="font-semibold text-accent hover:underline"
+                          href={`/use-cases/${useCase.slug}`}
+                        >
+                          {useCase.name}
+                        </Link>
+                        <p className="mt-1 text-xs leading-5 text-ink/50">
+                          {useCase.timeToValue ?? "Time to value varies"}
+                        </p>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="rounded-lg bg-ink px-2.5 py-1.5 text-xs font-semibold text-paper">
+                          {fitLabel(useCase.fitScore)} · {useCase.fitScore}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4">{formatLevel(useCase.effortLevel)}</td>
+                      <td className="px-4 py-4">{formatLevel(useCase.riskLevel)}</td>
+                      <td className="px-4 py-4">
+                        {useCase.pricingSuitability ??
+                          pricingSuitability(tool)}
+                      </td>
+                      <td className="px-4 py-4">
+                        {useCase.recommendationNote ??
+                          "Mapped by editorial taxonomy."}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        ) : null}
+
+        <section className="mt-6 grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
+          <div className="surface-panel rounded-xl p-6">
+            <div className="flex items-center gap-2">
+              <ShieldAlert aria-hidden="true" className="text-signal" size={20} />
+              <h2 className="text-xl font-semibold">Not ideal for</h2>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {notIdealSignals(tool).map((signal) => (
+                <ChecklistItem key={signal}>{signal}</ChecklistItem>
+              ))}
+            </div>
           </div>
-          <Link className="text-sm font-medium text-accent" href="/tools">
-            Browse all
-          </Link>
-        </div>
-        {tool.alternatives.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-3">
-            {tool.alternatives.map((alternative) => (
-              <ToolCard key={alternative.id} tool={alternative} />
-            ))}
+
+          <div className="surface-strong rounded-xl p-6">
+            <div className="flex items-center gap-2">
+              <Gauge aria-hidden="true" className="text-accent" size={20} />
+              <h2 className="text-xl font-semibold">Adoption checklist</h2>
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              {[
+                "Pick one mapped use case and success metric.",
+                "Test with recent real examples before rollout.",
+                "Define who reviews outputs and when.",
+                "Compare one alternative for price, fit, and risk."
+              ].map((item) => (
+                <ChecklistItem key={item}>{item}</ChecklistItem>
+              ))}
+            </div>
           </div>
-        ) : (
-          <div className="surface-panel rounded-xl p-6 text-sm text-ink/60">
-            Alternatives are not curated for this tool yet.
+        </section>
+
+        <section className="surface-panel mt-6 rounded-xl p-6">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase text-accent">
+                Related paths
+              </p>
+              <h2 className="mt-1 text-xl font-semibold">
+                Opportunities this tool may support
+              </h2>
+            </div>
+            <Link className="secondary-button" href="/audit/start">
+              Run audit first
+              <ArrowRight aria-hidden="true" size={16} />
+            </Link>
           </div>
-        )}
-      </section>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {uniqueOpportunities(tool).length > 0 ? (
+              uniqueOpportunities(tool)
+                .slice(0, 3)
+                .map((opportunity) => (
+                  <Link
+                    className="rounded-xl border border-line bg-surface/72 p-4 transition hover:-translate-y-0.5 hover:border-accent"
+                    href={`/opportunities/${opportunity.slug}`}
+                    key={opportunity.id}
+                  >
+                    <h3 className="font-semibold">{opportunity.name}</h3>
+                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
+                      Review opportunity
+                      <ArrowRight aria-hidden="true" size={14} />
+                    </span>
+                  </Link>
+                ))
+            ) : (
+              <p className="text-sm leading-6 text-ink/60">
+                Related opportunities are not mapped yet.
+              </p>
+            )}
+          </div>
+        </section>
+
+        <section className="mt-10">
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-sm font-medium uppercase text-accent">
+                Compare
+              </p>
+              <h2 className="mt-2 text-xl font-semibold">Comparable tools</h2>
+            </div>
+            <Link className="secondary-button" href="/tools">
+              <GitCompareArrows aria-hidden="true" size={16} />
+              Browse all
+            </Link>
+          </div>
+          {tool.alternatives.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-3">
+              {tool.alternatives.map((alternative) => (
+                <ToolCard key={alternative.id} tool={alternative} />
+              ))}
+            </div>
+          ) : (
+            <div className="surface-panel rounded-xl p-6 text-sm text-ink/60">
+              Alternatives are not curated for this tool yet.
+            </div>
+          )}
+        </section>
+
+        <section className="surface-panel mt-6 rounded-xl p-6">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="text-xl font-semibold">Editorial trust note</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/60">
+                Tool pages are decision support, not paid placement. Verified
+                means the listing has passed current editorial checks; it does
+                not guarantee fit for every business workflow.
+              </p>
+            </div>
+            <span className="status-pill">
+              {tool.isVerified ? "Verified listing" : "Needs verification"}
+            </span>
+          </div>
+        </section>
       </div>
     </main>
   );
 }
 
-function FitSignal({ label, value }: { label: string; value: string }) {
+function SnapshotRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="metric-tile rounded-xl p-4">
-      <div className="text-sm font-semibold">{value}</div>
-      <div className="mt-1 text-xs text-ink/50">{label}</div>
+    <div className="flex items-start justify-between gap-4 border-b border-line pb-3 last:border-b-0 last:pb-0">
+      <dt className="text-ink/55">{label}</dt>
+      <dd className="text-right font-medium">{value}</dd>
     </div>
   );
 }
 
-type InfoPanelProps = {
-  emptyLabel: string;
-  icon: LucideIcon;
-  items: string[];
-  title: string;
-};
-
-function InfoPanel({ emptyLabel, icon: Icon, items, title }: InfoPanelProps) {
+function DecisionMetric({ label, value }: { label: string; value: string }) {
   return (
-    <section className="surface-panel rounded-xl p-6">
-      <div className="flex items-center gap-2">
-        <Icon aria-hidden="true" className="text-accent" size={20} />
-        <h2 className="text-xl font-semibold">{title}</h2>
-      </div>
-      {items.length > 0 ? (
-        <div className="mt-4 flex flex-wrap gap-2">
-          {items.map((item) => (
-            <span
-              className="status-pill"
-              key={item}
-            >
-              {item}
-            </span>
-          ))}
-        </div>
-      ) : (
-        <p className="mt-4 text-sm text-ink/60">{emptyLabel}</p>
-      )}
-    </section>
+    <div className="metric-tile rounded-xl p-4">
+      <p className="text-xs font-semibold uppercase text-ink/48">{label}</p>
+      <p className="mt-2 font-semibold">{value}</p>
+    </div>
   );
+}
+
+function ChecklistItem({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex items-start gap-3 rounded-lg border border-line bg-surface/70 p-3 text-sm leading-6">
+      <CheckCircle2
+        aria-hidden="true"
+        className="mt-0.5 shrink-0 text-accent"
+        size={16}
+      />
+      <span>{children}</span>
+    </div>
+  );
+}
+
+function bestForSignals(tool: PublicToolDetail) {
+  const mappedSignals = tool.useCases
+    .map((useCase) => useCase.bestFor)
+    .filter((value): value is string => Boolean(value))
+    .slice(0, 3);
+
+  if (mappedSignals.length > 0) {
+    return mappedSignals;
+  }
+
+  return [
+    `Teams evaluating ${tool.category.name.toLowerCase()} workflows.`,
+    "Pilots where a human can review outputs before rollout.",
+    "Shortlists that need clear use-case ownership."
+  ];
+}
+
+function notIdealSignals(tool: PublicToolDetail) {
+  const mappedSignals = tool.useCases
+    .map((useCase) => useCase.limitations)
+    .filter((value): value is string => Boolean(value))
+    .slice(0, 3);
+
+  if (mappedSignals.length > 0) {
+    return mappedSignals;
+  }
+
+  return [
+    "Workflows without a clear success metric.",
+    "Teams that cannot review customer-facing output.",
+    "Sensitive data workflows before privacy controls are defined."
+  ];
+}
+
+function uniqueOpportunities(tool: PublicToolDetail) {
+  const records = new Map<string, PublicToolDetail["useCases"][number]["opportunities"][number]>();
+
+  for (const useCase of tool.useCases) {
+    for (const opportunity of useCase.opportunities) {
+      records.set(opportunity.id, opportunity);
+    }
+  }
+
+  return Array.from(records.values());
+}
+
+function estimateSetupEffort(tool: PublicToolDetail) {
+  if (tool.useCases.some((useCase) => useCase.effortLevel === "HIGH")) {
+    return "Moderate to high";
+  }
+
+  if (tool.useCases.some((useCase) => useCase.effortLevel === "MEDIUM")) {
+    return "Moderate";
+  }
+
+  return "Low";
+}
+
+function pricingSuitability(tool: PublicToolDetail) {
+  if (tool.hasFreePlan || tool.pricingType === "FREE") {
+    return "Good for early pilots.";
+  }
+
+  if (tool.pricingType === "FREEMIUM") {
+    return "Pilot free, budget for team usage.";
+  }
+
+  return "Validate workflow value before paid rollout.";
+}
+
+function fitLabel(score: number) {
+  if (score >= 85) {
+    return "Best fit";
+  }
+
+  if (score >= 75) {
+    return "Strong";
+  }
+
+  return "Review";
+}
+
+function formatLevel(value: string) {
+  return value.charAt(0) + value.slice(1).toLowerCase();
 }
 
 function formatPricing(pricingType: string) {
