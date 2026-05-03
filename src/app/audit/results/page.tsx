@@ -66,14 +66,14 @@ export default async function AuditResultsPage({
         }}
       />
       <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6 md:p-8">
-          <div className="grid gap-6 lg:grid-cols-[1fr_320px] lg:items-end">
+        <section className="hero-panel rounded-2xl p-6 md:p-10">
+          <div className="relative z-10 grid gap-6 lg:grid-cols-[1fr_360px] lg:items-end">
             <div>
               <p className="eyebrow">
                 <BarChart3 aria-hidden="true" size={14} />
                 Audit result
               </p>
-              <h1 className="mt-4 text-4xl font-semibold leading-tight md:text-5xl">
+              <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.02em] md:text-6xl">
                 Your recommended first AI adoption path.
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
@@ -82,11 +82,11 @@ export default async function AuditResultsPage({
                 SeekSmart taxonomy data.
               </p>
             </div>
-            <div className="metric-tile rounded-xl p-4">
+            <div className="data-panel rounded-xl p-5">
               <p className="text-sm font-semibold text-accent">
-                Recommended first workflow
+                Executive recommendation
               </p>
-              <p className="mt-2 text-lg font-semibold leading-7">
+              <p className="mt-2 text-xl font-semibold leading-7">
                 {result.summary.firstWorkflow}
               </p>
             </div>
@@ -103,7 +103,7 @@ export default async function AuditResultsPage({
           <ContextTile label="Urgency" value={urgencyLabel(input.urgency)} />
         </section>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[1fr_340px]">
+        <section className="mt-6 grid gap-6 lg:grid-cols-[1fr_360px]">
           <div className="grid gap-5">
             {result.topOpportunities.map((opportunity, index) => (
               <OpportunityResult
@@ -185,8 +185,9 @@ function OpportunityResult({
   opportunity: AuditOpportunityRecommendation;
 }) {
   return (
-    <article className="surface-panel rounded-2xl p-5 md:p-6">
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+    <article className="surface-panel overflow-hidden rounded-2xl">
+      <div className="border-b border-line bg-white/72 p-5 md:p-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <span className="status-pill">#{index}</span>
@@ -209,8 +210,9 @@ function OpportunityResult({
           <p className="mt-1 text-4xl font-semibold">{opportunity.score}</p>
         </div>
       </div>
+      </div>
 
-      <div className="mt-5 grid gap-3 md:grid-cols-4">
+      <div className="grid gap-3 p-5 md:grid-cols-4 md:p-6">
         <ScoreTile
           icon={Target}
           label="Impact"
@@ -229,7 +231,7 @@ function OpportunityResult({
         />
       </div>
 
-      <div className="mt-6 grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-5 border-t border-line p-5 lg:grid-cols-2 md:p-6">
         <section>
           <h3 className="font-semibold">Why this ranked here</h3>
           <div className="mt-3 grid gap-2">
@@ -262,7 +264,7 @@ function OpportunityResult({
       </div>
 
       {opportunity.cautions.length > 0 ? (
-        <div className="mt-5 rounded-xl border border-signal/30 bg-signal/10 p-4 text-sm leading-6 text-ink/70">
+        <div className="mx-5 rounded-xl border border-signal/30 bg-signal/10 p-4 text-sm leading-6 text-ink/70 md:mx-6">
           <p className="font-semibold text-signal">Review before piloting</p>
           <ul className="mt-2 grid gap-1">
             {opportunity.cautions.map((caution) => (
@@ -272,7 +274,7 @@ function OpportunityResult({
         </div>
       ) : null}
 
-      <section className="mt-6">
+      <section className="border-t border-line p-5 md:p-6">
         <h3 className="font-semibold">Tool shortlist</h3>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {opportunity.tools.map((tool) => (

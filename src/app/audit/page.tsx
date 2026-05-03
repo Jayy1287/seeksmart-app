@@ -53,14 +53,14 @@ export default function AuditPage() {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="hero-panel relative rounded-2xl p-6 md:p-8">
+        <section className="hero-panel relative rounded-2xl p-6 md:p-10">
           <div className="relative z-10 grid gap-8 lg:grid-cols-[1fr_0.82fr] lg:items-center">
             <div>
               <p className="eyebrow">
                 <ClipboardCheck aria-hidden="true" size={14} />
                 AI audit
               </p>
-              <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">
+              <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.02em] md:text-6xl">
                 Find the first AI workflow your business should improve.
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
@@ -79,14 +79,14 @@ export default function AuditPage() {
               </div>
             </div>
 
-            <div className="data-panel relative rounded-2xl p-5">
+            <div className="data-panel relative rounded-xl p-5">
               <div className="relative z-10">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold text-accent">
                       Audit output
                     </p>
-                    <h2 className="mt-1 text-2xl font-semibold">
+                    <h2 className="mt-1 text-2xl font-semibold tracking-[-0.01em]">
                       Business plan, not a tool dump
                     </h2>
                   </div>
@@ -100,7 +100,7 @@ export default function AuditPage() {
                     "Risk and privacy cautions"
                   ].map((item, index) => (
                     <div
-                      className="rounded-xl border border-line bg-surface/78 p-4"
+                      className="rounded-lg border border-line bg-white/78 p-4"
                       key={item}
                     >
                       <div className="flex items-center gap-3">
@@ -124,7 +124,7 @@ export default function AuditPage() {
             return (
               <article className="surface-panel rounded-xl p-5" key={outcome.title}>
                 <Icon aria-hidden="true" className="text-accent" size={22} />
-                <h2 className="mt-4 font-semibold">{outcome.title}</h2>
+                <h2 className="mt-4 text-lg font-semibold">{outcome.title}</h2>
                 <p className="mt-2 text-sm leading-6 text-ink/62">
                   {outcome.description}
                 </p>

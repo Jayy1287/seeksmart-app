@@ -40,9 +40,9 @@ export default async function AuditQuestionsPage() {
     <main className="page-shell">
       <AuditAnalyticsEvent event="audit_questions_viewed" />
       <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6">
+        <section className="hero-panel rounded-2xl p-6 md:p-8">
           <p className="eyebrow">Audit questions</p>
-          <h1 className="mt-3 text-4xl font-semibold">
+          <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight tracking-[-0.01em] md:text-5xl">
             Tell SeekSmart what business context to score.
           </h1>
           <p className="mt-3 max-w-2xl leading-7 text-ink/65">
@@ -53,7 +53,7 @@ export default async function AuditQuestionsPage() {
 
         <form
           action="/audit/results"
-          className="surface-panel mt-6 grid gap-7 rounded-2xl p-5 md:p-6"
+          className="surface-panel mt-6 grid gap-7 rounded-2xl p-5 md:p-7"
           method="get"
         >
           <fieldset className="grid gap-4 md:grid-cols-2">
@@ -212,7 +212,7 @@ function CheckOption({
   value: string;
 }) {
   return (
-    <label className="flex min-h-14 items-center gap-3 rounded-lg border border-line bg-surface/72 px-3 py-2 text-sm font-medium">
+    <label className="flex min-h-14 items-center gap-3 rounded-lg border border-line bg-white/72 px-3 py-2 text-sm font-medium transition hover:border-accent">
       <input
         className="h-4 w-4 accent-[rgb(var(--color-accent))]"
         defaultChecked={defaultChecked}
