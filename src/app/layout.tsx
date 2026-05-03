@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
+import { PageTransition } from "@/components/page-transition";
 import { SiteNavigation } from "@/components/site-navigation";
 import { SiteAnalytics } from "@/features/analytics/site-analytics";
 import { siteConfig } from "@/lib/site";
@@ -63,7 +64,7 @@ export default function RootLayout({
             <div className="app-container grid grid-cols-1 items-center gap-3 py-4 md:grid-cols-[auto_1fr_auto] lg:py-5">
               <Link
                 aria-label="SeekSmart home"
-                className="brand-lockup flex items-center"
+                className="brand-lockup flex items-center gap-3"
                 href="/"
               >
                 <span className="brand-mark flex h-14 w-14 items-center justify-center">
@@ -76,6 +77,10 @@ export default function RootLayout({
                     width={64}
                   />
                 </span>
+                <span className="brand-type min-w-0 leading-none">
+                  <span className="brand-title block">SeekSmart</span>
+                  <span className="brand-tagline block">Smarter AI Choices</span>
+                </span>
               </Link>
               <SiteNavigation />
               <Link className="primary-button hidden min-h-10 px-4 md:inline-flex" href="/audit/start">
@@ -83,7 +88,7 @@ export default function RootLayout({
               </Link>
             </div>
           </header>
-          {children}
+          <PageTransition>{children}</PageTransition>
           <footer className="border-t border-line bg-paper/80">
             <div className="app-container flex flex-col gap-3 py-8 text-sm text-ink/55 md:flex-row md:items-center md:justify-between">
               <div className="inline-flex items-center gap-2">
