@@ -206,7 +206,35 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               ) : null}
             </div>
 
-            <div className="mt-5 overflow-x-auto rounded-xl border border-line">
+            <div className="mt-5 grid gap-3 md:hidden">
+              {tool.useCases.map((useCase) => (
+                <Link
+                  className="rounded-xl border border-line bg-surface/72 p-4"
+                  href={`/use-cases/${useCase.slug}`}
+                  key={useCase.id}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h3 className="font-semibold">{useCase.name}</h3>
+                      <p className="mt-1 text-xs leading-5 text-ink/50">
+                        {useCase.timeToValue ?? "Time to value varies"} ·{" "}
+                        {formatLevel(useCase.effortLevel)} effort ·{" "}
+                        {formatLevel(useCase.riskLevel)} risk
+                      </p>
+                    </div>
+                    <span className="rounded-lg bg-ink px-2.5 py-1.5 text-xs font-semibold text-paper">
+                      {useCase.fitScore}
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-ink/62">
+                    {useCase.recommendationNote ??
+                      "Mapped by editorial taxonomy."}
+                  </p>
+                </Link>
+              ))}
+            </div>
+
+            <div className="mt-5 hidden overflow-x-auto rounded-xl border border-line md:block">
               <table className="w-full min-w-[760px] border-collapse bg-surface/70 text-left text-sm">
                 <thead className="border-b border-line text-xs uppercase text-ink/50">
                   <tr>
@@ -233,8 +261,8 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                         </p>
                       </td>
                       <td className="px-4 py-4">
-                        <span className="rounded-lg bg-ink px-2.5 py-1.5 text-xs font-semibold text-paper">
-                          {fitLabel(useCase.fitScore)} · {useCase.fitScore}
+                        <span className="inline-flex whitespace-nowrap rounded-lg bg-ink px-2.5 py-1.5 text-xs font-semibold text-paper">
+                          {fitLabel(useCase.fitScore)} {useCase.fitScore}
                         </span>
                       </td>
                       <td className="px-4 py-4">{formatLevel(useCase.effortLevel)}</td>
@@ -404,10 +432,11 @@ function ChecklistItem({ children }: { children: ReactNode }) {
 }
 
 function bestForSignals(tool: PublicToolDetail) {
-  const mappedSignals = tool.useCases
-    .map((useCase) => useCase.bestFor)
-    .filter((value): value is string => Boolean(value))
-    .slice(0, 3);
+  const mappedSignals = uniqueStrings(
+    tool.useCases
+      .map((useCase) => useCase.bestFor)
+      .filter((value): value is string => Boolean(value))
+  ).slice(0, 3);
 
   if (mappedSignals.length > 0) {
     return mappedSignals;
@@ -421,10 +450,11 @@ function bestForSignals(tool: PublicToolDetail) {
 }
 
 function notIdealSignals(tool: PublicToolDetail) {
-  const mappedSignals = tool.useCases
-    .map((useCase) => useCase.limitations)
-    .filter((value): value is string => Boolean(value))
-    .slice(0, 3);
+  const mappedSignals = uniqueStrings(
+    tool.useCases
+      .map((useCase) => useCase.limitations)
+      .filter((value): value is string => Boolean(value))
+  ).slice(0, 3);
 
   if (mappedSignals.length > 0) {
     return mappedSignals;
@@ -435,6 +465,10 @@ function notIdealSignals(tool: PublicToolDetail) {
     "Teams that cannot review customer-facing output.",
     "Sensitive data workflows before privacy controls are defined."
   ];
+}
+
+function uniqueStrings(values: string[]) {
+  return Array.from(new Set(values));
 }
 
 function uniqueOpportunities(tool: PublicToolDetail) {
