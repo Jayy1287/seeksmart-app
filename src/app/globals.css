@@ -140,26 +140,34 @@ textarea {
   }
 
   .brand-type {
-    padding-top: 0.05rem;
+    padding-top: 0.02rem;
   }
 
   .brand-title {
-    color: rgb(var(--color-ink));
+    background: linear-gradient(
+      92deg,
+      rgb(var(--color-ink)) 0%,
+      rgb(30 87 176) 52%,
+      rgb(20 40 78) 100%
+    );
+    background-clip: text;
+    color: transparent;
     font-family:
-      "Avenir Next", "Plus Jakarta Sans", "Inter Tight", Inter, ui-sans-serif,
-      system-ui, sans-serif;
-    font-size: clamp(1.26rem, 1.12rem + 0.38vw, 1.62rem);
-    font-weight: 900;
-    letter-spacing: 0;
-    line-height: 0.92;
+      "Avenir Next", "Optima", "Gill Sans", "Plus Jakarta Sans", Inter,
+      ui-sans-serif, system-ui, sans-serif;
+    font-size: clamp(1.14rem, 1.04rem + 0.3vw, 1.42rem);
+    font-weight: 660;
+    letter-spacing: 0.026em;
+    line-height: 1;
+    text-wrap: nowrap;
   }
 
   .brand-tagline {
-    margin-top: 0.3rem;
-    color: rgb(var(--color-muted-text) / 0.72);
-    font-size: clamp(0.68rem, 0.64rem + 0.12vw, 0.78rem);
-    font-weight: 760;
-    letter-spacing: 0;
+    margin-top: 0.34rem;
+    color: rgb(var(--color-muted-text) / 0.68);
+    font-size: clamp(0.66rem, 0.62rem + 0.1vw, 0.74rem);
+    font-weight: 620;
+    letter-spacing: 0.026em;
   }
 
   .page-transition {
