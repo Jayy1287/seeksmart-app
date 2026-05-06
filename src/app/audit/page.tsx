@@ -53,14 +53,14 @@ export default function AuditPage() {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="hero-panel relative rounded-2xl p-6 md:p-10">
-          <div className="relative z-10 grid gap-8 lg:grid-cols-[1fr_0.82fr] lg:items-center">
+        <section className="border-b border-line/50 pb-10">
+          <div className="grid gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-center">
             <div>
               <p className="eyebrow">
                 <ClipboardCheck aria-hidden="true" size={14} />
                 AI audit
               </p>
-              <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.02em] md:text-6xl">
+              <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[0.98] md:text-6xl">
                 Find the first AI workflow your business should improve.
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
@@ -79,20 +79,20 @@ export default function AuditPage() {
               </div>
             </div>
 
-            <div className="data-panel relative rounded-xl p-5">
-              <div className="relative z-10">
+            <div className="relative">
+              <div>
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold text-accent">
                       Audit output
                     </p>
-                    <h2 className="mt-1 text-2xl font-semibold tracking-[-0.01em]">
+                    <h2 className="mt-1 text-2xl font-semibold">
                       Business plan, not a tool dump
                     </h2>
                   </div>
                   <BarChart3 aria-hidden="true" className="text-accent" />
                 </div>
-                <div className="mt-5 grid gap-3">
+                <div className="mt-5 grid gap-4">
                   {[
                     "Opportunity ranking",
                     "Recommended first workflow",
@@ -100,11 +100,11 @@ export default function AuditPage() {
                     "Risk and privacy cautions"
                   ].map((item, index) => (
                     <div
-                      className="rounded-lg border border-line bg-white/78 p-4"
+                      className="border-t border-line/70 pt-4"
                       key={item}
                     >
                       <div className="flex items-center gap-3">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ink text-sm font-semibold text-paper">
+                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-paper">
                           {index + 1}
                         </span>
                         <span className="font-semibold">{item}</span>
@@ -117,12 +117,12 @@ export default function AuditPage() {
           </div>
         </section>
 
-        <section className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <section className="mt-10 grid gap-x-8 gap-y-6 md:grid-cols-2 lg:grid-cols-4">
           {outcomes.map((outcome) => {
             const Icon = outcome.icon;
 
             return (
-              <article className="surface-panel rounded-xl p-5" key={outcome.title}>
+              <article className="border-t border-line/70 pt-5" key={outcome.title}>
                 <Icon aria-hidden="true" className="text-accent" size={22} />
                 <h2 className="mt-4 text-lg font-semibold">{outcome.title}</h2>
                 <p className="mt-2 text-sm leading-6 text-ink/62">
@@ -133,7 +133,7 @@ export default function AuditPage() {
           })}
         </section>
 
-        <section className="surface-strong mt-8 rounded-2xl p-6">
+        <section className="section-band -mx-4 mt-10 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-semibold">

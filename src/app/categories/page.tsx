@@ -28,7 +28,7 @@ export default async function CategoriesPage() {
   return (
     <main className="page-shell">
       <div className="app-container">
-      <section className="surface-strong rounded-2xl p-6">
+      <section className="border-b border-line/50 pb-8">
         <p className="eyebrow">Browse</p>
         <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
@@ -39,18 +39,18 @@ export default async function CategoriesPage() {
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="metric-tile rounded-xl px-4 py-3">
+            <div className="metric-tile rounded-2xl px-4 py-3">
               <div className="text-2xl font-semibold">{categories.length}</div>
               <div className="text-ink/55">Categories</div>
             </div>
-            <div className="metric-tile rounded-xl px-4 py-3">
+            <div className="metric-tile rounded-2xl px-4 py-3">
               <div className="text-2xl font-semibold">{toolCount}</div>
               <div className="text-ink/55">Published tools</div>
             </div>
           </div>
         </div>
       </section>
-      <section className="surface-panel mt-6 rounded-xl p-5">
+      <section className="mt-8">
         <CategoryList categories={categories} />
       </section>
       </div>

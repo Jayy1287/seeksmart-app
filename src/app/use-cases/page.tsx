@@ -31,7 +31,7 @@ export default async function UseCasesPage() {
   return (
     <main className="page-shell">
       <div className="app-container">
-      <section className="surface-strong rounded-2xl p-6">
+      <section className="border-b border-line/50 pb-8">
         <p className="eyebrow">
           <Target aria-hidden="true" size={14} />
           Use cases
@@ -46,7 +46,7 @@ export default async function UseCasesPage() {
               Start here when you know the outcome you want but not the tool.
             </p>
           </div>
-          <div className="metric-tile rounded-xl px-4 py-3 text-sm">
+          <div className="metric-tile rounded-2xl px-4 py-3 text-sm">
             <div className="text-2xl font-semibold">{useCases.length}</div>
             <div className="text-ink/55">Use cases</div>
           </div>
@@ -56,7 +56,7 @@ export default async function UseCasesPage() {
         </p>
       </section>
 
-      <section className="mt-6 grid gap-4 md:grid-cols-3">
+      <section className="mt-8 grid gap-6 md:grid-cols-3">
         <DecisionTile
           icon={BriefcaseBusiness}
           title="Business outcome"
@@ -74,7 +74,7 @@ export default async function UseCasesPage() {
         />
       </section>
 
-      <section className="mt-6">
+      <section className="mt-10">
         <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <h2 className="text-xl font-semibold">Use-case library</h2>
@@ -104,7 +104,7 @@ function DecisionTile({
   title: string;
 }) {
   return (
-    <article className="surface-panel rounded-xl p-5">
+    <article className="border-t border-line/70 pt-5">
       <Icon aria-hidden="true" className="text-accent" size={22} />
       <h2 className="mt-4 font-semibold">{title}</h2>
       <p className="mt-2 text-sm leading-6 text-ink/62">{description}</p>

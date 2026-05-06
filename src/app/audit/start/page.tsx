@@ -44,14 +44,14 @@ export default function AuditStartPage() {
     <main className="page-shell">
       <AuditAnalyticsEvent event="audit_start_viewed" />
       <div className="app-container">
-        <section className="hero-panel rounded-2xl p-6 md:p-10">
+        <section className="border-b border-line/50 pb-10">
           <p className="eyebrow">
             <ClipboardList aria-hidden="true" size={14} />
             Audit start
           </p>
           <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_320px] lg:items-end">
             <div>
-              <h1 className="max-w-3xl text-5xl font-semibold leading-[0.98] tracking-[-0.02em] md:text-6xl">
+              <h1 className="max-w-3xl text-5xl font-semibold leading-[0.98] md:text-6xl">
                 Answer business questions first. Compare tools second.
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
@@ -66,12 +66,12 @@ export default function AuditStartPage() {
           </div>
         </section>
 
-        <section className="mt-6 grid gap-4 md:grid-cols-3">
+        <section className="mt-10 grid gap-x-8 gap-y-6 md:grid-cols-3">
           {principles.map((principle) => {
             const Icon = principle.icon;
 
             return (
-              <article className="surface-panel rounded-xl p-6" key={principle.title}>
+              <article className="border-t border-line/70 pt-5" key={principle.title}>
                 <Icon aria-hidden="true" className="text-accent" size={22} />
                 <h2 className="mt-4 font-semibold">{principle.title}</h2>
                 <p className="mt-2 text-sm leading-6 text-ink/62">
@@ -82,7 +82,7 @@ export default function AuditStartPage() {
           })}
         </section>
 
-        <section className="surface-strong mt-6 rounded-xl p-6">
+        <section className="section-band -mx-4 mt-10 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <h2 className="text-xl font-semibold">What you will need</h2>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
             {[
@@ -90,7 +90,7 @@ export default function AuditStartPage() {
               "The business outcome you care about",
               "Budget, urgency, technical comfort, and data sensitivity"
             ].map((item) => (
-              <div className="metric-tile rounded-lg p-4 text-sm font-medium" key={item}>
+              <div className="border-t border-line/70 pt-4 text-sm font-medium" key={item}>
                 {item}
               </div>
             ))}

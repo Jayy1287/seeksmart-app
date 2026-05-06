@@ -7,16 +7,16 @@ type CategoryListProps = {
 
 export function CategoryList({ categories }: CategoryListProps) {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
       {categories.map((category) => (
         <Link
-          className="flex min-h-16 flex-col justify-center rounded-xl border border-line bg-surface/72 px-4 py-3 text-sm font-medium shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:bg-accent/5 hover:text-accent"
+          className="group flex min-h-16 flex-col justify-center border-t border-line/70 py-4 text-sm font-medium transition hover:border-accent hover:text-accent"
           href={`/categories/${category.slug}`}
           key={category.id}
         >
           <span>{category.name}</span>
           {"toolCount" in category ? (
-            <span className="mt-1 block text-xs font-normal text-ink/50">
+            <span className="mt-1 block text-xs font-normal text-ink/50 transition group-hover:text-accent/70">
               {category.toolCount} tools
             </span>
           ) : null}

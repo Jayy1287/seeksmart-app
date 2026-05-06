@@ -40,9 +40,9 @@ export default async function AuditQuestionsPage() {
     <main className="page-shell">
       <AuditAnalyticsEvent event="audit_questions_viewed" />
       <div className="app-container">
-        <section className="hero-panel rounded-2xl p-6 md:p-8">
+        <section className="border-b border-line/50 pb-8">
           <p className="eyebrow">Audit questions</p>
-          <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight tracking-[-0.01em] md:text-5xl">
+          <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">
             Tell SeekSmart what business context to score.
           </h1>
           <p className="mt-3 max-w-2xl leading-7 text-ink/65">
@@ -53,7 +53,7 @@ export default async function AuditQuestionsPage() {
 
         <form
           action="/audit/results"
-          className="surface-panel mt-6 grid gap-7 rounded-2xl p-5 md:p-7"
+          className="mt-8 grid gap-7 rounded-[1.75rem] border border-line/60 bg-white/45 p-5 shadow-[0_18px_60px_rgb(38_78_162/0.07)] backdrop-blur md:p-7"
           method="get"
         >
           <fieldset className="grid gap-4 md:grid-cols-2">

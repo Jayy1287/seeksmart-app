@@ -66,14 +66,14 @@ export default async function AuditResultsPage({
         }}
       />
       <div className="app-container">
-        <section className="hero-panel rounded-2xl p-6 md:p-10">
-          <div className="relative z-10 grid gap-6 lg:grid-cols-[1fr_360px] lg:items-end">
+        <section className="border-b border-line/50 pb-10">
+          <div className="grid gap-8 lg:grid-cols-[1fr_360px] lg:items-end">
             <div>
               <p className="eyebrow">
                 <BarChart3 aria-hidden="true" size={14} />
                 Audit result
               </p>
-              <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.02em] md:text-6xl">
+              <h1 className="mt-5 max-w-4xl text-5xl font-semibold leading-[0.98] md:text-6xl">
                 Your recommended first AI adoption path.
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
@@ -82,7 +82,7 @@ export default async function AuditResultsPage({
                 SeekSmart taxonomy data.
               </p>
             </div>
-            <div className="data-panel rounded-xl p-5">
+            <div className="metric-tile rounded-2xl p-5">
               <p className="text-sm font-semibold text-accent">
                 Executive recommendation
               </p>

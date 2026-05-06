@@ -9,10 +9,10 @@ type ToolCardProps = {
 
 export function ToolCard({ tool }: ToolCardProps) {
   return (
-    <article className="surface-panel group flex h-full flex-col rounded-xl p-5 transition hover:-translate-y-1 hover:border-accent">
+    <article className="group flex h-full flex-col border-t border-line/70 pt-5 transition hover:border-accent">
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
-          <div className="tool-mark flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-sm font-semibold ring-1 ring-line/40">
+          <div className="tool-mark flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold ring-1 ring-line/40">
             {tool.name.slice(0, 1)}
           </div>
           <div className="min-w-0">
@@ -45,7 +45,7 @@ export function ToolCard({ tool }: ToolCardProps) {
         {tool.popularityScore >= 80 ? <Badge icon={Flame} label="Trending" /> : null}
         {tool.hasFreePlan ? <Badge label="Free plan" /> : null}
       </div>
-      <p className="mt-4 flex-1 text-sm leading-6 text-ink/70">
+      <p className="mt-4 flex-1 text-sm leading-6 text-ink/68">
         {tool.shortDescription}
       </p>
       <div className="mt-5 flex items-center justify-between gap-3">

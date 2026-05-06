@@ -62,7 +62,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
   return (
     <main className="page-shell">
       <section className="app-container">
-      <div className="surface-strong mb-8 flex flex-col gap-5 rounded-2xl p-6 md:flex-row md:items-end md:justify-between">
+      <div className="mb-8 flex flex-col gap-5 border-b border-line/50 pb-8 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="eyebrow">
             <SlidersHorizontal aria-hidden="true" size={14} />
@@ -76,13 +76,13 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
             business use case is clear.
           </p>
         </div>
-        <div className="metric-tile rounded-xl px-4 py-3 text-sm text-ink/60">
+        <div className="metric-tile rounded-2xl px-4 py-3 text-sm text-ink/60">
           <span className="font-semibold text-ink">{result.total}</span>{" "}
           matching tools
         </div>
       </div>
 
-      <form className="surface-panel grid gap-3 rounded-xl p-4 md:grid-cols-[1fr_180px_160px_auto]">
+      <form className="grid gap-3 rounded-[1.75rem] border border-line/60 bg-white/45 p-3 shadow-[0_18px_60px_rgb(38_78_162/0.07)] backdrop-blur md:grid-cols-[1fr_180px_160px_auto]">
         <label className="relative">
           <span className="sr-only">Search tools</span>
           <Search
@@ -159,7 +159,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
           <div className="mb-4 text-sm text-ink/55">
             Showing {startResult}-{endResult} of {result.total}
           </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
             {result.tools.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
