@@ -144,14 +144,7 @@ textarea {
   }
 
   .brand-title {
-    background: linear-gradient(
-      92deg,
-      rgb(var(--color-ink)) 0%,
-      rgb(30 87 176) 52%,
-      rgb(20 40 78) 100%
-    );
-    background-clip: text;
-    color: transparent;
+    color: rgb(var(--color-ink));
     font-family:
       "Avenir Next", "Optima", "Gill Sans", "Plus Jakarta Sans", Inter,
       ui-sans-serif, system-ui, sans-serif;
