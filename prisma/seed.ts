@@ -1172,6 +1172,96 @@ const opportunities = [
     successMetrics: ["Themes found", "Issues prioritized", "Decision speed"],
     industries: ["Ecommerce", "SaaS teams", "Local services"],
     useCases: ["Web research", "Knowledge management", "Workflow automation"]
+  },
+  {
+    name: "Automate prospect research",
+    businessFunction: "Sales",
+    description:
+      "Research accounts, enrich contacts, and draft relevant outbound messages from approved signals.",
+    painPoint: "Sales teams spend too much time researching accounts before outreach.",
+    expectedBenefit: "Better account context, faster prospecting, and more relevant messages.",
+    startingPoint: "Define one ideal customer segment and the signals that qualify an account.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Research time", "Data completeness", "Reply rate"],
+    industries: ["SaaS teams", "Consulting and agencies", "Nonprofits"],
+    useCases: ["Lead enrichment", "Sales email personalization", "CRM update automation"]
+  },
+  {
+    name: "Create an internal answer assistant",
+    businessFunction: "Knowledge Management",
+    description:
+      "Use approved company documents and apps to answer repeated internal questions with sources.",
+    painPoint: "Employees waste time searching across docs, chat, tickets, and project tools.",
+    expectedBenefit: "Faster internal answers and less repeated interruption across teams.",
+    startingPoint: "Start with a narrow document collection and frequent internal questions.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "3-6 weeks",
+    successMetrics: ["Answer time", "Search success", "Repeated questions"],
+    industries: ["SaaS teams", "Consulting and agencies", "Manufacturing and logistics"],
+    useCases: ["Internal knowledge search", "Knowledge management", "General assistant"]
+  },
+  {
+    name: "Analyze recurring business reports",
+    businessFunction: "Data and Analytics",
+    description:
+      "Turn spreadsheets, exports, and recurring reports into summaries, charts, and decision notes.",
+    painPoint: "Teams spend too long interpreting spreadsheets and rewriting weekly updates.",
+    expectedBenefit: "Faster analysis and more consistent operational decisions.",
+    startingPoint: "Choose one recurring spreadsheet or export with known definitions.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-3 weeks",
+    successMetrics: ["Analysis time", "Report turnaround", "Decision speed"],
+    industries: ["Finance and accounting", "Manufacturing and logistics", "Retail and hospitality"],
+    useCases: ["Data analysis", "Spreadsheet automation", "Document extraction"]
+  },
+  {
+    name: "Automate document intake",
+    businessFunction: "Operations",
+    description:
+      "Extract fields from forms, invoices, contracts, and PDFs before routing them to the right workflow.",
+    painPoint: "Manual document intake creates delays, rekeying, and routing mistakes.",
+    expectedBenefit: "Faster processing with clearer exception handling.",
+    startingPoint: "Pilot one document type with a field checklist and human verification.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "3-6 weeks",
+    successMetrics: ["Processing time", "Extraction accuracy", "Manual corrections"],
+    industries: ["Finance and accounting", "Legal services", "Healthcare operations"],
+    useCases: ["Document extraction", "Workflow automation", "Data analysis"]
+  },
+  {
+    name: "Prototype apps and internal tools faster",
+    businessFunction: "Product and Engineering",
+    description:
+      "Generate early UI, dashboards, landing pages, and internal tools for faster validation.",
+    painPoint: "Teams wait too long to see and test a working prototype.",
+    expectedBenefit: "Faster idea validation and better product conversations.",
+    startingPoint: "Start with one low-risk internal workflow or landing-page concept.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-3 weeks",
+    successMetrics: ["Prototype turnaround", "Iteration speed", "Stakeholder feedback"],
+    industries: ["SaaS teams", "Consulting and agencies", "Media and creators"],
+    useCases: ["App prototyping", "Code generation", "Design assets"]
+  },
+  {
+    name: "Build a content repurposing engine",
+    businessFunction: "Marketing",
+    description:
+      "Turn long-form source material into social posts, clips, visuals, newsletters, and summaries.",
+    painPoint: "Teams create one asset at a time and fail to reuse valuable source material.",
+    expectedBenefit: "More consistent publishing from the same expert input.",
+    startingPoint: "Pick one finished webinar, article, podcast, or report as a source asset.",
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks",
+    successMetrics: ["Assets repurposed", "Publishing frequency", "Review time"],
+    industries: ["Media and creators", "Consulting and agencies", "Nonprofits"],
+    useCases: ["Social media content", "Video generation", "Copywriting"]
   }
 ];
 
@@ -1685,6 +1775,346 @@ const tools = [
     useCases: ["Presentation creation", "Design assets"],
     features: ["Templates", "Brand kit", "Team workspace"],
     alternatives: ["Gamma", "Canva", "Tome"]
+  },
+  {
+    name: "Microsoft 365 Copilot",
+    category: "Productivity",
+    shortDescription:
+      "AI assistant embedded across Microsoft 365 apps for documents, email, meetings, and work data.",
+    longDescription:
+      "Microsoft 365 Copilot is best for organizations already working in Word, Excel, PowerPoint, Outlook, Teams, and Microsoft Graph-connected data. It supports drafting, summarizing, meeting follow-up, spreadsheet help, and enterprise productivity workflows.",
+    websiteUrl: "https://www.microsoft.com/en-us/microsoft-365/copilot",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 93,
+    useCases: ["General assistant", "Meeting summaries", "Spreadsheet automation"],
+    features: ["Chat interface", "Document upload", "Team workspace", "Integrations"],
+    alternatives: ["ChatGPT", "Gemini", "Notion AI"]
+  },
+  {
+    name: "NotebookLM",
+    category: "Research",
+    shortDescription:
+      "Google source-grounded research and note assistant for uploaded documents and links.",
+    longDescription:
+      "NotebookLM helps users explore a defined set of sources, ask questions, create summaries, and turn notes into study or research outputs. It is useful when teams need grounded synthesis from selected documents rather than open-ended web search.",
+    websiteUrl: "https://notebooklm.google.com",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 87,
+    useCases: ["Web research", "Internal knowledge search", "Training content"],
+    features: ["Source grounding", "Document upload", "Citations", "Export options"],
+    alternatives: ["Perplexity", "Glean", "Notion AI"]
+  },
+  {
+    name: "Glean",
+    category: "Knowledge Management",
+    shortDescription:
+      "Enterprise AI search and workplace assistant across company apps and knowledge.",
+    longDescription:
+      "Glean is built for enterprise knowledge discovery across connected workplace systems. It is a strong fit for teams that need permission-aware internal search, source-grounded answers, and company-wide knowledge assistance.",
+    websiteUrl: "https://www.glean.com",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 86,
+    useCases: ["Internal knowledge search", "Knowledge management", "Customer support"],
+    features: ["Internal search", "Source grounding", "Integrations", "Team workspace"],
+    alternatives: ["Notion AI", "NotebookLM", "Guru"]
+  },
+  {
+    name: "Granola",
+    category: "Meetings",
+    shortDescription:
+      "AI meeting notebook that turns personal notes and transcripts into polished summaries.",
+    longDescription:
+      "Granola is useful for people who want lightweight meeting notes without a heavy bot experience. It combines user notes with transcript context to create structured summaries and follow-ups.",
+    websiteUrl: "https://www.granola.ai",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: false,
+    isFeatured: true,
+    popularityScore: 78,
+    useCases: ["Meeting summaries", "Knowledge management", "CRM update automation"],
+    features: ["Meeting notes", "Transcription", "Export options"],
+    alternatives: ["Fathom", "Otter.ai", "Fireflies.ai"]
+  },
+  {
+    name: "tl;dv",
+    category: "Meetings",
+    shortDescription:
+      "AI meeting recorder for summaries, highlights, coaching, and searchable calls.",
+    longDescription:
+      "tl;dv records and summarizes meetings, helping sales, customer, recruiting, and product teams review calls and extract follow-ups. It is a practical choice for teams that need meeting libraries and structured call insights.",
+    websiteUrl: "https://tldv.io",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: false,
+    isFeatured: false,
+    popularityScore: 70,
+    useCases: ["Meeting summaries", "Sales outreach", "Customer feedback analysis"],
+    features: ["Meeting notes", "Transcription", "Integrations", "Team workspace"],
+    alternatives: ["Fireflies.ai", "Fathom", "Otter.ai"]
+  },
+  {
+    name: "Intercom Fin",
+    category: "Customer Support",
+    shortDescription:
+      "AI customer service agent for answering support questions and handing off to teams.",
+    longDescription:
+      "Intercom Fin is designed for customer support teams that want an AI agent connected to help content and support workflows. It is best for companies with a clear help center, escalation rules, and a human support process.",
+    websiteUrl: "https://www.intercom.com/fin",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 88,
+    useCases: ["Help desk automation", "Customer support", "Knowledge management"],
+    features: ["AI agents", "Human handoff", "Ticket routing", "Integrations"],
+    alternatives: ["Zendesk AI", "Gorgias AI Agent", "Ada"]
+  },
+  {
+    name: "Zendesk AI",
+    category: "Customer Support",
+    shortDescription:
+      "AI capabilities for Zendesk service workflows, agents, bots, and support operations.",
+    longDescription:
+      "Zendesk AI is useful for teams already operating in Zendesk or evaluating an AI-enabled service platform. It supports support-agent productivity, automation, ticket intelligence, and customer-service workflows.",
+    websiteUrl: "https://www.zendesk.com/service/ai/",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 84,
+    useCases: ["Help desk automation", "Customer support", "Customer feedback analysis"],
+    features: ["AI agents", "Ticket routing", "Human handoff", "Integrations"],
+    alternatives: ["Intercom Fin", "Gorgias AI Agent", "Ada"]
+  },
+  {
+    name: "Gorgias AI Agent",
+    category: "Customer Support",
+    shortDescription:
+      "Ecommerce-focused AI support agent for automating customer conversations.",
+    longDescription:
+      "Gorgias AI Agent is built for ecommerce support teams that need to answer order, return, product, and policy questions. It is strongest when connected to a well-maintained ecommerce help desk and store data.",
+    websiteUrl: "https://www.gorgias.com",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 77,
+    useCases: ["Help desk automation", "Customer support", "Workflow automation"],
+    features: ["AI agents", "Human handoff", "Ticket routing", "Integrations"],
+    alternatives: ["Intercom Fin", "Zendesk AI", "Ada"]
+  },
+  {
+    name: "HubSpot Breeze",
+    category: "Marketing",
+    shortDescription:
+      "HubSpot AI for marketing, sales, service, content, and CRM productivity.",
+    longDescription:
+      "HubSpot Breeze brings AI assistance and agents into HubSpot workflows. It is most useful for teams using HubSpot CRM who want AI support for content, prospecting, customer data, and revenue operations.",
+    websiteUrl: "https://www.hubspot.com/products/artificial-intelligence",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 82,
+    useCases: ["CRM update automation", "Sales outreach", "Social media content"],
+    features: ["CRM sync", "AI agents", "Templates", "Integrations"],
+    alternatives: ["Clay", "Apollo", "Copy.ai"]
+  },
+  {
+    name: "Clay",
+    category: "Sales",
+    shortDescription:
+      "AI-powered sales prospecting, enrichment, research, and outbound workflow platform.",
+    longDescription:
+      "Clay helps go-to-market teams combine data providers, AI research, enrichment, and workflow logic to build targeted prospecting systems. It is best for teams that can define clear ICP and messaging rules.",
+    websiteUrl: "https://www.clay.com",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 85,
+    useCases: ["Lead enrichment", "Sales email personalization", "CRM update automation"],
+    features: ["Data enrichment", "Workflow builder", "CRM sync", "Integrations"],
+    alternatives: ["Apollo", "Lavender", "HubSpot Breeze"]
+  },
+  {
+    name: "Apollo",
+    category: "Sales",
+    shortDescription:
+      "Sales intelligence and engagement platform with AI-assisted prospecting and outreach.",
+    longDescription:
+      "Apollo combines contact data, prospecting, sequences, and sales workflow tools. It is useful for revenue teams that want an integrated prospecting and outbound system.",
+    websiteUrl: "https://www.apollo.io",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 79,
+    useCases: ["Lead enrichment", "Sales outreach", "Sales email personalization"],
+    features: ["Data enrichment", "Lead scoring", "CRM sync", "Templates"],
+    alternatives: ["Clay", "Lavender", "HubSpot Breeze"]
+  },
+  {
+    name: "Lavender",
+    category: "Sales",
+    shortDescription:
+      "AI sales email coach for improving outbound messages and personalization.",
+    longDescription:
+      "Lavender helps sales teams write, score, and improve outbound emails. It is best for teams focused on email quality, buyer relevance, and coaching rather than full CRM automation.",
+    websiteUrl: "https://www.lavender.ai",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: false,
+    isFeatured: false,
+    popularityScore: 68,
+    useCases: ["Sales email personalization", "Sales outreach", "Copywriting"],
+    features: ["Templates", "Lead scoring", "Browser extension", "CRM sync"],
+    alternatives: ["Clay", "Apollo", "Copy.ai"]
+  },
+  {
+    name: "n8n",
+    category: "Automation",
+    shortDescription:
+      "Workflow automation platform with AI nodes, integrations, and self-hosting options.",
+    longDescription:
+      "n8n is useful for technical and operations teams that want flexible workflow automation, AI steps, and control over deployment. It fits teams that need more customization than basic app-to-app automations.",
+    websiteUrl: "https://n8n.io",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 80,
+    useCases: ["Workflow automation", "Document extraction", "CRM update automation"],
+    features: ["Workflow builder", "AI agents", "Integrations", "API access"],
+    alternatives: ["Zapier", "Make", "Gumloop"]
+  },
+  {
+    name: "Lindy",
+    category: "Automation",
+    shortDescription:
+      "AI agent platform for automating inbox, meeting, CRM, support, and operations work.",
+    longDescription:
+      "Lindy helps teams build AI assistants and agents for recurring business workflows. It is a good fit for automating administrative tasks when users can define clear goals, tools, and human approval points.",
+    websiteUrl: "https://www.lindy.ai",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: false,
+    isFeatured: true,
+    popularityScore: 76,
+    useCases: ["Workflow automation", "CRM update automation", "Meeting summaries"],
+    features: ["AI agents", "Workflow builder", "Integrations", "Human handoff"],
+    alternatives: ["Zapier", "n8n", "Gumloop"]
+  },
+  {
+    name: "Gumloop",
+    category: "Automation",
+    shortDescription:
+      "No-code AI automation builder for documents, web tasks, enrichment, and operations.",
+    longDescription:
+      "Gumloop is designed for building AI workflows without heavy engineering. It is useful for teams that need repeatable automations across research, extraction, enrichment, and operational handoffs.",
+    websiteUrl: "https://www.gumloop.com",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: false,
+    isFeatured: false,
+    popularityScore: 72,
+    useCases: ["Workflow automation", "Document extraction", "Lead enrichment"],
+    features: ["Workflow builder", "Document extraction", "Data enrichment", "No-code builder"],
+    alternatives: ["Zapier", "n8n", "Lindy"]
+  },
+  {
+    name: "Julius AI",
+    category: "Data Analysis",
+    shortDescription:
+      "AI data analyst for spreadsheets, charts, statistical analysis, and reports.",
+    longDescription:
+      "Julius AI helps users analyze spreadsheets and data files through a conversational interface. It is useful for teams that need fast exploratory analysis without building a full BI workflow.",
+    websiteUrl: "https://julius.ai",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: false,
+    isFeatured: true,
+    popularityScore: 74,
+    useCases: ["Data analysis", "Spreadsheet automation", "Document extraction"],
+    features: ["Spreadsheet analysis", "Document upload", "Export options", "Chat interface"],
+    alternatives: ["ChatGPT", "Microsoft 365 Copilot", "Airtable AI"]
+  },
+  {
+    name: "Airtable AI",
+    category: "Data Analysis",
+    shortDescription:
+      "AI features inside Airtable for structured data, workflows, summaries, and app building.",
+    longDescription:
+      "Airtable AI is useful for teams already organizing work in Airtable bases. It supports structured data workflows, summaries, categorization, and AI-assisted operations across custom business apps.",
+    websiteUrl: "https://www.airtable.com/platform/ai",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 73,
+    useCases: ["Spreadsheet automation", "Data analysis", "Workflow automation"],
+    features: ["Spreadsheet analysis", "Workflow builder", "Integrations", "Team workspace"],
+    alternatives: ["Julius AI", "Notion AI", "Zapier"]
+  },
+  {
+    name: "Lovable",
+    category: "App Builders",
+    shortDescription:
+      "AI app builder for creating web apps from prompts with editable code and fast iteration.",
+    longDescription:
+      "Lovable helps users generate and iterate on web app prototypes from natural language. It is useful for founders, product teams, and operators who want to validate software ideas quickly before deeper engineering investment.",
+    websiteUrl: "https://lovable.dev",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: false,
+    isFeatured: true,
+    popularityScore: 81,
+    useCases: ["App prototyping", "Code generation", "Design assets"],
+    features: ["App generation", "UI generation", "No-code builder", "Export options"],
+    alternatives: ["v0", "Bolt.new", "Replit"]
+  },
+  {
+    name: "v0",
+    category: "App Builders",
+    shortDescription:
+      "Vercel AI tool for generating React interfaces, components, and app UI from prompts.",
+    longDescription:
+      "v0 is focused on generating UI and frontend code for modern web apps. It is useful for product teams and developers who want to move quickly from interface idea to editable implementation.",
+    websiteUrl: "https://v0.dev",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 83,
+    useCases: ["App prototyping", "Code generation", "Design assets"],
+    features: ["UI generation", "Code completion", "Export options", "Chat interface"],
+    alternatives: ["Lovable", "Bolt.new", "Cursor"]
+  },
+  {
+    name: "Bolt.new",
+    category: "App Builders",
+    shortDescription:
+      "AI app-building workspace for prompting, editing, running, and deploying full-stack apps.",
+    longDescription:
+      "Bolt.new helps users generate and modify web applications inside a browser-based development environment. It is useful for prototypes, demos, internal tools, and early product exploration.",
+    websiteUrl: "https://bolt.new",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: false,
+    isFeatured: true,
+    popularityScore: 82,
+    useCases: ["App prototyping", "Code generation", "Workflow automation"],
+    features: ["App generation", "Code completion", "Export options", "Integrations"],
+    alternatives: ["Lovable", "v0", "Replit"]
   }
 ];
 
@@ -1985,6 +2415,7 @@ async function upsertTool(
   const categoryId = getRecordId(categoryRecords, tool.category, "category");
   const slug = slugify(tool.name);
   const metaTitle = `${tool.name} review, pricing, use cases, and alternatives`;
+  const logoUrl = faviconUrl(tool.websiteUrl);
 
   return prisma.tool.upsert({
     where: { slug },
@@ -1993,6 +2424,7 @@ async function upsertTool(
       shortDescription: tool.shortDescription,
       longDescription: tool.longDescription,
       websiteUrl: tool.websiteUrl,
+      logoUrl,
       categoryId,
       pricingType: tool.pricingType,
       hasFreePlan: tool.hasFreePlan,
@@ -2010,6 +2442,7 @@ async function upsertTool(
       shortDescription: tool.shortDescription,
       longDescription: tool.longDescription,
       websiteUrl: tool.websiteUrl,
+      logoUrl,
       categoryId,
       pricingType: tool.pricingType,
       hasFreePlan: tool.hasFreePlan,
@@ -2022,6 +2455,12 @@ async function upsertTool(
       metaDescription: tool.shortDescription
     }
   });
+}
+
+function faviconUrl(websiteUrl: string) {
+  const domain = new URL(websiteUrl).hostname.replace(/^www\./, "");
+
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 }
 
 function getRecordId(
