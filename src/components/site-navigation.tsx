@@ -17,7 +17,7 @@ export function SiteNavigation() {
   const pathname = usePathname();
 
   return (
-    <nav className="header-nav flex flex-wrap items-center justify-center gap-1 rounded-xl p-1.5 text-sm font-semibold md:ml-auto md:justify-start md:gap-1.5">
+    <nav className="header-nav flex flex-wrap items-center justify-center gap-1 rounded-full p-1.5 text-sm font-semibold md:ml-auto md:justify-start md:gap-1.5">
       {navigationLinks.map((link) => {
         const isActive =
           pathname === link.href || pathname.startsWith(`${link.href}/`);

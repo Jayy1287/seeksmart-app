@@ -61,13 +61,13 @@ export default function RootLayout({
         </Suspense>
         <div className="min-h-screen">
           <header className="site-header sticky top-0 z-50">
-            <div className="app-container grid grid-cols-1 items-center gap-3 py-4 md:grid-cols-[auto_1fr_auto] lg:py-5">
+            <div className="app-container grid grid-cols-1 items-center gap-3 py-3 md:grid-cols-[auto_1fr_auto] lg:py-4">
               <Link
                 aria-label="SeekSmart home"
                 className="brand-lockup flex items-center gap-3"
                 href="/"
               >
-                <span className="brand-mark flex h-14 w-14 items-center justify-center">
+                <span className="brand-mark flex h-12 w-12 items-center justify-center md:h-[3.25rem] md:w-[3.25rem]">
                   <Image
                     alt="SeekSmart"
                     className="brand-logo-image"
@@ -83,13 +83,13 @@ export default function RootLayout({
                 </span>
               </Link>
               <SiteNavigation />
-              <Link className="primary-button hidden min-h-10 px-4 md:inline-flex" href="/audit/start">
+              <Link className="primary-button hidden min-h-10 px-5 md:inline-flex" href="/audit/start">
                 Start audit
               </Link>
             </div>
           </header>
           <PageTransition>{children}</PageTransition>
-          <footer className="border-t border-line bg-paper/80">
+          <footer className="border-t border-line/50 bg-white/30 backdrop-blur">
             <div className="app-container flex flex-col gap-3 py-8 text-sm text-ink/55 md:flex-row md:items-center md:justify-between">
               <div className="inline-flex items-center gap-2">
                 <span className="brand-mark flex h-7 w-7 items-center justify-center rounded-full">
