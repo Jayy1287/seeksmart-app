@@ -66,6 +66,7 @@ export type AuditDatasetToolFit = {
     id: string;
     name: string;
     slug: string;
+    logoUrl: string | null;
     pricingType: string;
     hasFreePlan: boolean;
     popularityScore: number;
@@ -454,6 +455,7 @@ function recommendTools(
       id: fit.tool.id,
       name: fit.tool.name,
       slug: fit.tool.slug,
+      logoUrl: fit.tool.logoUrl,
       categoryName: fit.tool.category.name,
       pricingType: fit.tool.pricingType,
       hasFreePlan: fit.tool.hasFreePlan,

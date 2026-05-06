@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ComponentType } from "react";
 import { ArrowRight, CheckCircle2, Flame, Sparkles } from "lucide-react";
+import { ToolLogo } from "@/features/tools/tool-logo";
 import type { PublicToolCard } from "@/shared/domain";
 
 type ToolCardProps = {
@@ -12,9 +13,7 @@ export function ToolCard({ tool }: ToolCardProps) {
     <article className="group flex h-full flex-col border-t border-line/70 pt-5 transition hover:border-accent">
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
-          <div className="tool-mark flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-semibold ring-1 ring-line/40">
-            {tool.name.slice(0, 1)}
-          </div>
+          <ToolLogo logoUrl={tool.logoUrl} name={tool.name} />
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <h2 className="truncate font-semibold">{tool.name}</h2>

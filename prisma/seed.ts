@@ -2459,6 +2459,13 @@ async function upsertTool(
 
 function faviconUrl(websiteUrl: string) {
   const domain = new URL(websiteUrl).hostname.replace(/^www\./, "");
+  const overrides: Record<string, string> = {
+    "tome.app": "https://logotyp.us/file/tome.svg"
+  };
+
+  if (overrides[domain]) {
+    return overrides[domain];
+  }
 
   return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 }

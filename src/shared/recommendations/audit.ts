@@ -191,6 +191,7 @@ export type AuditToolRecommendation = {
   id: string;
   name: string;
   slug: string;
+  logoUrl: string | null;
   categoryName: string;
   pricingType: string;
   hasFreePlan: boolean;

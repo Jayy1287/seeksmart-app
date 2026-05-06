@@ -26,6 +26,7 @@ import {
   listRecentlyAddedTools,
   listTrendingTools
 } from "@/server/tools/queries";
+import { ToolLogo } from "@/features/tools/tool-logo";
 
 export const dynamic = "force-dynamic";
 
@@ -286,13 +287,16 @@ export default async function Home() {
                     href={`/tools/${tool.slug}`}
                     key={tool.id}
                   >
-                    <div>
-                      <h3 className="font-semibold transition group-hover:text-accent">
-                        {tool.name}
-                      </h3>
-                      <p className="mt-2 text-sm leading-6 text-ink/62">
-                        {tool.shortDescription}
-                      </p>
+                    <div className="flex min-w-0 items-start gap-3">
+                      <ToolLogo logoUrl={tool.logoUrl} name={tool.name} />
+                      <div className="min-w-0">
+                        <h3 className="font-semibold transition group-hover:text-accent">
+                          {tool.name}
+                        </h3>
+                        <p className="mt-2 text-sm leading-6 text-ink/62">
+                          {tool.shortDescription}
+                        </p>
+                      </div>
                     </div>
                     <div className="rounded-2xl border border-line/50 bg-white/42 px-3 py-2 backdrop-blur md:w-28">
                       <div className="flex items-baseline justify-between gap-2">
@@ -416,10 +420,11 @@ export default async function Home() {
             </span>
             {recentTools.map((tool) => (
               <Link
-                className="rounded-full border border-line/60 bg-white/40 px-3 py-1.5 font-medium text-ink/62 backdrop-blur transition hover:border-accent hover:text-accent"
+                className="inline-flex items-center gap-2 rounded-full border border-line/60 bg-white/40 py-1.5 pl-1.5 pr-3 font-medium text-ink/62 backdrop-blur transition hover:border-accent hover:text-accent"
                 href={`/tools/${tool.slug}`}
                 key={tool.id}
               >
+                <ToolLogo logoUrl={tool.logoUrl} name={tool.name} size="sm" />
                 {tool.name}
               </Link>
             ))}

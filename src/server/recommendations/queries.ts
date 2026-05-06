@@ -128,6 +128,7 @@ export async function getAuditDataset(): Promise<AuditDataset> {
                         id: true,
                         name: true,
                         slug: true,
+                        logoUrl: true,
                         pricingType: true,
                         hasFreePlan: true,
                         popularityScore: true,

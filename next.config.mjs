@@ -8,6 +8,20 @@ const __dirname = path.dirname(__filename);
 const nextConfig = {
   typedRoutes: true,
   devIndicators: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "www.google.com",
+        pathname: "/s2/favicons"
+      },
+      {
+        protocol: "https",
+        hostname: "logotyp.us",
+        pathname: "/file/*"
+      }
+    ]
+  },
   outputFileTracingRoot: __dirname
 };
 

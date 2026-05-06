@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { AuditAnalyticsEvent } from "@/features/audit/audit-analytics";
+import { ToolLogo } from "@/features/tools/tool-logo";
 import {
   budgetRangeLabel,
   companySizeLabel,
@@ -396,9 +397,12 @@ function OpportunityResult({
               key={tool.id}
             >
               <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h4 className="font-semibold">{tool.name}</h4>
-                  <p className="mt-1 text-xs text-ink/50">{tool.categoryName}</p>
+                <div className="flex min-w-0 items-start gap-3">
+                  <ToolLogo logoUrl={tool.logoUrl} name={tool.name} size="sm" />
+                  <div className="min-w-0">
+                    <h4 className="truncate font-semibold">{tool.name}</h4>
+                    <p className="mt-1 text-xs text-ink/50">{tool.categoryName}</p>
+                  </div>
                 </div>
                 <span className="rounded-lg bg-ink px-2 py-1 text-xs font-semibold text-paper">
                   {tool.fitScore}

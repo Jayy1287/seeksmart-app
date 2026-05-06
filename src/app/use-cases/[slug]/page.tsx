@@ -18,6 +18,7 @@ import {
   type PublicUseCaseToolFit
 } from "@/server/use-cases/queries";
 import { TrackedExternalLink } from "@/features/analytics/tracked-link";
+import { ToolLogo } from "@/features/tools/tool-logo";
 
 export const dynamic = "force-dynamic";
 
@@ -271,11 +272,14 @@ function ToolFitCard({ tool }: { tool: PublicUseCaseToolFit }) {
   return (
     <article className="surface-panel rounded-xl p-5">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="text-lg font-semibold">{tool.name}</h3>
-          <p className="mt-1 text-xs font-medium text-ink/50">
-            {tool.category.name}
-          </p>
+        <div className="flex min-w-0 items-start gap-3">
+          <ToolLogo logoUrl={tool.logoUrl} name={tool.name} />
+          <div className="min-w-0">
+            <h3 className="truncate text-lg font-semibold">{tool.name}</h3>
+            <p className="mt-1 text-xs font-medium text-ink/50">
+              {tool.category.name}
+            </p>
+          </div>
         </div>
         <span className="rounded-lg bg-ink px-2.5 py-1.5 text-sm font-semibold text-paper">
           {tool.fitScore}

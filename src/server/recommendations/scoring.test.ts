@@ -75,6 +75,7 @@ const dataset: AuditDataset = {
                 id: "tool-helpdesk",
                 name: "Helpdesk AI",
                 slug: "helpdesk-ai",
+                logoUrl: "https://www.google.com/s2/favicons?domain=example.com&sz=128",
                 pricingType: "FREEMIUM",
                 hasFreePlan: true,
                 popularityScore: 70,

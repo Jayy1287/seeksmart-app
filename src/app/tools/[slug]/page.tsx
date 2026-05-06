@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { TrackedExternalLink } from "@/features/analytics/tracked-link";
 import { ToolCard } from "@/features/tools/tool-card";
+import { ToolLogo } from "@/features/tools/tool-logo";
 import { getPublishedToolBySlug } from "@/server/tools/queries";
 import type { PublicToolDetail } from "@/shared/domain";
 
@@ -89,9 +90,12 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                 {tool.category.name}
               </Link>
             </div>
-            <h1 className="mt-5 text-4xl font-semibold leading-tight md:text-5xl">
-              {tool.name}
-            </h1>
+            <div className="mt-5 flex items-center gap-4">
+              <ToolLogo logoUrl={tool.logoUrl} name={tool.name} size="lg" />
+              <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
+                {tool.name}
+              </h1>
+            </div>
             <p className="mt-5 max-w-3xl text-lg leading-8 text-ink/70">
               {tool.shortDescription}
             </p>
