@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import type { UrlObject } from "node:url";
 import Link from "next/link";
-import { Filter, Search, SlidersHorizontal } from "lucide-react";
+import { Filter, SlidersHorizontal } from "lucide-react";
 import { listToolsQuerySchema } from "@/lib/validation";
 import { listCategories } from "@/server/categories/queries";
 import { searchPublishedTools } from "@/server/tools/queries";
 import { ToolCard } from "@/features/tools/tool-card";
+import { ToolFilterBar } from "@/features/tools/tool-filter-bar";
 
 export const dynamic = "force-dynamic";
 
@@ -82,54 +83,12 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
         </div>
       </div>
 
-      <form className="grid gap-3 rounded-[1.75rem] border border-line/60 bg-white/45 p-3 shadow-[0_18px_60px_rgb(38_78_162/0.07)] backdrop-blur md:grid-cols-[1fr_180px_160px_auto]">
-        <label className="relative">
-          <span className="sr-only">Search tools</span>
-          <Search
-            aria-hidden="true"
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40"
-            size={18}
-          />
-          <input
-            className="control-field w-full pl-10"
-            defaultValue={params.q}
-            name="q"
-            placeholder="Search tools"
-            type="search"
-          />
-        </label>
-        <label>
-          <span className="sr-only">Category</span>
-          <select
-            className="control-field w-full"
-            defaultValue={params.category ?? ""}
-            name="category"
-          >
-            <option value="">All categories</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.slug}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          <span className="sr-only">Pricing</span>
-          <select
-            className="control-field w-full"
-            defaultValue={params.pricing ?? ""}
-            name="pricing"
-          >
-            <option value="">Any pricing</option>
-            <option value="FREE">Free</option>
-            <option value="FREEMIUM">Freemium</option>
-            <option value="PAID">Paid</option>
-          </select>
-        </label>
-        <button className="primary-button">
-          Apply
-        </button>
-      </form>
+      <ToolFilterBar
+        categories={categories}
+        initialCategory={params.category}
+        initialPricing={params.pricing}
+        initialQuery={params.q}
+      />
 
       <div className="my-5 flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap gap-2">
