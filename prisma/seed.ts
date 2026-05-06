@@ -68,6 +68,31 @@ const categories = [
     name: "Presentations",
     description:
       "AI tools for decks, documents, storytelling, and visual communication."
+  },
+  {
+    name: "Customer Support",
+    description:
+      "AI tools for help desks, support agents, ticket triage, and customer self-service."
+  },
+  {
+    name: "Sales",
+    description:
+      "AI tools for prospecting, enrichment, outbound, CRM workflows, and revenue teams."
+  },
+  {
+    name: "Knowledge Management",
+    description:
+      "AI tools for internal search, source-grounded answers, documentation, and organizational memory."
+  },
+  {
+    name: "Data Analysis",
+    description:
+      "AI tools for spreadsheets, dashboards, reports, extraction, and business analysis."
+  },
+  {
+    name: "App Builders",
+    description:
+      "AI tools for prototyping, generating, and shipping apps or user interfaces."
   }
 ];
 
@@ -89,7 +114,20 @@ const useCases = [
   "Design assets",
   "Knowledge management",
   "Sales outreach",
-  "Customer support"
+  "Customer support",
+  "Help desk automation",
+  "Lead enrichment",
+  "Sales email personalization",
+  "CRM update automation",
+  "Internal knowledge search",
+  "Data analysis",
+  "Spreadsheet automation",
+  "Document extraction",
+  "Customer feedback analysis",
+  "Training content",
+  "Recruiting support",
+  "Social media content",
+  "App prototyping"
 ];
 
 const features = [
@@ -112,7 +150,20 @@ const features = [
   "SEO scoring",
   "Brand kit",
   "Export options",
-  "Integrations"
+  "Integrations",
+  "Data enrichment",
+  "Lead scoring",
+  "CRM sync",
+  "AI agents",
+  "Internal search",
+  "Source grounding",
+  "Spreadsheet analysis",
+  "Document extraction",
+  "App generation",
+  "UI generation",
+  "No-code builder",
+  "Human handoff",
+  "Ticket routing"
 ];
 
 const businessFunctions = [
@@ -155,6 +206,16 @@ const businessFunctions = [
     name: "Knowledge Management",
     description:
       "Meeting notes, internal answers, documentation, training, and organizational memory."
+  },
+  {
+    name: "Data and Analytics",
+    description:
+      "Spreadsheets, dashboards, reporting, extraction, insight summaries, and data quality workflows."
+  },
+  {
+    name: "Legal and Compliance",
+    description:
+      "Policy review, contract support, audit preparation, regulated content, and risk controls."
   }
 ];
 
@@ -441,6 +502,201 @@ const useCaseMetadata: Record<
     effortLevel: EffortLevel.MEDIUM,
     riskLevel: RiskLevel.MEDIUM,
     timeToValue: "2-4 weeks"
+  },
+  "Help desk automation": {
+    businessFunction: "Customer Support",
+    outcome: "Deflect repeated tickets and route complex issues to the right human.",
+    painPoints: ["Ticket backlog", "Repeated questions", "Slow triage"],
+    requiredInputs: ["Help center content", "Escalation rules", "Ticket taxonomy"],
+    successMetrics: ["Resolution time", "Deflection rate", "Escalation quality"],
+    implementationSteps: [
+      "Approve source answers",
+      "Pilot on low-risk ticket types",
+      "Measure handoff quality"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "3-6 weeks"
+  },
+  "Lead enrichment": {
+    businessFunction: "Sales",
+    outcome: "Richer prospect records and better prioritization before outreach.",
+    painPoints: ["Manual prospect research", "Incomplete CRM records"],
+    requiredInputs: ["Target account criteria", "Approved data sources", "CRM fields"],
+    successMetrics: ["Research time", "Data completeness", "Qualified meetings"],
+    implementationSteps: [
+      "Define ideal customer profile",
+      "Enrich a small account list",
+      "Review data quality before automation"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Sales email personalization": {
+    businessFunction: "Sales",
+    outcome: "More relevant outbound messages with less manual drafting.",
+    painPoints: ["Generic emails", "Slow account research", "Low reply rates"],
+    requiredInputs: ["Buyer persona", "Offer", "Approved messaging rules"],
+    successMetrics: ["Reply rate", "Personalization time", "Meeting conversion"],
+    implementationSteps: [
+      "Create message guardrails",
+      "Personalize one segment",
+      "Review every message before sending"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-3 weeks"
+  },
+  "CRM update automation": {
+    businessFunction: "Sales",
+    outcome: "Cleaner CRM records from calls, emails, forms, and handoffs.",
+    painPoints: ["Incomplete CRM notes", "Manual data entry", "Lost follow-ups"],
+    requiredInputs: ["CRM schema", "Update rules", "Review workflow"],
+    successMetrics: ["CRM completeness", "Follow-up speed", "Manual entry time"],
+    implementationSteps: [
+      "Map required fields",
+      "Automate draft updates",
+      "Review before writing to CRM"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks"
+  },
+  "Internal knowledge search": {
+    businessFunction: "Knowledge Management",
+    outcome: "Source-grounded answers from approved company knowledge.",
+    painPoints: ["Scattered documents", "Repeated internal questions"],
+    requiredInputs: ["Approved sources", "Permissions", "Answer review policy"],
+    successMetrics: ["Answer time", "Search success", "Repeated questions"],
+    implementationSteps: [
+      "Choose trusted source collections",
+      "Set permissions and exclusions",
+      "Pilot with frequent internal questions"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "3-6 weeks"
+  },
+  "Data analysis": {
+    businessFunction: "Data and Analytics",
+    outcome: "Faster summaries, charts, and explanations from business data.",
+    painPoints: ["Slow spreadsheet analysis", "Manual charting", "Hard-to-read reports"],
+    requiredInputs: ["Clean data export", "Metric definitions", "Review owner"],
+    successMetrics: ["Analysis time", "Insight quality", "Decision speed"],
+    implementationSteps: [
+      "Pick one recurring report",
+      "Validate calculations manually",
+      "Turn repeat questions into templates"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-3 weeks"
+  },
+  "Spreadsheet automation": {
+    businessFunction: "Data and Analytics",
+    outcome: "Automated spreadsheet cleanup, formulas, summaries, and repeat analysis.",
+    painPoints: ["Manual spreadsheet work", "Formula errors", "Slow reporting"],
+    requiredInputs: ["Spreadsheet template", "Column definitions", "Validation rules"],
+    successMetrics: ["Manual steps removed", "Error rate", "Report turnaround"],
+    implementationSteps: [
+      "Standardize the input sheet",
+      "Automate one repeat calculation",
+      "Compare output against manual results"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Document extraction": {
+    businessFunction: "Operations",
+    outcome: "Extract fields, summaries, and routing signals from structured documents.",
+    painPoints: ["Manual document processing", "Slow intake", "Copy-paste errors"],
+    requiredInputs: ["Document samples", "Field list", "Exception handling rules"],
+    successMetrics: ["Processing time", "Extraction accuracy", "Manual corrections"],
+    implementationSteps: [
+      "Choose one document type",
+      "Define target fields",
+      "Review extraction accuracy before scaling"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "3-6 weeks"
+  },
+  "Customer feedback analysis": {
+    businessFunction: "Operations",
+    outcome: "Recurring themes and prioritized issues from reviews, calls, and tickets.",
+    painPoints: ["Feedback is scattered", "Themes are hard to quantify"],
+    requiredInputs: ["Feedback export", "Theme taxonomy", "Decision owner"],
+    successMetrics: ["Themes identified", "Issues prioritized", "Decision speed"],
+    implementationSteps: [
+      "Collect one feedback source",
+      "Group themes manually once",
+      "Automate repeat summaries"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Training content": {
+    businessFunction: "Human Resources",
+    outcome: "Reusable lessons, onboarding modules, scripts, and internal guides.",
+    painPoints: ["Slow training material creation", "Outdated internal guides"],
+    requiredInputs: ["Source expertise", "Learner profile", "Review criteria"],
+    successMetrics: ["Assets created", "Update time", "Learner feedback"],
+    implementationSteps: [
+      "Define one learner outcome",
+      "Draft lesson assets",
+      "Review for accuracy and tone"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Recruiting support": {
+    businessFunction: "Human Resources",
+    outcome: "Structured recruiting summaries, scorecards, and interview notes.",
+    painPoints: ["Manual screening notes", "Inconsistent interview writeups"],
+    requiredInputs: ["Role criteria", "Fair evaluation rubric", "Interview format"],
+    successMetrics: ["Review time", "Criteria consistency", "Hiring team feedback"],
+    implementationSteps: [
+      "Define review criteria first",
+      "Use AI for administrative summaries",
+      "Keep hiring decisions human-led"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "3-5 weeks"
+  },
+  "Social media content": {
+    businessFunction: "Marketing",
+    outcome: "More consistent social posts, repurposed assets, and campaign calendars.",
+    painPoints: ["Inconsistent posting", "Slow repurposing", "Brand drift"],
+    requiredInputs: ["Brand voice", "Source asset", "Channel rules"],
+    successMetrics: ["Posts shipped", "Review time", "Engagement quality"],
+    implementationSteps: [
+      "Create channel templates",
+      "Repurpose approved source content",
+      "Review before publishing"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks"
+  },
+  "App prototyping": {
+    businessFunction: "Product and Engineering",
+    outcome: "Faster prototypes, landing pages, dashboards, and internal tools.",
+    painPoints: ["Slow prototype setup", "Design-to-code handoff friction"],
+    requiredInputs: ["User story", "Design constraints", "Review owner"],
+    successMetrics: ["Prototype turnaround", "Iteration speed", "Handoff quality"],
+    implementationSteps: [
+      "Define one narrow workflow",
+      "Generate a clickable prototype",
+      "Review code and UX before reuse"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-3 weeks"
   }
 };
 
@@ -508,6 +764,51 @@ const industries = [
     startingPoint:
       "Start with non-clinical admin workflows and strict data handling boundaries.",
     cautions: "Avoid clinical claims and protect health data."
+  },
+  {
+    name: "Legal services",
+    description:
+      "Law firms and legal operations teams improving intake, document review, research support, and client updates.",
+    startingPoint:
+      "Start with non-confidential templates, intake summaries, and internal research organization.",
+    cautions:
+      "Do not treat generated output as legal advice; require attorney review and strict confidentiality controls."
+  },
+  {
+    name: "Manufacturing and logistics",
+    description:
+      "Operations teams improving SOPs, quality notes, inventory communication, maintenance logs, and reporting.",
+    startingPoint:
+      "Start with internal SOP summaries and exception reporting before automating operational decisions.",
+    cautions:
+      "Review safety, quality, and operational instructions before use in production workflows."
+  },
+  {
+    name: "Retail and hospitality",
+    description:
+      "Customer-facing teams improving local marketing, reviews, staff training, support, and scheduling communication.",
+    startingPoint:
+      "Start with review responses, staff FAQs, and repeat guest or customer messages.",
+    cautions:
+      "Keep public-facing claims accurate and maintain human review for sensitive customer situations."
+  },
+  {
+    name: "Media and creators",
+    description:
+      "Creators and production teams improving scripts, editing, repurposing, thumbnails, narration, and publishing workflows.",
+    startingPoint:
+      "Start by repurposing one finished source asset into multiple reviewed outputs.",
+    cautions:
+      "Check usage rights, likeness permissions, and disclosure requirements for generated media."
+  },
+  {
+    name: "Nonprofits",
+    description:
+      "Lean teams improving grant drafts, donor communication, volunteer coordination, reporting, and program content.",
+    startingPoint:
+      "Start with reusable donor, grant, and program-report templates that staff can review.",
+    cautions:
+      "Protect beneficiary data and review impact claims before publishing or submitting."
   }
 ];
 
