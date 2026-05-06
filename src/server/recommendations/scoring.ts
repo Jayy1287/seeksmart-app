@@ -1,14 +1,16 @@
 import {
   auditGoalOptions,
+  auditIntegrationNeeds,
   auditPainPointOptions,
   type AuditInput,
   type AuditOpportunityRecommendation,
+  type AuditPilotPlan,
   type AuditResult,
   type AuditToolRecommendation,
   type AuditUseCaseRecommendation
 } from "@/shared/recommendations/audit";
 
-export const AUDIT_RULE_VERSION = "audit-rules-v1.0";
+export const AUDIT_RULE_VERSION = "audit-rules-v2.0";
 
 export type AuditDataset = {
   industries: Array<{
@@ -113,6 +115,7 @@ export function scoreAudit(
   const firstWorkflow = firstUseCase
     ? `${firstOpportunity.name}: start with ${firstUseCase.name.toLowerCase()}.`
     : firstOpportunity?.name ?? "Complete the audit questions to get a plan.";
+  const pilotPlan = buildPilotPlan(firstOpportunity, input);
 
   return {
     version: AUDIT_RULE_VERSION,
@@ -121,9 +124,12 @@ export function scoreAudit(
       industryName: industry?.name ?? "Selected industry",
       businessFunctionName: businessFunction?.name ?? "Selected function",
       firstWorkflow,
+      executiveBrief: buildExecutiveBrief(firstOpportunity, input),
+      automationPosture: buildAutomationPosture(input, firstOpportunity),
       overallCaution: buildOverallCaution(input, industry?.cautions ?? null)
     },
     topOpportunities: scoredOpportunities,
+    pilotPlan,
     nextStepChecklist: buildChecklist(scoredOpportunities[0], input)
   };
 }
@@ -149,8 +155,15 @@ function scoreOpportunity({
       opportunity.expectedBenefit,
       opportunity.startingPoint,
       opportunity.businessFunction?.name,
-      opportunity.useCases.map((useCase) => useCase.name).join(" ")
+      opportunity.useCases.map((useCase) => useCase.name).join(" "),
+      opportunity.useCases.map((useCase) => useCase.outcome ?? "").join(" ")
     ].join(" ")
+  );
+  const requestedIntegrationText = normalize(
+    auditIntegrationNeeds
+      .filter((need) => input.integrationNeeds.includes(need.id))
+      .flatMap((need) => [need.label, ...need.keywords])
+      .join(" ")
   );
 
   let impactScore = 42;
@@ -193,6 +206,22 @@ function scoreOpportunity({
     );
   }
 
+  const integrationHits = auditIntegrationNeeds.filter((need) =>
+    input.integrationNeeds.includes(need.id)
+      ? need.keywords.some((keyword) => opportunityText.includes(keyword))
+      : false
+  );
+  if (integrationHits.length > 0) {
+    impactScore += Math.min(integrationHits.length * 7, 16);
+    reasons.push(
+      `Fits requested systems: ${integrationHits
+        .map((need) => need.label.toLowerCase())
+        .join(", ")}.`
+    );
+  } else if (requestedIntegrationText && opportunityText.includes("workflow")) {
+    impactScore += 3;
+  }
+
   if (input.urgency === "urgent") {
     impactScore += opportunity.timeToValue?.includes("1") ? 8 : 3;
   } else if (input.urgency === "soon") {
@@ -214,6 +243,21 @@ function scoreOpportunity({
   if (input.technicalComfort === "high") {
     effortScore += 5;
   }
+  if (input.workflowMaturity === "undefined") {
+    effortScore -= opportunity.effortLevel === "LOW" ? 3 : 12;
+    cautions.push(
+      "Document the current workflow before selecting tools so the pilot has a stable baseline."
+    );
+  } else if (input.workflowMaturity === "measured") {
+    effortScore += 6;
+    reasons.push("Your measured workflow maturity improves pilot readiness.");
+  }
+  if (
+    input.approvalMode === "team-review" &&
+    opportunity.effortLevel !== "LOW"
+  ) {
+    effortScore -= 4;
+  }
 
   let riskScore = riskWeights[opportunity.riskLevel] ?? 64;
   if (input.dataSensitivity === "high") {
@@ -228,11 +272,24 @@ function scoreOpportunity({
     riskScore -= 10;
     cautions.push("Add a review checkpoint before using this with live data.");
   }
+  if (input.approvalMode === "automated") {
+    riskScore -= opportunity.riskLevel === "LOW" ? 4 : 12;
+    cautions.push(
+      "Do not fully automate until the pilot has proven accuracy and exception handling."
+    );
+  } else {
+    riskScore += 3;
+  }
+  if (input.integrationNeeds.includes("helpdesk") && opportunity.riskLevel !== "LOW") {
+    cautions.push(
+      "Use human handoff rules for customer-facing responses during the pilot."
+    );
+  }
 
   const confidenceScore = calculateConfidenceScore(
     opportunity,
     industryMatch ? 1 : 0,
-    goalHits.length + painHits.length
+    goalHits.length + painHits.length + integrationHits.length
   );
   const score = clamp(
     Math.round(
@@ -240,7 +297,8 @@ function scoreOpportunity({
         effortScore * 0.2 +
         riskScore * 0.18 +
         confidenceScore * 0.2
-    )
+    ),
+    96
   );
 
   if (reasons.length === 0) {
@@ -253,10 +311,10 @@ function scoreOpportunity({
     slug: opportunity.slug,
     businessFunctionName: opportunity.businessFunction?.name ?? null,
     score,
-    impactScore: clamp(Math.round(impactScore)),
-    effortScore: clamp(Math.round(effortScore)),
-    riskScore: clamp(Math.round(riskScore)),
-    confidenceScore,
+    impactScore: clamp(Math.round(impactScore), 96),
+    effortScore: clamp(Math.round(effortScore), 96),
+    riskScore: clamp(Math.round(riskScore), 96),
+    confidenceScore: clamp(confidenceScore, 96),
     fitLabel: getFitLabel(score, riskScore),
     description: opportunity.description,
     painPoint: opportunity.painPoint,
@@ -302,7 +360,12 @@ function calculateConfidenceScore(
   );
 
   return clamp(
-    44 + industryMatchCount * 14 + Math.min(inputSignalCount * 5, 14) + useCaseSignal + toolSignal
+    44 +
+      industryMatchCount * 14 +
+      Math.min(inputSignalCount * 5, 14) +
+      useCaseSignal +
+      toolSignal,
+    96
   );
 }
 
@@ -339,10 +402,7 @@ function recommendTools(
       pricingType: fit.tool.pricingType,
       hasFreePlan: fit.tool.hasFreePlan,
       fitScore: clamp(fit.adjustedScore),
-      reason:
-        fit.recommendationNote ??
-        fit.bestFor ??
-        `Strong mapped fit for ${opportunity.name.toLowerCase()}.`,
+      reason: buildToolReason(fit, opportunity),
       bestFor: fit.bestFor,
       limitation: fit.limitations
     });
@@ -365,10 +425,168 @@ function adjustToolFitScore(fit: AuditDatasetToolFit, input: AuditInput) {
   if (input.technicalComfort === "low" && fit.tool.category.name === "Automation") {
     score -= 6;
   }
+  if (
+    input.technicalComfort === "low" &&
+    ["App Builders", "Developer tools"].includes(fit.tool.category.name)
+  ) {
+    score -= 5;
+  }
+  if (
+    input.integrationNeeds.includes("crm") &&
+    ["Sales", "Marketing", "Automation"].includes(fit.tool.category.name)
+  ) {
+    score += 6;
+  }
+  if (
+    input.integrationNeeds.includes("helpdesk") &&
+    fit.tool.category.name === "Customer Support"
+  ) {
+    score += 8;
+  }
+  if (
+    input.integrationNeeds.includes("spreadsheets") &&
+    fit.tool.category.name === "Data Analysis"
+  ) {
+    score += 8;
+  }
+  if (
+    input.integrationNeeds.includes("code") &&
+    ["App Builders", "Developer tools"].includes(fit.tool.category.name)
+  ) {
+    score += 8;
+  }
+  if (
+    input.integrationNeeds.includes("docs") &&
+    ["Knowledge Management", "Research", "Productivity"].includes(
+      fit.tool.category.name
+    )
+  ) {
+    score += 6;
+  }
   if (fit.pricingSuitability?.toLowerCase().includes(input.budgetRange)) {
     score += 5;
   }
   return score;
+}
+
+function buildToolReason(
+  fit: AuditDatasetToolFit & { adjustedScore: number },
+  opportunity: AuditDataset["opportunities"][number]
+) {
+  if (fit.bestFor) {
+    return fit.bestFor;
+  }
+
+  if (
+    fit.recommendationNote &&
+    !fit.recommendationNote.includes("current curated use-case data")
+  ) {
+    return fit.recommendationNote;
+  }
+
+  const category = fit.tool.category.name.toLowerCase();
+  return `Use ${fit.tool.name} as the ${category} layer for ${opportunity.name.toLowerCase()}, then compare output quality against the pilot examples.`;
+}
+
+function buildExecutiveBrief(
+  opportunity: AuditOpportunityRecommendation | undefined,
+  input: AuditInput
+) {
+  if (!opportunity) {
+    return "The audit needs enough context to rank a first workflow.";
+  }
+
+  const metric = input.successMetric?.trim() || opportunity.successMetrics[0];
+  const horizon = input.pilotTimeline || opportunity.timeToValue || "2 weeks";
+
+  return `${opportunity.name} is the strongest first pilot because it balances business fit, implementation effort, and review risk. Run it as a ${horizon} pilot and judge success by ${metric.toLowerCase()}.`;
+}
+
+function buildAutomationPosture(
+  input: AuditInput,
+  opportunity: AuditOpportunityRecommendation | undefined
+) {
+  if (input.dataSensitivity === "high" || opportunity?.riskLevel === "HIGH") {
+    return "Assistive only: generate drafts, summaries, or recommendations, then require human approval before anything customer-facing or sensitive is used.";
+  }
+
+  if (input.approvalMode === "automated" && input.workflowMaturity === "measured") {
+    return "Supervised automation candidate: automate narrow low-risk steps after a reviewed pilot proves quality and exceptions are clear.";
+  }
+
+  if (input.workflowMaturity === "undefined") {
+    return "Readiness first: document the current workflow and measure the baseline before automating.";
+  }
+
+  return "Human-in-the-loop pilot: use AI for first drafts, routing, or summaries while one owner reviews output quality.";
+}
+
+function buildPilotPlan(
+  opportunity: AuditOpportunityRecommendation | undefined,
+  input: AuditInput
+): AuditPilotPlan {
+  const timeline = input.pilotTimeline || opportunity?.timeToValue || "2 weeks";
+  const successMetric =
+    input.successMetric?.trim() ||
+    opportunity?.successMetrics[0] ||
+    "time saved in the selected workflow";
+  const title = opportunity
+    ? `${opportunity.name} pilot`
+    : "AI workflow pilot";
+
+  return {
+    title,
+    owner: ownerForFunction(opportunity?.businessFunctionName),
+    timeline,
+    successMetric,
+    guardrails: buildGuardrails(opportunity, input),
+    weekOneActions: [
+      opportunity?.startingPoint ?? "Map the current workflow and owner.",
+      "Collect 10-20 representative examples from the current process.",
+      "Choose one review owner and define what good output looks like.",
+      "Test the top two shortlisted tools on the same examples."
+    ],
+    expansionCriteria: [
+      `The pilot improves ${successMetric.toLowerCase()} without lowering quality.`,
+      "Reviewers trust the output on routine cases.",
+      "Exceptions and escalation paths are clear.",
+      "The team can explain when AI should not be used."
+    ]
+  };
+}
+
+function buildGuardrails(
+  opportunity: AuditOpportunityRecommendation | undefined,
+  input: AuditInput
+) {
+  const guardrails = [
+    "Keep a human owner accountable for final output.",
+    "Use one narrow workflow before expanding to adjacent work."
+  ];
+
+  if (input.dataSensitivity !== "low") {
+    guardrails.push("Exclude sensitive data until access, retention, and review rules are approved.");
+  }
+
+  if (input.approvalMode !== "automated") {
+    guardrails.push("Require review before sending output to customers, candidates, or external partners.");
+  } else {
+    guardrails.push("Log automated outputs and sample them for quality during the pilot.");
+  }
+
+  if (opportunity?.cautions.length) {
+    guardrails.push(opportunity.cautions[0]);
+  }
+
+  return guardrails;
+}
+
+function ownerForFunction(functionName: string | null | undefined) {
+  if (!functionName) {
+    return "Workflow owner";
+  }
+
+  return `${functionName} owner`;
 }
 
 function buildOverallCaution(input: AuditInput, industryCaution: string | null) {
@@ -435,6 +653,6 @@ function normalize(value: string) {
   return value.toLowerCase();
 }
 
-function clamp(value: number) {
-  return Math.max(0, Math.min(100, value));
+function clamp(value: number, max = 100) {
+  return Math.max(0, Math.min(max, value));
 }

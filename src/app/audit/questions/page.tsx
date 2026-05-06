@@ -5,18 +5,23 @@ import {
   AuditSubmitButton
 } from "@/features/audit/audit-analytics";
 import {
+  auditApprovalModes,
   auditBudgetRanges,
   auditCompanySizes,
   auditDataSensitivityLevels,
   auditGoalOptions,
+  auditIntegrationNeeds,
   auditPainPointOptions,
   auditTechnicalComfortLevels,
-  auditUrgencyLevels
+  auditUrgencyLevels,
+  auditWorkflowMaturityLevels
 } from "@/shared/recommendations/audit";
 import {
+  approvalModeLabel,
   budgetRangeLabel,
   companySizeLabel,
   dataSensitivityLabel,
+  workflowMaturityLabel,
   technicalComfortLabel,
   urgencyLabel
 } from "@/server/recommendations/input";
@@ -43,11 +48,12 @@ export default async function AuditQuestionsPage() {
         <section className="border-b border-line/50 pb-8">
           <p className="eyebrow">Audit questions</p>
           <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">
-            Tell SeekSmart what business context to score.
+            Build a practical AI pilot brief.
           </h1>
           <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-            Keep answers high-level. V1 generates an anonymous rules-based
-            report and does not save your audit.
+            Answer with enough context for SeekSmart to rank opportunities,
+            choose a first workflow, and generate guardrails. V2 is still
+            anonymous and rules-based.
           </p>
         </section>
 
@@ -56,6 +62,11 @@ export default async function AuditQuestionsPage() {
           className="mt-8 grid gap-7 rounded-[1.75rem] border border-line/60 bg-white/45 p-5 shadow-[0_18px_60px_rgb(38_78_162/0.07)] backdrop-blur md:p-7"
           method="get"
         >
+          <FormSection
+            kicker="Step 1"
+            title="Business context"
+            description="Choose the setting and team responsible for the first pilot."
+          >
           <fieldset className="grid gap-4 md:grid-cols-2">
             <FieldLabel label="Industry">
               <select className="control-field w-full" name="industry" required>
@@ -80,12 +91,21 @@ export default async function AuditQuestionsPage() {
             </FieldLabel>
           </fieldset>
 
-          <fieldset className="grid gap-4 md:grid-cols-2">
+          <fieldset className="grid gap-4 md:grid-cols-3">
             <FieldLabel label="Company size">
               <select className="control-field w-full" name="size">
                 {auditCompanySizes.map((size) => (
                   <option key={size} value={size}>
                     {companySizeLabel(size)}
+                  </option>
+                ))}
+              </select>
+            </FieldLabel>
+            <FieldLabel label="Workflow maturity">
+              <select className="control-field w-full" name="maturity">
+                {auditWorkflowMaturityLevels.map((maturity) => (
+                  <option key={maturity} value={maturity}>
+                    {workflowMaturityLabel(maturity)}
                   </option>
                 ))}
               </select>
@@ -100,7 +120,13 @@ export default async function AuditQuestionsPage() {
               </select>
             </FieldLabel>
           </fieldset>
+          </FormSection>
 
+          <FormSection
+            kicker="Step 2"
+            title="Goals and friction"
+            description="Select every item that describes what the pilot should improve."
+          >
           <fieldset>
             <legend className="text-sm font-semibold text-ink/72">
               Main goals
@@ -134,8 +160,14 @@ export default async function AuditQuestionsPage() {
               ))}
             </div>
           </fieldset>
+          </FormSection>
 
-          <fieldset className="grid gap-4 md:grid-cols-3">
+          <FormSection
+            kicker="Step 3"
+            title="Constraints and systems"
+            description="These answers adjust risk, implementation effort, and tool fit."
+          >
+          <fieldset className="grid gap-4 md:grid-cols-4">
             <FieldLabel label="Budget range">
               <select className="control-field w-full" name="budget">
                 {auditBudgetRanges.map((budget) => (
@@ -163,6 +195,55 @@ export default async function AuditQuestionsPage() {
                 ))}
               </select>
             </FieldLabel>
+            <FieldLabel label="Approval mode">
+              <select className="control-field w-full" name="approval">
+                {auditApprovalModes.map((approval) => (
+                  <option key={approval} value={approval}>
+                    {approvalModeLabel(approval)}
+                  </option>
+                ))}
+              </select>
+            </FieldLabel>
+          </fieldset>
+
+          <fieldset>
+            <legend className="text-sm font-semibold text-ink/72">
+              Systems involved
+            </legend>
+            <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {auditIntegrationNeeds.map((need) => (
+                <CheckOption
+                  key={need.id}
+                  label={need.label}
+                  name="integrations"
+                  value={need.id}
+                />
+              ))}
+            </div>
+          </fieldset>
+          </FormSection>
+
+          <FormSection
+            kicker="Step 4"
+            title="Pilot definition"
+            description="A clear timeline and metric make the result more actionable."
+          >
+          <fieldset className="grid gap-4 md:grid-cols-2">
+            <FieldLabel label="Pilot timeline">
+              <input
+                className="control-field w-full"
+                defaultValue="2 weeks"
+                name="timeline"
+                placeholder="2 weeks"
+              />
+            </FieldLabel>
+            <FieldLabel label="Success metric">
+              <input
+                className="control-field w-full"
+                name="metric"
+                placeholder="Example: response time, draft turnaround, meetings booked"
+              />
+            </FieldLabel>
           </fieldset>
 
           <FieldLabel label="Existing tools or systems">
@@ -172,6 +253,7 @@ export default async function AuditQuestionsPage() {
               placeholder="Optional: CRM, help desk, docs, ecommerce platform, spreadsheets..."
             />
           </FieldLabel>
+          </FormSection>
 
           <div className="flex flex-col gap-3 border-t border-line pt-5 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm leading-6 text-ink/55">
@@ -182,6 +264,29 @@ export default async function AuditQuestionsPage() {
         </form>
       </div>
     </main>
+  );
+}
+
+function FormSection({
+  children,
+  description,
+  kicker,
+  title
+}: {
+  children: ReactNode;
+  description: string;
+  kicker: string;
+  title: string;
+}) {
+  return (
+    <section className="grid gap-4 border-t border-line/60 pt-6 first:border-t-0 first:pt-0 lg:grid-cols-[240px_1fr]">
+      <div>
+        <p className="text-xs font-extrabold uppercase text-accent">{kicker}</p>
+        <h2 className="mt-2 text-lg font-semibold">{title}</h2>
+        <p className="mt-2 text-sm leading-6 text-ink/55">{description}</p>
+      </div>
+      <div className="grid gap-5">{children}</div>
+    </section>
   );
 }
 

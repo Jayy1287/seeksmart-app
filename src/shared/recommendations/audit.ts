@@ -29,6 +29,51 @@ export const auditUrgencyLevels = [
   "urgent"
 ] as const;
 
+export const auditWorkflowMaturityLevels = [
+  "undefined",
+  "documented",
+  "measured"
+] as const;
+
+export const auditApprovalModes = [
+  "owner-review",
+  "team-review",
+  "automated"
+] as const;
+
+export const auditIntegrationNeeds = [
+  {
+    id: "docs",
+    label: "Docs or knowledge base",
+    keywords: ["knowledge", "documents", "docs", "onboarding", "notes"]
+  },
+  {
+    id: "crm",
+    label: "CRM or sales tools",
+    keywords: ["lead", "sales", "crm", "outreach", "pipeline"]
+  },
+  {
+    id: "helpdesk",
+    label: "Help desk or support inbox",
+    keywords: ["support", "ticket", "customer", "response", "handoff"]
+  },
+  {
+    id: "spreadsheets",
+    label: "Spreadsheets or reports",
+    keywords: ["spreadsheet", "report", "data", "analysis", "invoice"]
+  },
+  {
+    id: "content",
+    label: "Content or design tools",
+    keywords: ["content", "brand", "video", "image", "publishing"]
+  },
+  {
+    id: "code",
+    label: "Code or product tools",
+    keywords: ["code", "prototype", "app", "engineering", "release"]
+  }
+] as const;
+
 export const auditGoalOptions = [
   {
     id: "save-time",
@@ -92,6 +137,11 @@ export type AuditTechnicalComfort =
 export type AuditDataSensitivity =
   (typeof auditDataSensitivityLevels)[number];
 export type AuditUrgency = (typeof auditUrgencyLevels)[number];
+export type AuditWorkflowMaturity =
+  (typeof auditWorkflowMaturityLevels)[number];
+export type AuditApprovalMode = (typeof auditApprovalModes)[number];
+export type AuditIntegrationNeedId =
+  (typeof auditIntegrationNeeds)[number]["id"];
 export type AuditGoalId = (typeof auditGoalOptions)[number]["id"];
 export type AuditPainPointId = (typeof auditPainPointOptions)[number]["id"];
 
@@ -105,6 +155,11 @@ export type AuditInput = {
   technicalComfort: AuditTechnicalComfort;
   dataSensitivity: AuditDataSensitivity;
   urgency: AuditUrgency;
+  workflowMaturity: AuditWorkflowMaturity;
+  approvalMode: AuditApprovalMode;
+  integrationNeeds: AuditIntegrationNeedId[];
+  pilotTimeline: string;
+  successMetric?: string;
   existingTools?: string;
 };
 
@@ -119,6 +174,16 @@ export type AuditToolRecommendation = {
   reason: string;
   bestFor: string | null;
   limitation: string | null;
+};
+
+export type AuditPilotPlan = {
+  title: string;
+  owner: string;
+  timeline: string;
+  successMetric: string;
+  guardrails: string[];
+  weekOneActions: string[];
+  expansionCriteria: string[];
 };
 
 export type AuditUseCaseRecommendation = {
@@ -163,8 +228,11 @@ export type AuditResult = {
     industryName: string;
     businessFunctionName: string;
     firstWorkflow: string;
+    executiveBrief: string;
+    automationPosture: string;
     overallCaution: string;
   };
   topOpportunities: AuditOpportunityRecommendation[];
+  pilotPlan: AuditPilotPlan;
   nextStepChecklist: string[];
 };

@@ -127,7 +127,12 @@ const supportInput: AuditInput = {
   budgetRange: "low",
   technicalComfort: "moderate",
   dataSensitivity: "moderate",
-  urgency: "soon"
+  urgency: "soon",
+  workflowMaturity: "documented",
+  approvalMode: "owner-review",
+  integrationNeeds: ["helpdesk"],
+  pilotTimeline: "2 weeks",
+  successMetric: "response time"
 };
 
 const supportResult = scoreAudit(supportInput, dataset);
@@ -141,6 +146,9 @@ assert.ok(
     reason.includes("selected industry")
   )
 );
+assert.equal(supportResult.pilotPlan.successMetric, "response time");
+assert.ok(supportResult.summary.executiveBrief.includes("2 weeks"));
+assert.ok(supportResult.summary.automationPosture.length > 0);
 
 const sensitiveInput: AuditInput = {
   ...supportInput,

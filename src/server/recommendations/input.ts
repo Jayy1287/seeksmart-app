@@ -2,18 +2,24 @@ import {
   auditBudgetRanges,
   auditCompanySizes,
   auditDataSensitivityLevels,
+  auditApprovalModes,
   auditGoalOptions,
+  auditIntegrationNeeds,
   auditPainPointOptions,
   auditTechnicalComfortLevels,
   auditUrgencyLevels,
+  auditWorkflowMaturityLevels,
+  type AuditApprovalMode,
   type AuditBudgetRange,
   type AuditCompanySize,
   type AuditDataSensitivity,
   type AuditGoalId,
   type AuditInput,
+  type AuditIntegrationNeedId,
   type AuditPainPointId,
   type AuditTechnicalComfort,
-  type AuditUrgency
+  type AuditUrgency,
+  type AuditWorkflowMaturity
 } from "@/shared/recommendations/audit";
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -60,6 +66,23 @@ export function parseAuditInput(searchParams: SearchParams): AuditInput | null {
       "moderate"
     ),
     urgency: parseEnum(getSingle(searchParams.urgency), auditUrgencyLevels, "soon"),
+    workflowMaturity: parseEnum(
+      getSingle(searchParams.maturity),
+      auditWorkflowMaturityLevels,
+      "documented"
+    ),
+    approvalMode: parseEnum(
+      getSingle(searchParams.approval),
+      auditApprovalModes,
+      "owner-review"
+    ),
+    integrationNeeds: parseMultiEnum(
+      searchParams.integrations,
+      auditIntegrationNeeds.map((option) => option.id),
+      []
+    ),
+    pilotTimeline: getSingle(searchParams.timeline)?.trim() || "2 weeks",
+    successMetric: getSingle(searchParams.metric)?.trim(),
     existingTools: getSingle(searchParams.tools)
   };
 }
@@ -125,6 +148,28 @@ export function urgencyLabel(value: AuditUrgency) {
     soon: "Soon",
     urgent: "Urgent"
   }[value];
+}
+
+export function workflowMaturityLabel(value: AuditWorkflowMaturity) {
+  return {
+    undefined: "Not documented yet",
+    documented: "Documented but inconsistent",
+    measured: "Measured and repeatable"
+  }[value];
+}
+
+export function approvalModeLabel(value: AuditApprovalMode) {
+  return {
+    "owner-review": "Single owner review",
+    "team-review": "Team approval before rollout",
+    automated: "Ready for supervised automation"
+  }[value];
+}
+
+export function integrationNeedLabel(value: AuditIntegrationNeedId) {
+  return (
+    auditIntegrationNeeds.find((option) => option.id === value)?.label ?? value
+  );
 }
 
 export function goalLabel(value: AuditGoalId) {
