@@ -60,22 +60,22 @@ export default async function Home() {
 
   return (
     <main>
-      <section className="app-container py-8 md:py-12">
-        <div className="hero-panel grid gap-10 rounded-2xl p-6 md:p-8 lg:grid-cols-[1fr_460px] lg:p-10">
-          <div className="relative z-10">
+      <section className="relative overflow-hidden py-14 md:py-20">
+        <div className="app-container grid gap-12 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
+          <div>
             <p className="eyebrow">
               <ShieldCheck aria-hidden="true" size={15} />
               Smarter AI Choices
             </p>
-            <h1 className="mt-6 max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.02em] text-ink md:text-7xl">
+            <h1 className="mt-7 max-w-4xl text-5xl font-semibold leading-[0.98] text-ink md:text-7xl">
               Decide where AI belongs before you buy another tool.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-ink/66">
+            <p className="mt-7 max-w-2xl text-lg leading-8 text-ink/68 md:text-xl md:leading-9">
               SeekSmart turns business goals into ranked AI opportunities,
               workflow playbooks, and tool shortlists with transparent
               reasoning. No chatbot dependency. No generic directory dump.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link className="primary-button min-h-12" href="/audit/start">
                 Start AI audit
                 <ArrowRight aria-hidden="true" size={18} />
@@ -86,7 +86,7 @@ export default async function Home() {
             </div>
             <form
               action="/tools"
-              className="mt-8 grid max-w-2xl gap-3 rounded-xl border border-line bg-white/82 p-2 shadow-sm sm:grid-cols-[1fr_auto]"
+              className="mt-9 grid max-w-2xl gap-3 rounded-full border border-line/60 bg-white/55 p-2 shadow-[0_18px_54px_rgb(38_78_162/0.08)] backdrop-blur sm:grid-cols-[1fr_auto]"
             >
               <label className="relative w-full">
                 <span className="sr-only">Search AI tools</span>
@@ -96,7 +96,7 @@ export default async function Home() {
                   size={18}
                 />
                 <input
-                  className="min-h-12 w-full min-w-0 rounded-lg border border-transparent bg-transparent pl-11 pr-4 text-base outline-none transition focus:border-accent"
+                  className="min-h-12 w-full min-w-0 rounded-full border border-transparent bg-transparent pl-11 pr-4 text-base outline-none transition focus:border-accent"
                   name="q"
                   placeholder="Search AI tools"
                   type="search"
@@ -108,16 +108,16 @@ export default async function Home() {
             </form>
           </div>
 
-          <div className="relative z-10 self-center">
+          <div className="relative self-center">
             <HomepageLottieVisual />
           </div>
         </div>
       </section>
 
-      <section className="app-container pb-8">
-        <div className="grid gap-3 lg:grid-cols-[1.35fr_0.65fr]">
-          <div className="data-panel rounded-xl p-5">
-            <div className="flex flex-col gap-2 border-b border-line pb-4 sm:flex-row sm:items-center sm:justify-between">
+      <section className="app-container pb-12">
+        <div className="grid gap-8 border-y border-line/50 py-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-center">
+          <div>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-xs font-extrabold uppercase text-accent">
                   Audit output
@@ -128,13 +128,13 @@ export default async function Home() {
               </div>
               <span className="status-pill w-fit">Rules-based V1</span>
             </div>
-            <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <div className="mt-7 grid gap-6 md:grid-cols-3">
               {decisionPath.map((step, index) => (
                 <div
-                  className="rounded-lg border border-line bg-white/72 p-4"
+                  className="relative border-t border-line/70 pt-5"
                   key={step.title}
                 >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-ink text-sm font-semibold text-white">
+                  <span className="absolute -top-4 flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white shadow-lg shadow-ink/10">
                     {index + 1}
                   </span>
                   <h3 className="mt-3 font-semibold">{step.title}</h3>
@@ -153,14 +153,14 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="border-y border-line bg-white/62">
+      <section className="section-band">
         <div className="app-container grid gap-8 py-12 lg:grid-cols-[0.72fr_1.28fr]">
           <div>
             <p className="eyebrow">
               <Target aria-hidden="true" size={14} />
               Start with the outcome
             </p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-[-0.01em]">
+            <h2 className="mt-4 text-3xl font-semibold">
               Pick the business result, then the workflow, then the tool.
             </h2>
             <p className="mt-4 leading-7 text-ink/62">
@@ -173,10 +173,10 @@ export default async function Home() {
               <ArrowRight aria-hidden="true" size={16} />
             </Link>
           </div>
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
             {businessGoals.map((goal) => (
               <Link
-                className="group rounded-xl border border-line bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-accent"
+                className="group border-t border-line/70 pt-5 transition hover:border-accent"
                 href={goal.href as Route}
                 key={goal.title}
               >
@@ -197,7 +197,7 @@ export default async function Home() {
 
       <section className="app-container py-12">
         <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
-          <div className="surface-strong rounded-2xl p-6">
+          <div className="py-2">
             <p className="eyebrow">
               <Layers3 aria-hidden="true" size={14} />
               Intelligence layer
@@ -242,14 +242,16 @@ export default async function Home() {
                 View all
               </Link>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
               {industries.slice(0, 6).map((industry) => (
                 <Link
-                  className="rounded-xl border border-line bg-surface p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-accent"
+                  className="group border-t border-line/70 pt-4 transition hover:border-accent"
                   href={`/industries/${industry.slug}`}
                   key={industry.slug}
                 >
-                  <h3 className="font-semibold">{industry.name}</h3>
+                  <h3 className="font-semibold transition group-hover:text-accent">
+                    {industry.name}
+                  </h3>
                   <p className="mt-2 line-clamp-3 text-sm leading-6 text-ink/60">
                     {industry.description}
                   </p>
@@ -260,7 +262,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="border-y border-line bg-white/62">
+      <section className="section-band">
         <div className="app-container grid gap-8 py-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
             <div className="mb-5 flex items-end justify-between gap-4">
@@ -280,17 +282,19 @@ export default async function Home() {
               <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-1">
                 {trendingTools.map((tool) => (
                   <Link
-                    className="grid gap-4 rounded-xl border border-line bg-surface p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-accent md:grid-cols-[1fr_auto]"
+                    className="group grid gap-4 border-t border-line/70 pt-4 transition hover:border-accent md:grid-cols-[1fr_auto]"
                     href={`/tools/${tool.slug}`}
                     key={tool.id}
                   >
                     <div>
-                      <h3 className="font-semibold">{tool.name}</h3>
+                      <h3 className="font-semibold transition group-hover:text-accent">
+                        {tool.name}
+                      </h3>
                       <p className="mt-2 text-sm leading-6 text-ink/62">
                         {tool.shortDescription}
                       </p>
                     </div>
-                    <div className="rounded-lg border border-line bg-primary-light/10 px-3 py-2 md:w-28">
+                    <div className="rounded-2xl border border-line/50 bg-white/42 px-3 py-2 backdrop-blur md:w-28">
                       <div className="flex items-baseline justify-between gap-2">
                         <span className="text-[0.68rem] font-extrabold uppercase text-muted-text/70">
                           Signal
@@ -337,7 +341,7 @@ export default async function Home() {
 
                 return (
                   <Link
-                    className="rounded-xl border border-line bg-surface p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-accent"
+                    className="group border-t border-line/70 py-4 transition hover:border-accent"
                     href={`/playbooks/${playbook.slug}`}
                     key={playbook.slug}
                   >
@@ -348,7 +352,9 @@ export default async function Home() {
                         size={20}
                       />
                       <div>
-                        <h3 className="font-semibold">{playbook.title}</h3>
+                        <h3 className="font-semibold transition group-hover:text-accent">
+                          {playbook.title}
+                        </h3>
                         <p className="mt-2 text-sm leading-6 text-ink/62">
                           {playbook.description}
                         </p>
@@ -363,7 +369,7 @@ export default async function Home() {
       </section>
 
       <section className="app-container py-12">
-        <div className="surface-strong grid gap-6 rounded-2xl p-6 md:grid-cols-[0.85fr_1.15fr] md:items-center">
+        <div className="grid gap-8 border-y border-line/50 py-10 md:grid-cols-[0.85fr_1.15fr] md:items-center">
           <div>
             <p className="eyebrow">
               <Gauge aria-hidden="true" size={14} />
@@ -378,18 +384,20 @@ export default async function Home() {
               improve the product.
             </p>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
             {methodologySignals.map((signal) => {
               const Icon = signal.icon;
 
               return (
                 <Link
-                  className="rounded-xl border border-line bg-surface p-4 transition hover:-translate-y-0.5 hover:border-accent"
+                  className="group border-t border-line/70 pt-4 transition hover:border-accent"
                   href="/methodology"
                   key={signal.title}
                 >
                   <Icon aria-hidden="true" className="text-accent" size={20} />
-                  <h3 className="mt-3 font-semibold">{signal.title}</h3>
+                  <h3 className="mt-3 font-semibold transition group-hover:text-accent">
+                    {signal.title}
+                  </h3>
                   <p className="mt-2 text-sm leading-6 text-ink/60">
                     {signal.description}
                   </p>
@@ -408,7 +416,7 @@ export default async function Home() {
             </span>
             {recentTools.map((tool) => (
               <Link
-                className="rounded-full border border-line bg-surface px-3 py-1.5 font-medium text-ink/62 transition hover:border-accent hover:text-accent"
+                className="rounded-full border border-line/60 bg-white/40 px-3 py-1.5 font-medium text-ink/62 backdrop-blur transition hover:border-accent hover:text-accent"
                 href={`/tools/${tool.slug}`}
                 key={tool.id}
               >
@@ -424,7 +432,7 @@ export default async function Home() {
 
 function Stat({ label, value }: { label: number | string; value: number | string }) {
   return (
-    <div className="metric-tile rounded-xl px-5 py-4">
+    <div className="metric-tile rounded-2xl px-5 py-4">
       <div className="text-2xl font-semibold">{value}</div>
       <div className="mt-1 text-xs font-bold uppercase text-ink/48">{label}</div>
     </div>
@@ -441,7 +449,7 @@ function LayerRow({
   title: string;
 }) {
   return (
-    <div className="grid grid-cols-[2.5rem_1fr_auto] items-center gap-3 rounded-xl border border-line bg-surface p-4">
+    <div className="grid grid-cols-[2.5rem_1fr_auto] items-center gap-3 border-t border-line/70 py-4">
       <Icon aria-hidden="true" className="text-accent" size={22} />
       <h3 className="font-semibold">{title}</h3>
       <span className="status-pill">{label}</span>
