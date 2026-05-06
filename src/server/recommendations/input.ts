@@ -2,23 +2,29 @@ import {
   auditBudgetRanges,
   auditCompanySizes,
   auditDataSensitivityLevels,
+  auditDataReadinessLevels,
+  auditDecisionOwnerTypes,
   auditApprovalModes,
   auditGoalOptions,
   auditIntegrationNeeds,
   auditPainPointOptions,
   auditTechnicalComfortLevels,
   auditUrgencyLevels,
+  auditWorkflowVolumes,
   auditWorkflowMaturityLevels,
   type AuditApprovalMode,
   type AuditBudgetRange,
   type AuditCompanySize,
   type AuditDataSensitivity,
+  type AuditDataReadiness,
+  type AuditDecisionOwner,
   type AuditGoalId,
   type AuditInput,
   type AuditIntegrationNeedId,
   type AuditPainPointId,
   type AuditTechnicalComfort,
   type AuditUrgency,
+  type AuditWorkflowVolume,
   type AuditWorkflowMaturity
 } from "@/shared/recommendations/audit";
 
@@ -81,6 +87,21 @@ export function parseAuditInput(searchParams: SearchParams): AuditInput | null {
       auditIntegrationNeeds.map((option) => option.id),
       []
     ),
+    workflowVolume: parseEnum(
+      getSingle(searchParams.volume),
+      auditWorkflowVolumes,
+      "weekly"
+    ),
+    dataReadiness: parseEnum(
+      getSingle(searchParams.readiness),
+      auditDataReadinessLevels,
+      "accessible"
+    ),
+    decisionOwner: parseEnum(
+      getSingle(searchParams.owner),
+      auditDecisionOwnerTypes,
+      "single-owner"
+    ),
     pilotTimeline: getSingle(searchParams.timeline)?.trim() || "2 weeks",
     successMetric: getSingle(searchParams.metric)?.trim(),
     existingTools: getSingle(searchParams.tools)
@@ -139,6 +160,30 @@ export function dataSensitivityLabel(value: AuditDataSensitivity) {
     low: "Low data sensitivity",
     moderate: "Moderate data sensitivity",
     high: "High data sensitivity"
+  }[value];
+}
+
+export function workflowVolumeLabel(value: AuditWorkflowVolume) {
+  return {
+    occasional: "Occasional workflow",
+    weekly: "Weekly recurring workflow",
+    daily: "Daily or high-volume workflow"
+  }[value];
+}
+
+export function dataReadinessLabel(value: AuditDataReadiness) {
+  return {
+    scattered: "Scattered or hard to access",
+    accessible: "Available but needs cleanup",
+    trusted: "Trusted and well organized"
+  }[value];
+}
+
+export function decisionOwnerLabel(value: AuditDecisionOwner) {
+  return {
+    "single-owner": "One accountable owner",
+    "small-group": "Small approval group",
+    "cross-functional": "Cross-functional decision"
   }[value];
 }
 

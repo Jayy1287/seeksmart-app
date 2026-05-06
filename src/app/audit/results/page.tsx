@@ -17,7 +17,9 @@ import { AuditAnalyticsEvent } from "@/features/audit/audit-analytics";
 import {
   budgetRangeLabel,
   companySizeLabel,
+  dataReadinessLabel,
   dataSensitivityLabel,
+  decisionOwnerLabel,
   approvalModeLabel,
   goalLabel,
   integrationNeedLabel,
@@ -25,6 +27,7 @@ import {
   parseAuditInput,
   technicalComfortLabel,
   urgencyLabel,
+  workflowVolumeLabel,
   workflowMaturityLabel
 } from "@/server/recommendations/input";
 import { getAuditDataset } from "@/server/recommendations/queries";
@@ -105,7 +108,7 @@ export default async function AuditResultsPage({
             value={result.summary.businessFunctionName}
           />
           <ContextTile label="Team size" value={companySizeLabel(input.companySize)} />
-          <ContextTile label="Urgency" value={urgencyLabel(input.urgency)} />
+          <ContextTile label="Readiness" value={`${result.readiness.level} (${result.readiness.score})`} />
         </section>
 
         <section className="section-band -mx-4 mt-6 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
@@ -129,6 +132,13 @@ export default async function AuditResultsPage({
                 value={result.pilotPlan.successMetric}
               />
             </div>
+          </div>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            <PlanTile
+              label="Baseline question"
+              value={result.pilotPlan.baselineQuestion}
+            />
+            <PlanTile label="Pilot target" value={result.pilotPlan.target} />
           </div>
           <div className="mt-7 grid gap-6 lg:grid-cols-3">
             <PlanList
@@ -161,6 +171,32 @@ export default async function AuditResultsPage({
           </div>
 
           <aside className="grid h-fit gap-5">
+            <section className="surface-strong rounded-xl p-5">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase text-ink/45">
+                    Readiness assessment
+                  </p>
+                  <h2 className="mt-1 text-xl font-semibold">
+                    {result.readiness.level}
+                  </h2>
+                </div>
+                <div className="metric-tile rounded-xl px-4 py-3 text-center">
+                  <p className="text-xs font-semibold uppercase text-ink/45">
+                    Score
+                  </p>
+                  <p className="mt-1 text-2xl font-semibold">
+                    {result.readiness.score}
+                  </p>
+                </div>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-ink/62">
+                {result.readiness.summary}
+              </p>
+              <ReadinessList title="Strengths" items={result.readiness.strengths} />
+              <ReadinessList title="Watch-outs" items={result.readiness.risks} />
+            </section>
+
             <section className="surface-panel rounded-xl p-5">
               <h2 className="text-xl font-semibold">Audit context</h2>
               <div className="mt-4 grid gap-2 text-sm">
@@ -185,6 +221,18 @@ export default async function AuditResultsPage({
                   value={dataSensitivityLabel(input.dataSensitivity)}
                 />
                 <AuditFact
+                  label="Workflow volume"
+                  value={workflowVolumeLabel(input.workflowVolume)}
+                />
+                <AuditFact
+                  label="Data readiness"
+                  value={dataReadinessLabel(input.dataReadiness)}
+                />
+                <AuditFact
+                  label="Decision owner"
+                  value={decisionOwnerLabel(input.decisionOwner)}
+                />
+                <AuditFact
                   label="Workflow maturity"
                   value={workflowMaturityLabel(input.workflowMaturity)}
                 />
@@ -200,6 +248,7 @@ export default async function AuditResultsPage({
                       : "No specific systems selected"
                   }
                 />
+                <AuditFact label="Urgency" value={urgencyLabel(input.urgency)} />
               </div>
             </section>
 
@@ -270,6 +319,7 @@ function OpportunityResult({
         <div className="metric-tile min-w-32 rounded-xl p-4 text-center">
           <p className="text-sm font-semibold text-accent">Fit score</p>
           <p className="mt-1 text-4xl font-semibold">{opportunity.score}</p>
+          <p className="mt-1 text-xs font-medium text-ink/45">Directional</p>
         </div>
       </div>
       </div>
@@ -413,6 +463,30 @@ function PlanList({
         ))}
       </div>
     </section>
+  );
+}
+
+function ReadinessList({ items, title }: { items: string[]; title: string }) {
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="mt-4">
+      <p className="text-xs font-semibold uppercase text-ink/45">{title}</p>
+      <div className="mt-2 grid gap-2">
+        {items.map((item) => (
+          <div className="flex gap-2 text-sm leading-6" key={item}>
+            <CheckCircle2
+              aria-hidden="true"
+              className="mt-0.5 shrink-0 text-accent"
+              size={14}
+            />
+            <span>{item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 

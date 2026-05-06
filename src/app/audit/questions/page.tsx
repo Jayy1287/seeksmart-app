@@ -8,22 +8,28 @@ import {
   auditApprovalModes,
   auditBudgetRanges,
   auditCompanySizes,
+  auditDataReadinessLevels,
   auditDataSensitivityLevels,
+  auditDecisionOwnerTypes,
   auditGoalOptions,
   auditIntegrationNeeds,
   auditPainPointOptions,
   auditTechnicalComfortLevels,
   auditUrgencyLevels,
+  auditWorkflowVolumes,
   auditWorkflowMaturityLevels
 } from "@/shared/recommendations/audit";
 import {
   approvalModeLabel,
   budgetRangeLabel,
   companySizeLabel,
+  dataReadinessLabel,
   dataSensitivityLabel,
-  workflowMaturityLabel,
+  decisionOwnerLabel,
   technicalComfortLabel,
-  urgencyLabel
+  urgencyLabel,
+  workflowMaturityLabel,
+  workflowVolumeLabel
 } from "@/server/recommendations/input";
 import { getAuditOptions } from "@/server/recommendations/queries";
 
@@ -93,7 +99,11 @@ export default async function AuditQuestionsPage() {
 
           <fieldset className="grid gap-4 md:grid-cols-3">
             <FieldLabel label="Company size">
-              <select className="control-field w-full" name="size">
+              <select
+                className="control-field w-full"
+                defaultValue="small-team"
+                name="size"
+              >
                 {auditCompanySizes.map((size) => (
                   <option key={size} value={size}>
                     {companySizeLabel(size)}
@@ -102,7 +112,11 @@ export default async function AuditQuestionsPage() {
               </select>
             </FieldLabel>
             <FieldLabel label="Workflow maturity">
-              <select className="control-field w-full" name="maturity">
+              <select
+                className="control-field w-full"
+                defaultValue="documented"
+                name="maturity"
+              >
                 {auditWorkflowMaturityLevels.map((maturity) => (
                   <option key={maturity} value={maturity}>
                     {workflowMaturityLabel(maturity)}
@@ -111,7 +125,11 @@ export default async function AuditQuestionsPage() {
               </select>
             </FieldLabel>
             <FieldLabel label="Urgency">
-              <select className="control-field w-full" name="urgency">
+              <select
+                className="control-field w-full"
+                defaultValue="soon"
+                name="urgency"
+              >
                 {auditUrgencyLevels.map((urgency) => (
                   <option key={urgency} value={urgency}>
                     {urgencyLabel(urgency)}
@@ -169,7 +187,11 @@ export default async function AuditQuestionsPage() {
           >
           <fieldset className="grid gap-4 md:grid-cols-4">
             <FieldLabel label="Budget range">
-              <select className="control-field w-full" name="budget">
+              <select
+                className="control-field w-full"
+                defaultValue="moderate"
+                name="budget"
+              >
                 {auditBudgetRanges.map((budget) => (
                   <option key={budget} value={budget}>
                     {budgetRangeLabel(budget)}
@@ -178,7 +200,11 @@ export default async function AuditQuestionsPage() {
               </select>
             </FieldLabel>
             <FieldLabel label="Technical comfort">
-              <select className="control-field w-full" name="technical">
+              <select
+                className="control-field w-full"
+                defaultValue="moderate"
+                name="technical"
+              >
                 {auditTechnicalComfortLevels.map((comfort) => (
                   <option key={comfort} value={comfort}>
                     {technicalComfortLabel(comfort)}
@@ -187,7 +213,11 @@ export default async function AuditQuestionsPage() {
               </select>
             </FieldLabel>
             <FieldLabel label="Data sensitivity">
-              <select className="control-field w-full" name="data">
+              <select
+                className="control-field w-full"
+                defaultValue="moderate"
+                name="data"
+              >
                 {auditDataSensitivityLevels.map((sensitivity) => (
                   <option key={sensitivity} value={sensitivity}>
                     {dataSensitivityLabel(sensitivity)}
@@ -226,8 +256,46 @@ export default async function AuditQuestionsPage() {
           <FormSection
             kicker="Step 4"
             title="Pilot definition"
-            description="A clear timeline and metric make the result more actionable."
+            description="Volume, data quality, ownership, timeline, and metric decide whether to pilot or prepare first."
           >
+          <fieldset className="grid gap-4 md:grid-cols-3">
+            <FieldLabel label="Workflow volume">
+              <select
+                className="control-field w-full"
+                defaultValue="weekly"
+                name="volume"
+              >
+                {auditWorkflowVolumes.map((volume) => (
+                  <option key={volume} value={volume}>
+                    {workflowVolumeLabel(volume)}
+                  </option>
+                ))}
+              </select>
+            </FieldLabel>
+            <FieldLabel label="Data readiness">
+              <select
+                className="control-field w-full"
+                defaultValue="accessible"
+                name="readiness"
+              >
+                {auditDataReadinessLevels.map((readiness) => (
+                  <option key={readiness} value={readiness}>
+                    {dataReadinessLabel(readiness)}
+                  </option>
+                ))}
+              </select>
+            </FieldLabel>
+            <FieldLabel label="Decision owner">
+              <select className="control-field w-full" name="owner">
+                {auditDecisionOwnerTypes.map((owner) => (
+                  <option key={owner} value={owner}>
+                    {decisionOwnerLabel(owner)}
+                  </option>
+                ))}
+              </select>
+            </FieldLabel>
+          </fieldset>
+
           <fieldset className="grid gap-4 md:grid-cols-2">
             <FieldLabel label="Pilot timeline">
               <input

@@ -74,6 +74,24 @@ export const auditIntegrationNeeds = [
   }
 ] as const;
 
+export const auditWorkflowVolumes = [
+  "occasional",
+  "weekly",
+  "daily"
+] as const;
+
+export const auditDataReadinessLevels = [
+  "scattered",
+  "accessible",
+  "trusted"
+] as const;
+
+export const auditDecisionOwnerTypes = [
+  "single-owner",
+  "small-group",
+  "cross-functional"
+] as const;
+
 export const auditGoalOptions = [
   {
     id: "save-time",
@@ -142,6 +160,9 @@ export type AuditWorkflowMaturity =
 export type AuditApprovalMode = (typeof auditApprovalModes)[number];
 export type AuditIntegrationNeedId =
   (typeof auditIntegrationNeeds)[number]["id"];
+export type AuditWorkflowVolume = (typeof auditWorkflowVolumes)[number];
+export type AuditDataReadiness = (typeof auditDataReadinessLevels)[number];
+export type AuditDecisionOwner = (typeof auditDecisionOwnerTypes)[number];
 export type AuditGoalId = (typeof auditGoalOptions)[number]["id"];
 export type AuditPainPointId = (typeof auditPainPointOptions)[number]["id"];
 
@@ -158,6 +179,9 @@ export type AuditInput = {
   workflowMaturity: AuditWorkflowMaturity;
   approvalMode: AuditApprovalMode;
   integrationNeeds: AuditIntegrationNeedId[];
+  workflowVolume: AuditWorkflowVolume;
+  dataReadiness: AuditDataReadiness;
+  decisionOwner: AuditDecisionOwner;
   pilotTimeline: string;
   successMetric?: string;
   existingTools?: string;
@@ -181,9 +205,19 @@ export type AuditPilotPlan = {
   owner: string;
   timeline: string;
   successMetric: string;
+  baselineQuestion: string;
+  target: string;
   guardrails: string[];
   weekOneActions: string[];
   expansionCriteria: string[];
+};
+
+export type AuditReadinessAssessment = {
+  score: number;
+  level: "Pilot-ready" | "Prepare first" | "Discovery first";
+  summary: string;
+  strengths: string[];
+  risks: string[];
 };
 
 export type AuditUseCaseRecommendation = {
@@ -232,6 +266,7 @@ export type AuditResult = {
     automationPosture: string;
     overallCaution: string;
   };
+  readiness: AuditReadinessAssessment;
   topOpportunities: AuditOpportunityRecommendation[];
   pilotPlan: AuditPilotPlan;
   nextStepChecklist: string[];

@@ -131,6 +131,9 @@ const supportInput: AuditInput = {
   workflowMaturity: "documented",
   approvalMode: "owner-review",
   integrationNeeds: ["helpdesk"],
+  workflowVolume: "daily",
+  dataReadiness: "trusted",
+  decisionOwner: "single-owner",
   pilotTimeline: "2 weeks",
   successMetric: "response time"
 };
@@ -147,6 +150,8 @@ assert.ok(
   )
 );
 assert.equal(supportResult.pilotPlan.successMetric, "response time");
+assert.ok(supportResult.pilotPlan.baselineQuestion.includes("response time"));
+assert.equal(supportResult.readiness.level, "Pilot-ready");
 assert.ok(supportResult.summary.executiveBrief.includes("2 weeks"));
 assert.ok(supportResult.summary.automationPosture.length > 0);
 
@@ -164,6 +169,20 @@ assert.ok(
   sensitiveResult.nextStepChecklist.some((item) =>
     item.includes("what data can and cannot be used")
   )
+);
+
+const discoveryInput: AuditInput = {
+  ...supportInput,
+  workflowMaturity: "undefined",
+  dataReadiness: "scattered",
+  decisionOwner: "cross-functional",
+  successMetric: undefined,
+  workflowVolume: "occasional"
+};
+const discoveryResult = scoreAudit(discoveryInput, dataset);
+assert.equal(discoveryResult.readiness.level, "Discovery first");
+assert.ok(
+  discoveryResult.pilotPlan.target.includes("reliable baseline")
 );
 
 console.log("Recommendation scoring tests passed.");

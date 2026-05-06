@@ -5,12 +5,13 @@ import {
   type AuditInput,
   type AuditOpportunityRecommendation,
   type AuditPilotPlan,
+  type AuditReadinessAssessment,
   type AuditResult,
   type AuditToolRecommendation,
   type AuditUseCaseRecommendation
 } from "@/shared/recommendations/audit";
 
-export const AUDIT_RULE_VERSION = "audit-rules-v2.0";
+export const AUDIT_RULE_VERSION = "audit-rules-v2.1";
 
 export type AuditDataset = {
   industries: Array<{
@@ -116,6 +117,7 @@ export function scoreAudit(
     ? `${firstOpportunity.name}: start with ${firstUseCase.name.toLowerCase()}.`
     : firstOpportunity?.name ?? "Complete the audit questions to get a plan.";
   const pilotPlan = buildPilotPlan(firstOpportunity, input);
+  const readiness = buildReadinessAssessment(input, firstOpportunity);
 
   return {
     version: AUDIT_RULE_VERSION,
@@ -128,6 +130,7 @@ export function scoreAudit(
       automationPosture: buildAutomationPosture(input, firstOpportunity),
       overallCaution: buildOverallCaution(input, industry?.cautions ?? null)
     },
+    readiness,
     topOpportunities: scoredOpportunities,
     pilotPlan,
     nextStepChecklist: buildChecklist(scoredOpportunities[0], input)
@@ -165,6 +168,10 @@ function scoreOpportunity({
       .flatMap((need) => [need.label, ...need.keywords])
       .join(" ")
   );
+  const functionMismatch =
+    Boolean(selectedFunctionSlug) &&
+    Boolean(opportunity.businessFunction?.slug) &&
+    opportunity.businessFunction?.slug !== selectedFunctionSlug;
 
   let impactScore = 42;
   const industryMatch = opportunity.industries.find(
@@ -178,6 +185,8 @@ function scoreOpportunity({
   if (opportunity.businessFunction?.slug === selectedFunctionSlug) {
     impactScore += 18;
     reasons.push("Matches the team function you want to improve.");
+  } else if (functionMismatch) {
+    impactScore -= 14;
   }
 
   const goalHits = auditGoalOptions.filter((goal) =>
@@ -227,6 +236,15 @@ function scoreOpportunity({
   } else if (input.urgency === "soon") {
     impactScore += 4;
   }
+  if (input.workflowVolume === "daily") {
+    impactScore += 6;
+    reasons.push("High workflow volume improves the likely business return.");
+  } else if (input.workflowVolume === "weekly") {
+    impactScore += 4;
+  } else {
+    impactScore -= 3;
+    cautions.push("Because volume is occasional, validate that the workflow is worth automating before expanding.");
+  }
 
   let effortScore = effortWeights[opportunity.effortLevel] ?? 62;
   if (input.technicalComfort === "low" && opportunity.effortLevel === "HIGH") {
@@ -258,6 +276,19 @@ function scoreOpportunity({
   ) {
     effortScore -= 4;
   }
+  if (input.dataReadiness === "trusted") {
+    effortScore += 6;
+    reasons.push("Trusted source data should make the pilot easier to set up.");
+  } else if (input.dataReadiness === "scattered") {
+    effortScore -= 12;
+    cautions.push("Consolidate examples and source data before judging tool performance.");
+  }
+  if (input.decisionOwner === "cross-functional") {
+    effortScore -= 7;
+    cautions.push("Cross-functional approval can slow rollout unless decision rights are explicit.");
+  } else if (input.decisionOwner === "single-owner") {
+    effortScore += 4;
+  }
 
   let riskScore = riskWeights[opportunity.riskLevel] ?? 64;
   if (input.dataSensitivity === "high") {
@@ -285,21 +316,33 @@ function scoreOpportunity({
       "Use human handoff rules for customer-facing responses during the pilot."
     );
   }
+  if (input.dataReadiness === "scattered") {
+    riskScore -= 6;
+  } else if (input.dataReadiness === "trusted") {
+    riskScore += 4;
+  }
+  if (input.decisionOwner === "cross-functional") {
+    riskScore -= 3;
+  }
 
   const confidenceScore = calculateConfidenceScore(
     opportunity,
     industryMatch ? 1 : 0,
-    goalHits.length + painHits.length + integrationHits.length
+    goalHits.length + painHits.length + integrationHits.length,
+    input
   );
-  const score = clamp(
+  let score = clamp(
     Math.round(
       impactScore * 0.42 +
         effortScore * 0.2 +
         riskScore * 0.18 +
         confidenceScore * 0.2
     ),
-    96
+    94
   );
+  if (functionMismatch) {
+    score = Math.min(score, 82);
+  }
 
   if (reasons.length === 0) {
     reasons.push("Included as a general business opportunity from the taxonomy.");
@@ -348,7 +391,8 @@ function toAuditUseCase(
 function calculateConfidenceScore(
   opportunity: AuditDataset["opportunities"][number],
   industryMatchCount: number,
-  inputSignalCount: number
+  inputSignalCount: number,
+  input: AuditInput
 ) {
   const useCaseSignal = Math.min(opportunity.useCases.length * 7, 18);
   const toolSignal = Math.min(
@@ -359,14 +403,26 @@ function calculateConfidenceScore(
     18
   );
 
-  return clamp(
+  let score =
     44 +
-      industryMatchCount * 14 +
-      Math.min(inputSignalCount * 5, 14) +
-      useCaseSignal +
-      toolSignal,
-    96
-  );
+    industryMatchCount * 14 +
+    Math.min(inputSignalCount * 5, 14) +
+    useCaseSignal +
+    toolSignal;
+
+  if (input.successMetric?.trim()) {
+    score += 5;
+  }
+  if (input.dataReadiness === "trusted") {
+    score += 4;
+  } else if (input.dataReadiness === "scattered") {
+    score -= 5;
+  }
+  if (input.workflowMaturity === "undefined") {
+    score -= 4;
+  }
+
+  return clamp(score, 96);
 }
 
 function recommendTools(
@@ -502,6 +558,105 @@ function buildExecutiveBrief(
   return `${opportunity.name} is the strongest first pilot because it balances business fit, implementation effort, and review risk. Run it as a ${horizon} pilot and judge success by ${metric.toLowerCase()}.`;
 }
 
+function buildReadinessAssessment(
+  input: AuditInput,
+  opportunity: AuditOpportunityRecommendation | undefined
+): AuditReadinessAssessment {
+  const strengths: string[] = [];
+  const risks: string[] = [];
+  let score = 52;
+
+  if (input.workflowMaturity === "measured") {
+    score += 14;
+    strengths.push("Workflow is already measured and repeatable.");
+  } else if (input.workflowMaturity === "documented") {
+    score += 7;
+    strengths.push("Workflow is documented enough to define a pilot.");
+  } else {
+    score -= 12;
+    risks.push("Current process is not documented, so baseline measurement comes first.");
+  }
+
+  if (input.dataReadiness === "trusted") {
+    score += 13;
+    strengths.push("Source data is trusted and organized.");
+  } else if (input.dataReadiness === "accessible") {
+    score += 5;
+  } else {
+    score -= 13;
+    risks.push("Data is scattered, which can make tool comparisons misleading.");
+  }
+
+  if (input.decisionOwner === "single-owner") {
+    score += 9;
+    strengths.push("A single owner can keep scope and review decisions clear.");
+  } else if (input.decisionOwner === "small-group") {
+    score += 3;
+  } else {
+    score -= 7;
+    risks.push("Cross-functional approval needs explicit decision rights before rollout.");
+  }
+
+  if (input.successMetric?.trim()) {
+    score += 7;
+    strengths.push("Success metric is defined before tool selection.");
+  } else {
+    score -= 6;
+    risks.push("Success metric is missing, so the pilot could become subjective.");
+  }
+
+  if (input.technicalComfort === "high") {
+    score += 5;
+  } else if (input.technicalComfort === "low") {
+    score -= 5;
+    risks.push("Low technical comfort means setup should stay no-code and narrow.");
+  }
+
+  if (input.dataSensitivity === "high" || opportunity?.riskLevel === "HIGH") {
+    score -= 9;
+    risks.push("Sensitive or high-risk work should stay assistive until controls are proven.");
+  }
+
+  if (input.workflowVolume === "daily") {
+    score += 5;
+    strengths.push("High volume gives the pilot enough repetition to measure quickly.");
+  } else if (input.workflowVolume === "occasional") {
+    score -= 5;
+    risks.push("Low volume may make impact harder to prove in a short pilot.");
+  }
+
+  const readinessScore = clamp(Math.round(score), 96);
+  const level =
+    readinessScore >= 76
+      ? "Pilot-ready"
+      : readinessScore >= 58
+        ? "Prepare first"
+        : "Discovery first";
+
+  return {
+    score: readinessScore,
+    level,
+    summary: buildReadinessSummary(level, opportunity),
+    strengths: strengths.slice(0, 3),
+    risks: risks.slice(0, 3)
+  };
+}
+
+function buildReadinessSummary(
+  level: AuditReadinessAssessment["level"],
+  opportunity: AuditOpportunityRecommendation | undefined
+) {
+  const workflow = opportunity?.name ?? "the selected workflow";
+
+  if (level === "Pilot-ready") {
+    return `${workflow} has enough operating clarity to start a narrow supervised pilot.`;
+  }
+  if (level === "Prepare first") {
+    return `${workflow} is promising, but the team should tighten baseline, owner, or data quality before tool rollout.`;
+  }
+  return `${workflow} needs discovery before implementation so the team does not automate an unclear process.`;
+}
+
 function buildAutomationPosture(
   input: AuditInput,
   opportunity: AuditOpportunityRecommendation | undefined
@@ -539,10 +694,13 @@ function buildPilotPlan(
     owner: ownerForFunction(opportunity?.businessFunctionName),
     timeline,
     successMetric,
+    baselineQuestion: buildBaselineQuestion(successMetric, opportunity),
+    target: buildPilotTarget(successMetric, input),
     guardrails: buildGuardrails(opportunity, input),
     weekOneActions: [
       opportunity?.startingPoint ?? "Map the current workflow and owner.",
-      "Collect 10-20 representative examples from the current process.",
+      buildDataPrepAction(input),
+      `Record the current ${successMetric.toLowerCase()} before testing AI output.`,
       "Choose one review owner and define what good output looks like.",
       "Test the top two shortlisted tools on the same examples."
     ],
@@ -553,6 +711,34 @@ function buildPilotPlan(
       "The team can explain when AI should not be used."
     ]
   };
+}
+
+function buildBaselineQuestion(
+  successMetric: string,
+  opportunity: AuditOpportunityRecommendation | undefined
+) {
+  const workflow = opportunity?.name.toLowerCase() ?? "this workflow";
+  return `What is today's ${successMetric.toLowerCase()} for ${workflow}, measured from 10-20 recent examples?`;
+}
+
+function buildPilotTarget(successMetric: string, input: AuditInput) {
+  if (input.workflowVolume === "daily") {
+    return `Improve ${successMetric.toLowerCase()} by 20-30% while maintaining review quality.`;
+  }
+  if (input.dataReadiness === "scattered" || input.workflowMaturity === "undefined") {
+    return `Create a reliable baseline for ${successMetric.toLowerCase()} and prove repeatable quality on sample work.`;
+  }
+  return `Improve ${successMetric.toLowerCase()} by 10-20% with no increase in review corrections.`;
+}
+
+function buildDataPrepAction(input: AuditInput) {
+  if (input.dataReadiness === "scattered") {
+    return "Collect and clean 10-20 representative examples before testing tools.";
+  }
+  if (input.dataReadiness === "trusted") {
+    return "Select 10-20 trusted examples that reflect routine and edge cases.";
+  }
+  return "Collect 10-20 representative examples from the current process.";
 }
 
 function buildGuardrails(
