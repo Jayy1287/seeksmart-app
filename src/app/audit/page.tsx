@@ -65,8 +65,8 @@ export default function AuditPage() {
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
                 Answer a short structured audit and get a deterministic
-                recommendation brief. Sign in to save results, or continue
-                anonymously without an account.
+                recommendation brief. Sign in before starting so your audit
+                history is saved automatically.
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link className="primary-button min-h-12" href="/audit/start">

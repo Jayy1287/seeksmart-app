@@ -10,7 +10,7 @@ export async function SiteAccountNav() {
       <div className="flex flex-wrap items-center gap-2 md:justify-end">
         <Link
           className="primary-button hidden min-h-10 px-5 md:inline-flex"
-          href="/audit/start"
+          href="/login?callbackUrl=/audit/start"
         >
           Start audit
         </Link>

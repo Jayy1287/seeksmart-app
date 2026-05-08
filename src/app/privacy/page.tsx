@@ -26,7 +26,7 @@ export default function PrivacyPage() {
           {[
             {
               title: "Audit answers",
-              body: "Anonymous AI audit results are generated from URL parameters in V1. They are not saved to an account or database yet."
+              body: "AI audits require sign-in before questions or results are shown. Audit briefs are saved to the signed-in account so users can return to their history."
             },
             {
               title: "Tool submissions",

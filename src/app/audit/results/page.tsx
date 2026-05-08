@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CheckCircle2, LogIn, Save } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { auth } from "@/auth";
 import { AuditAnalyticsEvent } from "@/features/audit/audit-analytics";
 import { AuditResultView } from "@/features/audit/audit-result-view";
@@ -35,14 +35,20 @@ export default async function AuditResultsPage({
     redirect("/audit/questions");
   }
 
-  const [dataset, session] = await Promise.all([getAuditDataset(), auth()]);
+  const session = await auth();
+
+  if (!session?.user.id) {
+    redirect(
+      `/login?callbackUrl=${encodeURIComponent(buildResultsPath(params))}`
+    );
+  }
+
+  const dataset = await getAuditDataset();
   const result = scoreAudit(input, dataset);
-  const savedAuditRun = session?.user.id
-    ? await saveAuditRun({
-        result,
-        userId: session.user.id
-      })
-    : null;
+  const savedAuditRun = await saveAuditRun({
+    result,
+    userId: session.user.id
+  });
 
   return (
     <AuditResultView
@@ -59,13 +65,7 @@ export default async function AuditResultsPage({
       }
       input={input}
       result={result}
-      saveStatus={
-        savedAuditRun ? (
-          <SavedAuditNotice auditRunId={savedAuditRun.id} />
-        ) : (
-          <AnonymousSaveNotice callbackUrl={buildResultsPath(params)} />
-        )
-      }
+      saveStatus={<SavedAuditNotice auditRunId={savedAuditRun.id} />}
     />
   );
 }
@@ -83,24 +83,6 @@ function SavedAuditNotice({ auditRunId }: { auditRunId: string }) {
       </div>
       <Link className="secondary-button min-h-10" href={`/dashboard/audits/${auditRunId}`}>
         Open saved audit
-      </Link>
-    </div>
-  );
-}
-
-function AnonymousSaveNotice({ callbackUrl }: { callbackUrl: string }) {
-  return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-line/70 bg-white/78 p-4 text-sm shadow-[0_18px_54px_rgb(38_78_162/0.06)] backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex gap-3 leading-6 text-ink/68">
-        <Save aria-hidden="true" className="mt-0.5 shrink-0 text-accent" size={18} />
-        <span>Sign in to save this audit and return to it later.</span>
-      </div>
-      <Link
-        className="primary-button min-h-10"
-        href={`/login?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-      >
-        <LogIn aria-hidden="true" size={16} />
-        Sign in to save
       </Link>
     </div>
   );

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import {
   AuditAnalyticsEvent,
   AuditSubmitButton
@@ -45,7 +47,13 @@ export const metadata: Metadata = {
 };
 
 export default async function AuditQuestionsPage() {
-  const { industries, businessFunctions } = await getAuditOptions();
+  const [session, options] = await Promise.all([auth(), getAuditOptions()]);
+
+  if (!session?.user) {
+    redirect("/login?callbackUrl=/audit/questions");
+  }
+
+  const { industries, businessFunctions } = options;
 
   return (
     <main className="page-shell">
@@ -59,7 +67,7 @@ export default async function AuditQuestionsPage() {
           <p className="mt-3 max-w-2xl leading-7 text-ink/65">
             Answer with enough context for SeekSmart to rank opportunities,
             choose a first workflow, and generate guardrails. The audit remains
-            rules-based, with saved history available after sign-in.
+            rules-based and will be saved to your account after submission.
           </p>
         </section>
 

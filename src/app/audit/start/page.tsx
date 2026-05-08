@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import {
   ArrowRight,
   ClipboardList,
@@ -7,6 +8,7 @@ import {
   LockKeyhole,
   Split
 } from "lucide-react";
+import { auth } from "@/auth";
 import { AuditAnalyticsEvent } from "@/features/audit/audit-analytics";
 
 export const metadata: Metadata = {
@@ -33,13 +35,19 @@ const principles = [
   },
   {
     icon: LockKeyhole,
-    title: "Private by default",
+    title: "Saved by default",
     description:
-      "Anonymous visitors can generate results without an account. Signed-in users get saved audit history."
+      "Sign in before the audit so results can be saved to your account automatically."
   }
 ];
 
-export default function AuditStartPage() {
+export default async function AuditStartPage() {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/login?callbackUrl=/audit/start");
+  }
+
   return (
     <main className="page-shell">
       <AuditAnalyticsEvent event="audit_start_viewed" />

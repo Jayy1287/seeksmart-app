@@ -26,6 +26,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const session = await auth();
   const isAdminCallback =
     callbackUrl === "/admin" || callbackUrl.startsWith("/admin/");
+  const isAuditCallback =
+    callbackUrl === "/audit/start" ||
+    callbackUrl === "/audit/questions" ||
+    callbackUrl.startsWith("/audit/results");
   const isSignedInWithoutAdminAccess =
     Boolean(session?.user) &&
     isAdminCallback &&
@@ -75,7 +79,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <p className="mt-4 max-w-2xl leading-7 text-ink/65">
             {isSignedInWithoutAdminAccess
               ? `${signedInEmail} is signed in but does not have admin access. Choose the SeekSmart admin account to continue.`
-              : "Use your Google account to keep audit briefs, compare shortlists, and access admin tools when your account has permission."}
+              : isAuditCallback
+                ? "Sign in to continue your AI audit. SeekSmart will return you to the audit flow and save the result to your account automatically."
+                : "Use your Google account to keep audit briefs, compare shortlists, and access admin tools when your account has permission."}
           </p>
           {isSignedInWithoutAdminAccess ? (
             <form action={signOutCurrentUser} className="mt-7">
@@ -103,8 +109,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               Signed-in audit results are saved to your account automatically.
             </p>
             <p>
-              Anonymous visitors can still browse SeekSmart and generate audit
-              results without signing in.
+              Public pages remain browseable, but running an audit requires
+              sign-in so your brief has a secure owner and history.
             </p>
           </div>
         </aside>
