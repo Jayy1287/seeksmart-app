@@ -13,14 +13,14 @@ import {
 export const metadata: Metadata = {
   title: "Rules-Based AI Audit",
   description:
-    "Run an anonymous, rules-based AI audit to identify business opportunities, recommended workflows, and tool shortlists.",
+    "Run a rules-based AI audit to identify business opportunities, recommended workflows, and tool shortlists.",
   alternates: {
     canonical: "/audit"
   },
   openGraph: {
     title: "Rules-Based AI Audit",
     description:
-      "Run an anonymous, rules-based AI audit to identify business opportunities, recommended workflows, and tool shortlists.",
+      "Run a rules-based AI audit to identify business opportunities, recommended workflows, and tool shortlists.",
     url: "/audit",
     type: "website"
   }
@@ -65,8 +65,8 @@ export default function AuditPage() {
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
                 Answer a short structured audit and get a deterministic
-                recommendation brief. SeekSmart does not call an AI model or
-                store your answers in this version.
+                recommendation brief. Sign in to save results, or continue
+                anonymously without an account.
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link className="primary-button min-h-12" href="/audit/start">

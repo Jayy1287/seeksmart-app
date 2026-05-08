@@ -1,5 +1,7 @@
 import { createHmac, timingSafeEqual } from "crypto";
+import { UserRole } from "@prisma/client";
 import { cookies } from "next/headers";
+import { auth } from "@/auth";
 
 const ADMIN_COOKIE_NAME = "seeksmart_admin_session";
 const SESSION_SUBJECT = "seeksmart-admin";
@@ -71,7 +73,7 @@ export async function clearAdminSessionCookie() {
   cookieStore.delete(ADMIN_COOKIE_NAME);
 }
 
-export async function isAdminAuthenticated() {
+async function isLegacyAdminAuthenticated() {
   const signature = sign(SESSION_SUBJECT);
 
   if (!signature) {
@@ -82,4 +84,14 @@ export async function isAdminAuthenticated() {
   const session = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
 
   return session === `${SESSION_SUBJECT}.${signature}`;
+}
+
+export async function isAdminAuthenticated() {
+  const session = await auth();
+
+  if (session?.user.role === UserRole.ADMIN) {
+    return true;
+  }
+
+  return isLegacyAdminAuthenticated();
 }

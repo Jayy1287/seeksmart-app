@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AdminLoginForm } from "@/features/admin/admin-login-form";
 import {
@@ -30,8 +31,12 @@ export default async function AdminLoginPage() {
         <p className="eyebrow">Admin</p>
         <h1 className="mt-2 text-4xl font-semibold">Review workspace</h1>
         <p className="mt-3 leading-7 text-ink/65">
-          Sign in to review submitted tools and publish approved entries.
+          Sign in with a Google admin account, or use the temporary admin
+          password fallback while it remains configured.
         </p>
+        <Link className="primary-button mt-5" href="/login?callbackUrl=/admin">
+          Continue with Google
+        </Link>
       </section>
       {isConfigured ? (
         <AdminLoginForm />

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { PageTransition } from "@/components/page-transition";
+import { SiteAccountNav } from "@/components/site-account-nav";
 import { SiteNavigation } from "@/components/site-navigation";
 import { SiteAnalytics } from "@/features/analytics/site-analytics";
 import { siteConfig } from "@/lib/site";
@@ -83,9 +84,7 @@ export default function RootLayout({
                 </span>
               </Link>
               <SiteNavigation />
-              <Link className="primary-button hidden min-h-10 px-5 md:inline-flex" href="/audit/start">
-                Start audit
-              </Link>
+              <SiteAccountNav />
             </div>
           </header>
           <PageTransition>{children}</PageTransition>

@@ -58,8 +58,8 @@ export default async function AuditQuestionsPage() {
           </h1>
           <p className="mt-3 max-w-2xl leading-7 text-ink/65">
             Answer with enough context for SeekSmart to rank opportunities,
-            choose a first workflow, and generate guardrails. V2 is still
-            anonymous and rules-based.
+            choose a first workflow, and generate guardrails. The audit remains
+            rules-based, with saved history available after sign-in.
           </p>
         </section>
 
@@ -325,7 +325,8 @@ export default async function AuditQuestionsPage() {
 
           <div className="flex flex-col gap-3 border-t border-line pt-5 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm leading-6 text-ink/55">
-              Your answers are used only to generate this browser-based result.
+              Signed-in results save automatically. Anonymous results stay in
+              this browser session.
             </p>
             <AuditSubmitButton />
           </div>

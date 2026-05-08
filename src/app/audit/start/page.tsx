@@ -12,7 +12,7 @@ import { AuditAnalyticsEvent } from "@/features/audit/audit-analytics";
 export const metadata: Metadata = {
   title: "Start AI Audit",
   description:
-    "Start an anonymous rules-based AI audit for your business context.",
+    "Start a rules-based AI audit for your business context.",
   alternates: {
     canonical: "/audit/start"
   }
@@ -33,9 +33,9 @@ const principles = [
   },
   {
     icon: LockKeyhole,
-    title: "Anonymous for V1",
+    title: "Private by default",
     description:
-      "Answers are passed through the page URL to generate the brief. This version does not save reports."
+      "Anonymous visitors can generate results without an account. Signed-in users get saved audit history."
   }
 ];
 
