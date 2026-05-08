@@ -20,7 +20,7 @@ const feedbackPrompts = [
 
 export default function FeedbackPage() {
   const mailto =
-    "mailto:hello@seeksmart.ai?subject=SeekSmart%20beta%20feedback&body=What%20I%20tested%3A%0A%0AWhat%20worked%3A%0A%0AWhat%20felt%20unclear%3A%0A%0AWhat%20I%20would%20change%3A";
+    "mailto:seeksmartapp@gmail.com?subject=SeekSmart%20beta%20feedback&body=What%20I%20tested%3A%0A%0AWhat%20worked%3A%0A%0AWhat%20felt%20unclear%3A%0A%0AWhat%20I%20would%20change%3A";
 
   return (
     <main className="page-shell">
