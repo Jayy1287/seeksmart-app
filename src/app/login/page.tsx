@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import type { Route } from "next";
+import { UserRole } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { ArrowRight, LogIn, ShieldCheck } from "lucide-react";
-import { auth, signIn } from "@/auth";
+import { auth, signIn, signOut } from "@/auth";
 
 export const metadata: Metadata = {
   title: "Sign In",
@@ -23,16 +24,40 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const callbackUrl = sanitizeCallbackUrl(params.callbackUrl);
   const session = await auth();
+  const isAdminCallback =
+    callbackUrl === "/admin" || callbackUrl.startsWith("/admin/");
+  const isSignedInWithoutAdminAccess =
+    Boolean(session?.user) &&
+    isAdminCallback &&
+    session?.user.role !== UserRole.ADMIN;
+  const signedInEmail = session?.user.email ?? "This Google account";
 
-  if (session?.user) {
+  if (
+    session?.user &&
+    (!isAdminCallback || session.user.role === UserRole.ADMIN)
+  ) {
     redirect(callbackUrl as Route);
   }
 
   async function signInWithGoogle() {
     "use server";
 
-    await signIn("google", {
-      redirectTo: callbackUrl
+    await signIn(
+      "google",
+      {
+        redirectTo: callbackUrl
+      },
+      {
+        prompt: "select_account"
+      }
+    );
+  }
+
+  async function signOutCurrentUser() {
+    "use server";
+
+    await signOut({
+      redirectTo: `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
     });
   }
 
@@ -48,15 +73,24 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             Save your AI decisions and return to them later.
           </h1>
           <p className="mt-4 max-w-2xl leading-7 text-ink/65">
-            Use your Google account to keep audit briefs, compare shortlists,
-            and access admin tools when your account has permission.
+            {isSignedInWithoutAdminAccess
+              ? `${signedInEmail} is signed in but does not have admin access. Choose the SeekSmart admin account to continue.`
+              : "Use your Google account to keep audit briefs, compare shortlists, and access admin tools when your account has permission."}
           </p>
-          <form action={signInWithGoogle} className="mt-7">
-            <button className="primary-button min-h-12 px-6" type="submit">
-              Continue with Google
-              <ArrowRight aria-hidden="true" size={18} />
-            </button>
-          </form>
+          {isSignedInWithoutAdminAccess ? (
+            <form action={signOutCurrentUser} className="mt-7">
+              <button className="secondary-button min-h-12 px-6" type="submit">
+                Sign out current Google account
+              </button>
+            </form>
+          ) : (
+            <form action={signInWithGoogle} className="mt-7">
+              <button className="primary-button min-h-12 px-6" type="submit">
+                Continue with Google
+                <ArrowRight aria-hidden="true" size={18} />
+              </button>
+            </form>
+          )}
         </section>
 
         <aside className="surface-panel rounded-2xl p-6">
