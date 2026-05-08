@@ -134,6 +134,62 @@ export const industries: Industry[] = [
     ],
     startingPoint: "Start with inbound lead and review workflows because speed directly affects revenue.",
     cautions: "Keep customer-facing messages accurate, local, and brand-safe."
+  },
+  {
+    title: "Insurance operations",
+    slug: "insurance-operations",
+    description:
+      "Claims, brokerage, renewal, support, and compliance teams handling document-heavy regulated work.",
+    icon: ShieldCheck,
+    opportunities: [
+      "Claims and policy document summaries",
+      "Compliance evidence collection",
+      "Supervised customer-service agents"
+    ],
+    startingPoint: "Start with reviewed internal summaries before using AI in decisions or customer messaging.",
+    cautions: "Keep underwriting, claims, and regulated communication under expert review."
+  },
+  {
+    title: "Pharmaceutical and life sciences",
+    slug: "pharmaceutical-and-life-sciences",
+    description:
+      "Research, medical affairs, regulatory, and commercial teams synthesizing scientific and operational knowledge.",
+    icon: FileText,
+    opportunities: [
+      "Evidence-backed literature reviews",
+      "Medical and regulatory knowledge search",
+      "Training and enablement content"
+    ],
+    startingPoint: "Start with literature synthesis and internal enablement before regulated external claims.",
+    cautions: "Review scientific accuracy, approved claims, privacy, and regulatory requirements."
+  },
+  {
+    title: "Professional services",
+    slug: "professional-services",
+    description:
+      "Advisory, accounting, consulting, and legal-adjacent teams producing research, reports, and client deliverables.",
+    icon: Users,
+    opportunities: [
+      "Client research and proposal drafts",
+      "Diligence document analysis",
+      "Reusable firm knowledge assistants"
+    ],
+    startingPoint: "Start with reviewed deliverables and reusable internal knowledge assets.",
+    cautions: "Protect client confidentiality and keep professional judgment accountable to a reviewer."
+  },
+  {
+    title: "Public sector",
+    slug: "public-sector",
+    description:
+      "Government and civic teams improving public information, research, reporting, and internal knowledge access.",
+    icon: Building2,
+    opportunities: [
+      "Constituent support knowledge",
+      "Policy and research synthesis",
+      "Operational reporting summaries"
+    ],
+    startingPoint: "Start with low-risk public information and internal research workflows.",
+    cautions: "Review procurement, accessibility, privacy, public-records, and oversight requirements."
   }
 ];
 
@@ -182,6 +238,81 @@ export const playbooks: Playbook[] = [
       "Select tools for the weakest stage instead of buying a broad suite first."
     ],
     outcome: "More consistent content output with clearer review checkpoints."
+  },
+  {
+    title: "Contract review pilot",
+    slug: "contract-review-pilot",
+    description:
+      "Evaluate legal and contract AI tools without skipping expert review or confidentiality controls.",
+    icon: ShieldCheck,
+    audience: "Legal, finance, procurement, and professional-services teams",
+    steps: [
+      "Choose one repeat contract type and collect reviewed examples.",
+      "Write a clause checklist with must-escalate issues.",
+      "Run each tool against the same sample set.",
+      "Compare findings to expert review before using live agreements."
+    ],
+    outcome: "A defensible contract AI pilot with clear review gates and measurable accuracy."
+  },
+  {
+    title: "Market intelligence brief",
+    slug: "market-intelligence-brief",
+    description:
+      "Turn scattered company, competitor, and industry sources into decision-ready briefs.",
+    icon: LineChart,
+    audience: "Strategy, sales, product, and investing teams",
+    steps: [
+      "Define the decision the research should support.",
+      "List approved source types and freshness requirements.",
+      "Create a reusable brief format with citations.",
+      "Review one brief against known facts before expanding."
+    ],
+    outcome: "A repeatable research workflow that improves decision confidence."
+  },
+  {
+    title: "Enterprise knowledge assistant",
+    slug: "enterprise-knowledge-assistant",
+    description:
+      "Create a permission-aware internal answer assistant from trusted company knowledge.",
+    icon: Building2,
+    audience: "Operations, enablement, support, and IT owners",
+    steps: [
+      "Pick one source collection and one audience.",
+      "Define permission, citation, and freshness rules.",
+      "Test the top 25 repeated questions.",
+      "Expand only after answer quality and escalation rules are proven."
+    ],
+    outcome: "Faster internal answers with source traceability and governance."
+  },
+  {
+    title: "AI service agent rollout",
+    slug: "ai-service-agent-rollout",
+    description:
+      "Launch a supervised customer-service AI agent for approved topics and clean handoff.",
+    icon: Bot,
+    audience: "Support and customer-experience teams",
+    steps: [
+      "Select low-risk support intents with strong help content.",
+      "Define fallback, escalation, and blocked-topic rules.",
+      "Measure resolution, CSAT, and handoff quality.",
+      "Review conversation samples before increasing coverage."
+    ],
+    outcome: "Customer-service automation that scales without hiding risk."
+  },
+  {
+    title: "BI insight narrative",
+    slug: "bi-insight-narrative",
+    description:
+      "Use AI to explain dashboards and KPIs while preserving trusted definitions.",
+    icon: BarChart3,
+    audience: "Data, finance, operations, and leadership teams",
+    steps: [
+      "Choose one recurring dashboard with trusted metrics.",
+      "Document metric definitions and known caveats.",
+      "Generate draft commentary from the same reporting period.",
+      "Have an analyst validate the narrative before publishing."
+    ],
+    outcome: "Faster executive reporting with clearer metric explanations."
   }
 ];
 

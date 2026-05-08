@@ -93,6 +93,11 @@ const categories = [
     name: "App Builders",
     description:
       "AI tools for prototyping, generating, and shipping apps or user interfaces."
+  },
+  {
+    name: "Legal",
+    description:
+      "AI tools for legal research, contract review, diligence, compliance, and professional-services workflows."
   }
 ];
 
@@ -127,7 +132,21 @@ const useCases = [
   "Training content",
   "Recruiting support",
   "Social media content",
-  "App prototyping"
+  "App prototyping",
+  "Contract review",
+  "Legal research",
+  "Market intelligence",
+  "Research synthesis",
+  "Enterprise knowledge search",
+  "Learning and enablement",
+  "Internal tool generation",
+  "BI dashboard analysis",
+  "Executive reporting",
+  "AI customer service agents",
+  "Governed brand content",
+  "Sales and service agents",
+  "Compliance evidence collection",
+  "Diligence document analysis"
 ];
 
 const features = [
@@ -163,7 +182,24 @@ const features = [
   "UI generation",
   "No-code builder",
   "Human handoff",
-  "Ticket routing"
+  "Ticket routing",
+  "Contract analysis",
+  "Legal research",
+  "Clause detection",
+  "Market intelligence",
+  "Literature review",
+  "Evidence synthesis",
+  "Enterprise search",
+  "Learning paths",
+  "Data warehouse connection",
+  "BI dashboards",
+  "Semantic layer",
+  "Brand governance",
+  "Customer service agents",
+  "Voice support",
+  "Governance controls",
+  "Agent builder",
+  "Diligence workflows"
 ];
 
 const businessFunctions = [
@@ -697,6 +733,216 @@ const useCaseMetadata: Record<
     effortLevel: EffortLevel.MEDIUM,
     riskLevel: RiskLevel.MEDIUM,
     timeToValue: "1-3 weeks"
+  },
+  "Contract review": {
+    businessFunction: "Legal and Compliance",
+    outcome: "Faster contract review, clause comparison, and obligation tracking.",
+    painPoints: ["Contract bottlenecks", "Manual clause review", "Missed obligations"],
+    requiredInputs: ["Contract samples", "Playbook clauses", "Escalation rules"],
+    successMetrics: ["Review turnaround", "Issues caught", "Attorney review time"],
+    implementationSteps: [
+      "Define approved clause positions",
+      "Review a small contract sample",
+      "Compare AI findings with expert review"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "3-6 weeks"
+  },
+  "Legal research": {
+    businessFunction: "Legal and Compliance",
+    outcome: "Faster issue spotting and source-grounded legal research preparation.",
+    painPoints: ["Slow legal research", "Scattered precedent", "Manual source review"],
+    requiredInputs: ["Research question", "Jurisdiction", "Citation standards"],
+    successMetrics: ["Research turnaround", "Source quality", "Review corrections"],
+    implementationSteps: [
+      "Start with non-client research questions",
+      "Validate sources and citations",
+      "Require qualified legal review"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "3-6 weeks"
+  },
+  "Market intelligence": {
+    businessFunction: "Data and Analytics",
+    outcome: "Clearer market, competitor, company, and industry intelligence.",
+    painPoints: ["Slow research", "Fragmented market signals", "Hard-to-compare sources"],
+    requiredInputs: ["Research scope", "Trusted source list", "Decision question"],
+    successMetrics: ["Research time", "Insight reuse", "Decision confidence"],
+    implementationSteps: [
+      "Define the decision the research should support",
+      "Set source quality rules",
+      "Turn recurring research into a template"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Research synthesis": {
+    businessFunction: "Knowledge Management",
+    outcome: "Evidence-backed summaries from papers, reports, interviews, and documents.",
+    painPoints: ["Slow literature review", "Too many documents", "Unclear evidence quality"],
+    requiredInputs: ["Research question", "Document set", "Inclusion criteria"],
+    successMetrics: ["Synthesis time", "Source coverage", "Review confidence"],
+    implementationSteps: [
+      "Define the question and source criteria",
+      "Compare outputs against manually reviewed sources",
+      "Document confidence and evidence gaps"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks"
+  },
+  "Enterprise knowledge search": {
+    businessFunction: "Knowledge Management",
+    outcome: "Permission-aware answers across company documents, apps, and workflows.",
+    painPoints: ["Data silos", "Repeated internal questions", "Hard-to-find policies"],
+    requiredInputs: ["Source systems", "Access model", "Answer quality rubric"],
+    successMetrics: ["Answer time", "Search success", "Deflected questions"],
+    implementationSteps: [
+      "Choose high-value source systems",
+      "Validate permissions and citations",
+      "Pilot frequent internal questions"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "4-8 weeks"
+  },
+  "Learning and enablement": {
+    businessFunction: "Human Resources",
+    outcome: "Faster employee training, enablement, onboarding, and knowledge checks.",
+    painPoints: ["Outdated training", "Slow enablement", "Repeated onboarding questions"],
+    requiredInputs: ["Source material", "Audience profile", "Learning outcomes"],
+    successMetrics: ["Ramp time", "Course completion", "Learner feedback"],
+    implementationSteps: [
+      "Define one enablement outcome",
+      "Create a small lesson or assistant",
+      "Review accuracy with subject-matter experts"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "3-6 weeks"
+  },
+  "Internal tool generation": {
+    businessFunction: "Product and Engineering",
+    outcome: "Faster internal apps, admin panels, and workflow tools.",
+    painPoints: ["Manual operations", "Backlog delays", "Spreadsheet workarounds"],
+    requiredInputs: ["Workflow map", "Data model", "Permissions"],
+    successMetrics: ["App delivery time", "Manual steps removed", "User adoption"],
+    implementationSteps: [
+      "Pick a low-risk internal workflow",
+      "Generate or configure the first version",
+      "Review access and data writes before rollout"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks"
+  },
+  "BI dashboard analysis": {
+    businessFunction: "Data and Analytics",
+    outcome: "Faster dashboard exploration, metric explanation, and data storytelling.",
+    painPoints: ["Manual reporting", "Slow dashboard interpretation", "Metric confusion"],
+    requiredInputs: ["Metric definitions", "Dashboard access", "Trusted data model"],
+    successMetrics: ["Analysis time", "Question resolution", "Report adoption"],
+    implementationSteps: [
+      "Choose one recurring dashboard",
+      "Validate metric definitions",
+      "Compare AI explanations with analyst review"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Executive reporting": {
+    businessFunction: "Data and Analytics",
+    outcome: "Clearer narratives from operating metrics, KPIs, and leadership updates.",
+    painPoints: ["Manual reporting", "Slow executive updates", "Inconsistent narratives"],
+    requiredInputs: ["KPI definitions", "Report template", "Narrative owner"],
+    successMetrics: ["Reporting time", "Stakeholder clarity", "Decision speed"],
+    implementationSteps: [
+      "Standardize one report format",
+      "Generate draft commentary",
+      "Validate numbers and recommendations"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-3 weeks"
+  },
+  "AI customer service agents": {
+    businessFunction: "Customer Support",
+    outcome: "Automated customer answers with escalation, policy, and quality controls.",
+    painPoints: ["Ticket backlog", "Slow response", "Repeated customer questions"],
+    requiredInputs: ["Help content", "Conversation history", "Escalation policy"],
+    successMetrics: ["Resolution rate", "Deflection rate", "CSAT"],
+    implementationSteps: [
+      "Start with low-risk topics",
+      "Define handoff and fallback rules",
+      "Audit conversations before expanding"
+    ],
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "4-8 weeks"
+  },
+  "Governed brand content": {
+    businessFunction: "Marketing",
+    outcome: "Brand-safe campaign, product, and lifecycle content at enterprise scale.",
+    painPoints: ["Brand drift", "Slow campaign production", "Approval bottlenecks"],
+    requiredInputs: ["Brand guidelines", "Approved claims", "Review workflow"],
+    successMetrics: ["Campaign turnaround", "Approval rate", "Brand compliance"],
+    implementationSteps: [
+      "Codify voice, claims, and exclusions",
+      "Generate content for one campaign",
+      "Review against brand and legal standards"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks"
+  },
+  "Sales and service agents": {
+    businessFunction: "Sales",
+    outcome: "Agent-assisted CRM, account planning, support handoffs, and revenue workflows.",
+    painPoints: ["Manual CRM work", "Slow follow-up", "Disconnected customer context"],
+    requiredInputs: ["CRM schema", "Account rules", "Approval policy"],
+    successMetrics: ["Follow-up speed", "CRM completeness", "Pipeline progress"],
+    implementationSteps: [
+      "Choose one sales or service job",
+      "Connect only approved CRM fields",
+      "Review agent recommendations before writes"
+    ],
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "4-8 weeks"
+  },
+  "Compliance evidence collection": {
+    businessFunction: "Legal and Compliance",
+    outcome: "Faster collection, summarization, and review of audit and control evidence.",
+    painPoints: ["Compliance evidence gaps", "Manual audit prep", "Scattered policies"],
+    requiredInputs: ["Control list", "Evidence sources", "Review owner"],
+    successMetrics: ["Evidence collection time", "Control coverage", "Review corrections"],
+    implementationSteps: [
+      "Map one control family",
+      "Collect representative evidence",
+      "Review outputs with compliance owners"
+    ],
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "4-8 weeks"
+  },
+  "Diligence document analysis": {
+    businessFunction: "Finance",
+    outcome: "Faster review and synthesis of data rooms, filings, contracts, and reports.",
+    painPoints: ["Large document sets", "Slow diligence review", "Missed risk signals"],
+    requiredInputs: ["Document collection", "Issue checklist", "Source citation rules"],
+    successMetrics: ["Review time", "Issues found", "Source traceability"],
+    implementationSteps: [
+      "Define a narrow diligence question",
+      "Upload a reviewed document subset",
+      "Compare findings against expert review"
+    ],
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "4-8 weeks"
   }
 };
 
@@ -809,6 +1055,51 @@ const industries = [
       "Start with reusable donor, grant, and program-report templates that staff can review.",
     cautions:
       "Protect beneficiary data and review impact claims before publishing or submitting."
+  },
+  {
+    name: "Insurance operations",
+    description:
+      "Carriers, brokers, and claims teams improving document review, support, compliance evidence, and renewal workflows.",
+    startingPoint:
+      "Start with internal document summaries, policy FAQs, or claims-support workflows before automating decisions.",
+    cautions:
+      "Keep underwriting, claim decisions, and regulated customer communication under expert review."
+  },
+  {
+    name: "Pharmaceutical and life sciences",
+    description:
+      "Research, medical affairs, regulatory, and commercial teams synthesizing evidence, documents, and training content.",
+    startingPoint:
+      "Start with literature synthesis, internal enablement, or evidence organization before regulated external claims.",
+    cautions:
+      "Review scientific accuracy, approved claims, patient data boundaries, and regulatory requirements."
+  },
+  {
+    name: "Professional services",
+    description:
+      "Accounting, advisory, consulting, and legal-adjacent teams handling client research, reports, diligence, and knowledge reuse.",
+    startingPoint:
+      "Start with reviewed client deliverables, market scans, and reusable knowledge assets.",
+    cautions:
+      "Protect client confidentiality and keep professional judgment accountable to a named reviewer."
+  },
+  {
+    name: "Public sector",
+    description:
+      "Government and civic teams improving constituent support, policy research, documents, reporting, and internal knowledge access.",
+    startingPoint:
+      "Start with low-risk public information workflows and internal research support.",
+    cautions:
+      "Review procurement, accessibility, privacy, public-records, and human oversight requirements before rollout."
+  },
+  {
+    name: "Private equity and investing",
+    description:
+      "Investment teams speeding market research, company diligence, data-room review, portfolio reporting, and thesis development.",
+    startingPoint:
+      "Start with diligence document synthesis and market-intelligence briefs that analysts can verify.",
+    cautions:
+      "Treat non-public company data and investment recommendations as high-risk and review every output."
   }
 ];
 
@@ -1262,6 +1553,186 @@ const opportunities = [
     successMetrics: ["Assets repurposed", "Publishing frequency", "Review time"],
     industries: ["Media and creators", "Consulting and agencies", "Nonprofits"],
     useCases: ["Social media content", "Video generation", "Copywriting"]
+  },
+  {
+    name: "Review contracts and obligations",
+    businessFunction: "Legal and Compliance",
+    description:
+      "Use AI to summarize agreements, compare clauses against playbooks, and flag obligations for expert review.",
+    painPoint: "Contract review and obligation tracking often depend on slow manual reading.",
+    expectedBenefit: "Faster review cycles, clearer risk triage, and fewer missed obligations.",
+    startingPoint: "Choose one repeat contract type and create an approved clause checklist.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "3-6 weeks",
+    successMetrics: ["Review turnaround", "Issues flagged", "Review corrections"],
+    industries: ["Legal services", "Professional services", "Insurance operations"],
+    useCases: ["Contract review", "Legal research", "Compliance evidence collection"]
+  },
+  {
+    name: "Accelerate legal research preparation",
+    businessFunction: "Legal and Compliance",
+    description:
+      "Create source-grounded legal research drafts, issue summaries, and review packets for qualified legal teams.",
+    painPoint: "Legal research takes time to scope, source, and summarize before attorney review.",
+    expectedBenefit: "Faster issue preparation while preserving expert accountability.",
+    startingPoint: "Pilot with non-client research questions and citation review.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "3-6 weeks",
+    successMetrics: ["Research turnaround", "Source quality", "Attorney review time"],
+    industries: ["Legal services", "Professional services", "Public sector"],
+    useCases: ["Legal research", "Research synthesis", "Contract review"]
+  },
+  {
+    name: "Synthesize market and competitor intelligence",
+    businessFunction: "Data and Analytics",
+    description:
+      "Turn company, competitor, industry, and market sources into decision-ready briefs.",
+    painPoint: "Market research is scattered across reports, calls, filings, web sources, and internal notes.",
+    expectedBenefit: "Faster strategy, sales, investment, and product decisions.",
+    startingPoint: "Define one market question and the sources that count as trusted.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Research cycle time", "Source coverage", "Decision confidence"],
+    industries: ["Private equity and investing", "SaaS teams", "Professional services"],
+    useCases: ["Market intelligence", "Web research", "Research synthesis"]
+  },
+  {
+    name: "Run evidence-backed literature reviews",
+    businessFunction: "Knowledge Management",
+    description:
+      "Screen, summarize, and compare research papers or evidence sources against a clear review question.",
+    painPoint: "Literature reviews and evidence checks are slow, repetitive, and hard to keep current.",
+    expectedBenefit: "Faster synthesis with clearer evidence gaps and source traceability.",
+    startingPoint: "Define inclusion criteria and review a small paper set manually first.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks",
+    successMetrics: ["Papers screened", "Synthesis time", "Reviewer confidence"],
+    industries: ["Pharmaceutical and life sciences", "Education and training", "Healthcare operations"],
+    useCases: ["Research synthesis", "Legal research", "Market intelligence"]
+  },
+  {
+    name: "Create a permission-aware knowledge assistant",
+    businessFunction: "Knowledge Management",
+    description:
+      "Answer employee questions across company apps, docs, tickets, and policies while respecting source permissions.",
+    painPoint: "Important knowledge is spread across tools and repeated questions interrupt specialists.",
+    expectedBenefit: "Faster answers, better onboarding, and less repeated internal support.",
+    startingPoint: "Connect a narrow set of trusted sources and test the top 25 internal questions.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "4-8 weeks",
+    successMetrics: ["Answer time", "Search success", "Repeated questions reduced"],
+    industries: ["SaaS teams", "Professional services", "Public sector"],
+    useCases: ["Enterprise knowledge search", "Internal knowledge search", "Knowledge management"]
+  },
+  {
+    name: "Improve employee learning and enablement",
+    businessFunction: "Human Resources",
+    description:
+      "Turn internal expertise into role-based learning, onboarding, sales enablement, and knowledge checks.",
+    painPoint: "Training content falls behind the business and new hires rely on repeated explanations.",
+    expectedBenefit: "Shorter ramp time and more consistent internal knowledge transfer.",
+    startingPoint: "Choose one role or team journey and define the learner outcome.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "3-6 weeks",
+    successMetrics: ["Ramp time", "Completion rate", "Learner feedback"],
+    industries: ["Education and training", "SaaS teams", "Pharmaceutical and life sciences"],
+    useCases: ["Learning and enablement", "Training content", "Enterprise knowledge search"]
+  },
+  {
+    name: "Build internal operational apps",
+    businessFunction: "Product and Engineering",
+    description:
+      "Create internal tools, admin workflows, dashboards, and approval apps from structured workflow requirements.",
+    painPoint: "Internal teams rely on spreadsheets and manual work because engineering capacity is limited.",
+    expectedBenefit: "Faster internal tooling and fewer manual handoffs.",
+    startingPoint: "Pick one internal workflow with clear permissions and low customer impact.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks",
+    successMetrics: ["Manual steps removed", "App delivery time", "User adoption"],
+    industries: ["SaaS teams", "Manufacturing and logistics", "Professional services"],
+    useCases: ["Internal tool generation", "App prototyping", "Workflow automation"]
+  },
+  {
+    name: "Create executive BI narratives",
+    businessFunction: "Data and Analytics",
+    description:
+      "Explain dashboard movement, metric drivers, and business performance in clear executive-ready language.",
+    painPoint: "Analysts spend too much time rewriting dashboard insights and leadership updates.",
+    expectedBenefit: "Faster reporting with more consistent metric interpretation.",
+    startingPoint: "Choose one recurring KPI report with trusted definitions.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Reporting time", "Questions resolved", "Decision speed"],
+    industries: ["Finance and accounting", "Private equity and investing", "Retail and hospitality"],
+    useCases: ["BI dashboard analysis", "Executive reporting", "Data analysis"]
+  },
+  {
+    name: "Launch a supervised AI service agent",
+    businessFunction: "Customer Support",
+    description:
+      "Deploy an AI customer service agent for approved topics with escalation, QA, and human handoff rules.",
+    painPoint: "Support teams cannot keep up with repeated customer conversations at consistent quality.",
+    expectedBenefit: "Higher resolution coverage, faster replies, and better support scalability.",
+    startingPoint: "Select low-risk intents with strong help content and human fallback.",
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "4-8 weeks",
+    successMetrics: ["Resolution rate", "Deflection rate", "CSAT"],
+    industries: ["Ecommerce", "SaaS teams", "Insurance operations"],
+    useCases: ["AI customer service agents", "Help desk automation", "Customer support"]
+  },
+  {
+    name: "Generate governed brand content",
+    businessFunction: "Marketing",
+    description:
+      "Scale campaign, product, and lifecycle content while enforcing voice, claims, audience, and approval rules.",
+    painPoint: "Content teams need more output but cannot afford brand drift or unapproved claims.",
+    expectedBenefit: "Faster campaign production with clearer governance.",
+    startingPoint: "Codify voice, approved claims, banned claims, and review owners.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks",
+    successMetrics: ["Campaign turnaround", "Approval rate", "Brand corrections"],
+    industries: ["SaaS teams", "Retail and hospitality", "Pharmaceutical and life sciences"],
+    useCases: ["Governed brand content", "Copywriting", "Social media content"]
+  },
+  {
+    name: "Improve sales and service agent workflows",
+    businessFunction: "Sales",
+    description:
+      "Use AI agents to summarize account context, update CRM fields, recommend next actions, and coordinate service handoffs.",
+    painPoint: "Revenue teams lose time to CRM administration and disconnected customer context.",
+    expectedBenefit: "Cleaner CRM data, faster follow-up, and more consistent account execution.",
+    startingPoint: "Start with one supervised account-planning or CRM update workflow.",
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "4-8 weeks",
+    successMetrics: ["CRM completeness", "Follow-up speed", "Pipeline movement"],
+    industries: ["SaaS teams", "Professional services", "Insurance operations"],
+    useCases: ["Sales and service agents", "CRM update automation", "Sales outreach"]
+  },
+  {
+    name: "Analyze diligence document sets",
+    businessFunction: "Finance",
+    description:
+      "Summarize data rooms, contracts, filings, interviews, and research material with citations and issue checklists.",
+    painPoint: "Diligence teams must read large document sets quickly without missing important issues.",
+    expectedBenefit: "Faster review, better source traceability, and earlier issue spotting.",
+    startingPoint: "Define one diligence checklist and test on a reviewed document subset.",
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "4-8 weeks",
+    successMetrics: ["Review time", "Issues identified", "Source traceability"],
+    industries: ["Private equity and investing", "Finance and accounting", "Legal services"],
+    useCases: ["Diligence document analysis", "Research synthesis", "Document extraction"]
   }
 ];
 
@@ -2115,6 +2586,346 @@ const tools = [
     useCases: ["App prototyping", "Code generation", "Workflow automation"],
     features: ["App generation", "Code completion", "Export options", "Integrations"],
     alternatives: ["Lovable", "v0", "Replit"]
+  },
+  {
+    name: "Harvey",
+    category: "Legal",
+    shortDescription:
+      "AI platform for legal and professional-services research, drafting, and document workflows.",
+    longDescription:
+      "Harvey is built for law firms, in-house legal teams, and professional-services organizations that need domain-specific AI support for complex document, research, drafting, and diligence work. It is best suited for teams with expert review, strong confidentiality controls, and enough recurring legal work to justify an enterprise rollout.",
+    websiteUrl: "https://www.harvey.ai",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 87,
+    useCases: ["Legal research", "Contract review", "Diligence document analysis"],
+    features: ["Legal research", "Document upload", "Source grounding", "Diligence workflows"],
+    alternatives: ["CoCounsel", "Ironclad AI", "Hebbia"]
+  },
+  {
+    name: "CoCounsel",
+    category: "Legal",
+    shortDescription:
+      "Thomson Reuters professional-grade AI assistant for legal research, analysis, and drafting.",
+    longDescription:
+      "CoCounsel is a legal AI assistant grounded in Thomson Reuters legal content and workflows. It is a strong fit for legal professionals who want research, drafting, document review, and matter support connected to established legal research and professional content systems.",
+    websiteUrl: "https://www.thomsonreuters.com/cocounsel",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 86,
+    useCases: ["Legal research", "Contract review", "Compliance evidence collection"],
+    features: ["Legal research", "Citations", "Source grounding", "Governance controls"],
+    alternatives: ["Harvey", "Ironclad AI", "Perplexity"]
+  },
+  {
+    name: "Ironclad AI",
+    category: "Legal",
+    shortDescription:
+      "AI capabilities inside Ironclad CLM for contract review, playbooks, and contract insights.",
+    longDescription:
+      "Ironclad AI supports contract lifecycle management by helping teams review agreements, apply playbooks, find contract data, and speed up negotiation workflows. It is strongest for legal and business teams already managing contracts inside a structured CLM process.",
+    websiteUrl: "https://ironcladapp.com/product/ironclad-ai/",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 82,
+    useCases: ["Contract review", "Compliance evidence collection", "Document extraction"],
+    features: ["Contract analysis", "Clause detection", "Workflow builder", "Governance controls"],
+    alternatives: ["Harvey", "CoCounsel", "Airtable AI"]
+  },
+  {
+    name: "Hebbia",
+    category: "Research",
+    shortDescription:
+      "Enterprise AI for analyzing large document collections, filings, transcripts, and diligence materials.",
+    longDescription:
+      "Hebbia helps finance, legal, consulting, and investing teams analyze private documents, public filings, transcripts, and research sources. It is useful when users need structured answers, repeatable research workflows, and source traceability across high-stakes document sets.",
+    websiteUrl: "https://www.hebbia.com",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 84,
+    useCases: ["Diligence document analysis", "Market intelligence", "Research synthesis"],
+    features: ["Diligence workflows", "Document upload", "Source grounding", "Market intelligence"],
+    alternatives: ["AlphaSense", "Harvey", "Elicit"]
+  },
+  {
+    name: "AlphaSense",
+    category: "Research",
+    shortDescription:
+      "AI-powered market intelligence platform for company, industry, expert, and financial research.",
+    longDescription:
+      "AlphaSense is built for teams that need trusted market, competitor, company, and financial intelligence from premium external sources and internal content. It is a strong fit for strategy, investing, corporate development, and market research teams with recurring research needs.",
+    websiteUrl: "https://www.alpha-sense.com",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 85,
+    useCases: ["Market intelligence", "Diligence document analysis", "Web research"],
+    features: ["Market intelligence", "Citations", "Source grounding", "Enterprise search"],
+    alternatives: ["Hebbia", "Perplexity", "Consensus"]
+  },
+  {
+    name: "Elicit",
+    category: "Research",
+    shortDescription:
+      "AI research assistant for scientific search, reports, data extraction, and literature reviews.",
+    longDescription:
+      "Elicit helps researchers search scientific papers, generate research reports, organize evidence, and support systematic-review workflows. It is especially useful for research teams that need source-level transparency rather than a generic chat answer.",
+    websiteUrl: "https://elicit.com",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 79,
+    useCases: ["Research synthesis", "Market intelligence", "Legal research"],
+    features: ["Literature review", "Evidence synthesis", "Citations", "Source grounding"],
+    alternatives: ["Consensus", "Perplexity", "NotebookLM"]
+  },
+  {
+    name: "Consensus",
+    category: "Research",
+    shortDescription:
+      "AI academic search engine for evidence-backed answers from peer-reviewed research.",
+    longDescription:
+      "Consensus helps users ask natural-language research questions and get answers grounded in academic papers. It is a practical option for evidence-backed exploration, early literature discovery, and teams that need citations before deciding what to read deeply.",
+    websiteUrl: "https://consensus.app",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 78,
+    useCases: ["Research synthesis", "Web research", "Market intelligence"],
+    features: ["Evidence synthesis", "Literature review", "Citations", "Web browsing"],
+    alternatives: ["Elicit", "Perplexity", "NotebookLM"]
+  },
+  {
+    name: "Sana",
+    category: "Knowledge Management",
+    shortDescription:
+      "AI knowledge and learning platform for enterprise search, assistants, and enablement.",
+    longDescription:
+      "Sana combines workplace knowledge, learning, and AI assistant workflows. It is useful for organizations that want to connect company knowledge with onboarding, training, enablement, and employee self-service.",
+    websiteUrl: "https://sana.ai",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 77,
+    useCases: ["Learning and enablement", "Enterprise knowledge search", "Training content"],
+    features: ["Enterprise search", "Learning paths", "AI agents", "Team workspace"],
+    alternatives: ["Glean", "Guru", "Notion AI"]
+  },
+  {
+    name: "Guru",
+    category: "Knowledge Management",
+    shortDescription:
+      "Enterprise AI search and verified knowledge platform with permission-aware answers.",
+    longDescription:
+      "Guru helps teams search across workplace systems, surface cited answers, and keep knowledge verified by subject-matter experts. It is a good fit for support, sales, operations, and enablement teams that need governed internal answers.",
+    websiteUrl: "https://www.getguru.com/solutions/enterprise-search",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 76,
+    useCases: ["Enterprise knowledge search", "Internal knowledge search", "Learning and enablement"],
+    features: ["Enterprise search", "Source grounding", "Governance controls", "Integrations"],
+    alternatives: ["Glean", "Sana", "Notion AI"]
+  },
+  {
+    name: "Coda AI",
+    category: "Productivity",
+    shortDescription:
+      "AI work assistant inside Coda docs for drafting, summarizing, tables, and workflow actions.",
+    longDescription:
+      "Coda AI brings AI assistance into collaborative docs, tables, and lightweight workflow apps. It is useful for teams that already use Coda to run projects, operations, knowledge bases, and team processes.",
+    websiteUrl: "https://coda.io/product/ai",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 73,
+    useCases: ["Workflow automation", "Knowledge management", "Executive reporting"],
+    features: ["Templates", "Workflow builder", "Team workspace", "AI agents"],
+    alternatives: ["Notion AI", "Airtable AI", "Retool AI"]
+  },
+  {
+    name: "Retool AI",
+    category: "App Builders",
+    shortDescription:
+      "AI app and workflow platform for building internal tools, agents, and operational apps.",
+    longDescription:
+      "Retool AI helps technical and operations teams build AI-powered internal apps, workflows, and business processes on top of databases, APIs, and enterprise systems. It is best when teams need production internal tooling rather than a one-off prototype.",
+    websiteUrl: "https://retool.com/products/ai",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 81,
+    useCases: ["Internal tool generation", "Workflow automation", "AI customer service agents"],
+    features: ["App generation", "Workflow builder", "Data warehouse connection", "Governance controls"],
+    alternatives: ["Airtable AI", "Zapier", "n8n"]
+  },
+  {
+    name: "Hex",
+    category: "Data Analysis",
+    shortDescription:
+      "Collaborative data workspace with AI assist for notebooks, reports, apps, and analytics workflows.",
+    longDescription:
+      "Hex combines notebooks, SQL, Python, data apps, reports, and AI assistance for data teams and business stakeholders. It is a strong fit for organizations that need reproducible analysis with collaboration and lightweight publishing.",
+    websiteUrl: "https://hex.tech",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 75,
+    useCases: ["BI dashboard analysis", "Data analysis", "Executive reporting"],
+    features: ["Data warehouse connection", "BI dashboards", "Source grounding", "Team workspace"],
+    alternatives: ["Julius AI", "Power BI Copilot", "ThoughtSpot Spotter"]
+  },
+  {
+    name: "ThoughtSpot Spotter",
+    category: "Data Analysis",
+    shortDescription:
+      "AI analyst for conversational BI, trusted answers, dashboards, and semantic-model workflows.",
+    longDescription:
+      "ThoughtSpot Spotter gives business teams an AI analyst experience for asking questions, exploring governed data, and generating insights. It is strongest for organizations that already invest in semantic models and self-service analytics.",
+    websiteUrl: "https://www.thoughtspot.com/product/agents/spotter",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 80,
+    useCases: ["BI dashboard analysis", "Executive reporting", "Data analysis"],
+    features: ["BI dashboards", "Semantic layer", "Source grounding", "Data warehouse connection"],
+    alternatives: ["Power BI Copilot", "Hex", "Julius AI"]
+  },
+  {
+    name: "Power BI Copilot",
+    category: "Data Analysis",
+    shortDescription:
+      "Microsoft Copilot capabilities for Power BI reports, semantic models, insights, and DAX assistance.",
+    longDescription:
+      "Power BI Copilot helps users ask questions about reports, summarize insights, create report pages, and support data-modeling tasks inside Microsoft's BI ecosystem. It is best for teams already standardized on Microsoft Fabric and Power BI.",
+    websiteUrl: "https://www.microsoft.com/en-us/power-platform/products/power-bi",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 82,
+    useCases: ["BI dashboard analysis", "Executive reporting", "Spreadsheet automation"],
+    features: ["BI dashboards", "Semantic layer", "Integrations", "Team workspace"],
+    alternatives: ["ThoughtSpot Spotter", "Microsoft 365 Copilot", "Julius AI"]
+  },
+  {
+    name: "Salesforce Agentforce",
+    category: "Sales",
+    shortDescription:
+      "Salesforce AI agent platform for CRM-connected sales, service, marketing, and commerce workflows.",
+    longDescription:
+      "Salesforce Agentforce helps organizations build and deploy AI agents connected to Salesforce data and Customer 360 workflows. It is a strong fit for companies already running sales, service, marketing, or commerce operations in Salesforce.",
+    websiteUrl: "https://www.salesforce.com/agentforce/",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 88,
+    useCases: ["Sales and service agents", "CRM update automation", "AI customer service agents"],
+    features: ["AI agents", "CRM sync", "Agent builder", "Governance controls"],
+    alternatives: ["HubSpot Breeze", "Ada", "Decagon"]
+  },
+  {
+    name: "Ada",
+    category: "Customer Support",
+    shortDescription:
+      "AI customer service platform for deploying agents across chat and digital support channels.",
+    longDescription:
+      "Ada is built for customer experience teams that want AI agents to resolve routine customer conversations and escalate when needed. It is best for teams with strong help content, clear support policies, and enough conversation volume to measure automation quality.",
+    websiteUrl: "https://www.ada.cx",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 83,
+    useCases: ["AI customer service agents", "Help desk automation", "Customer support"],
+    features: ["Customer service agents", "Human handoff", "Ticket routing", "Integrations"],
+    alternatives: ["Intercom Fin", "Zendesk AI", "Sierra"]
+  },
+  {
+    name: "Sierra",
+    category: "Customer Support",
+    shortDescription:
+      "AI agent platform for building branded customer experience agents across service channels.",
+    longDescription:
+      "Sierra helps companies build AI agents for personalized customer experiences across channels such as chat, SMS, email, voice, and ChatGPT. It is most appropriate for larger customer-facing teams that need branded agent behavior, guardrails, and operational visibility.",
+    websiteUrl: "https://sierra.ai",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 84,
+    useCases: ["AI customer service agents", "Sales and service agents", "Customer support"],
+    features: ["Customer service agents", "Agent builder", "Voice support", "Governance controls"],
+    alternatives: ["Ada", "Decagon", "Intercom Fin"]
+  },
+  {
+    name: "Decagon",
+    category: "Customer Support",
+    shortDescription:
+      "Conversational AI platform for enterprise customer support across chat, email, SMS, and voice.",
+    longDescription:
+      "Decagon helps enterprises deploy AI agents that resolve customer support conversations across channels and connect to customer systems. It is well suited for support teams that need automation, visibility, and controlled customer experience workflows.",
+    websiteUrl: "https://decagon.ai",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 82,
+    useCases: ["AI customer service agents", "Help desk automation", "Customer feedback analysis"],
+    features: ["Customer service agents", "Voice support", "Human handoff", "Integrations"],
+    alternatives: ["Sierra", "Ada", "Zendesk AI"]
+  },
+  {
+    name: "Typeface",
+    category: "Marketing",
+    shortDescription:
+      "Enterprise marketing AI platform for brand-governed content, personalization, and agentic workflows.",
+    longDescription:
+      "Typeface helps enterprise marketing and ecommerce teams create on-brand content from product, audience, and campaign inputs. It is useful when content velocity needs to improve without losing brand control, approved claims, or workflow governance.",
+    websiteUrl: "https://www.typeface.ai",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 79,
+    useCases: ["Governed brand content", "Copywriting", "Social media content"],
+    features: ["Brand governance", "Brand kit", "Templates", "Team workspace"],
+    alternatives: ["Writer", "Jasper", "Canva"]
+  },
+  {
+    name: "Writer",
+    category: "Marketing",
+    shortDescription:
+      "Enterprise generative AI platform for governed content, knowledge, apps, and agents.",
+    longDescription:
+      "Writer is a full-stack enterprise AI platform for teams that need governed generative AI across content, knowledge, apps, and agent workflows. It is best for organizations with brand, security, compliance, and workflow requirements that go beyond simple drafting tools.",
+    websiteUrl: "https://writer.com",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 81,
+    useCases: ["Governed brand content", "Enterprise knowledge search", "Workflow automation"],
+    features: ["Brand governance", "AI agents", "Governance controls", "Team workspace"],
+    alternatives: ["Typeface", "Jasper", "Copy.ai"]
   }
 ];
 

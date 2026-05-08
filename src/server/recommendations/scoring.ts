@@ -11,7 +11,7 @@ import {
   type AuditUseCaseRecommendation
 } from "@/shared/recommendations/audit";
 
-export const AUDIT_RULE_VERSION = "audit-rules-v2.1";
+export const AUDIT_RULE_VERSION = "audit-rules-v2.2";
 
 export type AuditDataset = {
   industries: Array<{
@@ -520,6 +520,48 @@ function adjustToolFitScore(fit: AuditDatasetToolFit, input: AuditInput) {
     )
   ) {
     score += 6;
+  }
+  if (
+    input.integrationNeeds.includes("contracts") &&
+    ["Legal", "Research", "Automation"].includes(fit.tool.category.name)
+  ) {
+    score += 8;
+  }
+  if (
+    input.integrationNeeds.includes("bi") &&
+    fit.tool.category.name === "Data Analysis"
+  ) {
+    score += 8;
+  }
+  if (
+    input.integrationNeeds.includes("research") &&
+    ["Research", "Knowledge Management", "Legal"].includes(
+      fit.tool.category.name
+    )
+  ) {
+    score += 7;
+  }
+  if (
+    input.integrationNeeds.includes("learning") &&
+    ["Knowledge Management", "Productivity"].includes(fit.tool.category.name)
+  ) {
+    score += 6;
+  }
+  if (
+    input.integrationNeeds.includes("compliance") &&
+    ["Legal", "Knowledge Management", "Data Analysis", "Automation"].includes(
+      fit.tool.category.name
+    )
+  ) {
+    score += 7;
+  }
+  if (
+    input.integrationNeeds.includes("warehouse") &&
+    ["Data Analysis", "App Builders", "Automation"].includes(
+      fit.tool.category.name
+    )
+  ) {
+    score += 7;
   }
   if (fit.pricingSuitability?.toLowerCase().includes(input.budgetRange)) {
     score += 5;

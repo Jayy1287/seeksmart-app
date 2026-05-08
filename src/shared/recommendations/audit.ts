@@ -71,6 +71,36 @@ export const auditIntegrationNeeds = [
     id: "code",
     label: "Code or product tools",
     keywords: ["code", "prototype", "app", "engineering", "release"]
+  },
+  {
+    id: "contracts",
+    label: "Contracts or legal docs",
+    keywords: ["contract", "legal", "clause", "agreement", "obligation", "review"]
+  },
+  {
+    id: "bi",
+    label: "BI or analytics platform",
+    keywords: ["dashboard", "bi", "metric", "analytics", "insight", "report"]
+  },
+  {
+    id: "research",
+    label: "Research databases or literature",
+    keywords: ["research", "paper", "evidence", "market", "diligence", "source"]
+  },
+  {
+    id: "learning",
+    label: "Learning or enablement system",
+    keywords: ["learning", "training", "enablement", "course", "onboarding"]
+  },
+  {
+    id: "compliance",
+    label: "Compliance or audit systems",
+    keywords: ["compliance", "audit", "evidence", "policy", "risk", "control"]
+  },
+  {
+    id: "warehouse",
+    label: "Data warehouse or database",
+    keywords: ["warehouse", "database", "sql", "data", "semantic", "model"]
   }
 ] as const;
 
@@ -117,6 +147,16 @@ export const auditGoalOptions = [
     id: "scale-output",
     label: "Scale content or output",
     keywords: ["content", "assets", "publishing", "production", "output"]
+  },
+  {
+    id: "improve-decisions",
+    label: "Improve decision quality",
+    keywords: ["decision", "evidence", "research", "insight", "confidence"]
+  },
+  {
+    id: "strengthen-governance",
+    label: "Strengthen governance or compliance",
+    keywords: ["governance", "compliance", "controls", "audit", "risk"]
   }
 ] as const;
 
@@ -145,6 +185,31 @@ export const auditPainPointOptions = [
     id: "hard-to-prioritize",
     label: "Hard to know what to improve first",
     keywords: ["prioritize", "decision", "opportunity", "workflow", "starting"]
+  },
+  {
+    id: "slow-research",
+    label: "Research takes too long",
+    keywords: ["research", "market", "evidence", "sources", "diligence"]
+  },
+  {
+    id: "manual-reporting",
+    label: "Reporting and analysis are too manual",
+    keywords: ["report", "dashboard", "manual", "analysis", "metric"]
+  },
+  {
+    id: "contract-bottlenecks",
+    label: "Contracts or approvals slow things down",
+    keywords: ["contract", "legal", "approval", "clause", "obligation"]
+  },
+  {
+    id: "data-silos",
+    label: "Data and knowledge sit in too many systems",
+    keywords: ["silo", "systems", "knowledge", "data", "search"]
+  },
+  {
+    id: "compliance-evidence",
+    label: "Compliance evidence is hard to collect",
+    keywords: ["compliance", "audit", "evidence", "control", "policy"]
   }
 ] as const;
 
