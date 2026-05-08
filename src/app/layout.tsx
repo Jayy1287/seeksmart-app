@@ -60,7 +60,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <SiteAnalytics />
         </Suspense>
-        <div className="min-h-screen">
+        <div className="flex min-h-screen flex-col">
           <header className="site-header sticky top-0 z-50">
             <div className="app-container grid grid-cols-1 items-center gap-3 py-3 md:grid-cols-[auto_1fr_auto] lg:py-4">
               <Link
@@ -88,37 +88,31 @@ export default function RootLayout({
             </div>
           </header>
           <PageTransition>{children}</PageTransition>
-          <footer className="border-t border-line/50 bg-white/30 backdrop-blur">
-            <div className="app-container flex flex-col gap-3 py-8 text-sm text-ink/55 md:flex-row md:items-center md:justify-between">
-              <div className="inline-flex items-center gap-2">
-                <span className="brand-mark flex h-7 w-7 items-center justify-center rounded-full">
-                  <Image
-                    alt="SeekSmart"
-                    className="brand-logo-image"
-                    height={28}
-                    src={brandLogo}
-                    width={28}
-                  />
-                </span>
-                Smarter AI Choices for practical teams.
+          <footer className="site-footer">
+            <div className="app-container flex flex-col gap-4 py-7 text-sm text-ink/58 md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="font-semibold text-ink">SeekSmart</div>
+                <p className="mt-1 text-xs text-ink/50">
+                  Smarter AI choices for practical teams.
+                </p>
               </div>
-              <div className="flex flex-wrap gap-4">
-                <Link className="hover:text-accent" href="/tools">
+              <div className="flex flex-wrap gap-x-5 gap-y-2">
+                <Link className="footer-link" href="/tools">
                   Tools
                 </Link>
-                <Link className="hover:text-accent" href="/methodology">
+                <Link className="footer-link" href="/methodology">
                   Methodology
                 </Link>
-                <Link className="hover:text-accent" href="/submit">
+                <Link className="footer-link" href="/submit">
                   Submit tool
                 </Link>
-                <Link className="hover:text-accent" href="/feedback">
+                <Link className="footer-link" href="/feedback">
                   Feedback
                 </Link>
-                <Link className="hover:text-accent" href="/privacy">
+                <Link className="footer-link" href="/privacy">
                   Privacy
                 </Link>
-                <Link className="hover:text-accent" href="/terms">
+                <Link className="footer-link" href="/terms">
                   Terms
                 </Link>
               </div>
