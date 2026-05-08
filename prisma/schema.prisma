@@ -29,6 +29,11 @@ enum SubmissionStatus {
   SPAM
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
 enum EffortLevel {
   LOW
   MEDIUM
@@ -279,6 +284,87 @@ model Submission {
 
   @@index([status])
   @@map("submissions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  accounts  Account[]
+  sessions  Session[]
+  auditRuns AuditRun[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+  @@map("verification_tokens")
+}
+
+model AuditRun {
+  id                 String   @id @default(cuid())
+  userId             String   @map("user_id")
+  title              String
+  ruleVersion        String   @map("rule_version")
+  inputHash          String   @map("input_hash")
+  input              Json
+  result             Json
+  topOpportunitySlug String?  @map("top_opportunity_slug")
+  topOpportunityName String?  @map("top_opportunity_name")
+  readinessLevel     String?  @map("readiness_level")
+  readinessScore     Int?     @map("readiness_score")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, ruleVersion, inputHash])
+  @@index([userId, createdAt])
+  @@map("audit_runs")
 }
 
 model AdminUser {

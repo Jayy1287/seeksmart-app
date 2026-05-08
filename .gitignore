@@ -5,6 +5,7 @@ dist
 .vercel
 .env
 .env*.local
+client_secret_*.json
 *.tsbuildinfo
 coverage
 prisma/dev.db
