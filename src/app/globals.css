@@ -475,6 +475,62 @@ textarea {
     border-color: rgb(var(--color-accent));
     color: rgb(var(--color-ink));
   }
+
+  .recent-marquee {
+    position: relative;
+    min-width: 0;
+    flex: 1 1 18rem;
+    overflow: hidden;
+    border-radius: 999px;
+  }
+
+  .recent-marquee-track {
+    display: flex;
+    width: max-content;
+    gap: 0.75rem;
+    animation: recent-marquee 28s linear infinite;
+    will-change: transform;
+  }
+
+  .recent-marquee:hover .recent-marquee-track,
+  .recent-marquee:focus-within .recent-marquee-track {
+    animation-play-state: paused;
+  }
+
+  .recent-marquee-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid rgb(var(--color-line) / 0.6);
+    border-radius: 999px;
+    background: rgb(255 255 250 / 0.52);
+    padding: 0.38rem 0.75rem 0.38rem 0.38rem;
+    color: rgb(var(--color-ink) / 0.68);
+    font-size: 0.875rem;
+    font-weight: 650;
+    white-space: nowrap;
+    backdrop-filter: blur(12px);
+    transition:
+      border-color 160ms ease,
+      color 160ms ease,
+      background-color 160ms ease;
+  }
+
+  .recent-marquee-item:hover {
+    border-color: rgb(var(--color-accent));
+    background: rgb(255 255 250 / 0.78);
+    color: rgb(var(--color-accent));
+  }
+}
+
+@keyframes recent-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -485,5 +541,17 @@ textarea {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  .recent-marquee {
+    overflow: visible;
+    border-radius: 0;
+  }
+
+  .recent-marquee-track {
+    flex-wrap: wrap;
+    width: auto;
+    animation: none;
+    will-change: auto;
   }
 }

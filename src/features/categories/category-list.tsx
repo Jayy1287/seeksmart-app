@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { MotionLink } from "@/components/motion/motion-link";
 import type { PublicCategory, PublicCategorySummary } from "@/shared/domain";
 
 type CategoryListProps = {
@@ -9,7 +9,7 @@ export function CategoryList({ categories }: CategoryListProps) {
   return (
     <div className="grid grid-cols-1 gap-x-8 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
       {categories.map((category) => (
-        <Link
+        <MotionLink
           className="group flex min-h-16 flex-col justify-center border-t border-line/70 py-4 text-sm font-medium transition hover:border-accent hover:text-accent"
           href={`/categories/${category.slug}`}
           key={category.id}
@@ -20,7 +20,7 @@ export function CategoryList({ categories }: CategoryListProps) {
               {category.toolCount} tools
             </span>
           ) : null}
-        </Link>
+        </MotionLink>
       ))}
     </div>
   );

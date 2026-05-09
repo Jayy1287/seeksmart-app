@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import type { Route } from "next";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { resourceLinks } from "@/lib/platform-content";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "AI Resources",
@@ -24,7 +25,7 @@ export default function ResourcesPage() {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6">
+        <Reveal className="surface-strong rounded-2xl p-6">
           <p className="eyebrow">Resources</p>
           <h1 className="mt-3 text-4xl font-semibold">
             Practical AI decision resources
@@ -33,14 +34,14 @@ export default function ResourcesPage() {
             Start with checklists, playbooks, use cases, and tool guidance that
             keep the business problem ahead of the software choice.
           </p>
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-4 md:grid-cols-3">
+        <Reveal className="mt-6 grid gap-4 md:grid-cols-3">
           {resourceLinks.map((resource) => {
             const Icon = resource.icon;
 
             return (
-              <Link
+              <MotionLink
                 className="surface-panel group flex h-full flex-col rounded-xl p-5 transition hover:-translate-y-1 hover:border-accent"
                 href={resource.href as Route}
                 key={resource.title}
@@ -56,10 +57,10 @@ export default function ResourcesPage() {
                   Open resource
                   <ArrowRight aria-hidden="true" size={14} />
                 </span>
-              </Link>
+              </MotionLink>
             );
           })}
-        </section>
+        </Reveal>
       </div>
     </main>
   );

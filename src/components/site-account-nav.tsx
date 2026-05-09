@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { LogOut, UserRound } from "lucide-react";
 import { auth, signOut } from "@/auth";
+import { MotionLink } from "@/components/motion/motion-link";
 
 export async function SiteAccountNav() {
   const session = await auth();
@@ -8,15 +8,15 @@ export async function SiteAccountNav() {
   if (!session?.user) {
     return (
       <div className="flex flex-wrap items-center gap-2 md:justify-end">
-        <Link
+        <MotionLink
           className="primary-button hidden min-h-10 px-5 md:inline-flex"
           href="/login?callbackUrl=/audit/start"
         >
           Start audit
-        </Link>
-        <Link className="secondary-button min-h-10 px-4" href="/login">
+        </MotionLink>
+        <MotionLink className="secondary-button min-h-10 px-4" href="/login">
           Sign in
-        </Link>
+        </MotionLink>
       </div>
     );
   }
@@ -31,16 +31,16 @@ export async function SiteAccountNav() {
 
   return (
     <div className="flex flex-wrap items-center gap-2 md:justify-end">
-      <Link
+      <MotionLink
         className="primary-button hidden min-h-10 px-5 md:inline-flex"
         href="/audit/start"
       >
         Start audit
-      </Link>
-      <Link className="secondary-button min-h-10 px-4" href="/dashboard">
+      </MotionLink>
+      <MotionLink className="secondary-button min-h-10 px-4" href="/dashboard">
         <UserRound aria-hidden="true" size={16} />
         {session.user.name?.split(" ")[0] ?? "Dashboard"}
-      </Link>
+      </MotionLink>
       <form action={signOutAction}>
         <button className="secondary-button min-h-10 px-4" type="submit">
           <LogOut aria-hidden="true" size={16} />

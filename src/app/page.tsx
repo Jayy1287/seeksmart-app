@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Route } from "next";
 import {
   ArrowRight,
@@ -27,6 +26,12 @@ import {
   listTrendingTools
 } from "@/server/tools/queries";
 import { ToolLogo } from "@/features/tools/tool-logo";
+import { RecentToolsMarquee } from "@/features/home/recent-tools-marquee";
+import { AnimatedBar } from "@/components/motion/animated-bar";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
 export const dynamic = "force-dynamic";
 
@@ -63,59 +68,69 @@ export default async function Home() {
     <main>
       <section className="relative overflow-hidden py-14 md:py-20">
         <div className="app-container grid gap-12 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
-          <div>
-            <p className="eyebrow">
-              <ShieldCheck aria-hidden="true" size={15} />
-              Smarter AI Choices
-            </p>
-            <h1 className="mt-7 max-w-4xl text-5xl font-semibold leading-[0.98] text-ink md:text-7xl">
-              Decide where AI belongs before you buy another tool.
-            </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-ink/68 md:text-xl md:leading-9">
-              SeekSmart turns business goals into ranked AI opportunities,
-              workflow playbooks, and tool shortlists with transparent
-              reasoning. No chatbot dependency. No generic directory dump.
-            </p>
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Link className="primary-button min-h-12" href="/audit/start">
-                Start AI audit
-                <ArrowRight aria-hidden="true" size={18} />
-              </Link>
-              <Link className="secondary-button min-h-12" href="/opportunities">
-                Explore opportunities
-              </Link>
-            </div>
-            <form
-              action="/tools"
-              className="mt-9 grid max-w-2xl gap-3 rounded-full border border-line/60 bg-white/55 p-2 shadow-[0_18px_54px_rgb(13_48_92/0.08)] backdrop-blur sm:grid-cols-[1fr_auto]"
-            >
-              <label className="relative w-full">
-                <span className="sr-only">Search AI tools</span>
-                <Search
-                  aria-hidden="true"
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/34"
-                  size={18}
-                />
-                <input
-                  className="min-h-12 w-full min-w-0 rounded-full border border-transparent bg-transparent pl-11 pr-4 text-base outline-none transition focus:border-accent"
-                  name="q"
-                  placeholder="Search AI tools"
-                  type="search"
-                />
-              </label>
-              <button className="search-button min-h-12" type="submit">
-                Search
-              </button>
-            </form>
-          </div>
+          <Stagger>
+            <StaggerItem>
+              <p className="eyebrow">
+                <ShieldCheck aria-hidden="true" size={15} />
+                Smarter AI Choices
+              </p>
+            </StaggerItem>
+            <StaggerItem>
+              <h1 className="mt-7 max-w-4xl text-5xl font-semibold leading-[0.98] text-ink md:text-7xl">
+                Decide where AI belongs before you buy another tool.
+              </h1>
+            </StaggerItem>
+            <StaggerItem>
+              <p className="mt-7 max-w-2xl text-lg leading-8 text-ink/68 md:text-xl md:leading-9">
+                SeekSmart turns business goals into ranked AI opportunities,
+                workflow playbooks, and tool shortlists with transparent
+                reasoning. No chatbot dependency. No generic directory dump.
+              </p>
+            </StaggerItem>
+            <StaggerItem>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <MotionLink className="primary-button min-h-12" href="/audit/start">
+                  Start AI audit
+                  <ArrowRight aria-hidden="true" size={18} />
+                </MotionLink>
+                <MotionLink className="secondary-button min-h-12" href="/opportunities">
+                  Explore opportunities
+                </MotionLink>
+              </div>
+            </StaggerItem>
+            <StaggerItem>
+              <form
+                action="/tools"
+                className="mt-9 grid max-w-2xl gap-3 rounded-full border border-line/60 bg-white/55 p-2 shadow-[0_18px_54px_rgb(13_48_92/0.08)] backdrop-blur sm:grid-cols-[1fr_auto]"
+              >
+                <label className="relative w-full">
+                  <span className="sr-only">Search AI tools</span>
+                  <Search
+                    aria-hidden="true"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/34"
+                    size={18}
+                  />
+                  <input
+                    className="min-h-12 w-full min-w-0 rounded-full border border-transparent bg-transparent pl-11 pr-4 text-base outline-none transition focus:border-accent"
+                    name="q"
+                    placeholder="Search AI tools"
+                    type="search"
+                  />
+                </label>
+                <button className="search-button min-h-12" type="submit">
+                  Search
+                </button>
+              </form>
+            </StaggerItem>
+          </Stagger>
 
-          <div className="relative self-center">
+          <Reveal className="relative self-center" delay={0.16}>
             <HomepageLottieVisual />
-          </div>
+          </Reveal>
         </div>
       </section>
 
-      <section className="app-container pb-12">
+      <Reveal className="app-container pb-12">
         <div className="grid gap-8 border-y border-line/50 py-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-center">
           <div>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -152,9 +167,9 @@ export default async function Home() {
             <Stat label="In-app model calls" value="0" />
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="section-band">
+      <Reveal className="section-band">
         <div className="app-container grid gap-8 py-12 lg:grid-cols-[0.72fr_1.28fr]">
           <div>
             <p className="eyebrow">
@@ -169,14 +184,14 @@ export default async function Home() {
               keeps the catalog useful without letting it become the whole
               experience.
             </p>
-            <Link className="secondary-button mt-6" href="/use-cases">
+            <MotionLink className="secondary-button mt-6" href="/use-cases">
               Browse use cases
               <ArrowRight aria-hidden="true" size={16} />
-            </Link>
+            </MotionLink>
           </div>
           <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
             {businessGoals.map((goal) => (
-              <Link
+              <MotionLink
                 className="group border-t border-line/70 pt-5 transition hover:border-accent"
                 href={goal.href as Route}
                 key={goal.title}
@@ -190,13 +205,13 @@ export default async function Home() {
                   Explore path
                   <ArrowRight aria-hidden="true" size={14} />
                 </span>
-              </Link>
+              </MotionLink>
             ))}
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="app-container py-12">
+      <Reveal className="app-container py-12">
         <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
           <div className="py-2">
             <p className="eyebrow">
@@ -239,13 +254,13 @@ export default async function Home() {
                   Starter maps for practical teams
                 </h2>
               </div>
-              <Link className="secondary-button" href="/industries">
+              <MotionLink className="secondary-button" href="/industries">
                 View all
-              </Link>
+              </MotionLink>
             </div>
             <div className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
               {industries.slice(0, 6).map((industry) => (
-                <Link
+                <MotionLink
                   className="group border-t border-line/70 pt-4 transition hover:border-accent"
                   href={`/industries/${industry.slug}`}
                   key={industry.slug}
@@ -256,14 +271,14 @@ export default async function Home() {
                   <p className="mt-2 line-clamp-3 text-sm leading-6 text-ink/60">
                     {industry.description}
                   </p>
-                </Link>
+                </MotionLink>
               ))}
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="section-band">
+      <Reveal className="section-band">
         <div className="app-container grid gap-8 py-12 lg:grid-cols-[1.05fr_0.95fr]">
           <div>
             <div className="mb-5 flex items-end justify-between gap-4">
@@ -275,14 +290,14 @@ export default async function Home() {
                   Curated tools still matter
                 </h2>
               </div>
-              <Link className="secondary-button" href="/tools">
+              <MotionLink className="secondary-button" href="/tools">
                 Browse tools
-              </Link>
+              </MotionLink>
             </div>
             {trendingTools.length > 0 ? (
               <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-1">
                 {trendingTools.map((tool) => (
-                  <Link
+                  <MotionLink
                     className="group grid gap-4 border-t border-line/70 pt-4 transition hover:border-accent md:grid-cols-[1fr_auto]"
                     href={`/tools/${tool.slug}`}
                     key={tool.id}
@@ -304,20 +319,20 @@ export default async function Home() {
                           Signal
                         </span>
                         <span className="text-lg font-semibold text-ink">
-                          {tool.popularityScore}
+                          <AnimatedNumber value={tool.popularityScore} />
                         </span>
                       </div>
                       <div
                         aria-hidden="true"
                         className="mt-2 h-1.5 overflow-hidden rounded-full bg-white"
                       >
-                        <div
+                        <AnimatedBar
                           className="h-full rounded-full bg-signal"
-                          style={{ width: `${tool.popularityScore}%` }}
+                          value={tool.popularityScore}
                         />
                       </div>
                     </div>
-                  </Link>
+                  </MotionLink>
                 ))}
               </div>
             ) : (
@@ -335,16 +350,16 @@ export default async function Home() {
                   Operational next steps
                 </h2>
               </div>
-              <Link className="secondary-button" href="/playbooks">
+              <MotionLink className="secondary-button" href="/playbooks">
                 View all
-              </Link>
+              </MotionLink>
             </div>
             <div className="grid gap-3">
               {playbooks.map((playbook) => {
                 const Icon = playbook.icon;
 
                 return (
-                  <Link
+                  <MotionLink
                     className="group border-t border-line/70 py-4 transition hover:border-accent"
                     href={`/playbooks/${playbook.slug}`}
                     key={playbook.slug}
@@ -364,15 +379,15 @@ export default async function Home() {
                         </p>
                       </div>
                     </div>
-                  </Link>
+                  </MotionLink>
                 );
               })}
             </div>
           </div>
         </div>
-      </section>
+      </Reveal>
 
-      <section className="app-container py-12">
+      <Reveal className="app-container py-12">
         <div className="grid gap-8 border-y border-line/50 py-10 md:grid-cols-[0.85fr_1.15fr] md:items-center">
           <div>
             <p className="eyebrow">
@@ -393,7 +408,7 @@ export default async function Home() {
               const Icon = signal.icon;
 
               return (
-                <Link
+                <MotionLink
                   className="group border-t border-line/70 pt-4 transition hover:border-accent"
                   href="/methodology"
                   key={signal.title}
@@ -405,31 +420,22 @@ export default async function Home() {
                   <p className="mt-2 text-sm leading-6 text-ink/60">
                     {signal.description}
                   </p>
-                </Link>
+                </MotionLink>
               );
             })}
           </div>
         </div>
-      </section>
+      </Reveal>
 
       {recentTools.length > 0 ? (
-        <section className="app-container pb-12">
+        <Reveal className="app-container pb-12">
           <div className="flex flex-wrap items-center gap-3 border-t border-line pt-6 text-sm">
             <span className="font-bold text-accent">
               Recently added intelligence
             </span>
-            {recentTools.map((tool) => (
-              <Link
-                className="inline-flex items-center gap-2 rounded-full border border-line/60 bg-white/40 py-1.5 pl-1.5 pr-3 font-medium text-ink/62 backdrop-blur transition hover:border-accent hover:text-accent"
-                href={`/tools/${tool.slug}`}
-                key={tool.id}
-              >
-                <ToolLogo logoUrl={tool.logoUrl} name={tool.name} size="sm" />
-                {tool.name}
-              </Link>
-            ))}
+            <RecentToolsMarquee tools={recentTools} />
           </div>
-        </section>
+        </Reveal>
       ) : null}
     </main>
   );
@@ -438,7 +444,9 @@ export default async function Home() {
 function Stat({ label, value }: { label: number | string; value: number | string }) {
   return (
     <div className="metric-tile rounded-2xl px-5 py-4">
-      <div className="text-2xl font-semibold">{value}</div>
+      <div className="text-2xl font-semibold">
+        {typeof value === "number" ? <AnimatedNumber value={value} /> : value}
+      </div>
       <div className="mt-1 text-xs font-bold uppercase text-ink/48">{label}</div>
     </div>
   );

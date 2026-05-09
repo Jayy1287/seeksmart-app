@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { playbooks } from "@/lib/platform-content";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "AI Playbooks",
@@ -23,7 +25,7 @@ export default function PlaybooksPage() {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6">
+        <Reveal className="surface-strong rounded-2xl p-6">
           <p className="eyebrow">Playbooks</p>
           <div className="mt-3 grid gap-5 md:grid-cols-[1fr_260px] md:items-end">
             <div>
@@ -36,18 +38,20 @@ export default function PlaybooksPage() {
               </p>
             </div>
             <div className="metric-tile rounded-xl p-4">
-              <div className="text-2xl font-semibold">{playbooks.length}</div>
+              <div className="text-2xl font-semibold">
+                <AnimatedNumber value={playbooks.length} />
+              </div>
               <p className="mt-1 text-sm text-ink/55">Starter playbooks</p>
             </div>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-4 lg:grid-cols-3">
+        <Reveal className="mt-6 grid gap-4 lg:grid-cols-3">
           {playbooks.map((playbook) => {
             const Icon = playbook.icon;
 
             return (
-              <Link
+              <MotionLink
                 className="surface-panel group flex h-full flex-col rounded-xl p-5 transition hover:-translate-y-1 hover:border-accent"
                 href={`/playbooks/${playbook.slug}`}
                 key={playbook.slug}
@@ -81,10 +85,10 @@ export default function PlaybooksPage() {
                   Open playbook
                   <ArrowRight aria-hidden="true" size={14} />
                 </span>
-              </Link>
+              </MotionLink>
             );
           })}
-        </section>
+        </Reveal>
       </div>
     </main>
   );

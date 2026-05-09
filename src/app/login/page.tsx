@@ -4,6 +4,8 @@ import { UserRole } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { LogIn, ShieldCheck } from "lucide-react";
 import { auth, signIn, signOut } from "@/auth";
+import { MotionButton } from "@/components/motion/motion-button";
+import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "Sign In",
@@ -68,7 +70,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <main className="page-shell">
       <div className="app-container grid max-w-5xl gap-6 lg:grid-cols-[1fr_360px] lg:items-start">
-        <section className="surface-strong rounded-2xl p-6 md:p-8">
+        <Reveal className="surface-strong rounded-2xl p-6 md:p-8">
           <p className="eyebrow">
             <LogIn aria-hidden="true" size={14} />
             Sign in
@@ -85,21 +87,21 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </p>
           {isSignedInWithoutAdminAccess ? (
             <form action={signOutCurrentUser} className="mt-7">
-              <button className="secondary-button min-h-12 px-6" type="submit">
+              <MotionButton className="secondary-button min-h-12 px-6" type="submit">
                 Sign out current Google account
-              </button>
+              </MotionButton>
             </form>
           ) : (
             <form action={signInWithGoogle} className="mt-7">
-              <button className="google-auth-button w-full sm:w-auto" type="submit">
+              <MotionButton className="google-auth-button w-full sm:w-auto" type="submit">
                 <GoogleMark />
                 Continue with Google
-              </button>
+              </MotionButton>
             </form>
           )}
-        </section>
+        </Reveal>
 
-        <aside className="surface-panel rounded-2xl p-6">
+        <Reveal className="surface-panel rounded-2xl p-6" delay={0.06}>
           <div className="flex items-center gap-3">
             <ShieldCheck aria-hidden="true" className="text-accent" size={22} />
             <h2 className="font-semibold">What gets saved</h2>
@@ -113,7 +115,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               sign-in so your brief has a secure owner and history.
             </p>
           </div>
-        </aside>
+        </Reveal>
       </div>
     </main>
   );

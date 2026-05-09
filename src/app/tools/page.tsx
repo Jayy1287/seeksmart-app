@@ -7,6 +7,8 @@ import { listCategories } from "@/server/categories/queries";
 import { searchPublishedTools } from "@/server/tools/queries";
 import { ToolCard } from "@/features/tools/tool-card";
 import { ToolFilterBar } from "@/features/tools/tool-filter-bar";
+import { Reveal } from "@/components/motion/reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
 export const dynamic = "force-dynamic";
 
@@ -63,7 +65,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
   return (
     <main className="page-shell">
       <section className="app-container">
-      <div className="mb-8 flex flex-col gap-5 border-b border-line/50 pb-8 md:flex-row md:items-end md:justify-between">
+      <Reveal className="mb-8 flex flex-col gap-5 border-b border-line/50 pb-8 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="eyebrow">
             <SlidersHorizontal aria-hidden="true" size={14} />
@@ -81,14 +83,16 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
           <span className="font-semibold text-ink">{result.total}</span>{" "}
           matching tools
         </div>
-      </div>
+      </Reveal>
 
-      <ToolFilterBar
-        categories={categories}
-        initialCategory={params.category}
-        initialPricing={params.pricing}
-        initialQuery={params.q}
-      />
+      <Reveal delay={0.05}>
+        <ToolFilterBar
+          categories={categories}
+          initialCategory={params.category}
+          initialPricing={params.pricing}
+          initialQuery={params.q}
+        />
+      </Reveal>
 
       <div className="my-5 flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
         <div className="flex flex-wrap gap-2">
@@ -118,11 +122,13 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
           <div className="mb-4 text-sm text-ink/55">
             Showing {startResult}-{endResult} of {result.total}
           </div>
-          <div className="grid gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
+          <Stagger className="grid gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
             {result.tools.map((tool) => (
-              <ToolCard key={tool.id} tool={tool} />
+              <StaggerItem key={tool.id}>
+                <ToolCard tool={tool} />
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
           <Pagination
             currentPage={result.page}
             hasNextPage={result.hasNextPage}

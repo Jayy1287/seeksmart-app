@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { CategoryList } from "@/features/categories/category-list";
 import { listCategorySummaries } from "@/server/categories/queries";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { Reveal } from "@/components/motion/reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +30,7 @@ export default async function CategoriesPage() {
   return (
     <main className="page-shell">
       <div className="app-container">
-      <section className="border-b border-line/50 pb-8">
+      <Reveal className="border-b border-line/50 pb-8">
         <p className="eyebrow">Browse</p>
         <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
@@ -40,19 +42,23 @@ export default async function CategoriesPage() {
           </div>
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div className="metric-tile rounded-2xl px-4 py-3">
-              <div className="text-2xl font-semibold">{categories.length}</div>
+              <div className="text-2xl font-semibold">
+                <AnimatedNumber value={categories.length} />
+              </div>
               <div className="text-ink/55">Categories</div>
             </div>
             <div className="metric-tile rounded-2xl px-4 py-3">
-              <div className="text-2xl font-semibold">{toolCount}</div>
+              <div className="text-2xl font-semibold">
+                <AnimatedNumber value={toolCount} />
+              </div>
               <div className="text-ink/55">Published tools</div>
             </div>
           </div>
         </div>
-      </section>
-      <section className="mt-8">
+      </Reveal>
+      <Reveal className="mt-8">
         <CategoryList categories={categories} />
-      </section>
+      </Reveal>
       </div>
     </main>
   );

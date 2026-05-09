@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import { ArrowRight, Building2, CheckCircle2, ShieldAlert } from "lucide-react";
 import { playbooks } from "@/lib/platform-content";
 import { getIndustryBySlug } from "@/server/intelligence/queries";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -55,7 +58,7 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6">
+        <Reveal className="surface-strong rounded-2xl p-6">
           <Link className="text-sm font-medium text-accent" href="/industries">
             Industries
           </Link>
@@ -71,16 +74,16 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
             </div>
             <div className="metric-tile rounded-xl p-4">
               <div className="text-2xl font-semibold">
-                {industry.opportunities.length}
+                <AnimatedNumber value={industry.opportunities.length} />
               </div>
               <p className="mt-1 text-sm text-ink/55">
                 Priority opportunities
               </p>
             </div>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <Reveal className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="surface-panel rounded-xl p-5">
             <h2 className="text-xl font-semibold">Where to start</h2>
             <p className="mt-3 leading-7 text-ink/65">
@@ -147,9 +150,9 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
               </div>
             </div>
           </aside>
-        </section>
+        </Reveal>
 
-        <section className="surface-strong mt-8 rounded-2xl p-6">
+        <Reveal className="surface-strong mt-8 rounded-2xl p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-semibold">
@@ -160,12 +163,12 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
                 not a model call, to recommend where to start.
               </p>
             </div>
-            <Link className="primary-button" href="/audit">
+            <MotionLink className="primary-button" href="/audit">
               Open audit preview
               <ArrowRight aria-hidden="true" size={16} />
-            </Link>
+            </MotionLink>
           </div>
-        </section>
+        </Reveal>
       </div>
     </main>
   );

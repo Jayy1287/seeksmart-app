@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, CheckCircle2, Gauge, ShieldAlert, Target } from "lucide-react";
 import { getOpportunityBySlug } from "@/server/intelligence/queries";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -54,7 +56,7 @@ export default async function OpportunityPage({
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6">
+        <Reveal className="surface-strong rounded-2xl p-6">
           <Link
             className="text-sm font-medium text-accent"
             href="/opportunities"
@@ -86,9 +88,9 @@ export default async function OpportunityPage({
               />
             </div>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[1fr_0.9fr]">
+        <Reveal className="mt-6 grid gap-6 lg:grid-cols-[1fr_0.9fr]">
           <div className="surface-panel rounded-xl p-5">
             <h2 className="text-xl font-semibold">Decision brief</h2>
             <div className="mt-5 grid gap-4">
@@ -120,9 +122,9 @@ export default async function OpportunityPage({
               ))}
             </div>
           </aside>
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-2">
+        <Reveal className="mt-6 grid gap-6 lg:grid-cols-2">
           <div className="surface-panel rounded-xl p-5">
             <h2 className="text-xl font-semibold">Mapped use cases</h2>
             <div className="mt-4 grid gap-3">
@@ -167,9 +169,9 @@ export default async function OpportunityPage({
               ))}
             </div>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="surface-strong mt-8 rounded-2xl p-6">
+        <Reveal className="surface-strong mt-8 rounded-2xl p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-semibold">
@@ -180,12 +182,12 @@ export default async function OpportunityPage({
                 tools by fit.
               </p>
             </div>
-            <Link className="primary-button" href="/use-cases">
+            <MotionLink className="primary-button" href="/use-cases">
               Browse use cases
               <ArrowRight aria-hidden="true" size={16} />
-            </Link>
+            </MotionLink>
           </div>
-        </section>
+        </Reveal>
       </div>
     </main>
   );

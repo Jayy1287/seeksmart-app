@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import type { Route } from "next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import type { PricingType, PublicCategory } from "@/shared/domain";
 
 type ToolFilterBarProps = {
@@ -125,7 +126,18 @@ export function ToolFilterBar({
           aria-live="polite"
           className="absolute -bottom-6 right-1 text-xs text-ink/45"
         >
-          {isPending ? "Updating..." : ""}
+          <AnimatePresence initial={false}>
+            {isPending ? (
+              <motion.span
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -3 }}
+                initial={{ opacity: 0, y: 3 }}
+                transition={{ duration: 0.16 }}
+              >
+                Updating...
+              </motion.span>
+            ) : null}
+          </AnimatePresence>
         </span>
       </label>
     </div>

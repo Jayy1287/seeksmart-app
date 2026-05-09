@@ -19,6 +19,9 @@ import {
 } from "@/server/use-cases/queries";
 import { TrackedExternalLink } from "@/features/analytics/tracked-link";
 import { ToolLogo } from "@/features/tools/tool-logo";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -76,7 +79,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6">
+        <Reveal className="surface-strong rounded-2xl p-6">
           <Link className="text-sm font-medium text-accent" href="/use-cases">
             Use cases
           </Link>
@@ -115,7 +118,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
               <div className="flex items-center gap-2">
                 <Layers3 aria-hidden="true" className="text-accent" size={18} />
                 <span className="text-3xl font-semibold">
-                  {useCase.toolCount}
+                  <AnimatedNumber value={useCase.toolCount} />
                 </span>
               </div>
               <p className="mt-1 text-sm text-ink/55">Mapped tools</p>
@@ -125,9 +128,9 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
               </p>
             </div>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-4 md:grid-cols-3">
+        <Reveal className="mt-6 grid gap-4 md:grid-cols-3">
           <AdvisoryTile
             icon={Target}
             title="When to use this"
@@ -151,9 +154,9 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
             title="Risk check"
             body={buildRiskCopy(useCase.riskLevel)}
           />
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[1.06fr_0.94fr]">
+        <Reveal className="mt-6 grid gap-6 lg:grid-cols-[1.06fr_0.94fr]">
           <div className="surface-strong rounded-xl p-6">
             <div className="flex items-center gap-2">
               <ClipboardCheck
@@ -194,10 +197,10 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
               ))}
             </div>
           </div>
-        </section>
+        </Reveal>
 
         {useCase.opportunities.length > 0 ? (
-          <section className="surface-panel mt-6 rounded-xl p-6">
+          <Reveal className="surface-panel mt-6 rounded-xl p-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
                 <h2 className="text-xl font-semibold">Related opportunities</h2>
@@ -205,10 +208,10 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
                   These are the business problems this use case can support.
                 </p>
               </div>
-              <Link className="secondary-button" href="/opportunities">
+              <MotionLink className="secondary-button" href="/opportunities">
                 View opportunities
                 <ArrowRight aria-hidden="true" size={16} />
-              </Link>
+              </MotionLink>
             </div>
             <div className="mt-4 grid gap-3 md:grid-cols-3">
               {useCase.opportunities.slice(0, 3).map((opportunity) => (
@@ -226,10 +229,10 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
                 </Link>
               ))}
             </div>
-          </section>
+          </Reveal>
         ) : null}
 
-        <section className="mt-6">
+        <Reveal className="mt-6">
           {tools.length > 0 ? (
             <>
               <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -262,7 +265,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
               </p>
             </div>
           )}
-        </section>
+        </Reveal>
       </div>
     </main>
   );
@@ -282,7 +285,7 @@ function ToolFitCard({ tool }: { tool: PublicUseCaseToolFit }) {
           </div>
         </div>
         <span className="rounded-lg bg-ink px-2.5 py-1.5 text-sm font-semibold text-paper">
-          {tool.fitScore}
+          <AnimatedNumber value={tool.fitScore} />
         </span>
       </div>
       <p className="mt-3 text-sm leading-6 text-ink/62">

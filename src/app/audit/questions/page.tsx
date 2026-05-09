@@ -34,6 +34,8 @@ import {
   workflowVolumeLabel
 } from "@/server/recommendations/input";
 import { getAuditOptions } from "@/server/recommendations/queries";
+import { MotionLabel } from "@/components/motion/motion-label";
+import { Reveal } from "@/components/motion/reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +61,7 @@ export default async function AuditQuestionsPage() {
     <main className="page-shell">
       <AuditAnalyticsEvent event="audit_questions_viewed" />
       <div className="app-container">
-        <section className="border-b border-line/50 pb-8">
+        <Reveal className="border-b border-line/50 pb-8">
           <p className="eyebrow">Audit questions</p>
           <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">
             Build a practical AI pilot brief.
@@ -69,11 +71,15 @@ export default async function AuditQuestionsPage() {
             choose a first workflow, and generate guardrails. The audit remains
             rules-based and will be saved to your account after submission.
           </p>
-        </section>
+        </Reveal>
 
+        <Reveal
+          className="mt-8"
+          delay={0.05}
+        >
         <form
           action="/audit/results"
-          className="mt-8 grid gap-7 rounded-[1.75rem] border border-line/60 bg-white/45 p-5 shadow-[0_18px_60px_rgb(13_48_92/0.07)] backdrop-blur md:p-7"
+          className="grid gap-7 rounded-[1.75rem] border border-line/60 bg-white/45 p-5 shadow-[0_18px_60px_rgb(13_48_92/0.07)] backdrop-blur md:p-7"
           method="get"
         >
           <FormSection
@@ -333,12 +339,12 @@ export default async function AuditQuestionsPage() {
 
           <div className="flex flex-col gap-3 border-t border-line pt-5 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm leading-6 text-ink/55">
-              Signed-in results save automatically. Anonymous results stay in
-              this browser session.
+              Signed-in results save automatically to your dashboard.
             </p>
             <AuditSubmitButton />
           </div>
         </form>
+        </Reveal>
       </div>
     </main>
   );
@@ -356,14 +362,14 @@ function FormSection({
   title: string;
 }) {
   return (
-    <section className="grid gap-4 border-t border-line/60 pt-6 first:border-t-0 first:pt-0 lg:grid-cols-[240px_1fr]">
+    <Reveal className="grid gap-4 border-t border-line/60 pt-6 first:border-t-0 first:pt-0 lg:grid-cols-[240px_1fr]">
       <div>
         <p className="text-xs font-extrabold uppercase text-accent">{kicker}</p>
         <h2 className="mt-2 text-lg font-semibold">{title}</h2>
         <p className="mt-2 text-sm leading-6 text-ink/55">{description}</p>
       </div>
       <div className="grid gap-5">{children}</div>
-    </section>
+    </Reveal>
   );
 }
 
@@ -394,7 +400,7 @@ function CheckOption({
   value: string;
 }) {
   return (
-    <label className="flex min-h-14 items-center gap-3 rounded-lg border border-line bg-white/72 px-3 py-2 text-sm font-medium transition hover:border-accent">
+    <MotionLabel className="flex min-h-14 items-center gap-3 rounded-lg border border-line bg-white/72 px-3 py-2 text-sm font-medium transition hover:border-accent">
       <input
         className="h-4 w-4 accent-[rgb(var(--color-accent))]"
         defaultChecked={defaultChecked}
@@ -403,6 +409,6 @@ function CheckOption({
         value={value}
       />
       {label}
-    </label>
+    </MotionLabel>
   );
 }

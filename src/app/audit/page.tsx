@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import {
   ArrowRight,
   BarChart3,
@@ -9,6 +8,8 @@ import {
   ShieldCheck,
   Target
 } from "lucide-react";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "Rules-Based AI Audit",
@@ -53,7 +54,7 @@ export default function AuditPage() {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="border-b border-line/50 pb-10">
+        <Reveal className="border-b border-line/50 pb-10">
           <div className="grid gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-center">
             <div>
               <p className="eyebrow">
@@ -69,13 +70,13 @@ export default function AuditPage() {
                 history is saved automatically.
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <Link className="primary-button min-h-12" href="/audit/start">
+                <MotionLink className="primary-button min-h-12" href="/audit/start">
                   Start audit
                   <ArrowRight aria-hidden="true" size={18} />
-                </Link>
-                <Link className="secondary-button min-h-12" href="/methodology">
+                </MotionLink>
+                <MotionLink className="secondary-button min-h-12" href="/methodology">
                   How scoring works
-                </Link>
+                </MotionLink>
               </div>
             </div>
 
@@ -115,9 +116,9 @@ export default function AuditPage() {
               </div>
             </div>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="mt-10 grid gap-x-8 gap-y-6 md:grid-cols-2 lg:grid-cols-4">
+        <Reveal className="mt-10 grid gap-x-8 gap-y-6 md:grid-cols-2 lg:grid-cols-4">
           {outcomes.map((outcome) => {
             const Icon = outcome.icon;
 
@@ -131,9 +132,9 @@ export default function AuditPage() {
               </article>
             );
           })}
-        </section>
+        </Reveal>
 
-        <section className="section-band -mx-4 mt-10 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <Reveal className="section-band -mx-4 mt-10 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-semibold">
@@ -144,12 +145,12 @@ export default function AuditPage() {
                 functions, opportunities, use cases, and tool-fit notes.
               </p>
             </div>
-            <Link className="primary-button" href="/audit/start">
+            <MotionLink className="primary-button" href="/audit/start">
               Begin
               <ArrowRight aria-hidden="true" size={16} />
-            </Link>
+            </MotionLink>
           </div>
-        </section>
+        </Reveal>
       </div>
     </main>
   );

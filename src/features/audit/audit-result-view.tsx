@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
 import {
   ArrowRight,
   BarChart3,
@@ -11,6 +10,10 @@ import {
   Target
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { AnimatedBar } from "@/components/motion/animated-bar";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
 import { ToolLogo } from "@/features/tools/tool-logo";
 import {
   budgetRangeLabel,
@@ -50,7 +53,7 @@ export function AuditResultView({
     <main className="page-shell">
       {analytics}
       <div className="app-container">
-        <section className="border-b border-line/50 pb-10">
+        <Reveal className="border-b border-line/50 pb-10">
           <div className="grid gap-8 lg:grid-cols-[1fr_360px] lg:items-end">
             <div>
               <p className="eyebrow">
@@ -76,9 +79,9 @@ export function AuditResultView({
             </div>
           </div>
           {saveStatus ? <div className="mt-5">{saveStatus}</div> : null}
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-4 md:grid-cols-4">
+        <Reveal className="mt-6 grid gap-4 md:grid-cols-4">
           <ContextTile label="Industry" value={result.summary.industryName} />
           <ContextTile
             label="Function"
@@ -86,9 +89,9 @@ export function AuditResultView({
           />
           <ContextTile label="Team size" value={companySizeLabel(input.companySize)} />
           <ContextTile label="Readiness" value={`${result.readiness.level} (${result.readiness.score})`} />
-        </section>
+        </Reveal>
 
-        <section className="section-band -mx-4 mt-6 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <Reveal className="section-band -mx-4 mt-6 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
             <div>
               <p className="text-sm font-extrabold uppercase text-accent">
@@ -134,9 +137,9 @@ export function AuditResultView({
               items={result.pilotPlan.expansionCriteria}
             />
           </div>
-        </section>
+        </Reveal>
 
-        <section className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
+        <Reveal className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
           <div className="grid gap-5">
             {result.topOpportunities.map((opportunity, index) => (
               <OpportunityResult
@@ -163,7 +166,7 @@ export function AuditResultView({
                     Score
                   </p>
                   <p className="mt-1 text-2xl font-semibold">
-                    {result.readiness.score}
+                    <AnimatedNumber value={result.readiness.score} />
                   </p>
                 </div>
               </div>
@@ -255,11 +258,11 @@ export function AuditResultView({
               </div>
             </section>
 
-            <Link className="secondary-button min-h-12" href="/audit/questions">
+            <MotionLink className="secondary-button min-h-12" href="/audit/questions">
               Adjust answers
-            </Link>
+            </MotionLink>
           </aside>
-        </section>
+        </Reveal>
       </div>
     </main>
   );
@@ -295,7 +298,9 @@ function OpportunityResult({
         </div>
         <div className="metric-tile min-w-32 rounded-xl p-4 text-center">
           <p className="text-sm font-semibold text-accent">Fit score</p>
-          <p className="mt-1 text-4xl font-semibold">{opportunity.score}</p>
+          <p className="mt-1 text-4xl font-semibold">
+            <AnimatedNumber value={opportunity.score} />
+          </p>
           <p className="mt-1 text-xs font-medium text-ink/45">Directional</p>
         </div>
       </div>
@@ -333,7 +338,7 @@ function OpportunityResult({
           <h3 className="font-semibold">Use-case path</h3>
           <div className="mt-3 grid gap-2">
             {opportunity.useCases.map((useCase) => (
-              <Link
+              <MotionLink
                 className="rounded-lg border border-line bg-surface/72 p-3 transition hover:border-accent"
                 href={`/use-cases/${useCase.slug}`}
                 key={useCase.id}
@@ -346,7 +351,7 @@ function OpportunityResult({
                   {useCase.timeToValue ?? "Time to value depends on setup"} ·{" "}
                   {useCase.effortLevel} effort · {useCase.riskLevel} risk
                 </p>
-              </Link>
+              </MotionLink>
             ))}
           </div>
         </section>
@@ -367,7 +372,7 @@ function OpportunityResult({
         <h3 className="font-semibold">Tool shortlist</h3>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {opportunity.tools.map((tool) => (
-            <Link
+            <MotionLink
               className="rounded-xl border border-line bg-surface/72 p-4 transition hover:-translate-y-0.5 hover:border-accent"
               href={`/tools/${tool.slug}`}
               key={tool.id}
@@ -381,7 +386,7 @@ function OpportunityResult({
                   </div>
                 </div>
                 <span className="rounded-lg bg-ink px-2 py-1 text-xs font-semibold text-paper">
-                  {tool.fitScore}
+                  <AnimatedNumber value={tool.fitScore} />
                 </span>
               </div>
               <p className="mt-3 text-sm leading-6 text-ink/62">{tool.reason}</p>
@@ -389,7 +394,7 @@ function OpportunityResult({
                 {tool.pricingType}
                 {tool.hasFreePlan ? " · Free plan" : ""}
               </p>
-            </Link>
+            </MotionLink>
           ))}
         </div>
       </section>
@@ -492,9 +497,14 @@ function ScoreTile({
     <div className="metric-tile rounded-xl p-4">
       <div className="flex items-center justify-between gap-2">
         <Icon aria-hidden="true" className="text-accent" size={18} />
-        <span className="font-semibold">{value}</span>
+        <span className="font-semibold">
+          <AnimatedNumber value={value} />
+        </span>
       </div>
       <p className="mt-2 text-xs font-semibold uppercase text-ink/48">{label}</p>
+      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white">
+        <AnimatedBar className="h-full rounded-full bg-signal" value={value} />
+      </div>
     </div>
   );
 }

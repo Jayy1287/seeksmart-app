@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowRight, AlertTriangle, Building2, CheckCircle2 } from "lucide-react";
 import { listIndustrySummaries } from "@/server/intelligence/queries";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +29,7 @@ export default async function IndustriesPage() {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6">
+        <Reveal className="surface-strong rounded-2xl p-6">
           <p className="eyebrow">Industries</p>
           <div className="mt-3 grid gap-5 md:grid-cols-[1fr_260px] md:items-end">
             <div>
@@ -40,13 +42,15 @@ export default async function IndustriesPage() {
               </p>
             </div>
             <div className="metric-tile rounded-xl p-4">
-              <div className="text-2xl font-semibold">{industries.length}</div>
+              <div className="text-2xl font-semibold">
+                <AnimatedNumber value={industries.length} />
+              </div>
               <p className="mt-1 text-sm text-ink/55">Starter industries</p>
             </div>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-4 md:grid-cols-2">
+        <Reveal className="mt-6 grid gap-4 md:grid-cols-2">
           {industries.map((industry) => {
             return (
               <article
@@ -65,12 +69,12 @@ export default async function IndustriesPage() {
                       {industry.name}
                     </h2>
                   </div>
-                  <Link
+                  <MotionLink
                     className="secondary-button"
                     href={`/industries/${industry.slug}`}
                   >
                     View map
-                  </Link>
+                  </MotionLink>
                 </div>
                 <p className="mt-3 leading-7 text-ink/65">
                   {industry.description}
@@ -111,9 +115,9 @@ export default async function IndustriesPage() {
               </article>
             );
           })}
-        </section>
+        </Reveal>
 
-        <section className="surface-strong mt-8 rounded-2xl p-6">
+        <Reveal className="surface-strong mt-8 rounded-2xl p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-semibold">
@@ -124,12 +128,12 @@ export default async function IndustriesPage() {
                 to choose a practical first workflow.
               </p>
             </div>
-            <Link className="primary-button" href="/audit">
+            <MotionLink className="primary-button" href="/audit">
               Start AI audit
               <ArrowRight aria-hidden="true" size={16} />
-            </Link>
+            </MotionLink>
           </div>
-        </section>
+        </Reveal>
       </div>
     </main>
   );

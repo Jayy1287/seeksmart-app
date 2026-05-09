@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { BarChart3, Clock3, Sparkles, UserRound } from "lucide-react";
 import { auth } from "@/auth";
 import { listSavedAuditRuns } from "@/server/audit-runs/queries";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +32,7 @@ export default async function DashboardPage() {
   return (
     <main className="page-shell">
       <div className="app-container grid gap-6">
-        <section className="surface-strong rounded-2xl p-6">
+        <Reveal className="surface-strong rounded-2xl p-6">
           <p className="eyebrow">
             <UserRound aria-hidden="true" size={14} />
             Dashboard
@@ -45,17 +49,17 @@ export default async function DashboardPage() {
                 revisit the context, shortlist, and pilot plan later.
               </p>
             </div>
-            <Link className="primary-button min-h-12" href="/audit/start">
+            <MotionLink className="primary-button min-h-12" href="/audit/start">
               Start new audit
-            </Link>
+            </MotionLink>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="grid gap-4 md:grid-cols-3">
+        <Reveal className="grid gap-4 md:grid-cols-3">
           <DashboardMetric
             icon={BarChart3}
             label="Saved audits"
-            value={String(auditRuns.length)}
+            value={<AnimatedNumber value={auditRuns.length} />}
           />
           <DashboardMetric
             icon={Sparkles}
@@ -67,9 +71,9 @@ export default async function DashboardPage() {
             label="Signed in as"
             value={session.user.email ?? "Google account"}
           />
-        </section>
+        </Reveal>
 
-        <section className="surface-panel rounded-2xl p-5 md:p-6">
+        <Reveal className="surface-panel rounded-2xl p-5 md:p-6">
           <div className="flex flex-col gap-3 border-b border-line pb-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase text-accent">
@@ -124,7 +128,7 @@ export default async function DashboardPage() {
               </Link>
             </div>
           )}
-        </section>
+        </Reveal>
       </div>
     </main>
   );
@@ -137,7 +141,7 @@ function DashboardMetric({
 }: {
   icon: typeof BarChart3;
   label: string;
-  value: string;
+  value: ReactNode;
 }) {
   return (
     <div className="metric-tile rounded-xl p-4">

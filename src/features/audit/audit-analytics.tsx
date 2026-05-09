@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { MotionButton } from "@/components/motion/motion-button";
 
 type AuditAnalyticsEventName =
   | "audit_start_viewed"
@@ -36,13 +37,13 @@ export function AuditAnalyticsEvent({
 
 export function AuditSubmitButton() {
   return (
-    <button
+    <MotionButton
       className="primary-button min-h-12"
       onClick={() => trackAuditEvent("audit_questions_submitted")}
       type="submit"
     >
       Generate audit result
-    </button>
+    </MotionButton>
   );
 }
 

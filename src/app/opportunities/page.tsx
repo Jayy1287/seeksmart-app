@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowRight, BriefcaseBusiness, Gauge, ShieldAlert } from "lucide-react";
 import { listOpportunitySummaries } from "@/server/intelligence/queries";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +29,7 @@ export default async function OpportunitiesPage() {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6">
+        <Reveal className="surface-strong rounded-2xl p-6">
           <p className="eyebrow">
             <BriefcaseBusiness aria-hidden="true" size={14} />
             Opportunities
@@ -44,16 +46,16 @@ export default async function OpportunitiesPage() {
             </div>
             <div className="metric-tile rounded-xl p-4">
               <div className="text-2xl font-semibold">
-                {opportunities.length}
+                <AnimatedNumber value={opportunities.length} />
               </div>
               <p className="mt-1 text-sm text-ink/55">Mapped opportunities</p>
             </div>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Reveal className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {opportunities.map((opportunity) => (
-            <Link
+            <MotionLink
               className="surface-panel group flex h-full flex-col rounded-xl p-5 transition hover:-translate-y-1 hover:border-accent"
               href={`/opportunities/${opportunity.slug}`}
               key={opportunity.id}
@@ -83,9 +85,9 @@ export default async function OpportunitiesPage() {
                 View decision path
                 <ArrowRight aria-hidden="true" size={14} />
               </span>
-            </Link>
+            </MotionLink>
           ))}
-        </section>
+        </Reveal>
       </div>
     </main>
   );

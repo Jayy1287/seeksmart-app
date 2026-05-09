@@ -18,6 +18,9 @@ import { ToolCard } from "@/features/tools/tool-card";
 import { ToolLogo } from "@/features/tools/tool-logo";
 import { getPublishedToolBySlug } from "@/server/tools/queries";
 import type { PublicToolDetail } from "@/shared/domain";
+import { AnimatedBar } from "@/components/motion/animated-bar";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { Reveal } from "@/components/motion/reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -76,7 +79,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="surface-strong grid gap-8 rounded-2xl p-6 lg:grid-cols-[1fr_360px]">
+        <Reveal className="surface-strong grid gap-8 rounded-2xl p-6 lg:grid-cols-[1fr_360px]">
           <div>
             <div className="flex flex-wrap items-center gap-3">
               <Link className="text-sm font-medium text-accent" href="/tools">
@@ -150,12 +153,22 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               <ExternalLink aria-hidden="true" size={17} />
             </TrackedExternalLink>
           </aside>
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-4 md:grid-cols-4">
+        <Reveal className="mt-6 grid gap-4 md:grid-cols-4">
           <DecisionMetric
             label="Average fit"
-            value={averageFit ? `${averageFit}/100` : "Unmapped"}
+            score={averageFit ?? undefined}
+            value={
+              averageFit ? (
+                <>
+                  <AnimatedNumber value={averageFit} />
+                  /100
+                </>
+              ) : (
+                "Unmapped"
+              )
+            }
           />
           <DecisionMetric label="Pricing" value={formatPricing(tool.pricingType)} />
           <DecisionMetric
@@ -166,9 +179,9 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             label="Decision stage"
             value={tool.useCases.length > 0 ? "Shortlist" : "Research"}
           />
-        </section>
+        </Reveal>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[1fr_0.86fr]">
+        <Reveal className="mt-6 grid gap-6 lg:grid-cols-[1fr_0.86fr]">
           <div className="surface-panel rounded-xl p-6">
             <div className="flex items-center gap-2">
               <Layers3 aria-hidden="true" className="text-accent" size={20} />
@@ -186,10 +199,10 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               ))}
             </div>
           </div>
-        </section>
+        </Reveal>
 
         {tool.useCases.length > 0 ? (
-          <section className="surface-strong mt-6 rounded-xl p-6">
+          <Reveal className="surface-strong mt-6 rounded-xl p-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
                 <p className="text-sm font-semibold uppercase text-accent">
@@ -227,7 +240,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                       </p>
                     </div>
                     <span className="rounded-lg bg-ink px-2.5 py-1.5 text-xs font-semibold text-paper">
-                      {useCase.fitScore}
+                      <AnimatedNumber value={useCase.fitScore} />
                     </span>
                   </div>
                   <p className="mt-3 text-sm leading-6 text-ink/62">
@@ -284,10 +297,10 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                 </tbody>
               </table>
             </div>
-          </section>
+          </Reveal>
         ) : null}
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
+        <Reveal className="mt-6 grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
           <div className="surface-panel rounded-xl p-6">
             <div className="flex items-center gap-2">
               <ShieldAlert aria-hidden="true" className="text-signal" size={20} />
@@ -316,9 +329,9 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               ))}
             </div>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="surface-panel mt-6 rounded-xl p-6">
+        <Reveal className="surface-panel mt-6 rounded-xl p-6">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase text-accent">
@@ -356,7 +369,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               </p>
             )}
           </div>
-        </section>
+        </Reveal>
 
         <section className="mt-10">
           <div className="mb-4 flex items-end justify-between gap-4">
@@ -413,11 +426,24 @@ function SnapshotRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function DecisionMetric({ label, value }: { label: string; value: string }) {
+function DecisionMetric({
+  label,
+  score,
+  value
+}: {
+  label: string;
+  score?: number;
+  value: ReactNode;
+}) {
   return (
     <div className="metric-tile rounded-xl p-4">
       <p className="text-xs font-semibold uppercase text-ink/48">{label}</p>
       <p className="mt-2 font-semibold">{value}</p>
+      {typeof score === "number" ? (
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white">
+          <AnimatedBar className="h-full rounded-full bg-signal" value={score} />
+        </div>
+      ) : null}
     </div>
   );
 }

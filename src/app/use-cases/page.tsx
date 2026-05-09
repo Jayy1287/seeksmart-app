@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { UseCaseList } from "@/features/use-cases/use-case-list";
 import { listUseCaseSummaries } from "@/server/use-cases/queries";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { Reveal } from "@/components/motion/reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +39,7 @@ export default async function UseCasesPage() {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <section className="grid gap-8 border-b border-line/50 pb-10 lg:grid-cols-[minmax(0,1fr)_330px] lg:items-end">
+        <Reveal className="grid gap-8 border-b border-line/50 pb-10 lg:grid-cols-[minmax(0,1fr)_330px] lg:items-end">
           <div>
             <p className="eyebrow">
               <Target aria-hidden="true" size={14} />
@@ -55,13 +57,17 @@ export default async function UseCasesPage() {
           <div className="metric-tile rounded-[1.35rem] p-5">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <div className="text-3xl font-semibold">{useCases.length}</div>
+                <div className="text-3xl font-semibold">
+                  <AnimatedNumber value={useCases.length} />
+                </div>
                 <div className="mt-1 text-xs font-bold uppercase text-ink/48">
                   Use cases
                 </div>
               </div>
               <div>
-                <div className="text-3xl font-semibold">{totalMappedTools}</div>
+                <div className="text-3xl font-semibold">
+                  <AnimatedNumber value={totalMappedTools} />
+                </div>
                 <div className="mt-1 text-xs font-bold uppercase text-ink/48">
                   Tool mappings
                 </div>
@@ -72,9 +78,9 @@ export default async function UseCasesPage() {
               <ArrowRight aria-hidden="true" size={16} />
             </Link>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="section-band -mx-4 mt-8 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <Reveal className="section-band -mx-4 mt-8 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <div className="grid gap-6 md:grid-cols-3">
             <DecisionTile
               icon={BriefcaseBusiness}
@@ -92,9 +98,9 @@ export default async function UseCasesPage() {
               description="Compare products only after the use case is specific."
             />
           </div>
-        </section>
+        </Reveal>
 
-        <section className="mt-10">
+        <Reveal className="mt-10">
           <div className="mb-5 grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
             <div>
               <p className="text-sm font-extrabold uppercase text-accent">
@@ -115,7 +121,7 @@ export default async function UseCasesPage() {
           </div>
 
           <UseCaseList useCases={useCases} />
-        </section>
+        </Reveal>
       </div>
     </main>
   );

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   ArrowRight,
@@ -10,6 +9,8 @@ import {
 } from "lucide-react";
 import { auth } from "@/auth";
 import { AuditAnalyticsEvent } from "@/features/audit/audit-analytics";
+import { MotionLink } from "@/components/motion/motion-link";
+import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "Start AI Audit",
@@ -52,7 +53,7 @@ export default async function AuditStartPage() {
     <main className="page-shell">
       <AuditAnalyticsEvent event="audit_start_viewed" />
       <div className="app-container">
-        <section className="border-b border-line/50 pb-10">
+        <Reveal className="border-b border-line/50 pb-10">
           <p className="eyebrow">
             <ClipboardList aria-hidden="true" size={14} />
             Audit start
@@ -67,14 +68,14 @@ export default async function AuditStartPage() {
                 workflow to pilot before committing to a tool stack.
               </p>
             </div>
-            <Link className="primary-button min-h-12" href="/audit/questions">
+            <MotionLink className="primary-button min-h-12" href="/audit/questions">
               Continue to questions
               <ArrowRight aria-hidden="true" size={18} />
-            </Link>
+            </MotionLink>
           </div>
-        </section>
+        </Reveal>
 
-        <section className="mt-10 grid gap-x-8 gap-y-6 md:grid-cols-3">
+        <Reveal className="mt-10 grid gap-x-8 gap-y-6 md:grid-cols-3">
           {principles.map((principle) => {
             const Icon = principle.icon;
 
@@ -88,9 +89,9 @@ export default async function AuditStartPage() {
               </article>
             );
           })}
-        </section>
+        </Reveal>
 
-        <section className="section-band -mx-4 mt-10 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <Reveal className="section-band -mx-4 mt-10 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <h2 className="text-xl font-semibold">What you will need</h2>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
             {[
@@ -103,7 +104,7 @@ export default async function AuditStartPage() {
               </div>
             ))}
           </div>
-        </section>
+        </Reveal>
       </div>
     </main>
   );

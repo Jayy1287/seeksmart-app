@@ -1,6 +1,7 @@
 "use client";
 
 import type { AnchorHTMLAttributes, ComponentType, ReactNode } from "react";
+import type { UrlObject } from "node:url";
 import Link, { type LinkProps } from "next/link";
 import { motion, type MotionProps, useReducedMotion } from "motion/react";
 
@@ -17,7 +18,7 @@ type MotionLinkProps =
     | "target"
     | "title"
   > & {
-  href: LinkProps<unknown>["href"];
+  href: LinkProps<unknown>["href"] | string | UrlObject;
   prefetch?: LinkProps<unknown>["prefetch"];
   replace?: LinkProps<unknown>["replace"];
   scroll?: LinkProps<unknown>["scroll"];
@@ -31,6 +32,7 @@ const AnimatedLink = motion.create(Link) as ComponentType<
 export function MotionLink({
   children,
   className,
+  href,
   ...props
 }: MotionLinkProps) {
   const shouldReduceMotion = useReducedMotion();
@@ -38,6 +40,7 @@ export function MotionLink({
   return (
     <AnimatedLink
       className={className}
+      href={href as LinkProps<unknown>["href"]}
       transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
       whileHover={shouldReduceMotion ? undefined : { y: -1 }}
       whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}

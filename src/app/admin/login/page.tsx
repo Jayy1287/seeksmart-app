@@ -7,6 +7,8 @@ import {
   isAdminAuthConfigured,
   isAdminAuthenticated
 } from "@/server/admin/auth";
+import { MotionButton } from "@/components/motion/motion-button";
+import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "Admin Sign In",
@@ -51,7 +53,7 @@ export default async function AdminLoginPage() {
   return (
     <main className="page-shell">
       <div className="app-container grid max-w-3xl gap-6">
-        <section className="surface-strong rounded-2xl p-6">
+        <Reveal className="surface-strong rounded-2xl p-6">
           <p className="eyebrow">Admin</p>
           <h1 className="mt-2 text-4xl font-semibold">Review workspace</h1>
           <p className="mt-3 leading-7 text-ink/65">
@@ -69,20 +71,20 @@ export default async function AdminLoginPage() {
                 seeksmartapp@gmail.com.
               </p>
               <form action={signOutCurrentUser} className="mt-4">
-                <button className="secondary-button" type="submit">
+                <MotionButton className="secondary-button" type="submit">
                   Sign out current Google account
-                </button>
+                </MotionButton>
               </form>
             </div>
           ) : (
             <form action={signInWithGoogle} className="mt-5">
-              <button className="primary-button" type="submit">
+              <MotionButton className="primary-button" type="submit">
                 <LogIn aria-hidden="true" size={17} />
                 Continue with Google
-              </button>
+              </MotionButton>
             </form>
           )}
-        </section>
+        </Reveal>
         {isConfigured ? (
           <AdminLoginForm />
         ) : (
