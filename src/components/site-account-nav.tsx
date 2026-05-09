@@ -1,5 +1,7 @@
 import { LogOut, UserRound } from "lucide-react";
+import { UserRole } from "@prisma/client";
 import { auth, signOut } from "@/auth";
+import { CommandPalette } from "@/components/command-palette";
 import { MotionLink } from "@/components/motion/motion-link";
 
 export async function SiteAccountNav() {
@@ -8,6 +10,7 @@ export async function SiteAccountNav() {
   if (!session?.user) {
     return (
       <div className="flex flex-wrap items-center gap-2 md:justify-end">
+        <CommandPalette isAdmin={false} isSignedIn={false} />
         <MotionLink
           className="primary-button hidden min-h-10 px-5 md:inline-flex"
           href="/login?callbackUrl=/audit/start"
@@ -31,6 +34,10 @@ export async function SiteAccountNav() {
 
   return (
     <div className="flex flex-wrap items-center gap-2 md:justify-end">
+      <CommandPalette
+        isAdmin={session.user.role === UserRole.ADMIN}
+        isSignedIn={true}
+      />
       <MotionLink
         className="primary-button hidden min-h-10 px-5 md:inline-flex"
         href="/audit/start"
