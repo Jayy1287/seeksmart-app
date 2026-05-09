@@ -25,9 +25,7 @@ export function AnimatedNumber({
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const shouldReduceMotion = useReducedMotion();
-  const [displayValue, setDisplayValue] = useState(
-    shouldReduceMotion ? value : 0
-  );
+  const [displayValue, setDisplayValue] = useState(value);
 
   useEffect(() => {
     if (!isInView) {
@@ -39,6 +37,7 @@ export function AnimatedNumber({
       return;
     }
 
+    setDisplayValue(0);
     const controls = animate(0, value, {
       duration: 0.75,
       ease: [0.22, 1, 0.36, 1],
