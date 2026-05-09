@@ -114,56 +114,93 @@ export default async function RootLayout({
             </header>
             <PageTransition>{children}</PageTransition>
             <footer className="site-footer">
-              <div className="app-container flex flex-col gap-4 py-7 text-sm text-ink/58 md:flex-row md:items-center md:justify-between">
-                <div className="footer-brand-block">
-                  <Link
-                    aria-label="SeekSmart home"
-                    className="footer-brand-lockup"
-                    href="/"
-                  >
-                    <span className="brand-mark footer-brand-mark flex items-center justify-center">
-                      <Image
-                        alt="SeekSmart"
-                        className="brand-logo-image"
-                        height={48}
-                        src={brandLogo}
-                        width={48}
-                      />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="brand-title footer-brand-title block">
-                        SeekSmart
+              <div className="app-container footer-shell">
+                <div className="footer-main">
+                  <div className="footer-brand-block">
+                    <Link
+                      aria-label="SeekSmart home"
+                      className="footer-brand-lockup"
+                      href="/"
+                    >
+                      <span className="brand-mark footer-brand-mark flex items-center justify-center">
+                        <Image
+                          alt="SeekSmart"
+                          className="brand-logo-image"
+                          height={48}
+                          src={brandLogo}
+                          width={48}
+                        />
                       </span>
-                      <span className="footer-brand-tagline block">
-                        Smarter AI choices for practical teams.
+                      <span className="min-w-0">
+                        <span className="brand-title footer-brand-title block">
+                          SeekSmart
+                        </span>
+                        <span className="footer-brand-tagline block">
+                          Smarter AI choices for practical teams.
+                        </span>
                       </span>
-                    </span>
-                  </Link>
-                  <CommandPalette
-                    isAdmin={isAdmin}
-                    isSignedIn={isSignedIn}
-                    trigger="footer"
-                  />
+                    </Link>
+                    <p className="footer-brand-copy">
+                      Compare tools, map use cases, and turn AI adoption into a
+                      clear decision path.
+                    </p>
+                    <CommandPalette
+                      isAdmin={isAdmin}
+                      isSignedIn={isSignedIn}
+                      trigger="footer"
+                    />
+                  </div>
+                  <nav aria-label="Footer" className="footer-nav">
+                    <div className="footer-nav-group">
+                      <span className="footer-nav-heading">Explore</span>
+                      <Link className="footer-link" href="/tools">
+                        Tools
+                      </Link>
+                      <Link className="footer-link" href="/use-cases">
+                        Use cases
+                      </Link>
+                      <Link className="footer-link" href="/industries">
+                        Industries
+                      </Link>
+                      <Link className="footer-link" href="/playbooks">
+                        Playbooks
+                      </Link>
+                    </div>
+                    <div className="footer-nav-group">
+                      <span className="footer-nav-heading">Decide</span>
+                      <Link className="footer-link" href="/audit/start">
+                        AI audit
+                      </Link>
+                      <Link className="footer-link" href="/opportunities">
+                        Opportunities
+                      </Link>
+                      <Link className="footer-link" href="/methodology">
+                        Methodology
+                      </Link>
+                      <Link className="footer-link" href="/resources">
+                        Resources
+                      </Link>
+                    </div>
+                    <div className="footer-nav-group">
+                      <span className="footer-nav-heading">Company</span>
+                      <Link className="footer-link" href="/submit">
+                        Submit tool
+                      </Link>
+                      <Link className="footer-link" href="/feedback">
+                        Feedback
+                      </Link>
+                      <Link className="footer-link" href="/privacy">
+                        Privacy
+                      </Link>
+                      <Link className="footer-link" href="/terms">
+                        Terms
+                      </Link>
+                    </div>
+                  </nav>
                 </div>
-                <div className="flex flex-wrap gap-x-5 gap-y-2">
-                  <Link className="footer-link" href="/tools">
-                    Tools
-                  </Link>
-                  <Link className="footer-link" href="/methodology">
-                    Methodology
-                  </Link>
-                  <Link className="footer-link" href="/submit">
-                    Submit tool
-                  </Link>
-                  <Link className="footer-link" href="/feedback">
-                    Feedback
-                  </Link>
-                  <Link className="footer-link" href="/privacy">
-                    Privacy
-                  </Link>
-                  <Link className="footer-link" href="/terms">
-                    Terms
-                  </Link>
+                <div className="footer-bottom">
+                  <span>&copy; 2026 SeekSmart. All rights reserved.</span>
+                  <span>Built for calm, practical AI decisions.</span>
                 </div>
               </div>
             </footer>

@@ -103,13 +103,27 @@ textarea {
 
   .site-footer {
     border-top: 1px solid rgb(var(--color-line) / 0.42);
-    background: rgb(var(--color-paper) / 0.9);
+    background: rgb(255 253 245 / 0.94);
     backdrop-filter: blur(18px);
   }
 
+  .footer-shell {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.3rem);
+    padding-block: clamp(2rem, 4vw, 3.1rem) clamp(1.1rem, 2vw, 1.45rem);
+  }
+
+  .footer-main {
+    display: grid;
+    gap: clamp(2rem, 5vw, 4.5rem);
+  }
+
   .footer-link {
-    color: rgb(var(--color-muted-text) / 0.74);
-    font-weight: 650;
+    width: fit-content;
+    color: rgb(var(--color-muted-text) / 0.78);
+    font-size: 0.9rem;
+    font-weight: 640;
+    line-height: 1.35;
     transition:
       color 160ms ease,
       transform 160ms ease;
@@ -122,7 +136,9 @@ textarea {
 
   .footer-brand-block {
     display: grid;
-    gap: 0.8rem;
+    max-width: 25rem;
+    align-content: start;
+    gap: 0.85rem;
   }
 
   .footer-brand-lockup {
@@ -150,6 +166,47 @@ textarea {
     font-weight: 620;
     letter-spacing: 0;
     line-height: 1.35;
+  }
+
+  .footer-brand-copy {
+    max-width: 21rem;
+    color: rgb(var(--color-muted-text) / 0.78);
+    font-size: 0.92rem;
+    font-weight: 560;
+    line-height: 1.65;
+  }
+
+  .footer-nav {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.65rem clamp(1.5rem, 4vw, 3.2rem);
+  }
+
+  .footer-nav-group {
+    display: grid;
+    align-content: start;
+    gap: 0.62rem;
+  }
+
+  .footer-nav-heading {
+    color: rgb(var(--color-ink));
+    font-size: 0.75rem;
+    font-weight: 840;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    border-top: 1px solid rgb(var(--color-line) / 0.5);
+    padding-top: 1rem;
+    color: rgb(var(--color-muted-text) / 0.68);
+    font-size: 0.82rem;
+    font-weight: 590;
+    line-height: 1.45;
   }
 
   .brand-lockup {
@@ -498,13 +555,15 @@ textarea {
     justify-content: center;
     gap: 0.5rem;
     border-radius: 999px;
-    border: 1px solid rgb(var(--color-line) / 0.66);
-    background: rgb(255 253 248 / 0.72);
-    padding-inline: 0.8rem 0.45rem;
-    color: rgb(var(--color-muted-text) / 0.82);
+    border: 1px solid rgb(var(--color-accent) / 0.22);
+    background: rgb(255 255 250 / 0.82);
+    padding-inline: 0.86rem 0.48rem;
+    color: rgb(var(--color-accent));
     font-size: 0.8rem;
     font-weight: 720;
-    box-shadow: 0 10px 28px rgb(var(--color-accent) / 0.05);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.8) inset,
+      0 12px 26px rgb(var(--color-accent) / 0.06);
     transition:
       border-color 160ms ease,
       color 160ms ease,
@@ -514,19 +573,20 @@ textarea {
   }
 
   .command-easter-egg:hover {
-    border-color: rgb(var(--color-accent) / 0.5);
-    background: rgb(255 253 248 / 0.95);
-    color: rgb(var(--color-accent));
-    box-shadow: 0 14px 32px rgb(var(--color-accent) / 0.09);
+    border-color: rgb(var(--color-accent) / 0.42);
+    background: rgb(255 255 250 / 0.96);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.88) inset,
+      0 16px 32px rgb(var(--color-accent) / 0.1);
     transform: translateY(-1px);
   }
 
   .command-easter-egg kbd {
     border-radius: 999px;
-    border: 1px solid rgb(var(--color-line) / 0.68);
-    background: rgb(255 255 250 / 0.9);
+    border: 1px solid rgb(var(--color-accent) / 0.24);
+    background: rgb(var(--color-accent) / 0.07);
     padding: 0.16rem 0.42rem;
-    color: rgb(var(--color-accent) / 0.72);
+    color: rgb(var(--color-accent) / 0.8);
     font-size: 0.68rem;
     font-weight: 760;
   }
@@ -783,6 +843,25 @@ textarea {
 
   to {
     transform: translateX(-50%);
+  }
+}
+
+@media (min-width: 640px) {
+  .footer-nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .footer-bottom {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 768px) {
+  .footer-main {
+    grid-template-columns: minmax(18rem, 0.95fr) minmax(0, 1.55fr);
+    align-items: start;
   }
 }
 
