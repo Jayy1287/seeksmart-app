@@ -55,7 +55,7 @@ export function ToolFilterBar({
   }, [currentParams, pathname, query, router, startTransition]);
 
   return (
-    <div className="grid gap-3 rounded-[1.75rem] border border-line/60 bg-white/45 p-3 shadow-[0_18px_60px_rgb(38_78_162/0.07)] backdrop-blur md:grid-cols-[1fr_190px_170px]">
+    <div className="grid gap-3 rounded-[1.75rem] border border-line/60 bg-white/45 p-3 shadow-[0_18px_60px_rgb(13_48_92/0.07)] backdrop-blur md:grid-cols-[1fr_190px_170px]">
       <label className="relative">
         <span className="sr-only">Search tools</span>
         <Search

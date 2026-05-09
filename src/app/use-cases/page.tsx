@@ -131,7 +131,7 @@ function DecisionTile({
   title: string;
 }) {
   return (
-    <article className="rounded-2xl border border-line/70 bg-white/85 p-5 shadow-[0_18px_54px_rgb(38_78_162/0.07)] backdrop-blur">
+    <article className="rounded-2xl border border-line/70 bg-white/85 p-5 shadow-[0_18px_54px_rgb(13_48_92/0.07)] backdrop-blur">
       <Icon aria-hidden="true" className="text-accent" size={22} />
       <h2 className="mt-4 font-semibold">{title}</h2>
       <p className="mt-2 text-sm leading-6 text-ink/62">{description}</p>

@@ -408,7 +408,7 @@ function ContextTile({ label, value }: { label: string; value: string }) {
 
 function PlanTile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-line/55 bg-white/42 p-4 shadow-[0_18px_54px_rgb(38_78_162/0.055)] backdrop-blur">
+    <div className="rounded-2xl border border-line/55 bg-white/42 p-4 shadow-[0_18px_54px_rgb(13_48_92/0.055)] backdrop-blur">
       <p className="text-xs font-semibold uppercase text-ink/48">{label}</p>
       <p className="mt-2 font-semibold leading-6">{value}</p>
     </div>
@@ -425,7 +425,7 @@ function PlanList({
   title: string;
 }) {
   return (
-    <section className="rounded-2xl border border-line/55 bg-white/42 p-5 shadow-[0_18px_54px_rgb(38_78_162/0.055)] backdrop-blur">
+    <section className="rounded-2xl border border-line/55 bg-white/42 p-5 shadow-[0_18px_54px_rgb(13_48_92/0.055)] backdrop-blur">
       <div className="flex items-center gap-2">
         <Icon aria-hidden="true" className="text-accent" size={19} />
         <h3 className="font-semibold">{title}</h3>

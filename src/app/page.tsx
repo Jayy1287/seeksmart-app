@@ -87,7 +87,7 @@ export default async function Home() {
             </div>
             <form
               action="/tools"
-              className="mt-9 grid max-w-2xl gap-3 rounded-full border border-line/60 bg-white/55 p-2 shadow-[0_18px_54px_rgb(38_78_162/0.08)] backdrop-blur sm:grid-cols-[1fr_auto]"
+              className="mt-9 grid max-w-2xl gap-3 rounded-full border border-line/60 bg-white/55 p-2 shadow-[0_18px_54px_rgb(13_48_92/0.08)] backdrop-blur sm:grid-cols-[1fr_auto]"
             >
               <label className="relative w-full">
                 <span className="sr-only">Search AI tools</span>

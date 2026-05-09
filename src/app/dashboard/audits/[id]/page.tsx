@@ -46,7 +46,7 @@ export default async function SavedAuditPage({ params }: SavedAuditPageProps) {
       input={auditRun.input as unknown as AuditInput}
       result={auditRun.result as unknown as AuditResult}
       saveStatus={
-        <div className="flex flex-col gap-3 rounded-2xl border border-accent/25 bg-white/78 p-4 text-sm shadow-[0_18px_54px_rgb(38_78_162/0.06)] backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 rounded-2xl border border-accent/25 bg-white/78 p-4 text-sm shadow-[0_18px_54px_rgb(13_48_92/0.06)] backdrop-blur sm:flex-row sm:items-center sm:justify-between">
           <div className="flex gap-3 leading-6 text-ink/68">
             <CheckCircle2
               aria-hidden="true"

@@ -11,7 +11,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {useCases.map((useCase) => (
         <Link
-          className="group flex min-h-[16rem] flex-col rounded-[1.35rem] border border-line/70 bg-white/90 p-5 shadow-[0_18px_54px_rgb(38_78_162/0.07)] backdrop-blur transition hover:-translate-y-0.5 hover:border-accent hover:bg-white/95"
+          className="group flex min-h-[16rem] flex-col rounded-[1.35rem] border border-line/70 bg-white/90 p-5 shadow-[0_18px_54px_rgb(13_48_92/0.07)] backdrop-blur transition hover:-translate-y-0.5 hover:border-accent hover:bg-white/95"
           href={`/use-cases/${useCase.slug}`}
           key={useCase.id}
         >
