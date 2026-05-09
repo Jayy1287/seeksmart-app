@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { Sparkles } from "lucide-react";
+import { Command as CommandIcon } from "lucide-react";
 
 const CommandPaletteDialog = dynamic(
   () =>
@@ -61,8 +61,8 @@ export function CommandPalette({
           onClick={() => setIsOpen(true)}
           type="button"
         >
-          <Sparkles aria-hidden="true" size={14} />
-          <span>Try the quick jump</span>
+          <CommandIcon aria-hidden="true" size={14} />
+          <span>Try quick search</span>
           <kbd>{shortcutLabel}</kbd>
         </button>
       ) : null}

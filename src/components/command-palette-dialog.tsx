@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
+import * as Dialog from "@radix-ui/react-dialog";
 import {
   BarChart3,
   BookOpen,
@@ -110,6 +111,11 @@ export function CommandPaletteDialog({
       overlayClassName="command-overlay"
       shouldFilter
     >
+      <Dialog.Title className="sr-only">SeekSmart command palette</Dialog.Title>
+      <Dialog.Description className="sr-only">
+        Search and open SeekSmart pages, tools, use cases, industries, playbooks,
+        dashboards, and admin shortcuts.
+      </Dialog.Description>
       <div className="command-input-shell">
         <Search aria-hidden="true" className="text-ink/42" size={18} />
         <Command.Input

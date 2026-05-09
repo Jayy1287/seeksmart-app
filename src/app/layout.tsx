@@ -115,11 +115,30 @@ export default async function RootLayout({
             <PageTransition>{children}</PageTransition>
             <footer className="site-footer">
               <div className="app-container flex flex-col gap-4 py-7 text-sm text-ink/58 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <div className="font-semibold text-ink">SeekSmart</div>
-                  <p className="mt-1 text-xs text-ink/50">
-                    Smarter AI choices for practical teams.
-                  </p>
+                <div className="footer-brand-block">
+                  <Link
+                    aria-label="SeekSmart home"
+                    className="footer-brand-lockup"
+                    href="/"
+                  >
+                    <span className="brand-mark footer-brand-mark flex items-center justify-center">
+                      <Image
+                        alt="SeekSmart"
+                        className="brand-logo-image"
+                        height={48}
+                        src={brandLogo}
+                        width={48}
+                      />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="brand-title footer-brand-title block">
+                        SeekSmart
+                      </span>
+                      <span className="footer-brand-tagline block">
+                        Smarter AI choices for practical teams.
+                      </span>
+                    </span>
+                  </Link>
                   <CommandPalette
                     isAdmin={isAdmin}
                     isSignedIn={isSignedIn}
