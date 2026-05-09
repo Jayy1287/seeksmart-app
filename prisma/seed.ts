@@ -98,6 +98,26 @@ const categories = [
     name: "Legal",
     description:
       "AI tools for legal research, contract review, diligence, compliance, and professional-services workflows."
+  },
+  {
+    name: "HR and Recruiting",
+    description:
+      "AI tools for recruiting, hiring coordination, talent intelligence, and workforce workflows."
+  },
+  {
+    name: "Finance",
+    description:
+      "AI tools for spend management, accounts payable, FP&A, forecasting, and finance operations."
+  },
+  {
+    name: "Security and Compliance",
+    description:
+      "AI tools for security review, vulnerability remediation, control monitoring, and audit readiness."
+  },
+  {
+    name: "Localization",
+    description:
+      "AI tools for translation, dubbing, multilingual content, and global go-to-market workflows."
   }
 ];
 
@@ -146,7 +166,21 @@ const useCases = [
   "Governed brand content",
   "Sales and service agents",
   "Compliance evidence collection",
-  "Diligence document analysis"
+  "Diligence document analysis",
+  "Software engineering agents",
+  "AI code security review",
+  "Data engineering assistance",
+  "Compliance automation",
+  "eDiscovery review",
+  "Recruiting automation",
+  "Talent intelligence",
+  "Accounts payable automation",
+  "Spend policy review",
+  "FP&A reporting",
+  "Translation and localization",
+  "Video localization",
+  "Voice dubbing",
+  "Music generation"
 ];
 
 const features = [
@@ -199,7 +233,25 @@ const features = [
   "Voice support",
   "Governance controls",
   "Agent builder",
-  "Diligence workflows"
+  "Diligence workflows",
+  "Agentic coding",
+  "Automated testing",
+  "Security scanning",
+  "Vulnerability remediation",
+  "Control monitoring",
+  "ATS sync",
+  "Candidate scheduling",
+  "Talent intelligence",
+  "Invoice processing",
+  "Spend controls",
+  "Forecasting",
+  "Translation",
+  "Dubbing",
+  "Music generation",
+  "Codebase automation",
+  "eDiscovery review",
+  "FP&A reporting",
+  "Policy enforcement"
 ];
 
 const businessFunctions = [
@@ -943,6 +995,216 @@ const useCaseMetadata: Record<
     effortLevel: EffortLevel.HIGH,
     riskLevel: RiskLevel.HIGH,
     timeToValue: "4-8 weeks"
+  },
+  "Software engineering agents": {
+    businessFunction: "Product and Engineering",
+    outcome: "Delegated coding, debugging, migration, and implementation support for scoped engineering tasks.",
+    painPoints: ["Backlog pressure", "Context switching", "Slow implementation cycles"],
+    requiredInputs: ["Repository access", "Issue scope", "Test command", "Review owner"],
+    successMetrics: ["Cycle time", "Merged changes", "Review defects", "Test pass rate"],
+    implementationSteps: [
+      "Start with contained tasks",
+      "Require test evidence and code review",
+      "Track escaped defects before expanding"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "AI code security review": {
+    businessFunction: "Product and Engineering",
+    outcome: "Earlier vulnerability detection, dependency review, and remediation guidance inside engineering workflows.",
+    painPoints: ["Security review bottlenecks", "Missed vulnerabilities", "Late remediation"],
+    requiredInputs: ["Repo context", "Security policy", "Dependency inventory", "Triage owner"],
+    successMetrics: ["Vulnerabilities remediated", "Review time", "False positive rate"],
+    implementationSteps: [
+      "Connect a low-risk repository",
+      "Validate findings against security standards",
+      "Route accepted issues into the delivery workflow"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "2-5 weeks"
+  },
+  "Data engineering assistance": {
+    businessFunction: "Data and Analytics",
+    outcome: "Faster SQL, notebook, pipeline, and documentation support for analytics engineering teams.",
+    painPoints: ["Slow data exploration", "Pipeline debugging", "Manual SQL drafting"],
+    requiredInputs: ["Warehouse schema", "Metric definitions", "Access policy", "Validation examples"],
+    successMetrics: ["Query turnaround", "Pipeline issue time", "Analyst throughput"],
+    implementationSteps: [
+      "Start with read-only analytics workflows",
+      "Validate generated SQL on known questions",
+      "Add write workflows only after review rules are clear"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Compliance automation": {
+    businessFunction: "Legal and Compliance",
+    outcome: "Continuous evidence collection, control monitoring, and audit readiness workflows.",
+    painPoints: ["Manual evidence requests", "Control drift", "Audit preparation spikes"],
+    requiredInputs: ["Control framework", "System integrations", "Evidence owners", "Exception policy"],
+    successMetrics: ["Evidence freshness", "Control coverage", "Audit prep time"],
+    implementationSteps: [
+      "Map one control family",
+      "Connect authoritative evidence sources",
+      "Review exceptions with compliance owners"
+    ],
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "4-8 weeks"
+  },
+  "eDiscovery review": {
+    businessFunction: "Legal and Compliance",
+    outcome: "Faster review, privilege triage, and issue discovery across legal document sets.",
+    painPoints: ["Large document populations", "Slow review queues", "Missed issue clusters"],
+    requiredInputs: ["Matter scope", "Review protocol", "Custodian data", "Quality sample"],
+    successMetrics: ["Documents reviewed", "Issue precision", "Attorney review time"],
+    implementationSteps: [
+      "Define review criteria with legal owners",
+      "Run AI review on a validated sample",
+      "Compare results against expert coding"
+    ],
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "4-8 weeks"
+  },
+  "Recruiting automation": {
+    businessFunction: "Human Resources",
+    outcome: "Faster candidate scheduling, screening coordination, and recruiter follow-up.",
+    painPoints: ["Scheduling delays", "Manual candidate communication", "Recruiter admin load"],
+    requiredInputs: ["ATS fields", "Interview process", "Candidate messaging rules", "Escalation owner"],
+    successMetrics: ["Time to schedule", "Candidate response time", "Recruiter hours saved"],
+    implementationSteps: [
+      "Start with scheduling and status updates",
+      "Review candidate-facing messages",
+      "Measure candidate experience before expanding"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks"
+  },
+  "Talent intelligence": {
+    businessFunction: "Human Resources",
+    outcome: "Better workforce planning, role matching, skill visibility, and internal mobility decisions.",
+    painPoints: ["Skill data gaps", "Manual talent planning", "Hard-to-fill roles"],
+    requiredInputs: ["Role architecture", "Skills taxonomy", "HRIS or ATS data", "Governance policy"],
+    successMetrics: ["Internal fill rate", "Role match quality", "Workforce planning time"],
+    implementationSteps: [
+      "Define priority roles and skills",
+      "Validate recommendations with HR leaders",
+      "Set fairness and privacy review checkpoints"
+    ],
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "6-10 weeks"
+  },
+  "Accounts payable automation": {
+    businessFunction: "Finance",
+    outcome: "Faster invoice capture, coding, approval routing, and payment preparation.",
+    painPoints: ["Manual invoice entry", "Approval delays", "Coding errors"],
+    requiredInputs: ["Invoice samples", "Chart of accounts", "Approval rules", "ERP connection"],
+    successMetrics: ["Invoice cycle time", "Touchless rate", "Exception rate"],
+    implementationSteps: [
+      "Pilot one invoice type or vendor group",
+      "Compare coding against finance review",
+      "Add approval automation after exception rules are stable"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "3-6 weeks"
+  },
+  "Spend policy review": {
+    businessFunction: "Finance",
+    outcome: "Cleaner expense, card, procurement, and vendor decisions against company policy.",
+    painPoints: ["Policy violations", "Manual spend review", "Slow approvals"],
+    requiredInputs: ["Spend policy", "Merchant data", "Approval matrix", "Exception handling"],
+    successMetrics: ["Policy exceptions caught", "Approval time", "Finance review hours"],
+    implementationSteps: [
+      "Codify policy rules",
+      "Review flagged transactions manually",
+      "Automate low-risk approvals after threshold testing"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks"
+  },
+  "FP&A reporting": {
+    businessFunction: "Finance",
+    outcome: "Faster variance explanations, forecast narratives, and board-ready finance commentary.",
+    painPoints: ["Manual variance analysis", "Slow close reporting", "Spreadsheet narrative work"],
+    requiredInputs: ["KPI definitions", "Budget model", "Actuals data", "Narrative template"],
+    successMetrics: ["Reporting turnaround", "Forecast cycle time", "Variance explanation quality"],
+    implementationSteps: [
+      "Choose one recurring finance report",
+      "Validate source numbers and formulas",
+      "Review narrative outputs with finance leaders"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks"
+  },
+  "Translation and localization": {
+    businessFunction: "Marketing",
+    outcome: "More consistent multilingual content, support, and internal communication.",
+    painPoints: ["Slow localization", "Inconsistent terminology", "Limited language coverage"],
+    requiredInputs: ["Source content", "Glossary", "Brand terminology", "Reviewer workflow"],
+    successMetrics: ["Localization turnaround", "Reviewer corrections", "Markets supported"],
+    implementationSteps: [
+      "Create a glossary and approval rules",
+      "Translate one repeatable content type",
+      "Review terminology before broader publishing"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-3 weeks"
+  },
+  "Video localization": {
+    businessFunction: "Marketing",
+    outcome: "Faster multilingual videos, translated voiceovers, subtitles, and avatar-led explainers.",
+    painPoints: ["Expensive video localization", "Slow training updates", "Limited regional content"],
+    requiredInputs: ["Source video", "Script", "Consent and likeness rules", "Language reviewers"],
+    successMetrics: ["Localized videos shipped", "Production cost", "Reviewer corrections"],
+    implementationSteps: [
+      "Start with internal or training videos",
+      "Validate translation and voice quality",
+      "Add external publishing only after rights review"
+    ],
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks"
+  },
+  "Voice dubbing": {
+    businessFunction: "Marketing",
+    outcome: "Faster narration, voiceover, and dubbing for training, campaigns, and product education.",
+    painPoints: ["Voiceover bottlenecks", "High recording costs", "Inconsistent narration"],
+    requiredInputs: ["Script", "Voice style", "Consent rules", "Audio review owner"],
+    successMetrics: ["Audio turnaround", "Revision cycles", "Production cost"],
+    implementationSteps: [
+      "Generate a short reviewed voice sample",
+      "Confirm pronunciation and tone rules",
+      "Use human review for customer-facing audio"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks"
+  },
+  "Music generation": {
+    businessFunction: "Marketing",
+    outcome: "Faster creation of draft music, jingles, sonic concepts, and social audio experiments.",
+    painPoints: ["Limited audio resources", "Slow creative exploration", "Licensing uncertainty"],
+    requiredInputs: ["Creative brief", "Usage policy", "Brand guidelines", "Rights review"],
+    successMetrics: ["Concepts generated", "Review time", "Campaign asset turnaround"],
+    implementationSteps: [
+      "Use generated music for concept exploration first",
+      "Review usage rights before publishing",
+      "Document approved channels and restrictions"
+    ],
+    effortLevel: EffortLevel.LOW,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "1-2 weeks"
   }
 };
 
@@ -1100,6 +1362,33 @@ const industries = [
       "Start with diligence document synthesis and market-intelligence briefs that analysts can verify.",
     cautions:
       "Treat non-public company data and investment recommendations as high-risk and review every output."
+  },
+  {
+    name: "Human resources and staffing",
+    description:
+      "Recruiting, staffing, and people teams improving candidate communication, scheduling, screening coordination, and workforce planning.",
+    startingPoint:
+      "Start with recruiter admin and scheduling workflows before using AI in candidate evaluation.",
+    cautions:
+      "Review fairness, privacy, accessibility, and employment-law implications before automating hiring decisions."
+  },
+  {
+    name: "Technology and cybersecurity",
+    description:
+      "Engineering, platform, and security teams improving code delivery, vulnerability triage, compliance evidence, and incident-adjacent workflows.",
+    startingPoint:
+      "Start with developer assistance, security triage, and evidence gathering where review workflows already exist.",
+    cautions:
+      "Keep security findings, production changes, and compliance conclusions under accountable human review."
+  },
+  {
+    name: "Global teams",
+    description:
+      "Distributed organizations localizing content, training, support, and internal communications across languages and regions.",
+    startingPoint:
+      "Start with high-volume internal or support content and define terminology before external publishing.",
+    cautions:
+      "Validate translations with regional reviewers and check rights for voice, likeness, and generated media."
   }
 ];
 
@@ -1733,6 +2022,156 @@ const opportunities = [
     successMetrics: ["Review time", "Issues identified", "Source traceability"],
     industries: ["Private equity and investing", "Finance and accounting", "Legal services"],
     useCases: ["Diligence document analysis", "Research synthesis", "Document extraction"]
+  },
+  {
+    name: "Delegate scoped software engineering work",
+    businessFunction: "Product and Engineering",
+    description:
+      "Use AI coding agents and repo-aware assistants to implement contained tasks, fix bugs, write tests, and prepare reviewed changes.",
+    painPoint: "Engineering teams have more implementation work than they can safely move through review.",
+    expectedBenefit: "Shorter cycle time for scoped engineering tasks with clearer test evidence.",
+    startingPoint: "Choose low-risk backlog items with acceptance criteria and known test commands.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Cycle time", "Merged changes", "Review defects"],
+    industries: ["SaaS teams", "Technology and cybersecurity", "Professional services"],
+    useCases: ["Software engineering agents", "Code generation", "Code review"]
+  },
+  {
+    name: "Reduce code security review bottlenecks",
+    businessFunction: "Product and Engineering",
+    description:
+      "Add AI-assisted vulnerability scanning, dependency review, and remediation guidance into engineering delivery.",
+    painPoint: "Security work is often discovered late and slows down release readiness.",
+    expectedBenefit: "Earlier issue detection, faster triage, and better remediation coverage.",
+    startingPoint: "Connect one representative repository and validate findings against the security team's rubric.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "2-5 weeks",
+    successMetrics: ["Vulnerabilities remediated", "Review time", "False positive rate"],
+    industries: ["Technology and cybersecurity", "SaaS teams", "Finance and accounting"],
+    useCases: ["AI code security review", "Code review", "Compliance automation"]
+  },
+  {
+    name: "Assist data engineering and analytics delivery",
+    businessFunction: "Data and Analytics",
+    description:
+      "Support SQL, notebooks, pipeline debugging, and metric explanation with AI assistants grounded in approved data context.",
+    painPoint: "Analytics teams spend time on repetitive query drafting, debugging, and documentation.",
+    expectedBenefit: "Faster analytics delivery and cleaner collaboration between data teams and business users.",
+    startingPoint: "Begin with read-only query and documentation workflows using known-good examples.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Query turnaround", "Pipeline issue time", "Analyst throughput"],
+    industries: ["SaaS teams", "Technology and cybersecurity", "Finance and accounting"],
+    useCases: ["Data engineering assistance", "BI dashboard analysis", "Data analysis"]
+  },
+  {
+    name: "Automate compliance evidence and controls",
+    businessFunction: "Legal and Compliance",
+    description:
+      "Continuously gather evidence, map controls, and prepare compliance workpapers from trusted systems.",
+    painPoint: "Compliance work spikes before audits and depends on repeated manual evidence requests.",
+    expectedBenefit: "Fresher evidence, less manual chasing, and clearer control ownership.",
+    startingPoint: "Map one control family and connect the systems that already prove control operation.",
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "4-8 weeks",
+    successMetrics: ["Evidence freshness", "Control coverage", "Audit prep time"],
+    industries: ["SaaS teams", "Technology and cybersecurity", "Public sector"],
+    useCases: ["Compliance automation", "Compliance evidence collection", "AI code security review"]
+  },
+  {
+    name: "Speed recruiting coordination and screening admin",
+    businessFunction: "Human Resources",
+    description:
+      "Use AI to coordinate interviews, draft candidate communication, summarize screening context, and reduce recruiter admin.",
+    painPoint: "Recruiting teams lose momentum to scheduling, follow-up, and repeated candidate communication.",
+    expectedBenefit: "Faster candidate movement and more recruiter time for judgment-heavy work.",
+    startingPoint: "Start with scheduling and candidate status updates that recruiters can monitor.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks",
+    successMetrics: ["Time to schedule", "Candidate response time", "Recruiter hours saved"],
+    industries: ["Human resources and staffing", "SaaS teams", "Professional services"],
+    useCases: ["Recruiting automation", "Recruiting support", "Meeting summaries"]
+  },
+  {
+    name: "Improve workforce planning with talent intelligence",
+    businessFunction: "Human Resources",
+    description:
+      "Use AI to organize skills, match roles, surface internal mobility options, and inform workforce planning.",
+    painPoint: "Talent decisions are slowed by incomplete skill visibility and disconnected people data.",
+    expectedBenefit: "Better role matching, workforce visibility, and planning conversations.",
+    startingPoint: "Define priority roles and validate recommendations with HR and business leaders.",
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "6-10 weeks",
+    successMetrics: ["Internal fill rate", "Role match quality", "Planning cycle time"],
+    industries: ["Human resources and staffing", "Professional services", "SaaS teams"],
+    useCases: ["Talent intelligence", "Recruiting automation", "Executive reporting"]
+  },
+  {
+    name: "Automate invoice and spend review",
+    businessFunction: "Finance",
+    description:
+      "Use AI to extract invoices, code spend, flag policy exceptions, and prepare approval routing.",
+    painPoint: "Finance teams spend too much time entering invoices, chasing approvals, and reviewing spend manually.",
+    expectedBenefit: "Lower AP cycle time, fewer coding errors, and better spend control.",
+    startingPoint: "Choose one vendor group or expense category and compare AI coding against finance review.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "3-6 weeks",
+    successMetrics: ["Invoice cycle time", "Touchless rate", "Policy exceptions caught"],
+    industries: ["Finance and accounting", "Retail and hospitality", "Manufacturing and logistics"],
+    useCases: ["Accounts payable automation", "Spend policy review", "Document extraction"]
+  },
+  {
+    name: "Create finance planning narratives",
+    businessFunction: "Finance",
+    description:
+      "Turn budgets, actuals, forecasts, and variance tables into finance narratives and leadership-ready commentary.",
+    painPoint: "FP&A teams lose time rewriting spreadsheet movement into board and operator language.",
+    expectedBenefit: "Faster forecast updates and more consistent variance explanations.",
+    startingPoint: "Pilot on one monthly finance pack with approved metric definitions.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-4 weeks",
+    successMetrics: ["Reporting turnaround", "Forecast cycle time", "Variance explanation quality"],
+    industries: ["Finance and accounting", "Private equity and investing", "SaaS teams"],
+    useCases: ["FP&A reporting", "Executive reporting", "Data analysis"]
+  },
+  {
+    name: "Localize content and training assets",
+    businessFunction: "Marketing",
+    description:
+      "Translate content, dub video, generate voiceovers, and keep terminology consistent across languages.",
+    painPoint: "Global teams cannot localize support, training, and marketing assets quickly enough.",
+    expectedBenefit: "More language coverage with faster review cycles and consistent terminology.",
+    startingPoint: "Create a glossary and localize one repeatable training or support asset.",
+    effortLevel: EffortLevel.MEDIUM,
+    riskLevel: RiskLevel.MEDIUM,
+    timeToValue: "2-5 weeks",
+    successMetrics: ["Localized assets shipped", "Reviewer corrections", "Markets supported"],
+    industries: ["Global teams", "Education and training", "Media and creators"],
+    useCases: ["Translation and localization", "Video localization", "Voice dubbing"]
+  },
+  {
+    name: "Triage eDiscovery document sets",
+    businessFunction: "Legal and Compliance",
+    description:
+      "Apply AI review to legal document populations for issue spotting, privilege triage, and review prioritization.",
+    painPoint: "Legal teams face high-volume document review where speed and quality sampling both matter.",
+    expectedBenefit: "Faster matter review with clearer issue clusters and expert quality checks.",
+    startingPoint: "Run a validated sample against an attorney-approved review protocol.",
+    effortLevel: EffortLevel.HIGH,
+    riskLevel: RiskLevel.HIGH,
+    timeToValue: "4-8 weeks",
+    successMetrics: ["Documents reviewed", "Issue precision", "Attorney review time"],
+    industries: ["Legal services", "Professional services", "Public sector"],
+    useCases: ["eDiscovery review", "Diligence document analysis", "Document extraction"]
   }
 ];
 
@@ -2926,6 +3365,346 @@ const tools = [
     useCases: ["Governed brand content", "Enterprise knowledge search", "Workflow automation"],
     features: ["Brand governance", "AI agents", "Governance controls", "Team workspace"],
     alternatives: ["Typeface", "Jasper", "Copy.ai"]
+  },
+  {
+    name: "Windsurf",
+    category: "Developer tools",
+    shortDescription:
+      "Agentic coding environment for repo-aware development, edits, terminal work, and codebase navigation.",
+    longDescription:
+      "Windsurf is an AI coding environment designed for developers who want agentic assistance across code search, edits, terminal tasks, and implementation work. It is useful when teams want a more integrated coding workflow than standalone autocomplete.",
+    websiteUrl: "https://windsurf.com",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 84,
+    useCases: ["Software engineering agents", "Code generation", "Code review"],
+    features: ["Agentic coding", "Repo awareness", "Code completion", "Codebase automation"],
+    alternatives: ["Cursor", "GitHub Copilot", "Sourcegraph Cody"]
+  },
+  {
+    name: "Devin",
+    category: "Developer tools",
+    shortDescription:
+      "AI software engineering agent for delegated coding tasks, pull requests, debugging, and migrations.",
+    longDescription:
+      "Devin is built for delegating scoped software engineering work to an AI agent that can reason through tasks, use developer tools, and prepare implementation changes for review. It is best for teams with clear acceptance criteria and strong code review discipline.",
+    websiteUrl: "https://devin.ai",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 83,
+    useCases: ["Software engineering agents", "Code generation", "Code review"],
+    features: ["Agentic coding", "Repo awareness", "Automated testing", "Codebase automation"],
+    alternatives: ["Windsurf", "Cursor", "GitHub Copilot"]
+  },
+  {
+    name: "Qodo",
+    category: "Developer tools",
+    shortDescription:
+      "AI code quality platform for test generation, code review, and safer delivery workflows.",
+    longDescription:
+      "Qodo focuses on improving code quality with AI-supported test generation, pull request review, and code understanding. It is useful for engineering teams that want AI help around correctness, test coverage, and review preparation rather than only code completion.",
+    websiteUrl: "https://www.qodo.ai",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 76,
+    useCases: ["Code review", "AI code security review", "Code generation"],
+    features: ["Automated testing", "Code completion", "Repo awareness", "Integrations"],
+    alternatives: ["GitHub Copilot", "Tabnine", "Snyk"]
+  },
+  {
+    name: "Sourcegraph Cody",
+    category: "Developer tools",
+    shortDescription:
+      "Codebase-aware AI coding assistant for search, explanations, edits, and enterprise engineering context.",
+    longDescription:
+      "Sourcegraph Cody brings AI assistance to code search, explanations, edits, and developer workflows with an emphasis on codebase context. It is a good fit for teams that value repo-wide understanding and enterprise source-code visibility.",
+    websiteUrl: "https://sourcegraph.com/cody",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 77,
+    useCases: ["Code generation", "Code review", "Software engineering agents"],
+    features: ["Repo awareness", "Code completion", "Internal search", "Source grounding"],
+    alternatives: ["GitHub Copilot", "Cursor", "Windsurf"]
+  },
+  {
+    name: "Snyk",
+    category: "Security and Compliance",
+    shortDescription:
+      "Developer security platform for finding, prioritizing, and fixing code, dependency, container, and IaC risks.",
+    longDescription:
+      "Snyk helps engineering and security teams identify vulnerabilities, prioritize risk, and remediate issues within developer workflows. It is strongest when teams want security feedback close to pull requests, dependencies, containers, and infrastructure code.",
+    websiteUrl: "https://snyk.io",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 85,
+    useCases: ["AI code security review", "Code review", "Compliance automation"],
+    features: ["Security scanning", "Vulnerability remediation", "Integrations", "Policy enforcement"],
+    alternatives: ["Qodo", "Vanta", "GitHub Copilot"]
+  },
+  {
+    name: "Vanta",
+    category: "Security and Compliance",
+    shortDescription:
+      "Trust management and compliance automation platform for evidence collection, controls, and audits.",
+    longDescription:
+      "Vanta automates security and compliance workflows by connecting systems, collecting evidence, monitoring controls, and helping teams prepare for frameworks such as SOC 2, ISO, HIPAA, and other audit programs. It is best for teams that need structured compliance operations.",
+    websiteUrl: "https://www.vanta.com",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 84,
+    useCases: ["Compliance automation", "Compliance evidence collection", "AI code security review"],
+    features: ["Control monitoring", "Governance controls", "Integrations", "Policy enforcement"],
+    alternatives: ["Snyk", "Glean", "Writer"]
+  },
+  {
+    name: "Databricks Assistant",
+    category: "Data Analysis",
+    shortDescription:
+      "AI assistant inside Databricks for SQL, notebooks, code explanation, debugging, and data workflows.",
+    longDescription:
+      "Databricks Assistant helps data teams generate and explain SQL or code, debug notebooks, and work with enterprise data inside the Databricks environment. It is most useful for organizations already building analytics, data engineering, or AI workflows on Databricks.",
+    websiteUrl: "https://www.databricks.com/product/databricks-assistant",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 83,
+    useCases: ["Data engineering assistance", "Data analysis", "BI dashboard analysis"],
+    features: ["Data warehouse connection", "Code completion", "Source grounding", "Team workspace"],
+    alternatives: ["Hex", "Power BI Copilot", "ThoughtSpot Spotter"]
+  },
+  {
+    name: "Relativity aiR",
+    category: "Legal",
+    shortDescription:
+      "Generative AI capabilities for eDiscovery review, privilege, case strategy, and legal document analysis.",
+    longDescription:
+      "Relativity aiR brings generative AI to eDiscovery and legal review workflows, helping teams prioritize documents, identify issues, and accelerate matter review with expert oversight. It is best suited for legal teams working inside RelativityOne workflows.",
+    websiteUrl: "https://www.relativity.com/relativityair/",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 79,
+    useCases: ["eDiscovery review", "Diligence document analysis", "Legal research"],
+    features: ["eDiscovery review", "Document extraction", "Source grounding", "Governance controls"],
+    alternatives: ["Harvey", "CoCounsel", "Hebbia"]
+  },
+  {
+    name: "Greenhouse AI",
+    category: "HR and Recruiting",
+    shortDescription:
+      "Recruiting platform AI features for hiring workflows, candidate communication, and talent acquisition teams.",
+    longDescription:
+      "Greenhouse AI extends Greenhouse recruiting workflows with AI-assisted hiring support, helping teams reduce administrative friction in structured recruiting operations. It is most useful for organizations already standardizing hiring around Greenhouse.",
+    websiteUrl: "https://www.greenhouse.com",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 78,
+    useCases: ["Recruiting automation", "Recruiting support", "Talent intelligence"],
+    features: ["ATS sync", "Candidate scheduling", "Templates", "Team workspace"],
+    alternatives: ["Paradox", "Eightfold AI", "Notion AI"]
+  },
+  {
+    name: "Eightfold AI",
+    category: "HR and Recruiting",
+    shortDescription:
+      "Talent intelligence platform for recruiting, workforce planning, skills, and internal mobility.",
+    longDescription:
+      "Eightfold AI helps organizations understand talent, match people to roles, support recruiting, and inform workforce planning with skills-based intelligence. It is best for larger people teams with enough structured HR and recruiting data to govern recommendations.",
+    websiteUrl: "https://eightfold.ai",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 80,
+    useCases: ["Talent intelligence", "Recruiting automation", "Executive reporting"],
+    features: ["Talent intelligence", "ATS sync", "Governance controls", "Integrations"],
+    alternatives: ["Greenhouse AI", "Paradox", "Sana"]
+  },
+  {
+    name: "Paradox",
+    category: "HR and Recruiting",
+    shortDescription:
+      "Conversational recruiting assistant for candidate communication, screening coordination, and interview scheduling.",
+    longDescription:
+      "Paradox uses conversational AI to support recruiting workflows such as candidate engagement, screening coordination, scheduling, and recruiter productivity. It is particularly useful for high-volume hiring teams that need faster candidate response and coordination.",
+    websiteUrl: "https://www.paradox.ai",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 77,
+    useCases: ["Recruiting automation", "Recruiting support", "Meeting summaries"],
+    features: ["Candidate scheduling", "ATS sync", "AI agents", "Integrations"],
+    alternatives: ["Greenhouse AI", "Eightfold AI", "Ada"]
+  },
+  {
+    name: "Ramp Intelligence",
+    category: "Finance",
+    shortDescription:
+      "AI capabilities across Ramp finance workflows for spend management, policy review, and finance automation.",
+    longDescription:
+      "Ramp Intelligence adds AI support to finance workflows such as spend visibility, policy review, procurement, accounts payable, and accounting operations. It is a strong fit for teams looking to reduce manual finance work while keeping approvals and controls visible.",
+    websiteUrl: "https://ramp.com/intelligence",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 82,
+    useCases: ["Spend policy review", "Accounts payable automation", "FP&A reporting"],
+    features: ["Spend controls", "Invoice processing", "Policy enforcement", "Integrations"],
+    alternatives: ["Vic.ai", "Datarails", "Power BI Copilot"]
+  },
+  {
+    name: "Vic.ai",
+    category: "Finance",
+    shortDescription:
+      "AI-native accounts payable automation platform for invoice processing, coding, approvals, and exceptions.",
+    longDescription:
+      "Vic.ai focuses on automating accounts payable work with AI for invoice capture, coding predictions, approval workflows, and exception handling. It is best for finance teams that process enough invoice volume to measure cycle time and touchless rates.",
+    websiteUrl: "https://www.vic.ai",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 75,
+    useCases: ["Accounts payable automation", "Document extraction", "Spend policy review"],
+    features: ["Invoice processing", "Workflow builder", "Integrations", "Document extraction"],
+    alternatives: ["Ramp Intelligence", "Datarails", "Power BI Copilot"]
+  },
+  {
+    name: "Datarails",
+    category: "Finance",
+    shortDescription:
+      "FP&A platform with AI support for financial reporting, variance analysis, forecasting, and Excel workflows.",
+    longDescription:
+      "Datarails helps finance teams consolidate spreadsheet-heavy FP&A work, build reports, analyze variances, and produce planning commentary. Its AI capabilities are useful when finance teams need faster answers and narratives from governed financial models.",
+    websiteUrl: "https://www.datarails.com",
+    pricingType: PricingType.PAID,
+    hasFreePlan: false,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 74,
+    useCases: ["FP&A reporting", "Spreadsheet automation", "Executive reporting"],
+    features: ["FP&A reporting", "Forecasting", "Spreadsheet analysis", "BI dashboards"],
+    alternatives: ["Power BI Copilot", "Ramp Intelligence", "Hex"]
+  },
+  {
+    name: "DeepL",
+    category: "Localization",
+    shortDescription:
+      "AI translation and writing platform for accurate multilingual communication and terminology control.",
+    longDescription:
+      "DeepL helps individuals and teams translate content, improve multilingual writing, and maintain more consistent communication across languages. It is a practical fit for global support, marketing, operations, and knowledge workflows that need reliable localization.",
+    websiteUrl: "https://www.deepl.com",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 88,
+    useCases: ["Translation and localization", "Writing assistant", "Customer support"],
+    features: ["Translation", "Document upload", "Team workspace", "API access"],
+    alternatives: ["ChatGPT", "Claude", "HeyGen"]
+  },
+  {
+    name: "HeyGen",
+    category: "Video",
+    shortDescription:
+      "AI video platform for avatars, video translation, dubbing, and scalable presenter-led content.",
+    longDescription:
+      "HeyGen helps teams create avatar-led videos, translate existing videos, and produce multilingual business content without traditional filming for every version. It is useful for training, sales enablement, product education, and localized marketing workflows.",
+    websiteUrl: "https://www.heygen.com",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: true,
+    popularityScore: 84,
+    useCases: ["Video localization", "Video generation", "Voice dubbing"],
+    features: ["Video editing", "Dubbing", "Translation", "Templates"],
+    alternatives: ["Synthesia", "Runway", "Murf AI"]
+  },
+  {
+    name: "Luma Dream Machine",
+    category: "Video",
+    shortDescription:
+      "AI video generation tool for creating cinematic clips and motion concepts from text or images.",
+    longDescription:
+      "Luma Dream Machine is useful for rapid video concepting, visual experimentation, and creative exploration. It is best treated as a production-assist tool where teams review brand fit, rights, and factual claims before external use.",
+    websiteUrl: "https://lumalabs.ai/dream-machine",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 80,
+    useCases: ["Video generation", "Social media content", "Governed brand content"],
+    features: ["Video editing", "Templates", "Export options", "Brand kit"],
+    alternatives: ["Runway", "Pika", "Adobe Firefly"]
+  },
+  {
+    name: "Pika",
+    category: "Video",
+    shortDescription:
+      "AI video creation platform for generating and editing short videos, effects, and social-ready clips.",
+    longDescription:
+      "Pika supports AI video generation and editing workflows for creators and marketing teams that want fast motion concepts, short-form experiments, and creative asset iteration. It works best when paired with brand and rights review.",
+    websiteUrl: "https://pika.art",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 79,
+    useCases: ["Video generation", "Social media content", "Video localization"],
+    features: ["Video editing", "Templates", "Export options", "AI agents"],
+    alternatives: ["Runway", "Luma Dream Machine", "Leonardo AI"]
+  },
+  {
+    name: "Suno",
+    category: "Audio",
+    shortDescription:
+      "AI music generation platform for songs, audio concepts, jingles, and creative music experiments.",
+    longDescription:
+      "Suno helps users generate music from prompts for creative exploration, demos, social concepts, and campaign ideas. It is best used with a clear rights review process before any commercial publishing or brand use.",
+    websiteUrl: "https://suno.com",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 82,
+    useCases: ["Music generation", "Social media content", "Governed brand content"],
+    features: ["Music generation", "Export options", "Templates", "Team workspace"],
+    alternatives: ["Murf AI", "ElevenLabs", "Runway"]
+  },
+  {
+    name: "Murf AI",
+    category: "Audio",
+    shortDescription:
+      "AI voice platform for text-to-speech, voiceovers, dubbing, and multilingual audio production.",
+    longDescription:
+      "Murf AI helps teams create voiceovers, narration, dubbing, and audio assets for training, marketing, and product education. It is useful when teams need polished voice content with review control and repeatable production workflows.",
+    websiteUrl: "https://murf.ai",
+    pricingType: PricingType.FREEMIUM,
+    hasFreePlan: true,
+    isVerified: true,
+    isFeatured: false,
+    popularityScore: 78,
+    useCases: ["Voice dubbing", "Voice generation", "Video localization"],
+    features: ["Text to speech", "Dubbing", "Translation", "Export options"],
+    alternatives: ["ElevenLabs", "HeyGen", "Suno"]
   }
 ];
 

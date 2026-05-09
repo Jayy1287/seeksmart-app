@@ -11,7 +11,7 @@ type AuditAnalyticsEventName =
 
 type AuditAnalyticsPayload = {
   event: AuditAnalyticsEventName;
-  version: "audit-rules-v2.2";
+  version: "audit-rules-v2.3";
   properties?: Record<string, string | number | boolean | string[]>;
 };
 
@@ -53,7 +53,7 @@ export function trackAuditEvent(
 ) {
   const payload: AuditAnalyticsPayload = {
     event,
-    version: "audit-rules-v2.2",
+    version: "audit-rules-v2.3",
     properties
   };
 

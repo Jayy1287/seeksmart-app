@@ -101,6 +101,26 @@ export const auditIntegrationNeeds = [
     id: "warehouse",
     label: "Data warehouse or database",
     keywords: ["warehouse", "database", "sql", "data", "semantic", "model"]
+  },
+  {
+    id: "ats",
+    label: "ATS or recruiting platform",
+    keywords: ["ats", "recruiting", "candidate", "interview", "job", "talent"]
+  },
+  {
+    id: "finance",
+    label: "Finance, AP, or ERP system",
+    keywords: ["finance", "erp", "invoice", "spend", "ap", "budget", "forecast"]
+  },
+  {
+    id: "security",
+    label: "Security or developer workflow",
+    keywords: ["security", "vulnerability", "code", "dependency", "scan", "review"]
+  },
+  {
+    id: "localization",
+    label: "Localization or media workflow",
+    keywords: ["translation", "localization", "dubbing", "voice", "video", "language"]
   }
 ] as const;
 
@@ -210,6 +230,26 @@ export const auditPainPointOptions = [
     id: "compliance-evidence",
     label: "Compliance evidence is hard to collect",
     keywords: ["compliance", "audit", "evidence", "control", "policy"]
+  },
+  {
+    id: "hiring-admin",
+    label: "Hiring or HR admin is slow",
+    keywords: ["hiring", "recruiting", "candidate", "interview", "talent"]
+  },
+  {
+    id: "finance-admin",
+    label: "Finance documents and reporting are too manual",
+    keywords: ["finance", "invoice", "spend", "budget", "forecast"]
+  },
+  {
+    id: "security-review-bottlenecks",
+    label: "Security or compliance review slows delivery",
+    keywords: ["security", "vulnerability", "compliance", "review", "control"]
+  },
+  {
+    id: "localization-bottlenecks",
+    label: "Localization and media production are bottlenecks",
+    keywords: ["localization", "translation", "dubbing", "video", "voice"]
   }
 ] as const;
 

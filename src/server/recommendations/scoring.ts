@@ -11,7 +11,7 @@ import {
   type AuditUseCaseRecommendation
 } from "@/shared/recommendations/audit";
 
-export const AUDIT_RULE_VERSION = "audit-rules-v2.2";
+export const AUDIT_RULE_VERSION = "audit-rules-v2.3";
 
 export type AuditDataset = {
   industries: Array<{
@@ -562,6 +562,36 @@ function adjustToolFitScore(fit: AuditDatasetToolFit, input: AuditInput) {
     )
   ) {
     score += 7;
+  }
+  if (
+    input.integrationNeeds.includes("ats") &&
+    ["HR and Recruiting", "Productivity", "Meetings"].includes(
+      fit.tool.category.name
+    )
+  ) {
+    score += 8;
+  }
+  if (
+    input.integrationNeeds.includes("finance") &&
+    ["Finance", "Data Analysis", "Automation"].includes(fit.tool.category.name)
+  ) {
+    score += 8;
+  }
+  if (
+    input.integrationNeeds.includes("security") &&
+    ["Security and Compliance", "Developer tools"].includes(
+      fit.tool.category.name
+    )
+  ) {
+    score += 8;
+  }
+  if (
+    input.integrationNeeds.includes("localization") &&
+    ["Localization", "Video", "Audio", "Writing", "Marketing"].includes(
+      fit.tool.category.name
+    )
+  ) {
+    score += 8;
   }
   if (fit.pricingSuitability?.toLowerCase().includes(input.budgetRange)) {
     score += 5;
