@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { UserRole } from "@prisma/client";
 import { Suspense, type ReactNode } from "react";
+import { auth, signOut } from "@/auth";
+import { CommandPalette } from "@/components/command-palette";
 import { PageTransition } from "@/components/page-transition";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { SiteAccountNav } from "@/components/site-account-nav";
+import { SiteMobileMenu } from "@/components/site-mobile-menu";
 import { SiteNavigation } from "@/components/site-navigation";
 import { SiteAnalytics } from "@/features/analytics/site-analytics";
 import { siteConfig } from "@/lib/site";
@@ -49,11 +53,24 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: ReactNode;
 }>) {
+  const session = await auth();
+  const isSignedIn = Boolean(session?.user);
+  const isAdmin = session?.user.role === UserRole.ADMIN;
+  const userLabel = session?.user.name?.split(" ")[0] ?? "Dashboard";
+
+  async function signOutAction() {
+    "use server";
+
+    await signOut({
+      redirectTo: "/"
+    });
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head />
@@ -64,7 +81,7 @@ export default function RootLayout({
         <MotionProvider>
           <div className="flex min-h-screen flex-col">
             <header className="site-header sticky top-0 z-50">
-              <div className="app-container grid grid-cols-1 items-center gap-3 py-3 md:grid-cols-[auto_1fr_auto] lg:py-4">
+              <div className="app-container grid grid-cols-[1fr_auto] items-center gap-3 py-3 md:grid-cols-[auto_1fr_auto] lg:py-4">
                 <Link
                   aria-label="SeekSmart home"
                   className="brand-lockup flex items-center gap-3"
@@ -87,6 +104,12 @@ export default function RootLayout({
                 </Link>
                 <SiteNavigation />
                 <SiteAccountNav />
+                <SiteMobileMenu
+                  isAdmin={isAdmin}
+                  isSignedIn={isSignedIn}
+                  signOutAction={isSignedIn ? signOutAction : undefined}
+                  userLabel={userLabel}
+                />
               </div>
             </header>
             <PageTransition>{children}</PageTransition>
@@ -97,6 +120,11 @@ export default function RootLayout({
                   <p className="mt-1 text-xs text-ink/50">
                     Smarter AI choices for practical teams.
                   </p>
+                  <CommandPalette
+                    isAdmin={isAdmin}
+                    isSignedIn={isSignedIn}
+                    trigger="footer"
+                  />
                 </div>
                 <div className="flex flex-wrap gap-x-5 gap-y-2">
                   <Link className="footer-link" href="/tools">

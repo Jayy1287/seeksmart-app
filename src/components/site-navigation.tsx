@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useReducedMotion } from "motion/react";
 
-const navigationLinks: Array<{ href: Route; label: string }> = [
+export const navigationLinks: Array<{ href: Route; label: string }> = [
   { href: "/tools", label: "Tools" },
   { href: "/use-cases", label: "Use cases" },
   { href: "/industries", label: "Industries" },
@@ -19,7 +19,7 @@ export function SiteNavigation() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <nav className="header-nav flex flex-wrap items-center justify-center gap-1 rounded-full p-1.5 text-sm font-semibold md:ml-auto md:justify-start md:gap-1.5">
+    <nav className="header-nav hidden flex-wrap items-center justify-center gap-1 rounded-full p-1.5 text-sm font-semibold md:ml-auto md:flex md:justify-start md:gap-1.5">
       {navigationLinks.map((link) => {
         const isActive =
           pathname === link.href || pathname.startsWith(`${link.href}/`);

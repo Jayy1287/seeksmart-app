@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 const CommandPaletteDialog = dynamic(
   () =>
@@ -17,12 +17,23 @@ const CommandPaletteDialog = dynamic(
 type CommandPaletteProps = {
   isAdmin: boolean;
   isSignedIn: boolean;
+  trigger?: "footer" | "none";
 };
 
-export function CommandPalette({ isAdmin, isSignedIn }: CommandPaletteProps) {
+export function CommandPalette({
+  isAdmin,
+  isSignedIn,
+  trigger = "none"
+}: CommandPaletteProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [shortcutLabel, setShortcutLabel] = useState("Ctrl K");
 
   useEffect(() => {
+    const isMac =
+      navigator.platform.toLowerCase().includes("mac") ||
+      navigator.userAgent.toLowerCase().includes("mac");
+    setShortcutLabel(isMac ? "⌘ K" : "Ctrl K");
+
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key.toLowerCase() !== "k") {
         return;
@@ -43,16 +54,18 @@ export function CommandPalette({ isAdmin, isSignedIn }: CommandPaletteProps) {
 
   return (
     <>
-      <button
-        aria-label="Open command palette"
-        className="command-trigger"
-        onClick={() => setIsOpen(true)}
-        type="button"
-      >
-        <Search aria-hidden="true" size={16} />
-        <span>Search</span>
-        <kbd>Ctrl K</kbd>
-      </button>
+      {trigger === "footer" ? (
+        <button
+          aria-label="Open command palette"
+          className="command-easter-egg"
+          onClick={() => setIsOpen(true)}
+          type="button"
+        >
+          <Sparkles aria-hidden="true" size={14} />
+          <span>Try the quick jump</span>
+          <kbd>{shortcutLabel}</kbd>
+        </button>
+      ) : null}
       {isOpen ? (
         <CommandPaletteDialog
           isAdmin={isAdmin}

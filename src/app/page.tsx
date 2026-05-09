@@ -55,7 +55,7 @@ export default async function Home() {
     await Promise.all([
       listCategorySummaries(),
       listTrendingTools(3),
-      listRecentlyAddedTools(4),
+      listRecentlyAddedTools(10),
       listIndustrySummaries(),
       listOpportunitySummaries()
     ]);
