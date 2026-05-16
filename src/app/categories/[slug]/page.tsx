@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Boxes, Search } from "lucide-react";
+import { auth } from "@/auth";
 import { ToolCard } from "@/features/tools/tool-card";
 import {
   getCategoryBySlug,
   getCategorySummaryBySlug
 } from "@/server/categories/queries";
 import { listPublishedTools } from "@/server/tools/queries";
+import { attachToolLikeStates } from "@/server/tools/likes";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +48,8 @@ export async function generateMetadata({
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
-  const [category, tools] = await Promise.all([
+  const [session, category, toolsResult] = await Promise.all([
+    auth(),
     getCategorySummaryBySlug(slug),
     listPublishedTools({ categorySlug: slug })
   ]);
@@ -54,6 +57,9 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   if (!category) {
     notFound();
   }
+
+  const tools = await attachToolLikeStates(toolsResult, session?.user?.id);
+  const isSignedIn = Boolean(session?.user);
 
   return (
     <main className="page-shell">
@@ -100,7 +106,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {tools.map((tool) => (
-                <ToolCard key={tool.id} tool={tool} />
+                <ToolCard isSignedIn={isSignedIn} key={tool.id} tool={tool} />
               ))}
             </div>
           </>

@@ -1,14 +1,18 @@
 import Link from "next/link";
 import type { ComponentType } from "react";
 import { ArrowRight, CheckCircle2, Flame, Sparkles } from "lucide-react";
+import { ToolLikeButton } from "@/features/tools/tool-like-button";
 import { ToolLogo } from "@/features/tools/tool-logo";
-import type { PublicToolCard } from "@/shared/domain";
+import type { PublicToolCard, ToolLikeState } from "@/shared/domain";
 
 type ToolCardProps = {
-  tool: PublicToolCard;
+  isSignedIn?: boolean;
+  tool: PublicToolCard & {
+    like?: ToolLikeState;
+  };
 };
 
-export function ToolCard({ tool }: ToolCardProps) {
+export function ToolCard({ isSignedIn = false, tool }: ToolCardProps) {
   return (
     <article className="group flex h-full flex-col border-t border-line/70 pt-5 transition hover:border-accent">
       <div className="flex items-start justify-between gap-4">
@@ -47,8 +51,21 @@ export function ToolCard({ tool }: ToolCardProps) {
       <p className="mt-4 flex-1 text-sm leading-6 text-ink/68">
         {tool.shortDescription}
       </p>
-      <div className="mt-5 flex items-center justify-between gap-3">
-        <span className="text-xs text-ink/45">Score {tool.popularityScore}</span>
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <span className="text-xs text-ink/45">
+            Score {tool.popularityScore}
+          </span>
+          {tool.like ? (
+            <ToolLikeButton
+              isSignedIn={isSignedIn}
+              state={tool.like}
+              toolId={tool.id}
+              toolName={tool.name}
+              toolSlug={tool.slug}
+            />
+          ) : null}
+        </div>
         <Link
           className="inline-flex items-center gap-1 text-sm font-medium text-accent transition group-hover:translate-x-0.5"
           href={`/tools/${tool.slug}`}

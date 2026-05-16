@@ -53,6 +53,10 @@ For Supabase with Prisma:
 - `DATABASE_URL` should use the pooled connection on port `6543` with `?pgbouncer=true`.
 - `DIRECT_URL` should use the direct/session connection on port `5432` for migrations.
 
+Optional feature flags:
+
+- `SHOW_TOOL_LIKE_COUNTS=false` keeps public tool like counts hidden. Set it to `true` when you want the like count visible in the UI. Users can like and unlike tools either way.
+
 ## Local Development
 
 ```bash

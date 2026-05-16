@@ -12,13 +12,17 @@ import {
   Target
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { auth } from "@/auth";
 import {
   getUseCaseBySlug,
   listToolsForUseCase,
   type PublicUseCaseToolFit
 } from "@/server/use-cases/queries";
 import { TrackedExternalLink } from "@/features/analytics/tracked-link";
+import { ToolLikeButton } from "@/features/tools/tool-like-button";
 import { ToolLogo } from "@/features/tools/tool-logo";
+import { attachToolLikeStates } from "@/server/tools/likes";
+import type { ToolLikeState } from "@/shared/domain";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
@@ -65,7 +69,8 @@ export async function generateMetadata({
 
 export default async function UseCasePage({ params }: UseCasePageProps) {
   const { slug } = await params;
-  const [useCase, tools] = await Promise.all([
+  const [session, useCase, toolsResult] = await Promise.all([
+    auth(),
     getUseCaseBySlug(slug),
     listToolsForUseCase(slug)
   ]);
@@ -74,6 +79,8 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
     notFound();
   }
 
+  const tools = await attachToolLikeStates(toolsResult, session?.user?.id);
+  const isSignedIn = Boolean(session?.user);
   const firstTool = tools[0];
 
   return (
@@ -253,7 +260,11 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {tools.slice(0, 6).map((tool) => (
-                  <ToolFitCard key={tool.id} tool={tool} />
+                  <ToolFitCard
+                    isSignedIn={isSignedIn}
+                    key={tool.id}
+                    tool={tool}
+                  />
                 ))}
               </div>
             </>
@@ -271,7 +282,15 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
   );
 }
 
-function ToolFitCard({ tool }: { tool: PublicUseCaseToolFit }) {
+function ToolFitCard({
+  isSignedIn,
+  tool
+}: {
+  isSignedIn: boolean;
+  tool: PublicUseCaseToolFit & {
+    like?: ToolLikeState;
+  };
+}) {
   return (
     <article className="surface-panel rounded-xl p-5">
       <div className="flex items-start justify-between gap-3">
@@ -317,6 +336,17 @@ function ToolFitCard({ tool }: { tool: PublicUseCaseToolFit }) {
           Website
         </TrackedExternalLink>
       </div>
+      {tool.like ? (
+        <ToolLikeButton
+          className="mt-3 w-full"
+          isSignedIn={isSignedIn}
+          state={tool.like}
+          toolId={tool.id}
+          toolName={tool.name}
+          toolSlug={tool.slug}
+          variant="fit"
+        />
+      ) : null}
     </article>
   );
 }
