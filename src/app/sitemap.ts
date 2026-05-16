@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { articles } from "@/lib/articles";
 import { playbooks } from "@/lib/platform-content";
 import { siteConfig } from "@/lib/site";
 import { listCategories } from "@/server/categories/queries";
@@ -91,6 +92,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.65
     },
     {
+      url: `${siteConfig.url}/articles`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.7
+    },
+    {
       url: `${siteConfig.url}/feedback`,
       lastModified: now,
       changeFrequency: "monthly",
@@ -169,9 +176,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "weekly" as const,
     priority: 0.5
   }));
+  const articleRoutes = articles.map((article) => ({
+    url: `${siteConfig.url}/articles/${article.slug}`,
+    lastModified: new Date(article.updatedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.75
+  }));
 
   return [
     ...staticRoutes,
+    ...articleRoutes,
     ...categoryRoutes,
     ...useCaseRoutes,
     ...industryRoutes,

@@ -180,6 +180,9 @@ export default async function RootLayout({
                       <Link className="footer-link" href="/resources">
                         Resources
                       </Link>
+                      <Link className="footer-link" href="/articles">
+                        Articles
+                      </Link>
                     </div>
                     <div className="footer-nav-group">
                       <span className="footer-nav-heading">Company</span>
