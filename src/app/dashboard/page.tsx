@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { BarChart3, Clock3, Sparkles, UserRound } from "lucide-react";
+import { BarChart3, Clock3, Heart, Sparkles, UserRound } from "lucide-react";
 import { auth } from "@/auth";
 import { listSavedAuditRuns } from "@/server/audit-runs/queries";
+import { listLikedToolsForUser, type LikedTool } from "@/server/tools/likes";
+import { ToolLikeButton } from "@/features/tools/tool-like-button";
+import { ToolLogo } from "@/features/tools/tool-logo";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
@@ -27,7 +30,10 @@ export default async function DashboardPage() {
     redirect("/login?callbackUrl=/dashboard");
   }
 
-  const auditRuns = await listSavedAuditRuns(session.user.id);
+  const [auditRuns, likedTools] = await Promise.all([
+    listSavedAuditRuns(session.user.id),
+    listLikedToolsForUser(session.user.id)
+  ]);
 
   return (
     <main className="page-shell">
@@ -55,11 +61,16 @@ export default async function DashboardPage() {
           </div>
         </Reveal>
 
-        <Reveal className="grid gap-4 md:grid-cols-3">
+        <Reveal className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <DashboardMetric
             icon={BarChart3}
             label="Saved audits"
             value={<AnimatedNumber value={auditRuns.length} />}
+          />
+          <DashboardMetric
+            icon={Heart}
+            label="Liked tools"
+            value={<AnimatedNumber value={likedTools.length} />}
           />
           <DashboardMetric
             icon={Sparkles}
@@ -71,6 +82,44 @@ export default async function DashboardPage() {
             label="Signed in as"
             value={session.user.email ?? "Google account"}
           />
+        </Reveal>
+
+        <Reveal className="surface-panel rounded-2xl p-5 md:p-6">
+          <div className="flex flex-col gap-3 border-b border-line pb-5 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase text-accent">
+                Profile
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold">Liked tools</h2>
+            </div>
+            <Link className="secondary-button" href="/tools">
+              Browse tools
+            </Link>
+          </div>
+
+          {likedTools.length > 0 ? (
+            <div className="mt-5 grid gap-3">
+              {likedTools.map((tool) => (
+                <LikedToolItem key={tool.id} tool={tool} />
+              ))}
+            </div>
+          ) : (
+            <div className="py-12 text-center">
+              <Heart
+                aria-hidden="true"
+                className="mx-auto text-accent"
+                size={24}
+              />
+              <h3 className="mt-4 font-semibold">No liked tools yet</h3>
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
+                Like tools while browsing and they will appear here for quick
+                comparison later.
+              </p>
+              <Link className="primary-button mt-5" href="/tools">
+                Find tools to like
+              </Link>
+            </div>
+          )}
         </Reveal>
 
         <Reveal className="surface-panel rounded-2xl p-5 md:p-6">
@@ -134,6 +183,43 @@ export default async function DashboardPage() {
   );
 }
 
+function LikedToolItem({ tool }: { tool: LikedTool }) {
+  return (
+    <article className="rounded-xl border border-line bg-surface/70 p-4 transition hover:border-accent/60 hover:bg-surface">
+      <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
+        <Link
+          className="flex min-w-0 items-start gap-3"
+          href={`/tools/${tool.slug}`}
+        >
+          <ToolLogo logoUrl={tool.logoUrl} name={tool.name} />
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="font-semibold text-ink">{tool.name}</h3>
+              <span className="status-pill">{formatPricing(tool.pricingType)}</span>
+            </div>
+            <p className="mt-1 text-sm leading-6 text-ink/60">
+              {tool.shortDescription}
+            </p>
+            <p className="mt-2 text-xs font-medium text-ink/45">
+              {tool.category.name} · Liked {formatDate(tool.likedAt)}
+            </p>
+          </div>
+        </Link>
+        <div className="flex items-center md:justify-end">
+          <ToolLikeButton
+            isSignedIn={true}
+            state={tool.like}
+            toolId={tool.id}
+            toolName={tool.name}
+            toolSlug={tool.slug}
+            variant="dashboard"
+          />
+        </div>
+      </div>
+    </article>
+  );
+}
+
 function DashboardMetric({
   icon: Icon,
   label,
@@ -156,6 +242,18 @@ function DashboardMetric({
 
 function formatRole(role: string) {
   return role === "ADMIN" ? "Admin" : "User";
+}
+
+function formatPricing(pricingType: LikedTool["pricingType"]) {
+  if (pricingType === "FREEMIUM") {
+    return "Freemium";
+  }
+
+  if (pricingType === "FREE") {
+    return "Free";
+  }
+
+  return "Paid";
 }
 
 function formatDate(value: Date) {

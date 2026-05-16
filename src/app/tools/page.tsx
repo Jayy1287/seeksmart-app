@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import type { UrlObject } from "node:url";
 import Link from "next/link";
 import { Filter, SlidersHorizontal } from "lucide-react";
+import { auth } from "@/auth";
 import { listToolsQuerySchema } from "@/lib/validation";
 import { listCategories } from "@/server/categories/queries";
+import { attachToolLikeStates } from "@/server/tools/likes";
 import { searchPublishedTools } from "@/server/tools/queries";
 import { ToolCard } from "@/features/tools/tool-card";
 import { ToolFilterBar } from "@/features/tools/tool-filter-bar";
@@ -40,7 +42,8 @@ type ToolsPageProps = {
 export default async function ToolsPage({ searchParams }: ToolsPageProps) {
   const rawParams = await searchParams;
   const params = listToolsQuerySchema.parse(rawParams);
-  const [result, categories] = await Promise.all([
+  const [session, result, categories] = await Promise.all([
+    auth(),
     searchPublishedTools({
       query: params.q,
       categorySlug: params.category,
@@ -50,6 +53,8 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
     }),
     listCategories()
   ]);
+  const tools = await attachToolLikeStates(result.tools, session?.user?.id);
+  const isSignedIn = Boolean(session?.user);
   const activeCategory = categories.find(
     (category) => category.slug === params.category
   );
@@ -117,15 +122,15 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
         ) : null}
       </div>
 
-      {result.tools.length > 0 ? (
+      {tools.length > 0 ? (
         <>
           <div className="mb-4 text-sm text-ink/55">
             Showing {startResult}-{endResult} of {result.total}
           </div>
           <Stagger className="grid gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
-            {result.tools.map((tool) => (
+            {tools.map((tool) => (
               <StaggerItem key={tool.id}>
-                <ToolCard tool={tool} />
+                <ToolCard isSignedIn={isSignedIn} tool={tool} />
               </StaggerItem>
             ))}
           </Stagger>

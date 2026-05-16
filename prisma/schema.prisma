@@ -165,6 +165,7 @@ model Tool {
   category         Category          @relation(fields: [categoryId], references: [id])
   toolUseCases     ToolUseCase[]
   toolFeatures     ToolFeature[]
+  likes            ToolLike[]
   sourceTools      ToolAlternative[] @relation("SourceTool")
   alternativeTools ToolAlternative[] @relation("AlternativeTool")
 
@@ -286,6 +287,21 @@ model Submission {
   @@map("submissions")
 }
 
+model ToolLike {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  toolId    String   @map("tool_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tool Tool @relation(fields: [toolId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, toolId])
+  @@index([toolId])
+  @@index([userId, createdAt])
+  @@map("tool_likes")
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -299,6 +315,7 @@ model User {
   accounts  Account[]
   sessions  Session[]
   auditRuns AuditRun[]
+  toolLikes ToolLike[]
 
   @@map("users")
 }

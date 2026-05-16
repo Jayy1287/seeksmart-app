@@ -13,9 +13,12 @@ import {
   ShieldCheck,
   Sparkles
 } from "lucide-react";
+import { auth } from "@/auth";
 import { TrackedExternalLink } from "@/features/analytics/tracked-link";
 import { ToolCard } from "@/features/tools/tool-card";
+import { ToolLikeButton } from "@/features/tools/tool-like-button";
 import { ToolLogo } from "@/features/tools/tool-logo";
+import { attachToolLikeStates } from "@/server/tools/likes";
 import { getPublishedToolBySlug } from "@/server/tools/queries";
 import type { PublicToolDetail } from "@/shared/domain";
 import { AnimatedBar } from "@/components/motion/animated-bar";
@@ -59,12 +62,21 @@ export async function generateMetadata({
 
 export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   const { slug } = await params;
-  const tool = await getPublishedToolBySlug(slug);
+  const [session, toolResult] = await Promise.all([
+    auth(),
+    getPublishedToolBySlug(slug)
+  ]);
 
-  if (!tool) {
+  if (!toolResult) {
     notFound();
   }
 
+  const [tool] = await attachToolLikeStates([toolResult], session?.user?.id);
+  const alternatives = await attachToolLikeStates(
+    tool.alternatives,
+    session?.user?.id
+  );
+  const isSignedIn = Boolean(session?.user);
   const topUseCase = [...tool.useCases].sort(
     (a, b) => b.fitScore - a.fitScore
   )[0];
@@ -117,6 +129,16 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                   Featured
                 </span>
               ) : null}
+            </div>
+            <div className="mt-6">
+              <ToolLikeButton
+                isSignedIn={isSignedIn}
+                state={tool.like}
+                toolId={tool.id}
+                toolName={tool.name}
+                toolSlug={tool.slug}
+                variant="detail"
+              />
             </div>
           </div>
 
@@ -384,10 +406,14 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               Browse all
             </Link>
           </div>
-          {tool.alternatives.length > 0 ? (
+          {alternatives.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-3">
-              {tool.alternatives.map((alternative) => (
-                <ToolCard key={alternative.id} tool={alternative} />
+              {alternatives.map((alternative) => (
+                <ToolCard
+                  isSignedIn={isSignedIn}
+                  key={alternative.id}
+                  tool={alternative}
+                />
               ))}
             </div>
           ) : (

@@ -40,6 +40,15 @@ export type PublicToolCard = {
   category: PublicCategory;
 };
 
+export type ToolLikeState = {
+  count: number | null;
+  isLiked: boolean;
+};
+
+export type PublicToolCardWithLikeState = PublicToolCard & {
+  like: ToolLikeState;
+};
+
 export type PublicToolDetail = PublicToolCard & {
   longDescription: string | null;
   metaTitle: string | null;
