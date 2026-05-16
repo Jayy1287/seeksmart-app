@@ -27,7 +27,7 @@ export function ToolCard({ isSignedIn = false, tool }: ToolCardProps) {
       : null;
 
   return (
-    <article className="decision-card group flex h-full min-h-[19rem] flex-col p-6">
+    <article className="decision-card tool-decision-card group flex h-full min-h-[19rem] flex-col p-6">
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
           <ToolLogo logoUrl={tool.logoUrl} name={tool.name} />
