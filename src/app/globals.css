@@ -499,14 +499,12 @@ textarea {
     justify-content: center;
     gap: 0.45rem;
     border-radius: 999px;
-    border: 1px solid rgb(var(--color-line) / 0.72);
-    background:
-      linear-gradient(180deg, rgb(255 255 255 / 0.86), rgb(255 253 248 / 0.78)),
-      rgb(var(--color-surface));
+    border: 1px solid rgb(var(--color-line) / 0.64);
+    background: rgb(255 253 248 / 0.78);
     padding: 0.45rem 0.78rem;
-    color: rgb(var(--color-muted-text) / 0.84);
+    color: rgb(var(--color-muted-text) / 0.78);
     font-size: 0.82rem;
-    font-weight: 760;
+    font-weight: 640;
     line-height: 1;
     white-space: nowrap;
     box-shadow:
@@ -542,9 +540,7 @@ textarea {
 
   .tool-like-button[data-liked="true"] {
     border-color: rgb(var(--color-signal) / 0.44);
-    background:
-      linear-gradient(180deg, rgb(var(--color-warm) / 0.42), rgb(255 253 248 / 0.92)),
-      rgb(var(--color-surface));
+    background: rgb(var(--color-warm) / 0.32);
     color: rgb(var(--color-secondary));
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.94) inset,
@@ -798,12 +794,158 @@ textarea {
     align-items: center;
     gap: 0.375rem;
     border-radius: 999px;
-    border: 1px solid rgb(var(--color-line) / 0.62);
-    background: rgb(255 253 248 / 0.58);
-    padding: 0.34rem 0.62rem;
-    color: rgb(var(--color-muted-text) / 0.92);
+    border: 1px solid rgb(var(--color-line) / 0.5);
+    background: rgb(255 253 248 / 0.64);
+    padding: 0.35rem 0.68rem;
+    color: rgb(var(--color-muted-text) / 0.82);
     font-size: 0.73rem;
-    font-weight: 760;
+    font-weight: 600;
+  }
+
+  .decision-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 1.45rem;
+    border: 1px solid rgb(var(--color-line) / 0.42);
+    background: rgb(255 254 249 / 0.92);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.9) inset,
+      0 20px 50px rgb(var(--color-accent) / 0.075);
+    backdrop-filter: blur(16px);
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .decision-card::before {
+    position: absolute;
+    inset: 0.85rem auto auto 0.85rem;
+    z-index: -1;
+    height: 0.22rem;
+    width: 2.4rem;
+    border-radius: 999px;
+    background: rgb(var(--color-signal) / 0.52);
+    content: "";
+    opacity: 0.76;
+  }
+
+  .decision-card::after {
+    display: none;
+  }
+
+  .tool-decision-card::before {
+    display: none;
+  }
+
+  .decision-card:hover {
+    border-color: rgb(var(--color-accent) / 0.34);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.9) inset,
+      0 28px 72px rgb(var(--color-accent) / 0.11);
+    transform: translateY(-2px);
+  }
+
+  .decision-card:hover::after {
+    opacity: 0;
+  }
+
+  .decision-card:focus-visible,
+  .decision-card:focus-within {
+    outline: 3px solid rgb(var(--color-primary-light) / 0.2);
+    outline-offset: 3px;
+  }
+
+  .decision-card-icon {
+    display: inline-flex;
+    height: 2.65rem;
+    width: 2.65rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.05rem;
+    border: 1px solid rgb(var(--color-line) / 0.48);
+    background: rgb(255 253 248 / 0.88);
+    color: rgb(var(--color-accent));
+    box-shadow: 0 12px 26px rgb(var(--color-accent) / 0.07);
+  }
+
+  .decision-card-kicker {
+    color: rgb(var(--color-muted-text) / 0.7);
+    font-size: 0.74rem;
+    font-weight: 590;
+    letter-spacing: 0;
+    line-height: 1.2;
+    text-transform: none;
+  }
+
+  .decision-card-title {
+    color: rgb(var(--color-ink));
+    font-weight: 630;
+    letter-spacing: 0;
+    line-height: 1.22;
+  }
+
+  .decision-card-copy {
+    color: rgb(var(--color-muted-text) / 0.76);
+    line-height: 1.7;
+  }
+
+  .decision-card-stat {
+    display: grid;
+    min-width: 4.65rem;
+    align-content: center;
+    justify-items: center;
+    border-radius: 1.1rem;
+    border: 1px solid rgb(var(--color-accent) / 0.11);
+    background: rgb(var(--color-accent) / 0.045);
+    padding: 0.62rem 0.72rem;
+    color: rgb(var(--color-muted-text) / 0.78);
+  }
+
+  .decision-card-stat strong {
+    color: rgb(var(--color-ink));
+    font-size: 1.06rem;
+    font-weight: 640;
+    line-height: 1;
+  }
+
+  .decision-card-stat span {
+    margin-top: 0.22rem;
+    font-size: 0.68rem;
+    font-weight: 560;
+    letter-spacing: 0;
+    line-height: 1;
+    text-transform: none;
+  }
+
+  .decision-card-footer {
+    margin-top: auto;
+    border-top: 1px solid rgb(var(--color-line) / 0.36);
+    padding-top: 1rem;
+  }
+
+  .decision-meter {
+    height: 0.22rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgb(var(--color-line) / 0.36);
+  }
+
+  .decision-meter > span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: rgb(var(--color-accent) / 0.72);
+  }
+
+  .tool-decision-card .decision-meter {
+    background: rgb(var(--color-signal) / 0.14);
+  }
+
+  .tool-decision-card .decision-meter > span {
+    background: rgb(var(--color-signal) / 0.82);
   }
 
   .control-field {

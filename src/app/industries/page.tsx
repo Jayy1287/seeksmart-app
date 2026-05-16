@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { ArrowRight, AlertTriangle, Building2, CheckCircle2 } from "lucide-react";
+import {
+  ArrowRight,
+  AlertTriangle,
+  Building2,
+  CheckCircle2,
+  MapPinned
+} from "lucide-react";
 import { listIndustrySummaries } from "@/server/intelligence/queries";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { MotionLink } from "@/components/motion/motion-link";
@@ -50,43 +56,40 @@ export default async function IndustriesPage() {
           </div>
         </Reveal>
 
-        <Reveal className="mt-6 grid gap-4 md:grid-cols-2">
+        <Reveal className="mt-6 grid gap-5 md:grid-cols-2">
           {industries.map((industry) => {
             return (
               <article
-                className="surface-panel rounded-xl p-5"
+                className="decision-card flex h-full flex-col p-6"
                 id={industry.slug}
                 key={industry.slug}
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <Building2
-                      aria-hidden="true"
-                      className="text-accent"
-                      size={24}
-                    />
-                    <h2 className="mt-4 text-xl font-semibold">
+                  <div className="min-w-0">
+                    <div className="decision-card-icon">
+                      <Building2 aria-hidden="true" size={18} />
+                    </div>
+                    <p className="decision-card-kicker mt-4">Industry map</p>
+                    <h2 className="decision-card-title mt-2 text-2xl">
                       {industry.name}
                     </h2>
                   </div>
-                  <MotionLink
-                    className="secondary-button"
-                    href={`/industries/${industry.slug}`}
-                  >
-                    View map
-                  </MotionLink>
+                  <div className="decision-card-stat shrink-0">
+                    <strong>{industry.opportunityCount}</strong>
+                    <span>Paths</span>
+                  </div>
                 </div>
-                <p className="mt-3 leading-7 text-ink/65">
+                <p className="decision-card-copy mt-4 text-sm">
                   {industry.description}
                 </p>
-                <div className="mt-5 grid gap-3">
+                <div className="mt-5 grid gap-3 border-y border-line/45 py-4">
                   {[
                     `${industry.opportunityCount} mapped opportunities`,
                     industry.startingPoint ?? "Starting point needs curation.",
                     "Tool recommendations come after workflow fit"
                   ].map((opportunity) => (
                     <div
-                      className="flex items-start gap-2 rounded-lg border border-line bg-surface/70 px-3 py-2 text-sm"
+                      className="flex items-start gap-2 text-sm leading-6 text-ink/66"
                       key={opportunity}
                     >
                       <CheckCircle2
@@ -98,19 +101,26 @@ export default async function IndustriesPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-5 rounded-xl border border-line bg-muted/35 p-4">
-                  <p className="text-sm font-semibold">Best first move</p>
-                  <p className="mt-2 text-sm leading-6 text-ink/62">
-                    {industry.startingPoint ?? "Starting point needs curation."}
-                  </p>
-                </div>
-                <div className="mt-3 flex items-start gap-2 text-sm leading-6 text-ink/58">
+                <div className="mt-4 flex items-start gap-2 text-sm leading-6 text-ink/58">
                   <AlertTriangle
                     aria-hidden="true"
                     className="mt-0.5 shrink-0 text-signal"
                     size={16}
                   />
                   <span>{industry.cautions ?? "Cautions need curation."}</span>
+                </div>
+                <div className="decision-card-footer flex items-center justify-between gap-3">
+                  <span className="inline-flex items-center gap-2 text-xs font-medium text-ink/50">
+                    <MapPinned aria-hidden="true" size={14} />
+                    Starter map
+                  </span>
+                  <MotionLink
+                    className="inline-flex items-center gap-1 text-sm font-medium text-accent/85 transition hover:translate-x-0.5 hover:text-accent"
+                    href={`/industries/${industry.slug}`}
+                  >
+                    View map
+                    <ArrowRight aria-hidden="true" size={14} />
+                  </MotionLink>
                 </div>
               </article>
             );
