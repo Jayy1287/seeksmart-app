@@ -38,7 +38,7 @@ if (process.env.NODE_ENV === "production") {
       "form-action 'self'",
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: https://www.google.com https://logotyp.us",
+      "img-src 'self' data: https://www.google.com https://*.gstatic.com https://logotyp.us",
       "font-src 'self' data:",
       "connect-src 'self'",
       "upgrade-insecure-requests"
