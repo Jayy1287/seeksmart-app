@@ -6,6 +6,20 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { getToolLikeState } from "@/server/tools/likes";
+import type { ToolLikeState } from "@/shared/domain";
+
+type ToggleToolLikeInput = {
+  redirectTo?: string;
+  toolId: string;
+  toolSlug: string;
+};
+
+type TogglePublishedToolLikeInput = {
+  redirectTo: string;
+  toolId: string;
+  toolSlug: string;
+};
 
 export async function toggleToolLikeAction(formData: FormData) {
   const toolId = readFormValue(formData, "toolId");
@@ -14,6 +28,40 @@ export async function toggleToolLikeAction(formData: FormData) {
     readFormValue(formData, "redirectTo") ?? `/tools/${toolSlug ?? ""}`
   );
 
+  if (!toolId || !toolSlug) {
+    throw new Error("Missing tool like target.");
+  }
+
+  await togglePublishedToolLike({
+    redirectTo,
+    toolId,
+    toolSlug
+  });
+  redirect(redirectTo as Route);
+}
+
+export async function toggleToolLikeStateAction({
+  redirectTo: rawRedirectTo,
+  toolId: rawToolId,
+  toolSlug: rawToolSlug
+}: ToggleToolLikeInput): Promise<ToolLikeState> {
+  const toolId = rawToolId.trim();
+  const toolSlug = rawToolSlug.trim();
+  const redirectTo = sanitizeRedirectPath(rawRedirectTo ?? `/tools/${toolSlug}`);
+  const result = await togglePublishedToolLike({
+    redirectTo,
+    toolId,
+    toolSlug
+  });
+
+  return getToolLikeState(result.toolId, result.userId);
+}
+
+async function togglePublishedToolLike({
+  redirectTo,
+  toolId,
+  toolSlug
+}: TogglePublishedToolLikeInput) {
   if (!toolId || !toolSlug) {
     throw new Error("Missing tool like target.");
   }
@@ -66,7 +114,12 @@ export async function toggleToolLikeAction(formData: FormData) {
   }
 
   revalidateLikeSurfaces(tool.slug, redirectTo);
-  redirect(redirectTo as Route);
+
+  return {
+    toolId: tool.id,
+    toolSlug: tool.slug,
+    userId: session.user.id
+  };
 }
 
 function readFormValue(formData: FormData, key: string) {
