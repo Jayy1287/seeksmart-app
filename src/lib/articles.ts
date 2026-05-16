@@ -27,7 +27,13 @@ export type Article = {
   updatedAt: string;
 };
 
-const publicationDate = "2026-05-16";
+const articleDates = {
+  automation: "2026-05-02",
+  checklist: "2026-05-16",
+  choosing: "2026-04-18",
+  generalVsSpecialized: "2026-05-09",
+  smallBusiness: "2026-04-25"
+};
 
 export const articles: Article[] = [
   {
@@ -45,7 +51,7 @@ export const articles: Article[] = [
       "AI tool checklist",
       "business AI tools"
     ],
-    publishedAt: publicationDate,
+    publishedAt: articleDates.choosing,
     readingTime: "9 min read",
     related: [
       { href: "/audit/start", label: "Run the AI audit" },
@@ -54,7 +60,7 @@ export const articles: Article[] = [
     ],
     slug: "how-to-choose-ai-tools-for-business",
     title: "How to Choose AI Tools for Your Business Without Buying the Wrong Thing",
-    updatedAt: publicationDate,
+    updatedAt: articleDates.choosing,
     blocks: [
       {
         body: [
@@ -143,7 +149,7 @@ export const articles: Article[] = [
       "small business AI stack",
       "AI for small business"
     ],
-    publishedAt: publicationDate,
+    publishedAt: articleDates.smallBusiness,
     readingTime: "10 min read",
     related: [
       { href: "/tools", label: "Search AI tools" },
@@ -152,7 +158,7 @@ export const articles: Article[] = [
     ],
     slug: "best-ai-tools-for-small-business",
     title: "Best AI Tools for Small Business: Where to Use AI First",
-    updatedAt: publicationDate,
+    updatedAt: articleDates.smallBusiness,
     blocks: [
       {
         body: [
@@ -236,7 +242,7 @@ export const articles: Article[] = [
       "AI use cases by department",
       "business automation ideas"
     ],
-    publishedAt: publicationDate,
+    publishedAt: articleDates.automation,
     readingTime: "11 min read",
     related: [
       { href: "/use-cases", label: "Browse AI use cases" },
@@ -245,7 +251,7 @@ export const articles: Article[] = [
     ],
     slug: "ai-automation-ideas-by-department",
     title: "AI Automation Ideas by Department: Practical Projects That Do Not Need a Giant Budget",
-    updatedAt: publicationDate,
+    updatedAt: articleDates.automation,
     blocks: [
       {
         body: [
@@ -330,7 +336,7 @@ export const articles: Article[] = [
       "specialized AI tools",
       "AI assistant vs AI software"
     ],
-    publishedAt: publicationDate,
+    publishedAt: articleDates.generalVsSpecialized,
     readingTime: "8 min read",
     related: [
       { href: "/tools", label: "Compare AI tools" },
@@ -339,7 +345,7 @@ export const articles: Article[] = [
     ],
     slug: "chatgpt-vs-ai-tools-for-business",
     title: "ChatGPT vs Specialized AI Tools: Which Should Your Team Use?",
-    updatedAt: publicationDate,
+    updatedAt: articleDates.generalVsSpecialized,
     blocks: [
       {
         body: [
@@ -415,7 +421,7 @@ export const articles: Article[] = [
       "AI vendor evaluation",
       "AI security checklist"
     ],
-    publishedAt: publicationDate,
+    publishedAt: articleDates.checklist,
     readingTime: "12 min read",
     related: [
       { href: "/methodology", label: "Review the scoring method" },
@@ -424,7 +430,7 @@ export const articles: Article[] = [
     ],
     slug: "ai-tool-evaluation-checklist",
     title: "AI Tool Evaluation Checklist: Security, Pricing, ROI, and Rollout Questions",
-    updatedAt: publicationDate,
+    updatedAt: articleDates.checklist,
     blocks: [
       {
         body: [
