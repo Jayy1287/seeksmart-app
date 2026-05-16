@@ -904,6 +904,41 @@ textarea {
     font-weight: 600;
   }
 
+  .hero-typewriter {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.45rem;
+    margin-top: 1.35rem;
+    border-left: 3px solid rgb(var(--color-signal) / 0.86);
+    padding-left: 0.85rem;
+    color: rgb(var(--color-muted-text) / 0.76);
+    font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.08rem);
+    font-weight: 720;
+    line-height: 1.45;
+  }
+
+  .hero-typewriter-text {
+    position: relative;
+    display: inline-flex;
+    min-width: 12.6rem;
+    color: rgb(var(--color-accent));
+  }
+
+  .hero-typewriter-text::after {
+    display: inline-block;
+    width: 0.1rem;
+    height: 1.05em;
+    margin-left: 0.18rem;
+    border-radius: 999px;
+    background: rgb(var(--color-signal));
+    content: "";
+    transform: translateY(0.16em);
+    animation: typewriter-caret 1s steps(2, end) infinite;
+  }
+
   .decision-card {
     position: relative;
     isolation: isolate;
@@ -1442,6 +1477,18 @@ textarea {
   }
 }
 
+@keyframes typewriter-caret {
+  0%,
+  45% {
+    opacity: 1;
+  }
+
+  46%,
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (min-width: 640px) {
   .footer-nav {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1502,5 +1549,10 @@ textarea {
 
   .recent-marquee-group[aria-hidden="true"] {
     display: none;
+  }
+
+  .hero-typewriter-text::after {
+    animation: none;
+    opacity: 1;
   }
 }

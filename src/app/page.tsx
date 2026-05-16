@@ -16,6 +16,7 @@ import {
   playbooks
 } from "@/lib/platform-content";
 import { HomepageLottieVisual } from "@/features/home/homepage-lottie-visual";
+import { TypewriterRotator } from "@/features/home/typewriter-rotator";
 import { listCategorySummaries } from "@/server/categories/queries";
 import {
   listIndustrySummaries,
@@ -79,6 +80,9 @@ export default async function Home() {
               <h1 className="mt-7 max-w-4xl text-5xl font-semibold leading-[0.98] text-ink md:text-7xl">
                 Decide where AI belongs before you buy another tool.
               </h1>
+            </StaggerItem>
+            <StaggerItem>
+              <TypewriterRotator />
             </StaggerItem>
             <StaggerItem>
               <p className="mt-7 max-w-2xl text-lg leading-8 text-ink/68 md:text-xl md:leading-9">
