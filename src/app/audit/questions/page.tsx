@@ -315,6 +315,7 @@ export default async function AuditQuestionsPage() {
               <input
                 className="control-field w-full"
                 defaultValue="2 weeks"
+                maxLength={80}
                 name="timeline"
                 placeholder="2 weeks"
               />
@@ -322,6 +323,7 @@ export default async function AuditQuestionsPage() {
             <FieldLabel label="Success metric">
               <input
                 className="control-field w-full"
+                maxLength={160}
                 name="metric"
                 placeholder="Example: response time, draft turnaround, meetings booked"
               />
@@ -331,6 +333,7 @@ export default async function AuditQuestionsPage() {
           <FieldLabel label="Existing tools or systems">
             <textarea
               className="control-field min-h-28 w-full py-3"
+              maxLength={1200}
               name="tools"
               placeholder="Optional: CRM, help desk, docs, ecommerce platform, spreadsheets..."
             />

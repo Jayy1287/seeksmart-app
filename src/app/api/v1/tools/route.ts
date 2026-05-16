@@ -2,10 +2,21 @@ import { NextRequest } from "next/server";
 import { ZodError } from "zod";
 import { listToolsQuerySchema } from "@/lib/validation";
 import { apiError, apiInternalError, apiOk } from "@/server/http/responses";
+import {
+  assertRateLimit,
+  getClientIp,
+  RateLimitError
+} from "@/server/http/rate-limit";
 import { searchPublishedTools } from "@/server/tools/queries";
 
 export async function GET(request: NextRequest) {
   try {
+    assertRateLimit({
+      key: `tools-list:${getClientIp(request)}`,
+      limit: 120,
+      windowMs: 60 * 1000
+    });
+
     const searchParams = request.nextUrl.searchParams;
     const query = listToolsQuerySchema.parse({
       q: searchParams.get("q") ?? undefined,
@@ -42,6 +53,12 @@ export async function GET(request: NextRequest) {
         400,
         error.flatten()
       );
+    }
+
+    if (error instanceof RateLimitError) {
+      return apiError("RATE_LIMITED", error.message, 429, {
+        retryAfterSeconds: error.retryAfterSeconds
+      });
     }
 
     console.error(error);

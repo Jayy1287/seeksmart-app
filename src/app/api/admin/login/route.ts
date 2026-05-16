@@ -1,7 +1,17 @@
 import type { NextRequest } from "next/server";
 import { ZodError } from "zod";
 import { adminLoginSchema } from "@/lib/validation";
-import { apiError, apiInternalError, apiOk } from "@/server/http/responses";
+import {
+  apiError,
+  apiInternalError,
+  apiOk,
+  apiRequestError
+} from "@/server/http/responses";
+import {
+  assertSameOrigin,
+  isApiRequestError,
+  readJsonBody
+} from "@/server/http/request";
 import {
   assertRateLimit,
   getClientIp,
@@ -15,6 +25,7 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
+    assertSameOrigin(request);
     assertRateLimit({
       key: `admin-login:${getClientIp(request)}`,
       limit: 10,
@@ -29,7 +40,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
+    const body = await readJsonBody(request, { maxBytes: 4 * 1024 });
     const { password } = adminLoginSchema.parse(body);
 
     if (!verifyAdminPassword(password)) {
@@ -44,6 +55,10 @@ export async function POST(request: NextRequest) {
 
     return apiOk({ authenticated: true });
   } catch (error) {
+    if (isApiRequestError(error)) {
+      return apiRequestError(error);
+    }
+
     if (error instanceof ZodError) {
       return apiError("BAD_REQUEST", "Login input is invalid.", 400);
     }

@@ -153,9 +153,10 @@ function sanitizeCallbackUrl(value: string | string[] | undefined) {
 
   if (
     rawValue &&
+    rawValue.length <= 500 &&
     rawValue.startsWith("/") &&
     !rawValue.startsWith("//") &&
-    !rawValue.startsWith("/api/auth")
+    !rawValue.startsWith("/api/")
   ) {
     return rawValue;
   }

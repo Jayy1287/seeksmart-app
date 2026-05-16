@@ -1,6 +1,16 @@
 import type { NextRequest } from "next/server";
 import { ZodError } from "zod";
-import { apiError, apiInternalError, apiOk } from "@/server/http/responses";
+import {
+  apiError,
+  apiInternalError,
+  apiOk,
+  apiRequestError
+} from "@/server/http/responses";
+import {
+  assertSameOrigin,
+  isApiRequestError,
+  readJsonBody
+} from "@/server/http/request";
 import {
   assertRateLimit,
   getClientIp,
@@ -13,17 +23,22 @@ import {
 
 export async function POST(request: NextRequest) {
   try {
+    assertSameOrigin(request);
     assertRateLimit({
       key: `submission:${getClientIp(request)}`,
       limit: 5,
       windowMs: 60 * 60 * 1000
     });
 
-    const body = await request.json();
+    const body = await readJsonBody(request);
     const submission = await createToolSubmission(body);
 
     return apiOk({ submission }, { status: 201 });
   } catch (error) {
+    if (isApiRequestError(error)) {
+      return apiRequestError(error);
+    }
+
     if (error instanceof ZodError) {
       return apiError(
         "BAD_REQUEST",

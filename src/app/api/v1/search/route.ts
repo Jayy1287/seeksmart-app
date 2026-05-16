@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { PublishStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { playbooks } from "@/lib/platform-content";
+import {
+  assertRateLimit,
+  getClientIp,
+  RateLimitError
+} from "@/server/http/rate-limit";
 import type {
   CommandSearchGroup,
   CommandSearchItem,
@@ -11,8 +16,30 @@ import type {
 const maxItemsPerGroup = 5;
 
 export async function GET(request: Request) {
+  try {
+    assertRateLimit({
+      key: `command-search:${getClientIp(request)}`,
+      limit: 120,
+      windowMs: 60 * 1000
+    });
+  } catch (error) {
+    if (error instanceof RateLimitError) {
+      return NextResponse.json(
+        { groups: [] } satisfies CommandSearchResponse,
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(error.retryAfterSeconds)
+          }
+        }
+      );
+    }
+
+    throw error;
+  }
+
   const { searchParams } = new URL(request.url);
-  const query = searchParams.get("q")?.trim() ?? "";
+  const query = (searchParams.get("q")?.trim() ?? "").slice(0, 120);
 
   if (query.length < 2) {
     return NextResponse.json({ groups: [] } satisfies CommandSearchResponse);

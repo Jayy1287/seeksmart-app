@@ -1,5 +1,15 @@
 import { ZodError } from "zod";
-import { apiError, apiInternalError, apiOk } from "@/server/http/responses";
+import {
+  apiError,
+  apiInternalError,
+  apiOk,
+  apiRequestError
+} from "@/server/http/responses";
+import {
+  assertSameOrigin,
+  isApiRequestError,
+  readJsonBody
+} from "@/server/http/request";
 import { isAdminAuthenticated } from "@/server/admin/auth";
 import {
   approveSubmission,
@@ -15,12 +25,14 @@ type ApproveRouteContext = {
 
 export async function POST(request: Request, context: ApproveRouteContext) {
   try {
+    assertSameOrigin(request);
+
     if (!(await isAdminAuthenticated())) {
       return apiError("UNAUTHORIZED", "Admin sign in required.", 401);
     }
 
     const { id } = await context.params;
-    const body = await request.json();
+    const body = await readJsonBody(request);
     const result = await approveSubmission(id, body);
 
     if (!result) {
@@ -29,6 +41,10 @@ export async function POST(request: Request, context: ApproveRouteContext) {
 
     return apiOk(result);
   } catch (error) {
+    if (isApiRequestError(error)) {
+      return apiRequestError(error);
+    }
+
     if (error instanceof ZodError) {
       return apiError(
         "BAD_REQUEST",

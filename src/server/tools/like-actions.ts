@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { assertRateLimit } from "@/server/http/rate-limit";
 import { getToolLikeState } from "@/server/tools/likes";
 import type { ToolLikeState } from "@/shared/domain";
 
@@ -72,6 +73,12 @@ async function togglePublishedToolLike({
     redirect(`/login?callbackUrl=${encodeURIComponent(redirectTo)}`);
   }
 
+  assertRateLimit({
+    key: `tool-like:${session.user.id}`,
+    limit: 90,
+    windowMs: 60 * 1000
+  });
+
   const tool = await prisma.tool.findFirst({
     where: {
       id: toolId,
@@ -133,7 +140,7 @@ function sanitizeRedirectPath(value: string | null) {
     value &&
     value.startsWith("/") &&
     !value.startsWith("//") &&
-    !value.startsWith("/api/auth")
+    !value.startsWith("/api/")
   ) {
     return value.slice(0, 500);
   }

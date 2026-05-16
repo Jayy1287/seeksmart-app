@@ -9,9 +9,24 @@ export const statusSchema = z.enum([
   "ARCHIVED"
 ]);
 
+const httpUrlSchema = (maxLength = 2048) =>
+  z
+    .string()
+    .trim()
+    .max(maxLength)
+    .url()
+    .refine((value) => {
+      try {
+        const protocol = new URL(value).protocol;
+        return protocol === "http:" || protocol === "https:";
+      } catch {
+        return false;
+      }
+    }, "URL must use http or https.");
+
 export const toolSubmissionSchema = z.object({
   toolName: z.string().trim().min(2).max(120),
-  websiteUrl: z.string().trim().url(),
+  websiteUrl: httpUrlSchema(),
   description: z.string().trim().min(20).max(1200),
   category: z.string().trim().min(2).max(80),
   pricingType: pricingTypeSchema,
@@ -32,6 +47,18 @@ const optionalTrimmedString = (maxLength: number) =>
     z.string().max(maxLength).optional()
   );
 
+const optionalHttpUrlSchema = z.preprocess(
+  (value) => {
+    if (typeof value !== "string") {
+      return value;
+    }
+
+    const trimmed = value.trim();
+    return trimmed.length > 0 ? trimmed : undefined;
+  },
+  httpUrlSchema(500).optional()
+);
+
 export const listToolsQuerySchema = z.object({
   q: optionalTrimmedString(120),
   category: optionalTrimmedString(80),
@@ -44,7 +71,7 @@ export const listToolsQuerySchema = z.object({
 });
 
 export const adminLoginSchema = z.object({
-  password: z.string().min(1)
+  password: z.string().min(1).max(1024)
 });
 
 export const adminSubmissionStatusSchema = z
@@ -60,7 +87,7 @@ export const approveSubmissionSchema = z.object({
   slug: optionalTrimmedString(120),
   shortDescription: z.string().trim().min(20).max(220),
   longDescription: optionalTrimmedString(2000),
-  websiteUrl: z.string().trim().url(),
+  websiteUrl: httpUrlSchema(),
   categoryId: optionalTrimmedString(120),
   categoryName: optionalTrimmedString(80),
   pricingType: pricingTypeSchema,
@@ -87,8 +114,8 @@ export const updateAdminToolSchema = z.object({
   slug: z.string().trim().min(2).max(120),
   shortDescription: z.string().trim().min(20).max(220),
   longDescription: optionalTrimmedString(2000),
-  websiteUrl: z.string().trim().url(),
-  logoUrl: optionalTrimmedString(500),
+  websiteUrl: httpUrlSchema(),
+  logoUrl: optionalHttpUrlSchema,
   categoryId: z.string().cuid(),
   pricingType: pricingTypeSchema,
   hasFreePlan: z.coerce.boolean().default(false),

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import type { ApiRequestError } from "@/server/http/request";
 import type { ApiErrorCode, ApiFailure, ApiSuccess } from "@/shared/api";
 
 export function apiOk<T>(data: T, init?: ResponseInit) {
@@ -36,3 +37,6 @@ export function apiInternalError() {
   );
 }
 
+export function apiRequestError(error: ApiRequestError) {
+  return apiError(error.code, error.message, error.status, error.details);
+}

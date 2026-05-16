@@ -1,7 +1,17 @@
 import { ZodError } from "zod";
 import { isAdminAuthenticated } from "@/server/admin/auth";
 import { upsertAdminBusinessFunction } from "@/server/admin/mutations";
-import { apiError, apiInternalError, apiOk } from "@/server/http/responses";
+import {
+  apiError,
+  apiInternalError,
+  apiOk,
+  apiRequestError
+} from "@/server/http/responses";
+import {
+  assertSameOrigin,
+  isApiRequestError,
+  readJsonBody
+} from "@/server/http/request";
 
 type RouteContext = {
   params: Promise<{
@@ -11,16 +21,22 @@ type RouteContext = {
 
 export async function PATCH(request: Request, context: RouteContext) {
   try {
+    assertSameOrigin(request);
+
     if (!(await isAdminAuthenticated())) {
       return apiError("UNAUTHORIZED", "Admin sign in required.", 401);
     }
 
     const { id } = await context.params;
-    const body = await request.json();
+    const body = await readJsonBody(request);
     const record = await upsertAdminBusinessFunction(id, body);
 
     return apiOk({ record });
   } catch (error) {
+    if (isApiRequestError(error)) {
+      return apiRequestError(error);
+    }
+
     if (error instanceof ZodError) {
       return apiError("BAD_REQUEST", "Business function input is invalid.", 400, error.flatten());
     }

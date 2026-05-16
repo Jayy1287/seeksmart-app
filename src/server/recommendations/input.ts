@@ -31,8 +31,11 @@ import {
 type SearchParams = Record<string, string | string[] | undefined>;
 
 export function parseAuditInput(searchParams: SearchParams): AuditInput | null {
-  const industrySlug = getSingle(searchParams.industry);
-  const businessFunctionSlug = getSingle(searchParams.function);
+  const industrySlug = getBoundedText(getSingle(searchParams.industry), 120);
+  const businessFunctionSlug = getBoundedText(
+    getSingle(searchParams.function),
+    120
+  );
 
   if (!industrySlug || !businessFunctionSlug) {
     return null;
@@ -102,14 +105,25 @@ export function parseAuditInput(searchParams: SearchParams): AuditInput | null {
       auditDecisionOwnerTypes,
       "single-owner"
     ),
-    pilotTimeline: getSingle(searchParams.timeline)?.trim() || "2 weeks",
-    successMetric: getSingle(searchParams.metric)?.trim(),
-    existingTools: getSingle(searchParams.tools)
+    pilotTimeline:
+      getBoundedText(getSingle(searchParams.timeline), 80) || "2 weeks",
+    successMetric: getBoundedText(getSingle(searchParams.metric), 160),
+    existingTools: getBoundedText(getSingle(searchParams.tools), 1200)
   };
 }
 
 function getSingle(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
+}
+
+function getBoundedText(value: string | undefined, maxLength: number) {
+  const trimmed = value?.trim();
+
+  if (!trimmed) {
+    return undefined;
+  }
+
+  return trimmed.slice(0, maxLength);
 }
 
 function parseEnum<T extends string>(

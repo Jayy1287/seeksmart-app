@@ -5,6 +5,12 @@ import { auth } from "@/auth";
 
 const ADMIN_COOKIE_NAME = "seeksmart_admin_session";
 const SESSION_SUBJECT = "seeksmart-admin";
+const ADMIN_SESSION_MAX_AGE_SECONDS = 60 * 60 * 8;
+
+type AdminSessionPayload = {
+  exp: number;
+  sub: typeof SESSION_SUBJECT;
+};
 
 function getAdminPassword() {
   return process.env.ADMIN_PASSWORD;
@@ -50,19 +56,26 @@ export function verifyAdminPassword(password: string) {
 }
 
 export async function setAdminSessionCookie() {
-  const signature = sign(SESSION_SUBJECT);
+  const expiresAt = Math.floor(Date.now() / 1000) + ADMIN_SESSION_MAX_AGE_SECONDS;
+  const payload = Buffer.from(
+    JSON.stringify({
+      exp: expiresAt,
+      sub: SESSION_SUBJECT
+    } satisfies AdminSessionPayload)
+  ).toString("base64url");
+  const signature = sign(payload);
 
   if (!signature) {
     return false;
   }
 
   const cookieStore = await cookies();
-  cookieStore.set(ADMIN_COOKIE_NAME, `${SESSION_SUBJECT}.${signature}`, {
+  cookieStore.set(ADMIN_COOKIE_NAME, `${payload}.${signature}`, {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 8
+    maxAge: ADMIN_SESSION_MAX_AGE_SECONDS
   });
 
   return true;
@@ -74,16 +87,37 @@ export async function clearAdminSessionCookie() {
 }
 
 async function isLegacyAdminAuthenticated() {
-  const signature = sign(SESSION_SUBJECT);
-
-  if (!signature) {
-    return false;
-  }
-
   const cookieStore = await cookies();
   const session = cookieStore.get(ADMIN_COOKIE_NAME)?.value;
 
-  return session === `${SESSION_SUBJECT}.${signature}`;
+  if (!session) {
+    return false;
+  }
+
+  const [payload, signature] = session.split(".");
+  const expectedSignature = payload ? sign(payload) : null;
+
+  if (!payload || !signature || !expectedSignature) {
+    return false;
+  }
+
+  if (!safeEqual(signature, expectedSignature)) {
+    return false;
+  }
+
+  try {
+    const parsed = JSON.parse(
+      Buffer.from(payload, "base64url").toString("utf8")
+    ) as Partial<AdminSessionPayload>;
+
+    return (
+      parsed.sub === SESSION_SUBJECT &&
+      typeof parsed.exp === "number" &&
+      parsed.exp > Math.floor(Date.now() / 1000)
+    );
+  } catch {
+    return false;
+  }
 }
 
 export async function isAdminAuthenticated() {

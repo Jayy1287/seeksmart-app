@@ -18,6 +18,11 @@ export class AdminToolConflictError extends Error {
 
 function normalizeUrl(value: string) {
   const url = new URL(value);
+
+  if (url.protocol !== "http:" && url.protocol !== "https:") {
+    throw new TypeError("URL must use http or https.");
+  }
+
   url.hash = "";
   url.search = "";
   url.hostname = url.hostname.replace(/^www\./, "").toLowerCase();

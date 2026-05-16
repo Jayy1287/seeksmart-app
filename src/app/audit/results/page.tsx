@@ -9,6 +9,7 @@ import { parseAuditInput } from "@/server/recommendations/input";
 import { getAuditDataset } from "@/server/recommendations/queries";
 import { scoreAudit } from "@/server/recommendations/scoring";
 import { saveAuditRun } from "@/server/audit-runs/queries";
+import { assertRateLimit } from "@/server/http/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,27 @@ export const metadata: Metadata = {
 type AuditResultsPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
+
+const allowedResultParamKeys = new Set([
+  "approval",
+  "budget",
+  "data",
+  "function",
+  "goals",
+  "industry",
+  "integrations",
+  "maturity",
+  "metric",
+  "owner",
+  "pain",
+  "readiness",
+  "size",
+  "technical",
+  "timeline",
+  "tools",
+  "urgency",
+  "volume"
+]);
 
 export default async function AuditResultsPage({
   searchParams
@@ -42,6 +64,12 @@ export default async function AuditResultsPage({
       `/login?callbackUrl=${encodeURIComponent(buildResultsPath(params))}`
     );
   }
+
+  assertRateLimit({
+    key: `audit-results:${session.user.id}`,
+    limit: 30,
+    windowMs: 10 * 60 * 1000
+  });
 
   const dataset = await getAuditDataset();
   const result = scoreAudit(input, dataset);
@@ -92,13 +120,19 @@ function buildResultsPath(params: Record<string, string | string[] | undefined>)
   const searchParams = new URLSearchParams();
 
   for (const [key, value] of Object.entries(params)) {
+    if (!allowedResultParamKeys.has(key) || searchParams.toString().length > 1900) {
+      continue;
+    }
+
     if (Array.isArray(value)) {
-      value.forEach((item) => searchParams.append(key, item));
+      value
+        .slice(0, 20)
+        .forEach((item) => searchParams.append(key, item.slice(0, 1200)));
       continue;
     }
 
     if (value) {
-      searchParams.append(key, value);
+      searchParams.append(key, value.slice(0, 1200));
     }
   }
 
