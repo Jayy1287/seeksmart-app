@@ -4,26 +4,30 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   ArrowRight,
+  BadgeCheck,
   CheckCircle2,
+  ClipboardCheck,
   ExternalLink,
   Gauge,
   GitCompareArrows,
   Layers3,
+  SearchX,
   ShieldAlert,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  Table2
 } from "lucide-react";
 import { auth } from "@/auth";
 import { TrackedExternalLink } from "@/features/analytics/tracked-link";
-import { ToolCard } from "@/features/tools/tool-card";
 import { ToolLikeButton } from "@/features/tools/tool-like-button";
 import { ToolLogo } from "@/features/tools/tool-logo";
 import { attachToolLikeStates } from "@/server/tools/likes";
 import { getPublishedToolBySlug } from "@/server/tools/queries";
-import type { PublicToolDetail } from "@/shared/domain";
+import type { PublicToolDetail, ToolLikeState } from "@/shared/domain";
 import { AnimatedBar } from "@/components/motion/animated-bar";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { Reveal } from "@/components/motion/reveal";
+import { EmptyState } from "@/components/state-surfaces";
 
 export const dynamic = "force-dynamic";
 
@@ -91,90 +95,112 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   return (
     <main className="page-shell">
       <div className="app-container">
-        <Reveal className="surface-strong grid gap-8 rounded-2xl p-6 lg:grid-cols-[1fr_360px]">
-          <div>
-            <div className="flex flex-wrap items-center gap-3">
-              <Link className="text-sm font-medium text-accent" href="/tools">
-                Tools
-              </Link>
-              <span className="text-ink/30">/</span>
-              <Link
-                className="text-sm text-ink/55 hover:text-accent"
-                href={`/categories/${tool.category.slug}`}
-              >
-                {tool.category.name}
-              </Link>
+        <Reveal className="tool-detail-hero rounded-2xl p-6 md:p-7">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+            <div>
+              <div className="flex flex-wrap items-center gap-3 text-sm">
+                <Link className="font-medium text-accent" href="/tools">
+                  Tools
+                </Link>
+                <span className="text-ink/30">/</span>
+                <Link
+                  className="text-ink/55 hover:text-accent"
+                  href={`/categories/${tool.category.slug}`}
+                >
+                  {tool.category.name}
+                </Link>
+              </div>
+              <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center">
+                <ToolLogo logoUrl={tool.logoUrl} name={tool.name} size="lg" />
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-accent/70">
+                    Tool briefing
+                  </p>
+                  <h1 className="mt-2 text-4xl font-semibold leading-tight md:text-5xl">
+                    {tool.name}
+                  </h1>
+                </div>
+              </div>
+              <p className="mt-5 max-w-3xl text-lg leading-8 text-ink/70">
+                {tool.shortDescription}
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                <span className="status-pill">{formatPricing(tool.pricingType)}</span>
+                {tool.hasFreePlan ? <span className="status-pill">Free plan</span> : null}
+                {tool.isVerified ? (
+                  <span className="status-pill">
+                    <ShieldCheck aria-hidden="true" size={16} />
+                    Verified
+                  </span>
+                ) : null}
+                {tool.isFeatured ? (
+                  <span className="status-pill">
+                    <Sparkles aria-hidden="true" size={16} />
+                    Featured
+                  </span>
+                ) : null}
+              </div>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <ToolLikeButton
+                  isSignedIn={isSignedIn}
+                  state={tool.like}
+                  toolId={tool.id}
+                  toolName={tool.name}
+                  toolSlug={tool.slug}
+                  variant="detail"
+                />
+                <TrackedExternalLink
+                  className="secondary-button min-h-12"
+                  event="tool_website_clicked"
+                  href={tool.websiteUrl}
+                  properties={{
+                    toolSlug: tool.slug,
+                    source: "tool_detail_hero"
+                  }}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  Visit website
+                  <ExternalLink aria-hidden="true" size={17} />
+                </TrackedExternalLink>
+              </div>
             </div>
-            <div className="mt-5 flex items-center gap-4">
-              <ToolLogo logoUrl={tool.logoUrl} name={tool.name} size="lg" />
-              <h1 className="text-4xl font-semibold leading-tight md:text-5xl">
-                {tool.name}
-              </h1>
-            </div>
-            <p className="mt-5 max-w-3xl text-lg leading-8 text-ink/70">
-              {tool.shortDescription}
-            </p>
-            <div className="mt-6 flex flex-wrap gap-2">
-              <span className="status-pill">{formatPricing(tool.pricingType)}</span>
-              {tool.hasFreePlan ? <span className="status-pill">Free plan</span> : null}
-              {tool.isVerified ? (
-                <span className="status-pill">
-                  <ShieldCheck aria-hidden="true" size={16} />
-                  Verified
-                </span>
-              ) : null}
-              {tool.isFeatured ? (
-                <span className="status-pill">
-                  <Sparkles aria-hidden="true" size={16} />
-                  Featured
-                </span>
-              ) : null}
-            </div>
-            <div className="mt-6">
-              <ToolLikeButton
-                isSignedIn={isSignedIn}
-                state={tool.like}
-                toolId={tool.id}
-                toolName={tool.name}
-                toolSlug={tool.slug}
-                variant="detail"
-              />
-            </div>
-          </div>
 
-          <aside className="surface-panel rounded-xl p-5">
-            <h2 className="font-semibold">Decision snapshot</h2>
-            <p className="mt-2 text-sm leading-6 text-ink/60">
-              Evaluate this tool by workflow fit, budget fit, and review needs
-              before opening the vendor site.
-            </p>
-            <dl className="mt-5 grid gap-3 text-sm">
-              <SnapshotRow label="Category" value={tool.category.name} />
-              <SnapshotRow label="Pricing" value={formatPricing(tool.pricingType)} />
-              <SnapshotRow
-                label="Best mapped fit"
-                value={topUseCase ? `${topUseCase.name} (${topUseCase.fitScore})` : "Needs curation"}
-              />
-              <SnapshotRow
-                label="Editorial confidence"
-                value={tool.isVerified ? "Verified listing" : "Needs verification"}
-              />
-            </dl>
-            <TrackedExternalLink
-              className="primary-button mt-5 w-full"
-              event="tool_website_clicked"
-              href={tool.websiteUrl}
-              properties={{
-                toolSlug: tool.slug,
-                source: "tool_detail_snapshot"
-              }}
-              rel="noreferrer"
-              target="_blank"
-            >
-              Visit website
-              <ExternalLink aria-hidden="true" size={17} />
-            </TrackedExternalLink>
-          </aside>
+            <aside className="tool-detail-rail">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-accent/70">
+                    Decision snapshot
+                  </p>
+                  <h2 className="mt-2 text-xl font-semibold">
+                    {topUseCase ? "Shortlist ready" : "Research mode"}
+                  </h2>
+                </div>
+                <div className="fit-dial">
+                  <strong>
+                    {averageFit ? <AnimatedNumber value={averageFit} /> : "--"}
+                  </strong>
+                  <span>Avg fit</span>
+                </div>
+              </div>
+              <p className="mt-4 text-sm leading-6 text-ink/62">
+                Use this page to decide whether the tool deserves a pilot,
+                needs comparison, or should stay in research.
+              </p>
+              <dl className="mt-5 grid gap-3 text-sm">
+                <SnapshotRow label="Category" value={tool.category.name} />
+                <SnapshotRow label="Pricing" value={formatPricing(tool.pricingType)} />
+                <SnapshotRow
+                  label="Best mapped fit"
+                  value={topUseCase ? `${topUseCase.name} (${topUseCase.fitScore})` : "Needs curation"}
+                />
+                <SnapshotRow
+                  label="Editorial confidence"
+                  value={tool.isVerified ? "Verified listing" : "Needs verification"}
+                />
+              </dl>
+            </aside>
+          </div>
         </Reveal>
 
         <Reveal className="mt-6 grid gap-4 md:grid-cols-4">
@@ -204,7 +230,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
         </Reveal>
 
         <Reveal className="mt-6 grid gap-6 lg:grid-cols-[1fr_0.86fr]">
-          <div className="surface-panel rounded-xl p-6">
+          <div className="tool-detail-section rounded-xl p-6">
             <div className="flex items-center gap-2">
               <Layers3 aria-hidden="true" className="text-accent" size={20} />
               <h2 className="text-xl font-semibold">Overview</h2>
@@ -212,9 +238,26 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             <p className="mt-4 leading-8 text-ink/70">
               {tool.longDescription ?? tool.shortDescription}
             </p>
+            {tool.features.length > 0 ? (
+              <div className="mt-5 flex flex-wrap gap-2">
+                {tool.features.slice(0, 8).map((feature) => (
+                  <span className="status-pill" key={feature.id}>
+                    <BadgeCheck aria-hidden="true" size={14} />
+                    {feature.name}
+                  </span>
+                ))}
+              </div>
+            ) : null}
           </div>
-          <div className="surface-panel rounded-xl p-6">
-            <h2 className="text-xl font-semibold">Best for</h2>
+          <div className="tool-detail-section rounded-xl p-6">
+            <div className="flex items-center gap-2">
+              <ClipboardCheck
+                aria-hidden="true"
+                className="text-accent"
+                size={20}
+              />
+              <h2 className="text-xl font-semibold">Best for</h2>
+            </div>
             <div className="mt-4 grid gap-3">
               {bestForSignals(tool).map((signal) => (
                 <ChecklistItem key={signal}>{signal}</ChecklistItem>
@@ -224,10 +267,11 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
         </Reveal>
 
         {tool.useCases.length > 0 ? (
-          <Reveal className="surface-strong mt-6 rounded-xl p-6">
+          <Reveal className="surface-strong mt-6 rounded-2xl p-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
-                <p className="text-sm font-semibold uppercase text-accent">
+                <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase text-accent">
+                  <Table2 aria-hidden="true" size={16} />
                   Fit matrix
                 </p>
                 <h2 className="mt-1 text-xl font-semibold">
@@ -248,7 +292,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             <div className="mt-5 grid gap-3 md:hidden">
               {tool.useCases.map((useCase) => (
                 <Link
-                  className="rounded-xl border border-line bg-surface/72 p-4"
+                  className="comparison-mobile-card"
                   href={`/use-cases/${useCase.slug}`}
                   key={useCase.id}
                 >
@@ -261,7 +305,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                         {formatLevel(useCase.riskLevel)} risk
                       </p>
                     </div>
-                    <span className="rounded-lg bg-ink px-2.5 py-1.5 text-xs font-semibold text-paper">
+                    <span className="fit-score-badge">
                       <AnimatedNumber value={useCase.fitScore} />
                     </span>
                   </div>
@@ -273,9 +317,9 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               ))}
             </div>
 
-            <div className="mt-5 hidden overflow-x-auto rounded-xl border border-line md:block">
-              <table className="w-full min-w-[760px] border-collapse bg-surface/70 text-left text-sm">
-                <thead className="border-b border-line text-xs uppercase text-ink/50">
+            <div className="comparison-table-shell mt-5 hidden md:block">
+              <table className="decision-table">
+                <thead>
                   <tr>
                     <th className="px-4 py-3">Use case</th>
                     <th className="px-4 py-3">Fit</th>
@@ -287,7 +331,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                 </thead>
                 <tbody>
                   {tool.useCases.map((useCase) => (
-                    <tr className="border-b border-line last:border-b-0" key={useCase.id}>
+                    <tr key={useCase.id}>
                       <td className="px-4 py-4">
                         <Link
                           className="font-semibold text-accent hover:underline"
@@ -300,9 +344,14 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                         </p>
                       </td>
                       <td className="px-4 py-4">
-                        <span className="inline-flex whitespace-nowrap rounded-lg bg-ink px-2.5 py-1.5 text-xs font-semibold text-paper">
-                          {fitLabel(useCase.fitScore)} {useCase.fitScore}
-                        </span>
+                        <div className="grid min-w-28 gap-2">
+                          <span className="fit-score-badge w-fit">
+                            {fitLabel(useCase.fitScore)} {useCase.fitScore}
+                          </span>
+                          <span className="mini-meter" aria-hidden="true">
+                            <span style={{ width: `${useCase.fitScore}%` }} />
+                          </span>
+                        </div>
                       </td>
                       <td className="px-4 py-4">{formatLevel(useCase.effortLevel)}</td>
                       <td className="px-4 py-4">{formatLevel(useCase.riskLevel)}</td>
@@ -393,33 +442,37 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
           </div>
         </Reveal>
 
-        <section className="mt-10">
-          <div className="mb-4 flex items-end justify-between gap-4">
+        <section className="surface-strong mt-8 rounded-2xl p-6">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-sm font-medium uppercase text-accent">
+              <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase text-accent">
+                <GitCompareArrows aria-hidden="true" size={16} />
                 Compare
               </p>
               <h2 className="mt-2 text-xl font-semibold">Comparable tools</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/60">
+                Use this as a shortlist table: compare fit signal, pricing,
+                category, and verification before opening vendor sites.
+              </p>
             </div>
             <Link className="secondary-button" href="/tools">
-              <GitCompareArrows aria-hidden="true" size={16} />
               Browse all
             </Link>
           </div>
           {alternatives.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-3">
-              {alternatives.map((alternative) => (
-                <ToolCard
-                  isSignedIn={isSignedIn}
-                  key={alternative.id}
-                  tool={alternative}
-                />
-              ))}
-            </div>
+            <ComparableToolsTable
+              alternatives={alternatives}
+              isSignedIn={isSignedIn}
+            />
           ) : (
-            <div className="surface-panel rounded-xl p-6 text-sm text-ink/60">
-              Alternatives are not curated for this tool yet.
-            </div>
+            <EmptyState
+              className="mt-5"
+              description="This tool does not have curated alternatives yet. Use the full directory to compare tools in the same category."
+              eyebrow="Comparison pending"
+              icon={SearchX}
+              secondaryAction={{ href: "/tools", label: "Browse tools" }}
+              title="Alternatives are not mapped yet."
+            />
           )}
         </section>
 
@@ -440,6 +493,161 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
         </section>
       </div>
     </main>
+  );
+}
+
+type ComparableTool = PublicToolDetail["alternatives"][number] & {
+  like?: ToolLikeState;
+};
+
+function ComparableToolsTable({
+  alternatives,
+  isSignedIn
+}: {
+  alternatives: ComparableTool[];
+  isSignedIn: boolean;
+}) {
+  return (
+    <>
+      <div className="mt-5 grid gap-3 md:hidden">
+        {alternatives.map((alternative) => (
+          <article className="comparison-mobile-card" key={alternative.id}>
+            <div className="flex items-start justify-between gap-3">
+              <Link
+                className="flex min-w-0 items-start gap-3"
+                href={`/tools/${alternative.slug}`}
+              >
+                <ToolLogo
+                  logoUrl={alternative.logoUrl}
+                  name={alternative.name}
+                  size="sm"
+                />
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-ink">{alternative.name}</h3>
+                  <p className="mt-1 text-xs text-ink/50">
+                    {alternative.category.name}
+                  </p>
+                </div>
+              </Link>
+              <span className="fit-score-badge">
+                {alternative.popularityScore}
+              </span>
+            </div>
+            <p className="mt-3 text-sm leading-6 text-ink/62">
+              {alternative.shortDescription}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <span className="status-pill">
+                {formatPricing(alternative.pricingType)}
+              </span>
+              {alternative.isVerified ? (
+                <span className="status-pill">Verified</span>
+              ) : null}
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <Link className="secondary-button" href={`/tools/${alternative.slug}`}>
+                Details
+              </Link>
+              <TrackedExternalLink
+                className="secondary-button"
+                event="tool_website_clicked"
+                href={alternative.websiteUrl}
+                properties={{
+                  source: "tool_detail_comparison_mobile",
+                  toolSlug: alternative.slug
+                }}
+                rel="noreferrer"
+                target="_blank"
+              >
+                Website
+              </TrackedExternalLink>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="comparison-table-shell mt-5 hidden md:block">
+        <table className="decision-table">
+          <thead>
+            <tr>
+              <th className="px-4 py-3">Tool</th>
+              <th className="px-4 py-3">Score</th>
+              <th className="px-4 py-3">Pricing</th>
+              <th className="px-4 py-3">Category</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {alternatives.map((alternative) => (
+              <tr key={alternative.id}>
+                <td className="px-4 py-4">
+                  <Link
+                    className="flex min-w-0 items-start gap-3"
+                    href={`/tools/${alternative.slug}`}
+                  >
+                    <ToolLogo
+                      logoUrl={alternative.logoUrl}
+                      name={alternative.name}
+                      size="sm"
+                    />
+                    <div className="min-w-0">
+                      <span className="font-semibold text-ink">
+                        {alternative.name}
+                      </span>
+                      <p className="mt-1 line-clamp-2 max-w-md text-xs leading-5 text-ink/52">
+                        {alternative.shortDescription}
+                      </p>
+                    </div>
+                  </Link>
+                </td>
+                <td className="px-4 py-4">
+                  <div className="grid min-w-28 gap-2">
+                    <span className="fit-score-badge w-fit">
+                      {alternative.popularityScore}
+                    </span>
+                    <span className="mini-meter" aria-hidden="true">
+                      <span
+                        style={{ width: `${alternative.popularityScore}%` }}
+                      />
+                    </span>
+                  </div>
+                </td>
+                <td className="px-4 py-4">
+                  {formatPricing(alternative.pricingType)}
+                  {alternative.hasFreePlan ? (
+                    <p className="mt-1 text-xs text-ink/48">Free plan</p>
+                  ) : null}
+                </td>
+                <td className="px-4 py-4">{alternative.category.name}</td>
+                <td className="px-4 py-4">
+                  {alternative.isVerified ? "Verified" : "Needs verification"}
+                </td>
+                <td className="px-4 py-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Link
+                      className="secondary-button"
+                      href={`/tools/${alternative.slug}`}
+                    >
+                      Details
+                    </Link>
+                    {alternative.like ? (
+                      <ToolLikeButton
+                        isSignedIn={isSignedIn}
+                        state={alternative.like}
+                        toolId={alternative.id}
+                        toolName={alternative.name}
+                        toolSlug={alternative.slug}
+                      />
+                    ) : null}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
 

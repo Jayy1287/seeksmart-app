@@ -1,8 +1,19 @@
 import type { Metadata } from "next";
+import type { Route } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { BarChart3, Clock3, Heart, Sparkles, UserRound } from "lucide-react";
+import {
+  ArrowRight,
+  BarChart3,
+  Clock3,
+  Heart,
+  LayoutDashboard,
+  ListChecks,
+  Mail,
+  Plus
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { auth } from "@/auth";
 import { listSavedAuditRuns } from "@/server/audit-runs/queries";
 import { listLikedToolsForUser, type LikedTool } from "@/server/tools/likes";
@@ -11,6 +22,7 @@ import { ToolLogo } from "@/features/tools/tool-logo";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
+import { EmptyState } from "@/components/state-surfaces";
 
 export const dynamic = "force-dynamic";
 
@@ -37,155 +49,206 @@ export default async function DashboardPage() {
 
   return (
     <main className="page-shell">
-      <div className="app-container grid gap-6">
-        <Reveal className="surface-strong rounded-2xl p-6">
-          <p className="eyebrow">
-            <UserRound aria-hidden="true" size={14} />
-            Dashboard
-          </p>
-          <div className="mt-4 grid gap-5 lg:grid-cols-[1fr_320px] lg:items-end">
-            <div>
-              <h1 className="max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">
-                {session.user.name
-                  ? `${session.user.name}'s AI decisions`
-                  : "Your AI decisions"}
-              </h1>
-              <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-                Saved audit briefs stay attached to your account so you can
-                revisit the context, shortlist, and pilot plan later.
+      <div className="app-container">
+        <Reveal className="workspace-shell grid gap-6 lg:grid-cols-[270px_minmax(0,1fr)]">
+          <aside className="workspace-sidebar rounded-2xl p-5">
+            <p className="eyebrow">
+              <LayoutDashboard aria-hidden="true" size={14} />
+              Workspace
+            </p>
+            <h1 className="mt-4 text-3xl font-semibold leading-tight">
+              {session.user.name ? session.user.name : "Decision desk"}
+            </h1>
+            <p className="mt-3 text-sm leading-6 text-ink/62">
+              Your saved briefs and liked tools stay here so shortlists do not
+              get lost between research sessions.
+            </p>
+
+            <div className="workspace-account mt-5">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Mail aria-hidden="true" size={15} />
+                Account
+              </div>
+              <p className="mt-2 break-words text-sm text-ink/60">
+                {session.user.email ?? "Google account"}
+              </p>
+              <p className="mt-2 text-xs font-semibold uppercase text-accent/70">
+                {formatRole(session.user.role)}
               </p>
             </div>
-            <MotionLink className="primary-button min-h-12" href="/audit/start">
-              Start new audit
-            </MotionLink>
-          </div>
-        </Reveal>
 
-        <Reveal className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          <DashboardMetric
-            icon={BarChart3}
-            label="Saved audits"
-            value={<AnimatedNumber value={auditRuns.length} />}
-          />
-          <DashboardMetric
-            icon={Heart}
-            label="Liked tools"
-            value={<AnimatedNumber value={likedTools.length} />}
-          />
-          <DashboardMetric
-            icon={Sparkles}
-            label="Role"
-            value={formatRole(session.user.role)}
-          />
-          <DashboardMetric
-            icon={Clock3}
-            label="Signed in as"
-            value={session.user.email ?? "Google account"}
-          />
-        </Reveal>
+            <nav aria-label="Workspace actions" className="mt-5 grid gap-2">
+              <MotionLink className="primary-button w-full" href="/audit/start">
+                <Plus aria-hidden="true" size={16} />
+                New audit
+              </MotionLink>
+              <Link className="secondary-button w-full" href="/tools">
+                Browse tools
+              </Link>
+              <Link className="secondary-button w-full" href="/use-cases">
+                Use cases
+              </Link>
+            </nav>
+          </aside>
 
-        <Reveal className="surface-panel rounded-2xl p-5 md:p-6">
-          <div className="flex flex-col gap-3 border-b border-line pb-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase text-accent">
-                Profile
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold">Liked tools</h2>
+          <section className="grid gap-6">
+            <div className="workspace-hero rounded-2xl p-6">
+              <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-accent/70">
+                    Decision workspace
+                  </p>
+                  <h2 className="mt-3 max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">
+                    Continue from the last AI buying decision.
+                  </h2>
+                  <p className="mt-3 max-w-2xl leading-7 text-ink/65">
+                    Review liked tools, reopen saved audits, and start the next
+                    pilot brief without returning to a blank page.
+                  </p>
+                </div>
+                <MotionLink className="primary-button min-h-12" href="/audit/start">
+                  Start new audit
+                  <ArrowRight aria-hidden="true" size={16} />
+                </MotionLink>
+              </div>
             </div>
-            <Link className="secondary-button" href="/tools">
-              Browse tools
-            </Link>
-          </div>
 
-          {likedTools.length > 0 ? (
-            <div className="mt-5 grid gap-3">
-              {likedTools.map((tool) => (
-                <LikedToolItem key={tool.id} tool={tool} />
-              ))}
-            </div>
-          ) : (
-            <div className="py-12 text-center">
-              <Heart
-                aria-hidden="true"
-                className="mx-auto text-accent"
-                size={24}
+            <div className="grid gap-4 md:grid-cols-3">
+              <DashboardMetric
+                icon={BarChart3}
+                label="Saved audits"
+                value={<AnimatedNumber value={auditRuns.length} />}
               />
-              <h3 className="mt-4 font-semibold">No liked tools yet</h3>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
-                Like tools while browsing and they will appear here for quick
-                comparison later.
-              </p>
-              <Link className="primary-button mt-5" href="/tools">
-                Find tools to like
-              </Link>
+              <DashboardMetric
+                icon={Heart}
+                label="Liked tools"
+                value={<AnimatedNumber value={likedTools.length} />}
+              />
+              <DashboardMetric
+                icon={Clock3}
+                label="Next action"
+                value={auditRuns.length > 0 ? "Review brief" : "Run audit"}
+              />
             </div>
-          )}
-        </Reveal>
 
-        <Reveal className="surface-panel rounded-2xl p-5 md:p-6">
-          <div className="flex flex-col gap-3 border-b border-line pb-5 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase text-accent">
-                Audit history
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold">
-                Recent saved briefs
-              </h2>
-            </div>
-            <Link className="secondary-button" href="/audit/questions">
-              Run audit
-            </Link>
-          </div>
+            <div className="grid gap-6 xl:grid-cols-[1.06fr_0.94fr]">
+              <section className="workspace-panel rounded-2xl p-5 md:p-6">
+                <PanelHeader
+                  actionHref="/tools"
+                  actionLabel="Browse"
+                  eyebrow="Shortlist"
+                  icon={Heart}
+                  title="Liked tools"
+                />
+                {likedTools.length > 0 ? (
+                  <div className="mt-5 grid gap-3">
+                    {likedTools.map((tool) => (
+                      <LikedToolItem key={tool.id} tool={tool} />
+                    ))}
+                  </div>
+                ) : (
+                  <EmptyState
+                    action={{ href: "/tools", label: "Find tools" }}
+                    className="mt-5"
+                    description="Like tools while browsing and they will appear here as a working shortlist for later comparison."
+                    eyebrow="Shortlist empty"
+                    icon={Heart}
+                    title="No liked tools yet."
+                  />
+                )}
+              </section>
 
-          {auditRuns.length > 0 ? (
-            <div className="divide-y divide-line">
-              {auditRuns.map((auditRun) => (
-                <Link
-                  className="grid gap-3 py-5 transition hover:text-accent md:grid-cols-[1fr_190px_150px]"
-                  href={`/dashboard/audits/${auditRun.id}`}
-                  key={auditRun.id}
-                >
-                  <div>
-                    <h3 className="font-semibold text-ink">
-                      {auditRun.title}
-                    </h3>
-                    <p className="mt-1 text-sm leading-6 text-ink/58">
-                      {auditRun.topOpportunityName ??
-                        "Saved AI pilot recommendation"}
-                    </p>
+              <section className="workspace-panel rounded-2xl p-5 md:p-6">
+                <PanelHeader
+                  actionHref="/audit/questions"
+                  actionLabel="Run audit"
+                  eyebrow="History"
+                  icon={ListChecks}
+                  title="Saved briefs"
+                />
+                {auditRuns.length > 0 ? (
+                  <div className="mt-4 divide-y divide-line/70">
+                    {auditRuns.map((auditRun) => (
+                      <AuditRunItem auditRun={auditRun} key={auditRun.id} />
+                    ))}
                   </div>
-                  <div className="text-sm leading-6 text-ink/58">
-                    {auditRun.readinessLevel
-                      ? `${auditRun.readinessLevel} (${auditRun.readinessScore ?? "-"})`
-                      : "Readiness captured"}
-                  </div>
-                  <div className="text-sm text-ink/50 md:text-right">
-                    {formatDate(auditRun.createdAt)}
-                  </div>
-                </Link>
-              ))}
+                ) : (
+                  <EmptyState
+                    action={{ href: "/audit/questions", label: "Start first audit" }}
+                    className="mt-5"
+                    description="Run an audit while signed in and SeekSmart will save the brief, shortlist, and readiness context here."
+                    eyebrow="No saved briefs"
+                    icon={BarChart3}
+                    title="Your audit history is empty."
+                  />
+                )}
+              </section>
             </div>
-          ) : (
-            <div className="py-12 text-center">
-              <h3 className="font-semibold">No saved audits yet</h3>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
-                Run an audit while signed in and SeekSmart will save the brief
-                here automatically.
-              </p>
-              <Link className="primary-button mt-5" href="/audit/questions">
-                Start first audit
-              </Link>
-            </div>
-          )}
+          </section>
         </Reveal>
       </div>
     </main>
   );
 }
 
+type SavedAuditRun = Awaited<ReturnType<typeof listSavedAuditRuns>>[number];
+
+function PanelHeader({
+  actionHref,
+  actionLabel,
+  eyebrow,
+  icon: Icon,
+  title
+}: {
+  actionHref: Route;
+  actionLabel: string;
+  eyebrow: string;
+  icon: LucideIcon;
+  title: string;
+}) {
+  return (
+    <div className="flex flex-col gap-3 border-b border-line/60 pb-4 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-accent/75">
+          <Icon aria-hidden="true" size={15} />
+          {eyebrow}
+        </p>
+        <h2 className="mt-2 text-2xl font-semibold">{title}</h2>
+      </div>
+      <Link className="secondary-button" href={actionHref}>
+        {actionLabel}
+      </Link>
+    </div>
+  );
+}
+
+function AuditRunItem({ auditRun }: { auditRun: SavedAuditRun }) {
+  return (
+    <Link
+      className="workspace-list-row grid gap-3 py-4 md:grid-cols-[1fr_150px]"
+      href={`/dashboard/audits/${auditRun.id}`}
+    >
+      <div>
+        <h3 className="font-semibold text-ink">{auditRun.title}</h3>
+        <p className="mt-1 text-sm leading-6 text-ink/58">
+          {auditRun.topOpportunityName ?? "Saved AI pilot recommendation"}
+        </p>
+      </div>
+      <div className="text-sm text-ink/55 md:text-right">
+        <p className="font-medium text-ink/70">
+          {auditRun.readinessLevel
+            ? `${auditRun.readinessLevel} (${auditRun.readinessScore ?? "-"})`
+            : "Readiness saved"}
+        </p>
+        <p className="mt-1 text-xs">{formatDate(auditRun.createdAt)}</p>
+      </div>
+    </Link>
+  );
+}
+
 function LikedToolItem({ tool }: { tool: LikedTool }) {
   return (
-    <article className="rounded-xl border border-line bg-surface/70 p-4 transition hover:border-accent/60 hover:bg-surface">
+    <article className="workspace-list-card">
       <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
         <Link
           className="flex min-w-0 items-start gap-3"
@@ -225,12 +288,12 @@ function DashboardMetric({
   label,
   value
 }: {
-  icon: typeof BarChart3;
+  icon: LucideIcon;
   label: string;
   value: ReactNode;
 }) {
   return (
-    <div className="metric-tile rounded-xl p-4">
+    <div className="workspace-metric rounded-xl p-4">
       <div className="flex items-center justify-between gap-3">
         <p className="text-xs font-semibold uppercase text-ink/48">{label}</p>
         <Icon aria-hidden="true" className="text-accent" size={18} />

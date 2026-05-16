@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { UrlObject } from "node:url";
 import Link from "next/link";
-import { Filter, SlidersHorizontal } from "lucide-react";
+import { Filter, SearchX, SlidersHorizontal } from "lucide-react";
 import { auth } from "@/auth";
 import { listToolsQuerySchema } from "@/lib/validation";
 import { listCategories } from "@/server/categories/queries";
@@ -11,6 +11,7 @@ import { ToolCard } from "@/features/tools/tool-card";
 import { ToolFilterBar } from "@/features/tools/tool-filter-bar";
 import { Reveal } from "@/components/motion/reveal";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
+import { EmptyState } from "@/components/state-surfaces";
 
 export const dynamic = "force-dynamic";
 
@@ -70,93 +71,93 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
   return (
     <main className="page-shell">
       <section className="app-container">
-      <Reveal className="mb-8 flex flex-col gap-5 border-b border-line/50 pb-8 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="eyebrow">
-            <SlidersHorizontal aria-hidden="true" size={14} />
-            Tool directory
-          </p>
-          <h1 className="mt-3 text-4xl font-semibold">
-            AI tools for known workflows
-          </h1>
-          <p className="mt-3 max-w-2xl text-ink/65">
-            Browse curated tools by category, pricing, and fit once the
-            business use case is clear.
-          </p>
-        </div>
-        <div className="metric-tile rounded-2xl px-4 py-3 text-sm text-ink/60">
-          <span className="font-semibold text-ink">{result.total}</span>{" "}
-          matching tools
-        </div>
-      </Reveal>
-
-      <Reveal delay={0.05}>
-        <ToolFilterBar
-          categories={categories}
-          initialCategory={params.category}
-          initialPricing={params.pricing}
-          initialQuery={params.q}
-        />
-      </Reveal>
-
-      <div className="my-5 flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-wrap gap-2">
-          {params.q ? <FilterChip label={`Search: ${params.q}`} /> : null}
-          {activeCategory ? (
-            <FilterChip label={`Category: ${activeCategory.name}`} />
-          ) : null}
-          {params.pricing ? (
-            <FilterChip label={`Pricing: ${formatPricing(params.pricing)}`} />
-          ) : null}
-          {activeFilterCount === 0 ? (
-            <span className="inline-flex items-center gap-2 text-ink/55">
-              <Filter aria-hidden="true" size={15} />
-              Showing all published tools
-            </span>
-          ) : null}
-        </div>
-        {activeFilterCount > 0 ? (
-          <Link className="font-medium text-accent" href="/tools">
-            Reset filters
-          </Link>
-        ) : null}
-      </div>
-
-      {tools.length > 0 ? (
-        <>
-          <div className="mb-4 text-sm text-ink/55">
-            Showing {startResult}-{endResult} of {result.total}
+        <Reveal className="mb-7 flex flex-col gap-5 border-b border-line/50 pb-7 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="eyebrow">
+              <SlidersHorizontal aria-hidden="true" size={14} />
+              Tool directory
+            </p>
+            <h1 className="mt-3 max-w-[16ch] text-3xl font-semibold leading-tight sm:max-w-none sm:text-4xl">
+              AI tools for known workflows
+            </h1>
+            <p className="mt-3 max-w-[21rem] leading-7 text-ink/65 sm:max-w-2xl">
+              Browse curated tools by category, pricing, and fit once the
+              business use case is clear.
+            </p>
           </div>
-          <Stagger className="grid gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
-            {tools.map((tool) => (
-              <StaggerItem key={tool.id}>
-                <ToolCard isSignedIn={isSignedIn} tool={tool} />
-              </StaggerItem>
-            ))}
-          </Stagger>
-          <Pagination
-            currentPage={result.page}
-            hasNextPage={result.hasNextPage}
-            hasPreviousPage={result.hasPreviousPage}
-            params={params}
-            totalPages={result.totalPages}
+          <div className="metric-tile rounded-2xl px-4 py-3 text-sm text-ink/60">
+            <span className="font-semibold text-ink">{result.total}</span>{" "}
+            matching tools
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.05}>
+          <ToolFilterBar
+            categories={categories}
+            initialCategory={params.category}
+            initialPricing={params.pricing}
+            initialQuery={params.q}
           />
-        </>
-      ) : (
-        <div className="surface-panel rounded-xl p-8 text-center">
-          <h2 className="font-semibold">No tools found</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
-            No published tools match the current filters. Try a broader search
-            or reset the filters to scan the full directory.
-          </p>
-          <Link
-            className="primary-button mt-5"
-            href="/tools"
-          >
-            Reset filters
-          </Link>
+        </Reveal>
+
+        <div className="my-5 flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap gap-2">
+            {params.q ? <FilterChip label={`Search: ${params.q}`} /> : null}
+            {activeCategory ? (
+              <FilterChip label={`Category: ${activeCategory.name}`} />
+            ) : null}
+            {params.pricing ? (
+              <FilterChip label={`Pricing: ${formatPricing(params.pricing)}`} />
+            ) : null}
+            {activeFilterCount === 0 ? (
+              <span className="inline-flex items-center gap-2 text-ink/55">
+                <Filter aria-hidden="true" size={15} />
+                Showing all published tools
+              </span>
+            ) : null}
+          </div>
+          {activeFilterCount > 0 ? (
+            <Link className="font-medium text-accent" href="/tools">
+              Reset filters
+            </Link>
+          ) : null}
         </div>
-      )}
+
+        {tools.length > 0 ? (
+          <>
+            <div className="mb-4 flex flex-col gap-2 border-y border-line/40 py-3 text-sm text-ink/55 sm:flex-row sm:items-center sm:justify-between">
+              <span>
+                Showing {startResult}-{endResult} of {result.total}
+              </span>
+              <span className="text-ink/45">
+                Ranked by featured status, popularity, and verification.
+              </span>
+            </div>
+            <Stagger className="grid gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
+              {tools.map((tool) => (
+                <StaggerItem key={tool.id}>
+                  <ToolCard isSignedIn={isSignedIn} tool={tool} />
+                </StaggerItem>
+              ))}
+            </Stagger>
+            <Pagination
+              currentPage={result.page}
+              hasNextPage={result.hasNextPage}
+              hasPreviousPage={result.hasPreviousPage}
+              params={params}
+              totalPages={result.totalPages}
+            />
+          </>
+        ) : (
+          <EmptyState
+            action={{ href: "/tools", label: "Reset filters" }}
+            description="No published tools match the current filter set. Remove one constraint or search by a broader workflow term."
+            eyebrow="No matching tools"
+            icon={SearchX}
+            secondaryAction={{ href: "/audit/start", label: "Run the audit" }}
+            title="This shortlist is too narrow."
+          />
+        )}
       </section>
     </main>
   );

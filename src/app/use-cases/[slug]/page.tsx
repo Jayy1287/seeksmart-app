@@ -8,7 +8,9 @@ import {
   ClipboardCheck,
   Gauge,
   Layers3,
+  SearchX,
   ShieldAlert,
+  Table2,
   Target
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -26,6 +28,7 @@ import type { ToolLikeState } from "@/shared/domain";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
+import { EmptyState } from "@/components/state-surfaces";
 
 export const dynamic = "force-dynamic";
 
@@ -244,7 +247,8 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
             <>
               <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                 <div>
-                  <p className="text-sm font-semibold uppercase text-accent">
+                  <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase text-accent">
+                    <Table2 aria-hidden="true" size={16} />
                     Tool shortlist
                   </p>
                   <h2 className="mt-1 text-xl font-semibold">
@@ -258,7 +262,7 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
                   </Link>
                 ) : null}
               </div>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 md:hidden">
                 {tools.slice(0, 6).map((tool) => (
                   <ToolFitCard
                     isSignedIn={isSignedIn}
@@ -267,14 +271,19 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
                   />
                 ))}
               </div>
+              <ToolFitComparisonTable
+                isSignedIn={isSignedIn}
+                tools={tools.slice(0, 8)}
+              />
             </>
           ) : (
-            <div className="surface-panel rounded-xl p-8 text-center">
-              <h2 className="font-semibold">No mapped tools yet</h2>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
-                This use case is ready for curated tool mappings.
-              </p>
-            </div>
+            <EmptyState
+              description="This use case is ready for editorial tool mappings. Browse the broader directory while the shortlist is curated."
+              eyebrow="No mapped tools"
+              icon={SearchX}
+              secondaryAction={{ href: "/tools", label: "Browse tools" }}
+              title="No mapped tools yet."
+            />
           )}
         </Reveal>
       </div>
@@ -348,6 +357,93 @@ function ToolFitCard({
         />
       ) : null}
     </article>
+  );
+}
+
+function ToolFitComparisonTable({
+  isSignedIn,
+  tools
+}: {
+  isSignedIn: boolean;
+  tools: Array<
+    PublicUseCaseToolFit & {
+      like?: ToolLikeState;
+    }
+  >;
+}) {
+  return (
+    <div className="comparison-table-shell hidden md:block">
+      <table className="decision-table">
+        <thead>
+          <tr>
+            <th className="px-4 py-3">Tool</th>
+            <th className="px-4 py-3">Fit</th>
+            <th className="px-4 py-3">Best use</th>
+            <th className="px-4 py-3">Pricing</th>
+            <th className="px-4 py-3">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tools.map((tool) => (
+            <tr key={tool.id}>
+              <td className="px-4 py-4">
+                <Link
+                  className="flex min-w-0 items-start gap-3"
+                  href={`/tools/${tool.slug}`}
+                >
+                  <ToolLogo logoUrl={tool.logoUrl} name={tool.name} size="sm" />
+                  <div className="min-w-0">
+                    <span className="font-semibold text-ink">{tool.name}</span>
+                    <p className="mt-1 text-xs text-ink/50">
+                      {tool.category.name}
+                    </p>
+                  </div>
+                </Link>
+              </td>
+              <td className="px-4 py-4">
+                <div className="grid min-w-28 gap-2">
+                  <span className="fit-score-badge w-fit">
+                    <AnimatedNumber value={tool.fitScore} />
+                  </span>
+                  <span className="mini-meter" aria-hidden="true">
+                    <span style={{ width: `${tool.fitScore}%` }} />
+                  </span>
+                </div>
+              </td>
+              <td className="px-4 py-4">
+                <p className="max-w-sm text-sm leading-6">
+                  {tool.bestFor ??
+                    tool.recommendationNote ??
+                    `Mapped to ${tool.category.name.toLowerCase()} workflows.`}
+                </p>
+              </td>
+              <td className="px-4 py-4">
+                {formatPricing(tool.pricingType)}
+                {tool.hasFreePlan ? (
+                  <p className="mt-1 text-xs text-ink/48">Free plan</p>
+                ) : null}
+              </td>
+              <td className="px-4 py-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link className="secondary-button" href={`/tools/${tool.slug}`}>
+                    Details
+                  </Link>
+                  {tool.like ? (
+                    <ToolLikeButton
+                      isSignedIn={isSignedIn}
+                      state={tool.like}
+                      toolId={tool.id}
+                      toolName={tool.name}
+                      toolSlug={tool.slug}
+                    />
+                  ) : null}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
