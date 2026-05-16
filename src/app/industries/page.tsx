@@ -60,7 +60,7 @@ export default async function IndustriesPage() {
           {industries.map((industry) => {
             return (
               <article
-                className="decision-card flex h-full flex-col p-5 pl-6"
+                className="decision-card flex h-full flex-col p-6"
                 id={industry.slug}
                 key={industry.slug}
               >
@@ -110,12 +110,12 @@ export default async function IndustriesPage() {
                   <span>{industry.cautions ?? "Cautions need curation."}</span>
                 </div>
                 <div className="decision-card-footer flex items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-2 text-xs font-bold uppercase text-ink/46">
+                  <span className="inline-flex items-center gap-2 text-xs font-medium text-ink/50">
                     <MapPinned aria-hidden="true" size={14} />
                     Starter map
                   </span>
                   <MotionLink
-                    className="inline-flex items-center gap-1 text-sm font-bold text-accent transition hover:translate-x-0.5"
+                    className="inline-flex items-center gap-1 text-sm font-medium text-accent/85 transition hover:translate-x-0.5 hover:text-accent"
                     href={`/industries/${industry.slug}`}
                   >
                     View map

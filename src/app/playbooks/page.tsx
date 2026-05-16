@@ -52,7 +52,7 @@ export default function PlaybooksPage() {
 
             return (
               <MotionLink
-                className="decision-card group flex h-full min-h-[20rem] flex-col p-5 pl-6"
+                className="decision-card group flex h-full min-h-[20rem] flex-col p-6"
                 href={`/playbooks/${playbook.slug}`}
                 key={playbook.slug}
               >
@@ -101,7 +101,7 @@ export default function PlaybooksPage() {
                   ))}
                 </div>
                 <div className="decision-card-footer">
-                  <span className="inline-flex items-center gap-1 text-sm font-bold text-accent transition group-hover:translate-x-0.5">
+                  <span className="inline-flex items-center gap-1 text-sm font-medium text-accent/85 transition group-hover:translate-x-0.5 group-hover:text-accent">
                     Open playbook
                     <ArrowRight aria-hidden="true" size={14} />
                   </span>

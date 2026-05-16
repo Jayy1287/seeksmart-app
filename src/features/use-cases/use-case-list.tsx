@@ -11,7 +11,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
     <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
       {useCases.map((useCase, index) => (
         <MotionLink
-          className="decision-card group flex min-h-[18rem] flex-col p-5 pl-6"
+          className="decision-card group flex min-h-[18rem] flex-col p-6"
           href={`/use-cases/${useCase.slug}`}
           key={useCase.id}
         >
@@ -51,7 +51,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
               `Browse AI tools for ${useCase.name.toLowerCase()}.`}
           </p>
           <div className="decision-card-footer">
-            <div className="grid grid-cols-2 gap-2 text-xs font-bold uppercase text-ink/54">
+            <div className="grid grid-cols-2 gap-2 text-xs font-medium text-ink/55">
               <span className="inline-flex items-center gap-1.5">
                 <Gauge aria-hidden="true" className="text-accent" size={14} />
                 {formatLevel(useCase.effortLevel)} effort
@@ -65,7 +65,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
                 {formatLevel(useCase.riskLevel)} risk
               </span>
             </div>
-            <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-accent transition group-hover:translate-x-0.5">
+            <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent/85 transition group-hover:translate-x-0.5 group-hover:text-accent">
               View workflow
               <ArrowRight aria-hidden="true" size={14} />
             </span>

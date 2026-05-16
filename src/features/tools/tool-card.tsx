@@ -20,14 +20,19 @@ type ToolCardProps = {
 
 export function ToolCard({ isSignedIn = false, tool }: ToolCardProps) {
   const titleParts = splitFinalWord(tool.name);
+  const signalBadge = tool.isFeatured
+    ? { icon: Sparkles, label: "Featured" }
+    : tool.popularityScore >= 80
+      ? { icon: Flame, label: "Trending" }
+      : null;
 
   return (
-    <article className="decision-card group flex h-full min-h-[19rem] flex-col p-5 pl-6">
+    <article className="decision-card group flex h-full min-h-[19rem] flex-col p-6">
       <div className="flex items-start justify-between gap-4">
         <div className="flex min-w-0 items-start gap-3">
           <ToolLogo logoUrl={tool.logoUrl} name={tool.name} />
           <div className="min-w-0">
-            <p className="decision-card-kicker">Tool signal</p>
+            <p className="decision-card-kicker">Tool</p>
             <h2 className="decision-card-title mt-1 text-lg">
               {titleParts.leading ? `${titleParts.leading} ` : null}
               <span className="inline-flex items-center gap-1 whitespace-nowrap">
@@ -59,11 +64,9 @@ export function ToolCard({ isSignedIn = false, tool }: ToolCardProps) {
           <Gauge aria-hidden="true" size={13} />
           {formatPricing(tool.pricingType)}
         </span>
-        {tool.isFeatured ? (
-          <Badge icon={Sparkles} label="Featured" />
+        {signalBadge ? (
+          <Badge icon={signalBadge.icon} label={signalBadge.label} />
         ) : null}
-        {tool.popularityScore >= 80 ? <Badge icon={Flame} label="Trending" /> : null}
-        {tool.hasFreePlan ? <Badge label="Free plan" /> : null}
       </div>
       <p className="decision-card-copy mt-4 flex-1 text-sm">
         {tool.shortDescription}
@@ -73,9 +76,6 @@ export function ToolCard({ isSignedIn = false, tool }: ToolCardProps) {
       </div>
       <div className="decision-card-footer flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold uppercase text-ink/42">
-            Decision fit
-          </span>
           {tool.like ? (
             <ToolLikeButton
               isSignedIn={isSignedIn}
@@ -87,7 +87,7 @@ export function ToolCard({ isSignedIn = false, tool }: ToolCardProps) {
           ) : null}
         </div>
         <Link
-          className="inline-flex items-center gap-1 text-sm font-bold text-accent transition group-hover:translate-x-0.5"
+          className="inline-flex items-center gap-1 text-sm font-medium text-accent/85 transition group-hover:translate-x-0.5 group-hover:text-accent"
           href={`/tools/${tool.slug}`}
         >
           View details
@@ -105,7 +105,7 @@ type BadgeProps = {
 
 function Badge({ icon: Icon, label }: BadgeProps) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-accent/10 px-2.5 py-1 text-xs font-medium text-accent ring-1 ring-accent/15">
+    <span className="inline-flex items-center gap-1 rounded-full bg-accent/[0.07] px-2.5 py-1 text-xs font-normal text-accent/75 ring-1 ring-accent/10">
       {Icon ? <Icon aria-hidden={true} size={13} /> : null}
       {label}
     </span>
