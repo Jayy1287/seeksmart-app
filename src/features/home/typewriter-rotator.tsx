@@ -4,9 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useReducedMotion } from "motion/react";
 
 const phrases = [
-  "workflow audits",
   "tool shortlists",
-  "practical buying calls"
+  "use cases",
+  "opportunities",
+  "playbooks"
 ];
 
 const typeDelayMs = 58;
@@ -71,8 +72,8 @@ export function TypewriterRotator() {
   }, [characterCount, mode, phrase.length, shouldReduceMotion]);
 
   return (
-    <p className="hero-typewriter" aria-label="Decision support for workflow audits, tool shortlists, and practical buying calls.">
-      <span>Decision support for</span>
+    <p className="hero-typewriter" aria-label="Decision engine for AI with tool shortlists, use cases, opportunities, and playbooks.">
+      <span>Decision engine for AI with</span>
       <span aria-hidden="true" className="hero-typewriter-text">
         {visibleText}
       </span>

@@ -1105,7 +1105,7 @@ textarea {
   }
 
   .tool-filter-shell {
-    border-radius: 1.35rem;
+    border-radius: 1.85rem;
     border: 1px solid rgb(var(--color-line) / 0.6);
     background: rgb(255 255 250 / 0.66);
     padding: 0.75rem;

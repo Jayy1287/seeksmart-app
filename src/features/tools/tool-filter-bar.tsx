@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
 import type { Route } from "next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import type { PricingType, PublicCategory } from "@/shared/domain";
 
@@ -57,29 +57,8 @@ export function ToolFilterBar({
 
   return (
     <div className="tool-filter-shell">
-      <div className="tool-filter-header">
-        <span className="inline-flex items-center gap-2">
-          <SlidersHorizontal aria-hidden="true" size={15} />
-          Filters
-        </span>
-        <span aria-live="polite" className="min-h-5 text-xs text-ink/45">
-          <AnimatePresence initial={false}>
-            {isPending ? (
-              <motion.span
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -3 }}
-                initial={{ opacity: 0, y: 3 }}
-                transition={{ duration: 0.16 }}
-              >
-                Updating results
-              </motion.span>
-            ) : null}
-          </AnimatePresence>
-        </span>
-      </div>
       <div className="tool-filter-grid">
         <label className="filter-control filter-control-search">
-          <span className="filter-label">Search</span>
           <span className="relative block">
             <Search
               aria-hidden="true"
@@ -87,6 +66,7 @@ export function ToolFilterBar({
               size={18}
             />
             <input
+              aria-label="Search tools"
               className="control-field w-full pl-10 pr-10"
               name="q"
               onChange={(event) => setQuery(event.target.value)}
@@ -107,8 +87,8 @@ export function ToolFilterBar({
           </span>
         </label>
         <label className="filter-control">
-          <span className="filter-label">Category</span>
           <select
+            aria-label="Filter by category"
             className="control-field w-full"
             name="category"
             onChange={(event) =>
@@ -128,8 +108,8 @@ export function ToolFilterBar({
           </select>
         </label>
         <label className="filter-control">
-          <span className="filter-label">Pricing</span>
           <select
+            aria-label="Filter by pricing"
             className="control-field w-full"
             name="pricing"
             onChange={(event) =>
@@ -147,6 +127,20 @@ export function ToolFilterBar({
           </select>
         </label>
       </div>
+      <span aria-live="polite" className="sr-only">
+        <AnimatePresence initial={false}>
+          {isPending ? (
+            <motion.span
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -3 }}
+              initial={{ opacity: 0, y: 3 }}
+              transition={{ duration: 0.16 }}
+            >
+              Updating results
+            </motion.span>
+          ) : null}
+        </AnimatePresence>
+      </span>
     </div>
   );
 }
