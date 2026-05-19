@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { MotionButton } from "@/components/motion/motion-button";
+import { capturePostHogEvent } from "@/features/analytics/posthog-client";
 
 type AuditAnalyticsEventName =
   | "audit_start_viewed"
@@ -63,4 +64,8 @@ export function trackAuditEvent(
     })
   );
   window.dataLayer?.push(payload as unknown as Record<string, unknown>);
+  capturePostHogEvent(event, {
+    audit_version: payload.version,
+    ...properties
+  });
 }

@@ -5,6 +5,7 @@ import type { FormEvent } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Heart, Loader2 } from "lucide-react";
 import clsx from "clsx";
+import { capturePostHogEvent } from "@/features/analytics/posthog-client";
 import {
   toggleToolLikeAction,
   toggleToolLikeStateAction
@@ -63,6 +64,8 @@ export function ToolLikeButton({
     setCurrentState(getOptimisticLikeState(currentState));
     setIsSaving(true);
 
+    const isCurrentlyLiked = currentState.isLiked;
+
     try {
       const nextState = await toggleToolLikeStateAction({
         redirectTo,
@@ -70,6 +73,11 @@ export function ToolLikeButton({
         toolSlug
       });
       setCurrentState(nextState);
+      capturePostHogEvent(isCurrentlyLiked ? "tool_unliked" : "tool_liked", {
+        tool_id: toolId,
+        tool_slug: toolSlug,
+        tool_name: toolName
+      });
     } catch {
       setCurrentState(previousState);
       setError("Could not save like. Try again.");

@@ -40,7 +40,7 @@ if (process.env.NODE_ENV === "production") {
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https://www.google.com https://*.gstatic.com https://logotyp.us",
       "font-src 'self' data:",
-      "connect-src 'self'",
+      "connect-src 'self' https://eu.i.posthog.com https://eu-assets.i.posthog.com",
       "upgrade-insecure-requests"
     ].join("; ")
   });
@@ -50,6 +50,23 @@ if (process.env.NODE_ENV === "production") {
 const nextConfig = {
   typedRoutes: true,
   devIndicators: false,
+  skipTrailingSlashRedirect: true,
+  async rewrites() {
+    return [
+      {
+        source: "/ingest/static/:path*",
+        destination: "https://eu-assets.i.posthog.com/static/:path*"
+      },
+      {
+        source: "/ingest/array/:path*",
+        destination: "https://eu-assets.i.posthog.com/array/:path*"
+      },
+      {
+        source: "/ingest/:path*",
+        destination: "https://eu.i.posthog.com/:path*"
+      }
+    ];
+  },
   async headers() {
     return [
       {

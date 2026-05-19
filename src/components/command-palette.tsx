@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Command as CommandIcon } from "lucide-react";
+import { capturePostHogEvent } from "@/features/analytics/posthog-client";
 
 const CommandPaletteDialog = dynamic(
   () =>
@@ -44,7 +45,14 @@ export function CommandPalette({
       }
 
       event.preventDefault();
-      setIsOpen((currentValue) => !currentValue);
+      setIsOpen((currentValue) => {
+        if (!currentValue) {
+          capturePostHogEvent("command_palette_opened", {
+            trigger: "keyboard"
+          });
+        }
+        return !currentValue;
+      });
     }
 
     window.addEventListener("keydown", handleKeyDown);
@@ -58,7 +66,12 @@ export function CommandPalette({
         <button
           aria-label="Open command palette"
           className="command-easter-egg"
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            capturePostHogEvent("command_palette_opened", {
+              trigger: "footer_button"
+            });
+            setIsOpen(true);
+          }}
           type="button"
         >
           <CommandIcon aria-hidden="true" size={14} />

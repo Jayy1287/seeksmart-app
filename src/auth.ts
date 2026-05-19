@@ -3,6 +3,7 @@ import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { UserRole } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { withPostHogClient } from "@/lib/posthog-server";
 
 const DEFAULT_ADMIN_EMAIL = "seeksmartapp@gmail.com";
 
@@ -52,7 +53,28 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     }
   },
   events: {
-    async signIn({ user }) {
+    async signIn({ user, isNewUser }) {
+      await withPostHogClient((posthog) => {
+        if (!user.id) {
+          return;
+        }
+
+        posthog.identify({
+          distinctId: user.id,
+          properties: {
+            role: isAdminEmail(user.email) ? "admin" : "user"
+          }
+        });
+        posthog.capture({
+          distinctId: user.id,
+          event: "user_signed_in",
+          properties: {
+            is_new_user: isNewUser ?? false,
+            provider: "google"
+          }
+        });
+      });
+
       if (!user.id || !isAdminEmail(user.email)) {
         return;
       }

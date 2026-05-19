@@ -6,4 +6,17 @@ publish = ".next"
 package = "@netlify/plugin-nextjs"
 
 [build.environment]
+NODE_VERSION = "20.20.0"
 SECRETS_SCAN_ENABLED = "false"
+
+[[redirects]]
+from = "http://seeksmartapp.netlify.app/*"
+to = "https://seeksmart.in/:splat"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://seeksmartapp.netlify.app/*"
+to = "https://seeksmart.in/:splat"
+status = 301
+force = true

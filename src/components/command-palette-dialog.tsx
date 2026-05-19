@@ -5,6 +5,7 @@ import type { Route } from "next";
 import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
 import * as Dialog from "@radix-ui/react-dialog";
+import { capturePostHogEvent } from "@/features/analytics/posthog-client";
 import {
   BarChart3,
   BookOpen,
@@ -96,7 +97,12 @@ export function CommandPaletteDialog({
     };
   }, [query]);
 
-  function openHref(href: string) {
+  function openHref(href: string, label?: string, type?: string) {
+    capturePostHogEvent("command_result_selected", {
+      href,
+      label,
+      result_type: type
+    });
     onOpenChange(false);
     router.push(href as Route);
   }
@@ -138,7 +144,7 @@ export function CommandPaletteDialog({
               <Command.Item
                 className="command-item"
                 key={command.href}
-                onSelect={() => openHref(command.href)}
+                onSelect={() => openHref(command.href, command.label, "static")}
                 value={`${command.label} ${command.description}`}
               >
                 <Icon aria-hidden="true" size={17} />
@@ -165,7 +171,7 @@ export function CommandPaletteDialog({
               <Command.Item
                 className="command-item"
                 key={`${item.type}-${item.id}`}
-                onSelect={() => openHref(item.href)}
+                onSelect={() => openHref(item.href, item.label, item.type)}
                 value={`${item.label} ${item.description ?? ""} ${item.type}`}
               >
                 <Sparkles aria-hidden="true" size={17} />

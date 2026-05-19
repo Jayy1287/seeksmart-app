@@ -2,6 +2,7 @@
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { capturePostHogEvent } from "./posthog-client";
 
 type AnalyticsPayload = {
   event: string;
@@ -46,4 +47,5 @@ export function trackEvent(
     })
   );
   window.dataLayer?.push(payload as unknown as Record<string, unknown>);
+  capturePostHogEvent(event, { path, ...properties });
 }

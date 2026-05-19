@@ -11,3 +11,6 @@ coverage
 prisma/dev.db
 tmp
 test-results
+.env.local
+.claude/
+posthog-setup-report.md
