@@ -1,6 +1,6 @@
 # SeekSmart Handoff
 
-Last updated: 2026-05-17
+Last updated: 2026-05-20
 
 ## Current State
 
@@ -20,30 +20,47 @@ Current branch:
 main
 ```
 
-Current git base:
+Current implementation checkpoint:
 
 ```text
-d0170b2 Add homepage rotating decision text
+f8007ea Add PostHog analytics integration
 ```
 
-Current local changes on top of that commit:
+Expected local changes after committing this handoff:
 
-- `src/features/home/typewriter-rotator.tsx`: homepage typewriter now says `Decision engine for AI with` and rotates through `tool shortlists`, `use cases`, `opportunities`, and `playbooks`.
-- `.env.example`: includes `SHOW_TOOL_LIKE_COUNTS=false`.
-- `.env`: local-only ignored file also includes `SHOW_TOOL_LIKE_COUNTS=false`.
-- `HANDOFF.md`: this handoff file.
+```text
+None.
+```
 
-Current local preview:
+Current local preview status:
+
+```text
+No dev server is currently running.
+```
+
+Use this when a local preview is needed:
+
+```bash
+npm run dev -- -p 3002
+```
+
+Last verified local URL:
 
 ```text
 http://localhost:3002
 ```
 
-The last production build after the typewriter update completed successfully with:
+The latest verification pass completed successfully with:
 
 ```bash
+npm run lint
+npm run typecheck
+npm run test:recommendations
 npm run build
+SMOKE_BASE_URL=http://localhost:3002 npm run test:smoke
 ```
+
+The last smoke test returned healthy responses for `/`, `/tools`, `/use-cases`, `/industries`, `/opportunities`, `/audit`, `/feedback`, `/privacy`, `/terms`, and `/api/v1/health`.
 
 ## Product Position
 
@@ -196,6 +213,81 @@ process.env.SHOW_TOOL_LIKE_COUNTS === "true"
 
 Only the exact string `"true"` shows counts.
 
+### Analytics
+
+Analytics is now wired to PostHog while preserving the provider-neutral
+`seeksmart:analytics` browser event and `window.dataLayer` push.
+
+Main files:
+
+```text
+instrumentation-client.ts
+src/features/analytics/site-analytics.tsx
+src/features/analytics/posthog-client.ts
+src/features/analytics/tracked-link.tsx
+src/features/audit/audit-analytics.tsx
+src/features/tools/tool-like-button.tsx
+src/components/command-palette.tsx
+src/components/command-palette-dialog.tsx
+src/lib/posthog-server.ts
+src/auth.ts
+src/app/api/v1/submissions/route.ts
+```
+
+Behavior:
+
+- Client PostHog initialization happens in `instrumentation-client.ts`.
+- Browser PostHog traffic is proxied through `/ingest/*` in `next.config.mjs`.
+- PostHog env vars are optional; missing keys should not break local dev, sign-in, or submissions.
+- `posthog-js` automatic pageview, pageleave, and autocapture are disabled so dashboards stay event-driven and intentional.
+- PostHog exception capture is enabled.
+- Server-side capture uses `src/lib/posthog-server.ts` and fails open if PostHog is unavailable.
+- Sign-in analytics identifies users by internal user id and role only; it does not send email or name.
+- Public submission analytics does not use submitter email as a distinct id.
+
+Current tracked events:
+
+```text
+page_view
+audit_start_viewed
+audit_questions_viewed
+audit_questions_submitted
+audit_results_viewed
+tool_website_clicked
+tool_liked
+tool_unliked
+submission_completed
+submission_failed
+tool_submission_created
+user_signed_in
+command_palette_opened
+command_result_selected
+```
+
+Useful event properties:
+
+- `page_view`: `path`
+- `audit_results_viewed`: `budgetRange`, `companySize`, `dataSensitivity`, `topOpportunity`
+- `tool_website_clicked`: `toolSlug`, `source`
+- `tool_liked` / `tool_unliked`: `tool_id`, `tool_slug`, `tool_name`
+- `submission_failed`: `reason`
+- `tool_submission_created`: `submission_id`, `tool_name`, `category`, `pricing_type`
+- `user_signed_in`: `is_new_user`, `provider`
+- `command_palette_opened`: `trigger`
+- `command_result_selected`: `href`, `label`, `result_type`
+
+PostHog events not yet added but recommended next:
+
+```text
+tool_search_used
+tool_filter_changed
+global_search_used
+search_result_clicked
+audit_saved
+login_started
+submission_started
+```
+
 ### Public Tool Submission And Admin Review
 
 Public submission:
@@ -243,6 +335,7 @@ Admin actions are recorded in `admin_actions`.
 - Prisma ORM.
 - PostgreSQL.
 - NextAuth v5 with Prisma adapter.
+- PostHog for product analytics.
 - Motion for subtle reveal/number/bar interactions.
 - Lucide React icons.
 - Netlify deployment with `@netlify/plugin-nextjs`.
@@ -436,6 +529,7 @@ Local env files:
 
 ```text
 .env          ignored, contains real local values
+.env.local    ignored, contains optional local overrides
 .env.example  tracked template
 ```
 
@@ -453,13 +547,20 @@ ADMIN_EMAILS
 ADMIN_PASSWORD
 ADMIN_SESSION_SECRET
 SHOW_TOOL_LIKE_COUNTS
+NEXT_PUBLIC_POSTHOG_KEY
+NEXT_PUBLIC_POSTHOG_HOST
+NEXT_PUBLIC_POSTHOG_UI_HOST
 ```
 
 Important defaults:
 
 ```text
 SHOW_TOOL_LIKE_COUNTS=false
+NEXT_PUBLIC_POSTHOG_HOST=https://eu.i.posthog.com
+NEXT_PUBLIC_POSTHOG_UI_HOST=https://eu.posthog.com
 ```
+
+`POSTHOG_KEY` and `POSTHOG_HOST` can be used as server-side overrides, but the current template uses `NEXT_PUBLIC_POSTHOG_KEY` and `NEXT_PUBLIC_POSTHOG_HOST` for both browser and server capture.
 
 Netlify:
 
@@ -488,10 +589,17 @@ Current Netlify plugin:
 Current Netlify build environment includes:
 
 ```text
+NODE_VERSION = "20.20.0"
 SECRETS_SCAN_ENABLED = "false"
 ```
 
 Keep this disabled for now because the user requested it due to builds failing on a contact email false positive.
+
+Netlify also contains forced redirects from:
+
+```text
+seeksmartapp.netlify.app/* -> https://seeksmart.in/:splat
+```
 
 Commands:
 
@@ -538,7 +646,7 @@ Important limitations:
 - CSP currently allows `'unsafe-inline'` for scripts/styles because of framework/runtime needs. Tightening requires careful Next.js compatibility testing.
 - There is no email/password auth, forgot-password flow, or email provider integration yet.
 - There is no queue/background job system.
-- Analytics only dispatches provider-neutral events and pushes to `dataLayer` if present; no analytics vendor is wired by default.
+- PostHog is wired, but the first-load shared client JS increased by roughly 61 kB because of the SDK. Keep an eye on performance if adding more client-side analytics features.
 - Audit inputs/results can be saved for signed-in users, so the product should continue discouraging users from entering secrets or sensitive regulated data.
 
 ## Business And Growth Notes
@@ -566,11 +674,15 @@ Highest leverage next steps:
    - Confirm production env variables.
    - Confirm production DB migrations.
    - Confirm `NEXT_PUBLIC_APP_URL` and `AUTH_URL` match the hosted domain.
+   - Confirm PostHog env values in Netlify.
+   - Verify Netlify redirect from `seeksmartapp.netlify.app` to `seeksmart.in`.
    - Submit sitemap in Google Search Console.
 
 2. Analytics:
-   - Wire the existing `seeksmart:analytics` events to a real provider.
-   - Track audit starts/completions, tool searches, filter usage, likes, outbound tool clicks, submissions, and article visits.
+   - PostHog is now wired for page views, audit funnel, outbound tool clicks, likes, submissions, sign-ins, and command palette usage.
+   - Next add search/filter events: `tool_search_used`, `tool_filter_changed`, `global_search_used`, and `search_result_clicked`.
+   - Add `submission_started`, `login_started`, and `audit_saved`.
+   - Create or review PostHog dashboards for acquisition, audit funnel, tool intent, and submissions.
 
 3. Search/discovery:
    - Improve search quality beyond simple `contains`.
@@ -679,6 +791,17 @@ next.config.mjs
 netlify.toml
 ```
 
+Analytics:
+
+```text
+instrumentation-client.ts
+src/features/analytics/site-analytics.tsx
+src/features/analytics/posthog-client.ts
+src/features/analytics/tracked-link.tsx
+src/features/audit/audit-analytics.tsx
+src/lib/posthog-server.ts
+```
+
 ## Handoff Notes For Next Agent
 
 - Work only in `/Users/sanrajak/Desktop/SSP/seeksmart-app`.
@@ -686,8 +809,11 @@ netlify.toml
 - Keep the current light theme unless explicitly asked otherwise.
 - Do not print `.env` values or secrets.
 - `.env` is ignored; update `.env.example` for any new required variables.
+- `.env.local` is ignored and may contain local PostHog overrides.
 - `SHOW_TOOL_LIKE_COUNTS=false` is the expected default.
-- If hosting locally, port `3002` is currently used because `3001` was busy.
+- If hosting locally, use port `3002`; no local server is currently running.
 - Run `npm run build` before saying production preview is good.
+- PostHog is intentionally event-driven; do not enable automatic pageview/autocapture without updating the event strategy.
+- `.claude/` and `posthog-setup-report.md` are ignored local wizard artifacts and are not required by the app.
 - Prefer preserving the modular boundaries already in the repo.
 - The app should remain a practical decision product, not a flashy directory or generic SaaS landing page.
