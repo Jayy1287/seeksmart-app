@@ -11,6 +11,7 @@ if (posthogKey) {
     capture_pageview: false,
     capture_pageleave: false,
     autocapture: false,
+    disable_session_recording: true,
     debug: process.env.NODE_ENV === "development"
   });
 }
