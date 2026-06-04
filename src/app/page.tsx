@@ -15,6 +15,7 @@ import {
   methodologySignals,
   playbooks
 } from "@/lib/platform-content";
+import { auth } from "@/auth";
 import { HomepageLottieVisual } from "@/features/home/homepage-lottie-visual";
 import { TypewriterRotator } from "@/features/home/typewriter-rotator";
 import { listCategorySummaries } from "@/server/categories/queries";
@@ -52,6 +53,7 @@ const decisionPath = [
 ];
 
 export default async function Home() {
+  const session = await auth();
   const [categories, trendingTools, recentTools, industries, opportunities] =
     await Promise.all([
       listCategorySummaries(),
@@ -64,6 +66,7 @@ export default async function Home() {
     (total, category) => total + category.toolCount,
     0
   );
+  const startAuditHref = session?.user ? "/audit/start" : "/login?callbackUrl=/audit/start";
 
   return (
     <main>
@@ -93,7 +96,7 @@ export default async function Home() {
             </StaggerItem>
             <StaggerItem>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <MotionLink className="primary-button min-h-12" href="/audit/start">
+                <MotionLink className="primary-button min-h-12" href={startAuditHref}>
                   Start AI audit
                   <ArrowRight aria-hidden="true" size={18} />
                 </MotionLink>
@@ -105,9 +108,9 @@ export default async function Home() {
             <StaggerItem>
               <form
                 action="/tools"
-                className="mt-9 grid max-w-2xl gap-3 rounded-full border border-line/60 bg-white/55 p-2 shadow-[0_18px_54px_rgb(13_48_92/0.08)] backdrop-blur sm:grid-cols-[1fr_auto]"
+                className="mt-9 grid max-w-2xl gap-2 rounded-[1.75rem] border border-line/60 bg-white/55 p-2 shadow-[0_18px_54px_rgb(13_48_92/0.08)] backdrop-blur sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-3 sm:rounded-full sm:p-2"
               >
-                <label className="relative w-full">
+                <label className="relative min-w-0 w-full">
                   <span className="sr-only">Search AI tools</span>
                   <Search
                     aria-hidden="true"
@@ -121,7 +124,7 @@ export default async function Home() {
                     type="search"
                   />
                 </label>
-                <button className="search-button min-h-12" type="submit">
+                <button className="search-button min-h-12 w-full sm:w-auto" type="submit">
                   Search
                 </button>
               </form>

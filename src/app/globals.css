@@ -611,6 +611,8 @@ textarea {
   .search-button {
     display: inline-flex;
     min-height: 2.85rem;
+    width: 100%;
+    min-width: 0;
     align-items: center;
     justify-content: center;
     border-radius: 999px;
@@ -634,6 +636,12 @@ textarea {
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.14) inset,
       0 18px 30px rgb(var(--color-accent) / 0.2);
+  }
+
+  @media (min-width: 640px) {
+    .search-button {
+      width: auto;
+    }
   }
 
   .command-easter-egg {
