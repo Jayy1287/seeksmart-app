@@ -62,6 +62,7 @@ export default async function RootLayout({
   const isSignedIn = Boolean(session?.user);
   const isAdmin = session?.user.role === UserRole.ADMIN;
   const userLabel = session?.user.name?.split(" ")[0] ?? "Dashboard";
+  const submitHref = isSignedIn ? "/submit" : "/login?callbackUrl=/submit";
 
   async function signOutAction() {
     "use server";
@@ -186,7 +187,7 @@ export default async function RootLayout({
                     </div>
                     <div className="footer-nav-group">
                       <span className="footer-nav-heading">Company</span>
-                      <Link className="footer-link" href="/submit">
+                      <Link className="footer-link" href={submitHref}>
                         Submit tool
                       </Link>
                       <Link className="footer-link" href="/feedback">

@@ -23,7 +23,7 @@ main
 Current implementation checkpoint:
 
 ```text
-f8007ea Add PostHog analytics integration
+2026-06-09 Tool submission auth gating and one-per-user enforcement
 ```
 
 Expected local changes after committing this handoff:
@@ -35,13 +35,13 @@ None.
 Current local preview status:
 
 ```text
-No dev server is currently running.
+Dev server is running on port 3002.
 ```
 
 Use this when a local preview is needed:
 
 ```bash
-npm run dev -- -p 3002
+npm run dev 
 ```
 
 Last verified local URL:
@@ -299,7 +299,12 @@ src/features/submissions/submit-tool-form.tsx
 src/server/submissions/mutations.ts
 ```
 
-Submitted tools are stored as `Submission` records with `PENDING` status. The public API validates input, normalizes URLs, blocks duplicates, checks same-origin for POST, and rate limits by IP.
+Submission behavior:
+
+- `/submit` now requires a signed-in user and redirects anonymous visitors to `/login?callbackUrl=/submit`.
+- The submission form no longer asks for an email address; the signed-in account supplies the submitter identity.
+- Each signed-in user can create at most one submission because `Submission` now has a unique optional `userId` relation.
+- The public API still validates input, normalizes URLs, blocks duplicates, checks same-origin for POST, and rate limits by IP.
 
 Admin review:
 
