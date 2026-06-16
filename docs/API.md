@@ -80,6 +80,11 @@ GET /api/v1/categories
 POST /api/v1/submissions
 ```
 
+Authentication:
+
+- Requires a signed-in user session.
+- Anonymous requests return `401 UNAUTHORIZED`.
+
 Request body:
 
 ```json
@@ -88,10 +93,15 @@ Request body:
   "websiteUrl": "https://example.com",
   "description": "A concise but useful description of the tool.",
   "category": "Writing",
-  "pricingType": "FREEMIUM",
-  "submitterEmail": "person@example.com"
+  "pricingType": "FREEMIUM"
 }
 ```
+
+Notes:
+
+- The submitter identity is taken from the signed-in account, not the request body.
+- The endpoint validates JSON input, checks same-origin for browser POSTs, rate limits requests, normalizes URLs, and rejects duplicate submissions.
+- Each signed-in user can create at most one submission.
 
 ## Mobile App Principle
 

@@ -1,6 +1,6 @@
 # SeekSmart Handoff
 
-Last updated: 2026-05-20
+Last updated: 2026-06-17
 
 ## Current State
 
@@ -35,13 +35,13 @@ None.
 Current local preview status:
 
 ```text
-Dev server is running on port 3002.
+No local server is currently running.
 ```
 
 Use this when a local preview is needed:
 
 ```bash
-npm run dev 
+npm run dev -- --port 3002
 ```
 
 Last verified local URL:
@@ -50,7 +50,7 @@ Last verified local URL:
 http://localhost:3002
 ```
 
-The latest verification pass completed successfully with:
+The most recent documented verification pass used:
 
 ```bash
 npm run lint
@@ -60,7 +60,7 @@ npm run build
 SMOKE_BASE_URL=http://localhost:3002 npm run test:smoke
 ```
 
-The last smoke test returned healthy responses for `/`, `/tools`, `/use-cases`, `/industries`, `/opportunities`, `/audit`, `/feedback`, `/privacy`, `/terms`, and `/api/v1/health`.
+The last documented smoke test returned healthy responses for `/`, `/tools`, `/use-cases`, `/industries`, `/opportunities`, `/audit`, `/feedback`, `/privacy`, `/terms`, and `/api/v1/health`.
 
 ## Product Position
 
@@ -237,7 +237,7 @@ src/app/api/v1/submissions/route.ts
 Behavior:
 
 - Client PostHog initialization happens in `instrumentation-client.ts`.
-- Browser PostHog traffic is proxied through `/ingest/*` in `next.config.mjs`.
+- Browser PostHog traffic should be proxied through `/ingest/*` in `next.config.mjs`.
 - PostHog env vars are optional; missing keys should not break local dev, sign-in, or submissions.
 - `posthog-js` automatic pageview, pageleave, and autocapture are disabled so dashboards stay event-driven and intentional.
 - PostHog exception capture is enabled.
@@ -613,7 +613,7 @@ npm install
 npm run prisma:generate
 npm run prisma:migrate
 npm run db:seed
-npm run dev
+npm run dev -- --port 3002
 npm run build
 npm run start -- -p 3002
 npm run lint
