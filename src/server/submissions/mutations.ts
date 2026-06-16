@@ -96,11 +96,7 @@ export async function createToolSubmission(
 
   return prisma.submission.create({
     data: {
-      user: {
-        connect: {
-          id: user.id
-        }
-      },
+      userId: user.id,
       toolName: submission.toolName,
       websiteUrl,
       submitterEmail: user.email,

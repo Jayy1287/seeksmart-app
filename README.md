@@ -59,7 +59,8 @@ Optional feature flags:
 
 Auth setup:
 
-- Google sign-in is currently supported through Auth.js / NextAuth.
+- User auth supports Google sign-in and passwordless email magic links through Auth.js.
+- Passwordless email delivery uses Resend. Configure `RESEND_API_KEY` and a verified `AUTH_EMAIL_FROM` sender before enabling it in an environment.
 - Public tool submission requires a signed-in account; the submitter email comes from the authenticated session.
 
 ## Local Development
@@ -69,10 +70,10 @@ npm install
 npm run prisma:generate
 npm run prisma:migrate
 npm run db:seed
-npm run dev -- --port 3002
+npm run dev
 ```
 
-The preferred local URL is `http://localhost:3002`.
+The preferred local URL is `http://localhost:3000`.
 
 ## Slice 1 Status
 
