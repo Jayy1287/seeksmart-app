@@ -57,6 +57,11 @@ Optional feature flags:
 
 - `SHOW_TOOL_LIKE_COUNTS=false` keeps public tool like counts hidden. Set it to `true` when you want the like count visible in the UI. Users can like and unlike tools either way.
 
+Auth setup:
+
+- Google sign-in is currently supported through Auth.js / NextAuth.
+- Public tool submission requires a signed-in account; the submitter email comes from the authenticated session.
+
 ## Local Development
 
 ```bash
@@ -64,10 +69,10 @@ npm install
 npm run prisma:generate
 npm run prisma:migrate
 npm run db:seed
-npm run dev
+npm run dev -- --port 3002
 ```
 
-The app will run at `http://localhost:3000`.
+The preferred local URL is `http://localhost:3002`.
 
 ## Slice 1 Status
 

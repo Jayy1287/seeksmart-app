@@ -171,6 +171,7 @@ export async function approveSubmission(
   await assertNoDuplicateSubmission(
     review.name,
     review.websiteUrl,
+    undefined,
     submission.id
   );
 
