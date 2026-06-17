@@ -318,7 +318,7 @@ function ToolFitCard({
       </div>
       <p className="mt-3 text-sm leading-6 text-ink/62">
         {tool.recommendationNote ??
-          `Mapped to ${tool.category.name.toLowerCase()} workflows by editorial taxonomy.`}
+          `Currently aligned to ${tool.category.name.toLowerCase()} workflows in the curated library.`}
       </p>
       {tool.bestFor ? (
         <p className="mt-3 text-xs leading-5 text-ink/50">{tool.bestFor}</p>

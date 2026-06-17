@@ -45,14 +45,13 @@ export default async function UseCasesPage() {
               <Target aria-hidden="true" size={14} />
               Use cases
             </p>
-            <h1 className="mt-4 max-w-4xl text-5xl font-semibold leading-[1.02] md:text-6xl">
-              Start with a workflow, then shortlist the right tools.
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-ink/66">
-              Use cases translate broad business goals into concrete AI work:
-              what improves, how hard it is, what risk to manage, and which
-              tools are worth comparing.
-            </p>
+              <h1 className="mt-4 max-w-4xl text-5xl font-semibold leading-[1.02] md:text-6xl">
+                Start with a workflow, then shortlist the right tools.
+              </h1>
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-ink/66">
+              Use cases turn a broad AI goal into a practical workflow: what
+              changes, what it takes to launch, and which tools deserve a closer look.
+              </p>
           </div>
           <div className="metric-tile rounded-[1.35rem] p-5">
             <div className="grid grid-cols-2 gap-4">
@@ -110,8 +109,8 @@ export default async function UseCasesPage() {
                 Compare workflows by outcome, effort, and risk.
               </h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/58">
-                Each card is a decision starting point. Open one to see mapped
-                tools, fit notes, and next-step guidance.
+                Each card is a starting point for a better decision. Open one
+                to see fit notes, tool options, and next-step guidance.
               </p>
             </div>
             <Link className="secondary-button" href="/tools">

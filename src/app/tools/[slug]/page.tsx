@@ -50,13 +50,13 @@ export async function generateMetadata({
   }
 
   return {
-    title: tool.metaTitle ?? `${tool.name} Fit, Use Cases, and Alternatives`,
+    title: tool.metaTitle ?? `${tool.name} Review, Use Cases, and Alternatives`,
     description: tool.metaDescription ?? tool.shortDescription,
     alternates: {
       canonical: `/tools/${tool.slug}`
     },
     openGraph: {
-      title: tool.metaTitle ?? `${tool.name} Fit, Use Cases, and Alternatives`,
+      title: tool.metaTitle ?? `${tool.name} Review, Use Cases, and Alternatives`,
       description: tool.metaDescription ?? tool.shortDescription,
       url: `/tools/${tool.slug}`,
       type: "website"
@@ -114,7 +114,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                 <ToolLogo logoUrl={tool.logoUrl} name={tool.name} size="lg" />
                 <div className="min-w-0">
                   <p className="text-xs font-semibold uppercase tracking-[0.08em] text-accent/70">
-                    Tool briefing
+                    Tool review
                   </p>
                   <h1 className="mt-2 text-4xl font-semibold leading-tight md:text-5xl">
                     {tool.name}
@@ -170,7 +170,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.08em] text-accent/70">
-                    Decision snapshot
+                    At a glance
                   </p>
                   <h2 className="mt-2 text-xl font-semibold">
                     {topUseCase ? "Shortlist ready" : "Research mode"}
@@ -184,18 +184,18 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                 </div>
               </div>
               <p className="mt-4 text-sm leading-6 text-ink/62">
-                Use this page to decide whether the tool deserves a pilot,
-                needs comparison, or should stay in research.
+                Use this page to decide whether this tool belongs on your
+                shortlist, needs a closer comparison, or should stay in research.
               </p>
               <dl className="mt-5 grid gap-3 text-sm">
                 <SnapshotRow label="Category" value={tool.category.name} />
                 <SnapshotRow label="Pricing" value={formatPricing(tool.pricingType)} />
                 <SnapshotRow
-                  label="Best mapped fit"
+                  label="Best-fit workflow"
                   value={topUseCase ? `${topUseCase.name} (${topUseCase.fitScore})` : "Needs curation"}
                 />
                 <SnapshotRow
-                  label="Editorial confidence"
+                  label="Listing status"
                   value={tool.isVerified ? "Verified listing" : "Needs verification"}
                 />
               </dl>
@@ -311,7 +311,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                   </div>
                   <p className="mt-3 text-sm leading-6 text-ink/62">
                     {useCase.recommendationNote ??
-                      "Mapped by editorial taxonomy."}
+                      "Aligned to the current curated use-case library."}
                   </p>
                 </Link>
               ))}
@@ -361,7 +361,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                       </td>
                       <td className="px-4 py-4">
                         {useCase.recommendationNote ??
-                          "Mapped by editorial taxonomy."}
+                          "Aligned to the current curated use-case library."}
                       </td>
                     </tr>
                   ))}
@@ -451,8 +451,8 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               </p>
               <h2 className="mt-2 text-xl font-semibold">Comparable tools</h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/60">
-                Use this as a shortlist table: compare fit signal, pricing,
-                category, and verification before opening vendor sites.
+                Use this table to compare shortlist options before you leave
+                SeekSmart and start vendor research.
               </p>
             </div>
             <Link className="secondary-button" href="/tools">
@@ -482,8 +482,8 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               <h2 className="text-xl font-semibold">Editorial trust note</h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/60">
                 Tool pages are decision support, not paid placement. Verified
-                means the listing has passed current editorial checks; it does
-                not guarantee fit for every business workflow.
+                means the listing passed current editorial checks; it does not
+                guarantee fit for every workflow.
               </p>
             </div>
             <span className="status-pill">

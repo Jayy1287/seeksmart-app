@@ -15,7 +15,7 @@ import { Reveal } from "@/components/motion/reveal";
 export const metadata: Metadata = {
   title: "Start AI Audit",
   description:
-    "Start a rules-based AI audit for your business context.",
+    "Start a guided AI audit for your business context.",
   alternates: {
     canonical: "/audit/start"
   }
@@ -24,21 +24,21 @@ export const metadata: Metadata = {
 const principles = [
   {
     icon: Database,
-    title: "Structured intelligence",
+    title: "Business context first",
     description:
-      "Recommendations come from curated industries, functions, opportunities, use cases, and tool-fit records."
+      "The audit starts with your team, workflow, urgency, and constraints before it recommends anything."
   },
   {
     icon: Split,
-    title: "Deterministic scoring",
+    title: "Clear recommendation logic",
     description:
-      "The same answers produce the same result because the audit uses versioned rules, not model output."
+      "The output is built to be reviewed, compared, and discussed with your team instead of taken on faith."
   },
   {
     icon: LockKeyhole,
-    title: "Saved by default",
+    title: "Saved to your workspace",
     description:
-      "Sign in before the audit so results can be saved to your account automatically."
+      "Your audit is saved automatically so you can return to the brief, shortlist, and next steps later."
   }
 ];
 
@@ -64,8 +64,8 @@ export default async function AuditStartPage() {
                 Answer business questions first. Compare tools second.
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
-                This audit is designed to help practical teams choose one clear
-                workflow to pilot before committing to a tool stack.
+                This audit helps your team choose one clear workflow to pilot
+                before committing time, budget, or new software.
               </p>
             </div>
             <MotionLink className="primary-button min-h-12" href="/audit/questions">
@@ -96,8 +96,8 @@ export default async function AuditStartPage() {
           <div className="mt-4 grid gap-3 md:grid-cols-3">
             {[
               "Your industry and team function",
-              "The business outcome you care about",
-              "Budget, urgency, technical comfort, and data sensitivity"
+              "The workflow result you care about most",
+              "Budget, urgency, and any risk or data concerns"
             ].map((item) => (
               <div className="border-t border-line/70 pt-4 text-sm font-medium" key={item}>
                 {item}

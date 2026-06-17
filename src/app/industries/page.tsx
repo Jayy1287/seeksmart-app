@@ -43,8 +43,8 @@ export default async function IndustriesPage() {
                 AI starting points by business type
               </h1>
               <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-                Each industry map starts with practical workflows, measurable
-                opportunities, and cautions before recommending individual tools.
+                Each industry map shows where teams usually start, which
+                workflows are easiest to pilot, and what to watch before rollout.
               </p>
             </div>
             <div className="metric-tile rounded-xl p-4">
@@ -134,8 +134,8 @@ export default async function IndustriesPage() {
                 Ready to turn an industry map into a plan?
               </h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/60">
-                Start with the audit preview, then use playbooks and use cases
-                to choose a practical first workflow.
+                Use the audit to turn one broad industry idea into a focused
+                first workflow with a realistic next step.
               </p>
             </div>
             <MotionLink className="primary-button" href="/audit">

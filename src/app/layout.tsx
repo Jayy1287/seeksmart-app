@@ -19,7 +19,7 @@ const brandLogo = "/brand/seeksmart-logo-v3.png";
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "SeekSmart - AI decisions for practical teams",
+    default: "SeekSmart - Find the right AI workflow first",
     template: "%s | SeekSmart"
   },
   description: siteConfig.description,
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     siteName: siteConfig.name,
-    title: "SeekSmart - AI decisions for practical teams",
+    title: "SeekSmart - Find the right AI workflow first",
     description: siteConfig.description,
     url: "/",
     type: "website",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "SeekSmart - AI decisions for practical teams",
+    title: "SeekSmart - Find the right AI workflow first",
     description: siteConfig.description,
     images: [brandLogo]
   }
@@ -137,13 +137,13 @@ export default async function RootLayout({
                           SeekSmart
                         </span>
                         <span className="footer-brand-tagline block">
-                          Smarter AI choices for practical teams.
+                          Find the right AI workflow first.
                         </span>
                       </span>
                     </Link>
                     <p className="footer-brand-copy">
-                      Compare tools, map use cases, and turn AI adoption into a
-                      clear decision path.
+                      Turn an AI idea into a clear next step, a stronger
+                      shortlist, and a more confident pilot plan.
                     </p>
                     <CommandPalette
                       isAdmin={isAdmin}
@@ -204,7 +204,7 @@ export default async function RootLayout({
                 </div>
                 <div className="footer-bottom">
                   <span>&copy; 2026 SeekSmart. All rights reserved.</span>
-                  <span>Built for calm, practical AI decisions.</span>
+                  <span>Clear decisions before new software.</span>
                 </div>
               </div>
             </footer>
