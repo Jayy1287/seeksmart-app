@@ -914,11 +914,11 @@ textarea {
 
   .hero-typewriter {
     display: flex;
-    width: fit-content;
-    max-width: 100%;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 0.45rem;
+    width: fit-content;
+    max-width: 100%;
+    gap: 0.35rem;
     margin-top: 1.35rem;
     border-left: 3px solid rgb(var(--color-signal) / 0.86);
     padding-left: 0.85rem;
@@ -928,11 +928,22 @@ textarea {
     line-height: 1.45;
   }
 
+  .hero-typewriter-prefix {
+    white-space: nowrap;
+  }
+
   .hero-typewriter-text {
     position: relative;
     display: inline-flex;
-    min-width: 12.6rem;
+    width: fit-content;
+    min-width: 12ch;
+    min-height: 1.35em;
     color: rgb(var(--color-accent));
+    white-space: nowrap;
+    transition:
+      color 220ms ease,
+      opacity 220ms ease,
+      transform 220ms ease;
   }
 
   .hero-typewriter-text::after {

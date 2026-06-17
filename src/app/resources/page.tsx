@@ -28,11 +28,11 @@ export default function ResourcesPage() {
         <Reveal className="surface-strong rounded-2xl p-6">
           <p className="eyebrow">Resources</p>
           <h1 className="mt-3 text-4xl font-semibold">
-            Practical AI decision resources
+            Resources for clearer AI decisions
           </h1>
           <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-            Start with checklists, playbooks, use cases, and tool guidance that
-            keep the business problem ahead of the software choice.
+            Use checklists, playbooks, and guides that keep the business
+            problem ahead of the software choice.
           </p>
         </Reveal>
 

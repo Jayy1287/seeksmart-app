@@ -8,13 +8,15 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "AI Tool Categories",
-  description: "Browse AI tools by category.",
+  description:
+    "Browse AI tools by category once you know the kind of work you want to improve.",
   alternates: {
     canonical: "/categories"
   },
   openGraph: {
     title: "AI Tool Categories",
-    description: "Browse AI tools by category.",
+    description:
+      "Browse AI tools by category once you know the kind of work you want to improve.",
     url: "/categories",
     type: "website"
   }
@@ -31,13 +33,13 @@ export default async function CategoriesPage() {
     <main className="page-shell">
       <div className="app-container">
       <Reveal className="border-b border-line/50 pb-8">
-        <p className="eyebrow">Browse</p>
+        <p className="eyebrow">Categories</p>
         <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
             <h1 className="text-4xl font-semibold">AI tool categories</h1>
             <p className="mt-3 max-w-2xl text-ink/65">
-              Start with the type of work you want to improve, then compare
-              tools inside that category.
+              Start with the kind of work you want to improve, then compare the
+              tools that fit that category.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 text-sm">

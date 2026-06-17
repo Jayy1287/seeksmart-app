@@ -42,7 +42,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "AI Audit Questions",
   description:
-    "Answer a short structured intake for a rules-based AI recommendation brief.",
+    "Answer a short guided intake for a practical AI recommendation brief.",
   alternates: {
     canonical: "/audit/questions"
   }
@@ -67,9 +67,8 @@ export default async function AuditQuestionsPage() {
             Build a practical AI pilot brief.
           </h1>
           <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-            Answer with enough context for SeekSmart to rank opportunities,
-            choose a first workflow, and generate guardrails. The audit remains
-            rules-based and will be saved to your account after submission.
+            Share enough context for SeekSmart to rank opportunities, suggest a
+            first workflow, and outline what to review before rollout.
           </p>
         </Reveal>
 
@@ -85,7 +84,7 @@ export default async function AuditQuestionsPage() {
           <FormSection
             kicker="Step 1"
             title="Business context"
-            description="Choose the setting and team responsible for the first pilot."
+            description="Set the business context for the first pilot."
           >
           <fieldset className="grid gap-4 md:grid-cols-2">
             <FieldLabel label="Industry">
@@ -157,7 +156,7 @@ export default async function AuditQuestionsPage() {
           <FormSection
             kicker="Step 2"
             title="Goals and friction"
-            description="Select every item that describes what the pilot should improve."
+            description="Choose what you want the pilot to improve first."
           >
           <fieldset>
             <legend className="text-sm font-semibold text-ink/72">
@@ -197,7 +196,7 @@ export default async function AuditQuestionsPage() {
           <FormSection
             kicker="Step 3"
             title="Constraints and systems"
-            description="These answers adjust risk, implementation effort, and tool fit."
+            description="These answers shape the rollout risk, effort, and shortlist."
           >
           <fieldset className="grid gap-4 md:grid-cols-4">
             <FieldLabel label="Budget range">

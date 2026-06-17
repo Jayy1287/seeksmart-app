@@ -18,14 +18,14 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "AI Tool Directory",
   description:
-    "Browse curated AI tools after identifying the business workflow you want to improve.",
+    "Browse curated AI tools once you know the workflow you want to improve.",
   alternates: {
     canonical: "/tools"
   },
   openGraph: {
     title: "AI Tool Directory",
     description:
-      "Browse curated AI tools after identifying the business workflow you want to improve.",
+      "Browse curated AI tools once you know the workflow you want to improve.",
     url: "/tools",
     type: "website"
   }
@@ -78,11 +78,11 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
               Tool directory
             </p>
             <h1 className="mt-3 max-w-[16ch] text-3xl font-semibold leading-tight sm:max-w-none sm:text-4xl">
-              AI tools for known workflows
+              Compare tools with a clear use case in mind
             </h1>
             <p className="mt-3 max-w-[21rem] leading-7 text-ink/65 sm:max-w-2xl">
-              Browse curated tools by category, pricing, and fit once the
-              business use case is clear.
+              Filter by category, pricing, and fit once you know what problem
+              you are solving.
             </p>
           </div>
           <div className="metric-tile rounded-2xl px-4 py-3 text-sm text-ink/60">
@@ -130,7 +130,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
                 Showing {startResult}-{endResult} of {result.total}
               </span>
               <span className="text-ink/45">
-                Ranked by featured status, popularity, and verification.
+                Sorted to help you build a shortlist faster.
               </span>
             </div>
             <Stagger className="grid gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">

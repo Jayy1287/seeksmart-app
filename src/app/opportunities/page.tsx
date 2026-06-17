@@ -40,8 +40,8 @@ export default async function OpportunitiesPage() {
                 Business problems worth improving with AI
               </h1>
               <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-                Opportunities connect business pain points to use cases,
-                implementation effort, risk, and measurable outcomes.
+                Start with the problem that matters, then review the likely
+                effort, risk, and outcomes before you chase tools.
               </p>
             </div>
             <div className="metric-tile rounded-xl p-4">

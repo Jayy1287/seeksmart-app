@@ -53,28 +53,28 @@ export const businessGoals: Array<{
     description:
       "Find repeatable admin, research, documentation, and handoff work that can be streamlined first.",
     href: "/use-cases/workflow-automation",
-    signal: "High time-return"
+    signal: "Fast operational win"
   },
   {
     title: "Improve customer support",
     description:
       "Map support volume, knowledge gaps, and response workflows before choosing chatbot or helpdesk tooling.",
     href: "/use-cases/customer-support",
-    signal: "Operational fit"
+    signal: "Customer experience"
   },
   {
     title: "Create better content",
     description:
       "Turn content goals into use cases for briefs, drafting, repurposing, SEO, and brand-safe production.",
     href: "/use-cases/seo-content",
-    signal: "Growth workflow"
+    signal: "Growth team focus"
   },
   {
     title: "Automate operations",
     description:
       "Identify intake, routing, reporting, and workflow gaps that can be improved without adding complexity.",
     href: "/use-cases/workflow-automation",
-    signal: "Process first"
+    signal: "Workflow efficiency"
   }
 ];
 
@@ -318,27 +318,27 @@ export const playbooks: Playbook[] = [
 
 export const methodologySignals = [
   {
-    title: "Business problem first",
+    title: "Start with the job to be done",
     description:
-      "Recommendations begin with the workflow, pain point, and outcome instead of a popular tool name.",
+      "Recommendations begin with the workflow, pain point, and expected outcome instead of a vendor name.",
     icon: Workflow
   },
   {
-    title: "Explainable scoring",
+    title: "Make tradeoffs visible",
     description:
-      "Fit is based on transparent signals like effort, risk, cost, team size, and time to value.",
+      "Each recommendation weighs effort, risk, cost, ownership, and time to value so the shortlist feels grounded.",
     icon: BarChart3
   },
   {
-    title: "Editorial review",
+    title: "Keep curation human",
     description:
-      "Listings and recommendations should be reviewed, updated, and marked with clear trust signals.",
+      "Pages stay useful because listings, fit notes, and trust markers can be reviewed and improved over time.",
     icon: ShieldCheck
   },
   {
-    title: "No model dependency",
+    title: "Stay practical",
     description:
-      "The first recommendation system is rules-based and structured, not a chatbot wrapped around a model.",
+      "The goal is a recommendation you can act on, not a flashy answer that still leaves the decision unclear.",
     icon: Bot
   }
 ];
@@ -346,31 +346,31 @@ export const methodologySignals = [
 export const resourceLinks: ResourceLink[] = [
   {
     title: "AI opportunity checklist",
-    description: "A lightweight checklist for deciding whether a workflow is worth automating.",
+    description: "A quick way to decide whether a workflow is worth improving now.",
     href: "/playbooks/first-ai-workflow-audit",
     icon: PackageCheck
   },
   {
     title: "Use-case library",
-    description: "Browse practical jobs to be done before looking at individual tools.",
+    description: "Browse practical workflows before looking at individual tools.",
     href: "/use-cases",
     icon: FileText
   },
   {
     title: "Opportunity maps",
-    description: "Browse business problems before choosing workflows or tools.",
+    description: "Start with the business problem before narrowing to workflows or tools.",
     href: "/opportunities",
     icon: Workflow
   },
   {
     title: "Business functions",
-    description: "Explore AI opportunities by marketing, sales, support, operations, and more.",
+    description: "Explore AI opportunities by team function, from sales and support to operations.",
     href: "/business-functions",
     icon: Building2
   },
   {
     title: "Tool discovery",
-    description: "Use the directory once you know the business outcome you want.",
+    description: "Compare software once you know the workflow you want to improve.",
     href: "/tools",
     icon: LineChart
   }

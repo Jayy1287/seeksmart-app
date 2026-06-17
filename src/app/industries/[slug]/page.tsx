@@ -159,8 +159,8 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
                 Turn this into a business-specific audit
               </h2>
               <p className="mt-2 text-sm leading-6 text-ink/60">
-                The first audit version will use structured rules and taxonomy,
-                not a model call, to recommend where to start.
+                Use the audit to turn this industry view into a specific first
+                workflow, a tighter shortlist, and a clearer next step.
               </p>
             </div>
             <MotionLink className="primary-button" href="/audit">
