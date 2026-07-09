@@ -84,17 +84,29 @@ export default async function UseCasesPage() {
             <DecisionTile
               icon={BriefcaseBusiness}
               title="Business outcome"
-              description="Name the measurable workflow improvement first."
+              description="Define the improvement before looking at software."
+              details={[
+                "Clarify the workflow you want to change, such as response time, content output, reporting speed, or handoff quality.",
+                "Choose a measurable signal so the pilot has a clear before-and-after result."
+              ]}
             />
             <DecisionTile
               icon={Gauge}
               title="Effort and risk"
-              description="Favor use cases with clear review points and fast feedback."
+              description="Balance quick wins with the controls the workflow needs."
+              details={[
+                "Check how much process change, data access, training, and human review the use case requires.",
+                "Favor pilots where feedback arrives quickly and mistakes can be caught before they affect customers or finances."
+              ]}
             />
             <DecisionTile
               icon={Layers3}
               title="Tool fit"
-              description="Compare products only after the use case is specific."
+              description="Shortlist tools against the exact job they need to support."
+              details={[
+                "Compare products by workflow fit, integrations, review controls, data handling, and team adoption.",
+                "A strong fit should make the next step easier without forcing a bigger platform decision too early."
+              ]}
             />
           </div>
         </Reveal>
@@ -128,18 +140,29 @@ export default async function UseCasesPage() {
 
 function DecisionTile({
   description,
+  details,
   icon: Icon,
   title
 }: {
   description: string;
+  details: string[];
   icon: typeof BriefcaseBusiness;
   title: string;
 }) {
   return (
-    <article className="rounded-2xl border border-line/70 bg-white/85 p-5 shadow-[0_18px_54px_rgb(13_48_92/0.07)] backdrop-blur">
+    <article className="flex h-full flex-col rounded-2xl border border-line/70 bg-white/85 p-5 shadow-[0_18px_54px_rgb(13_48_92/0.07)] backdrop-blur">
       <Icon aria-hidden="true" className="text-accent" size={22} />
       <h2 className="mt-4 font-semibold">{title}</h2>
-      <p className="mt-2 text-sm leading-6 text-ink/62">{description}</p>
+      <p className="mt-2 text-sm font-medium leading-6 text-ink/72">
+        {description}
+      </p>
+      <div className="mt-4 space-y-3 border-t border-line/60 pt-4">
+        {details.map((detail) => (
+          <p className="text-sm leading-6 text-ink/60" key={detail}>
+            {detail}
+          </p>
+        ))}
+      </div>
     </article>
   );
 }
