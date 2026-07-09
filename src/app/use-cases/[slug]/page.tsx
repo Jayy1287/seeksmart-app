@@ -38,6 +38,8 @@ type UseCasePageProps = {
   }>;
 };
 
+type UseCaseDetail = NonNullable<Awaited<ReturnType<typeof getUseCaseBySlug>>>;
+
 export async function generateMetadata({
   params
 }: UseCasePageProps): Promise<Metadata> {
@@ -144,25 +146,17 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
           <AdvisoryTile
             icon={Target}
             title="When to use this"
-            body={
-              useCase.painPoints.length > 0
-                ? useCase.painPoints.join(", ")
-                : `Use this when ${useCase.name.toLowerCase()} is repeated often enough to measure.`
-            }
+            paragraphs={buildWhenToUseCopy(useCase)}
           />
           <AdvisoryTile
             icon={Gauge}
             title="Expected impact"
-            body={
-              useCase.successMetrics.length > 0
-                ? useCase.successMetrics.join(", ")
-                : "Track time saved, cycle time, consistency, and review quality."
-            }
+            paragraphs={buildImpactCopy(useCase)}
           />
           <AdvisoryTile
             icon={ShieldAlert}
             title="Risk check"
-            body={buildRiskCopy(useCase.riskLevel)}
+            paragraphs={buildRiskCopy(useCase.riskLevel)}
           />
         </Reveal>
 
@@ -458,16 +452,53 @@ function implementationSteps(steps: string[]) {
       ];
 }
 
+function buildWhenToUseCopy(useCase: UseCaseDetail) {
+  if (useCase.painPoints.length > 0) {
+    return [
+      `Use this when ${useCase.name.toLowerCase()} would directly improve ${formatReadableList(useCase.painPoints)}.`,
+      "It is a good pilot candidate when the work happens often, has a clear owner, and can be tested with recent real examples."
+    ];
+  }
+
+  return [
+    `Use this when ${useCase.name.toLowerCase()} is repeated often enough to measure and improve.`,
+    "Start with one team, one workflow owner, and a narrow set of examples before comparing tools."
+  ];
+}
+
+function buildImpactCopy(useCase: UseCaseDetail) {
+  if (useCase.successMetrics.length > 0) {
+    return [
+      `Measure the pilot with ${formatReadableList(useCase.successMetrics)}.`,
+      "The expected impact should be visible in faster cycle time, fewer manual corrections, or more consistent work quality."
+    ];
+  }
+
+  return [
+    "Track time saved, cycle time, consistency, and review quality before expanding the workflow.",
+    "A useful result should make the next decision clearer: continue, narrow the use case, or compare a different tool."
+  ];
+}
+
 function buildRiskCopy(riskLevel: string) {
   if (riskLevel === "HIGH") {
-    return "Use a strict pilot, avoid sensitive data, and require human approval before outputs affect customers or decisions.";
+    return [
+      "Treat this as a controlled pilot with strict scope, approved inputs, and clear escalation rules.",
+      "Avoid sensitive data early, and require human approval before outputs affect customers, employees, finances, or compliance decisions."
+    ];
   }
 
   if (riskLevel === "MEDIUM") {
-    return "Use approved examples, add a review checkpoint, and keep output quality measurable.";
+    return [
+      "Use approved examples, add a review checkpoint, and keep output quality measurable.",
+      "Watch for drift, incomplete context, or overconfident outputs before moving the workflow into regular use."
+    ];
   }
 
-  return "Low-risk workflow, but still define ownership, data boundaries, and review standards.";
+  return [
+    "This is a lower-risk place to start, but it still needs an owner and a simple review standard.",
+    "Define data boundaries and sample outputs so the team knows what good enough looks like."
+  ];
 }
 
 function ChecklistItem({ children }: { children: ReactNode }) {
@@ -499,20 +530,39 @@ function formatPricing(pricingType: string) {
   return "Paid";
 }
 
+function formatReadableList(items: string[]) {
+  if (items.length === 1) {
+    return items[0].toLowerCase();
+  }
+
+  if (items.length === 2) {
+    return `${items[0].toLowerCase()} and ${items[1].toLowerCase()}`;
+  }
+
+  const normalized = items.map((item) => item.toLowerCase());
+  return `${normalized.slice(0, -1).join(", ")}, and ${normalized.at(-1)}`;
+}
+
 function AdvisoryTile({
-  body,
   icon: Icon,
+  paragraphs,
   title
 }: {
-  body: string;
   icon: LucideIcon;
+  paragraphs: string[];
   title: string;
 }) {
   return (
     <article className="surface-panel rounded-xl p-5">
       <Icon aria-hidden="true" className="text-accent" size={21} />
       <h2 className="mt-4 font-semibold">{title}</h2>
-      <p className="mt-2 text-sm leading-6 text-ink/62">{body}</p>
+      <div className="mt-2 space-y-2">
+        {paragraphs.map((paragraph) => (
+          <p className="text-sm leading-6 text-ink/62" key={paragraph}>
+            {paragraph}
+          </p>
+        ))}
+      </div>
     </article>
   );
 }
