@@ -89,7 +89,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
 
   return (
     <div className="space-y-5">
-      <div className="rounded-[1.35rem] border border-line/55 bg-white/75 p-4 shadow-[0_18px_54px_rgb(13_48_92/0.06)] backdrop-blur">
+      <div className="rounded-[1.55rem] border border-line/60 bg-white/85 p-4 shadow-[0_22px_60px_rgb(8_126_139/0.1)] backdrop-blur">
         <div className="grid gap-3 lg:grid-cols-[minmax(16rem,1fr)_auto_auto_auto] lg:items-center">
           <label className="relative block">
             <Search
@@ -145,7 +145,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
             </select>
           </label>
 
-          <div className="flex min-h-12 items-center justify-between gap-3 rounded-2xl border border-line/55 bg-surface/70 px-4 text-sm font-semibold text-ink/62 lg:min-w-36">
+          <div className="flex min-h-12 items-center justify-between gap-3 rounded-2xl border border-line/60 bg-accent/10 px-4 text-sm font-semibold text-ink/68 lg:min-w-36">
             <span className="inline-flex items-center gap-2">
               <SlidersHorizontal aria-hidden="true" size={16} />
               {filteredUseCases.length} shown
@@ -163,7 +163,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
           </div>
         </div>
 
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
+        <div className="mt-4 flex gap-2 overflow-x-auto border-t border-line/50 pt-4">
           <button
             className="status-pill shrink-0 transition hover:border-accent hover:text-accent data-[active=true]:border-accent data-[active=true]:bg-accent/10 data-[active=true]:text-accent"
             data-active={functionSlug === "all"}
@@ -233,7 +233,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
                     useCase.description ??
                     `Browse AI tools for ${useCase.name.toLowerCase()}.`}
                 </p>
-                <p className="border-l-2 border-signal/45 pl-3 text-ink/58">
+                <p className="rounded-r-xl border-l-2 border-signal/70 bg-signal/5 py-2 pl-3 pr-2 text-ink/62">
                   {buildSelectionCue(useCase)}
                 </p>
               </div>
@@ -257,7 +257,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
                   </span>
                 </div>
                 <Link
-                  className="secondary-button mt-4 min-h-11 w-full justify-between px-4 text-accent"
+                  className="secondary-button mt-4 min-h-11 w-full justify-between border-accent/30 bg-accent/10 px-4 text-accent"
                   href={`/use-cases/${useCase.slug}`}
                 >
                   View workflow
@@ -268,7 +268,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
           ))}
         </div>
       ) : (
-        <div className="rounded-[1.35rem] border border-line/55 bg-white/75 p-8 text-center shadow-[0_18px_54px_rgb(13_48_92/0.06)]">
+        <div className="rounded-[1.35rem] border border-line/55 bg-white/85 p-8 text-center shadow-[0_18px_54px_rgb(8_126_139/0.08)]">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-line/60 bg-surface text-accent">
             <Search aria-hidden="true" size={20} />
           </div>
@@ -295,11 +295,13 @@ function formatLevel(value: string) {
 }
 
 function buildSelectionCue(useCase: PublicUseCaseSummary) {
-  const team = useCase.businessFunction?.name ?? "your team";
+  const team = useCase.businessFunction?.name
+    ? `the ${useCase.businessFunction.name} team`
+    : "your team";
   const effort = formatLevel(useCase.effortLevel).toLowerCase();
   const risk = formatLevel(useCase.riskLevel).toLowerCase();
   const timing = useCase.timeToValue
-    ? ` and you need a ${useCase.timeToValue} path to value`
+    ? ` and you need a ${useCase.timeToValue} value window`
     : "";
 
   return `Choose this when ${team.toLowerCase()} needs a ${effort}-effort, ${risk}-risk workflow improvement${timing}.`;
