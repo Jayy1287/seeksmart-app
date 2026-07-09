@@ -84,28 +84,46 @@ export default async function UseCasesPage() {
             <DecisionTile
               icon={BriefcaseBusiness}
               title="Business outcome"
-              description="Define the improvement before looking at software."
+              description="Start by naming the workflow result the business actually needs."
               details={[
-                "Clarify the workflow you want to change, such as response time, content output, reporting speed, or handoff quality.",
-                "Choose a measurable signal so the pilot has a clear before-and-after result."
+                {
+                  label: "Workflow change",
+                  body: "Identify what should improve, such as response time, content output, reporting speed, handoff quality, or error reduction."
+                },
+                {
+                  label: "Success signal",
+                  body: "Pick one measurable before-and-after metric so the pilot can prove whether the workflow is getting better."
+                }
               ]}
             />
             <DecisionTile
               icon={Gauge}
               title="Effort and risk"
-              description="Balance quick wins with the controls the workflow needs."
+              description="Estimate the work to launch and the safeguards needed before scaling."
               details={[
-                "Check how much process change, data access, training, and human review the use case requires.",
-                "Favor pilots where feedback arrives quickly and mistakes can be caught before they affect customers or finances."
+                {
+                  label: "Launch effort",
+                  body: "Check the process changes, data access, integrations, training, and review steps needed to move from idea to working pilot."
+                },
+                {
+                  label: "Control points",
+                  body: "Favor use cases where teams can review outputs quickly and catch mistakes before they affect customers, finances, or compliance."
+                }
               ]}
             />
             <DecisionTile
               icon={Layers3}
               title="Tool fit"
-              description="Shortlist tools against the exact job they need to support."
+              description="Compare tools only after the workflow, inputs, and review needs are clear."
               details={[
-                "Compare products by workflow fit, integrations, review controls, data handling, and team adoption.",
-                "A strong fit should make the next step easier without forcing a bigger platform decision too early."
+                {
+                  label: "Fit criteria",
+                  body: "Look at workflow coverage, integrations, data handling, collaboration, approval controls, and how easily the team can adopt it."
+                },
+                {
+                  label: "Decision scope",
+                  body: "A good shortlist should support the next practical step without forcing a large platform decision before the use case is specific."
+                }
               ]}
             />
           </div>
@@ -125,7 +143,10 @@ export default async function UseCasesPage() {
                 to see fit notes, tool options, and next-step guidance.
               </p>
             </div>
-            <Link className="secondary-button" href="/tools">
+            <Link
+              className="secondary-button min-h-12 px-5 text-[0.95rem] md:self-end"
+              href="/tools"
+            >
               Browse tools
               <ArrowRight aria-hidden="true" size={16} />
             </Link>
@@ -145,7 +166,10 @@ function DecisionTile({
   title
 }: {
   description: string;
-  details: string[];
+  details: Array<{
+    body: string;
+    label: string;
+  }>;
   icon: typeof BriefcaseBusiness;
   title: string;
 }) {
@@ -158,9 +182,12 @@ function DecisionTile({
       </p>
       <div className="mt-4 space-y-3 border-t border-line/60 pt-4">
         {details.map((detail) => (
-          <p className="text-sm leading-6 text-ink/60" key={detail}>
-            {detail}
-          </p>
+          <div key={detail.label}>
+            <h3 className="text-xs font-extrabold uppercase text-accent/82">
+              {detail.label}
+            </h3>
+            <p className="mt-1 text-sm leading-6 text-ink/60">{detail.body}</p>
+          </div>
         ))}
       </div>
     </article>

@@ -236,50 +236,55 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
           </Reveal>
         ) : null}
 
-        <Reveal className="mt-6">
-          {tools.length > 0 ? (
-            <>
-              <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase text-accent">
-                    <Table2 aria-hidden="true" size={16} />
-                    Tool shortlist
-                  </p>
-                  <h2 className="mt-1 text-xl font-semibold">
-                    Best mapped tools for this use case
-                  </h2>
+        <section className="scroll-mt-28" id="mapped-tools">
+          <Reveal className="mt-6">
+            {tools.length > 0 ? (
+              <>
+                <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                  <div>
+                    <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase text-accent">
+                      <Table2 aria-hidden="true" size={16} />
+                      Tool shortlist
+                    </p>
+                    <h2 className="mt-1 text-xl font-semibold">
+                      Best mapped tools for this use case
+                    </h2>
+                  </div>
+                  {firstTool ? (
+                    <Link
+                      className="secondary-button"
+                      href={`/tools/${firstTool.slug}`}
+                    >
+                      Open top tool
+                      <ArrowRight aria-hidden="true" size={16} />
+                    </Link>
+                  ) : null}
                 </div>
-                {firstTool ? (
-                  <Link className="secondary-button" href={`/tools/${firstTool.slug}`}>
-                    Open top tool
-                    <ArrowRight aria-hidden="true" size={16} />
-                  </Link>
-                ) : null}
-              </div>
-              <div className="grid gap-4 md:hidden">
-                {tools.slice(0, 6).map((tool) => (
-                  <ToolFitCard
-                    isSignedIn={isSignedIn}
-                    key={tool.id}
-                    tool={tool}
-                  />
-                ))}
-              </div>
-              <ToolFitComparisonTable
-                isSignedIn={isSignedIn}
-                tools={tools.slice(0, 8)}
+                <div className="grid gap-4 md:hidden">
+                  {tools.slice(0, 6).map((tool) => (
+                    <ToolFitCard
+                      isSignedIn={isSignedIn}
+                      key={tool.id}
+                      tool={tool}
+                    />
+                  ))}
+                </div>
+                <ToolFitComparisonTable
+                  isSignedIn={isSignedIn}
+                  tools={tools.slice(0, 8)}
+                />
+              </>
+            ) : (
+              <EmptyState
+                description="This use case is ready for editorial tool mappings. Browse the broader directory while the shortlist is curated."
+                eyebrow="No mapped tools"
+                icon={SearchX}
+                secondaryAction={{ href: "/tools", label: "Browse tools" }}
+                title="No mapped tools yet."
               />
-            </>
-          ) : (
-            <EmptyState
-              description="This use case is ready for editorial tool mappings. Browse the broader directory while the shortlist is curated."
-              eyebrow="No mapped tools"
-              icon={SearchX}
-              secondaryAction={{ href: "/tools", label: "Browse tools" }}
-              title="No mapped tools yet."
-            />
-          )}
-        </Reveal>
+            )}
+          </Reveal>
+        </section>
       </div>
     </main>
   );
