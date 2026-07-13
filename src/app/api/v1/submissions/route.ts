@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { ZodError } from "zod";
+import { auth } from "@/auth";
 import {
   apiError,
   apiInternalError,
@@ -24,6 +25,12 @@ import { withPostHogClient } from "@/lib/posthog-server";
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth();
+
+    if (!session?.user?.id || !session.user.email) {
+      return apiError("UNAUTHORIZED", "Sign in to submit a tool.", 401);
+    }
+
     assertSameOrigin(request);
     assertRateLimit({
       key: `submission:${getClientIp(request)}`,
@@ -32,7 +39,10 @@ export async function POST(request: NextRequest) {
     });
 
     const body = await readJsonBody(request);
-    const submission = await createToolSubmission(body);
+    const submission = await createToolSubmission(body, {
+      id: session.user.id,
+      email: session.user.email
+    });
 
     await withPostHogClient((posthog) => {
       const rawBody = body as Record<string, unknown>;

@@ -57,6 +57,12 @@ Optional feature flags:
 
 - `SHOW_TOOL_LIKE_COUNTS=false` keeps public tool like counts hidden. Set it to `true` when you want the like count visible in the UI. Users can like and unlike tools either way.
 
+Auth setup:
+
+- User auth supports Google sign-in and passwordless email magic links through Auth.js.
+- Passwordless email delivery uses Resend. Configure `RESEND_API_KEY` and a verified `AUTH_EMAIL_FROM` sender before enabling it in an environment.
+- Public tool submission requires a signed-in account; the submitter email comes from the authenticated session.
+
 ## Local Development
 
 ```bash
@@ -67,7 +73,7 @@ npm run db:seed
 npm run dev
 ```
 
-The app will run at `http://localhost:3000`.
+The preferred local URL is `http://localhost:3000`.
 
 ## Slice 1 Status
 

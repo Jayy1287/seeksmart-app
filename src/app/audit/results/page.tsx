@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "AI Audit Results",
   description:
-    "View your rules-based AI audit result with ranked opportunities and tool shortlists.",
+    "View your AI audit result with ranked opportunities, a pilot plan, and a tool shortlist.",
   alternates: {
     canonical: "/audit/results"
   }
@@ -110,7 +110,7 @@ function SavedAuditNotice({ auditRunId }: { auditRunId: string }) {
         <span>This audit is saved to your SeekSmart dashboard.</span>
       </div>
       <Link className="secondary-button min-h-10" href={`/dashboard/audits/${auditRunId}`}>
-        Open saved audit
+        Open in dashboard
       </Link>
     </div>
   );

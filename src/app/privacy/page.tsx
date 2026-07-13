@@ -13,14 +13,14 @@ const privacySections = [
     title: "Who this notice covers",
     body: [
       "This notice applies to SeekSmart's website, public beta product, tool directory, AI audit workflow, dashboard, admin tools, submissions, feedback, and related product analytics.",
-      "SeekSmart is responsible for the information it collects through the service. Third-party websites, AI tools, Google sign-in, and vendor websites have their own privacy practices and terms.",
+      "SeekSmart is responsible for the information it collects through the service. Third-party websites, AI tools, sign-in providers, and vendor websites have their own privacy practices and terms.",
       "For privacy, cookie, account, or deletion requests, contact seeksmartapp@gmail.com from the email address associated with the account when possible."
     ]
   },
   {
     title: "Information we collect",
     body: [
-      "Account information: when you sign in with Google, SeekSmart receives the account information needed to create and secure your account, such as your name, email address, profile image when provided, and Google account identifier.",
+      "Account information: when you sign in with Google or passwordless email, SeekSmart receives the account information needed to create and secure your account, such as your email address, name when available, profile image when available, provider account identifier, and related authentication metadata.",
       "Audit information: when you run an AI audit, SeekSmart stores your structured audit answers, generated recommendation brief, readiness score, top opportunity, rules version, and timestamps so the audit can be shown in your dashboard.",
       "Submission and feedback information: when you submit a tool or send feedback, SeekSmart stores the submitted content and contact details needed for review, follow-up, quality improvement, and abuse prevention.",
       "Usage and device information: SeekSmart collects product analytics events, page paths, referral information, browser and device information, approximate technical location signals, timestamps, and diagnostic information needed to understand product usage, detect errors, protect the service, and improve the beta.",
@@ -41,7 +41,7 @@ const privacySections = [
     title: "Cookies and browser storage",
     body: [
       "SeekSmart uses essential cookies for sign-in, OAuth security, session protection, admin access, and saved audit functionality. These cookies are required for the signed-in service to work.",
-      "Auth.js / NextAuth sets authentication and security cookies for Google sign-in, session handling, callback protection, and CSRF/state checks.",
+      "Auth.js / NextAuth sets authentication and security cookies for Google OAuth, passwordless email sign-in, session handling, callback protection, and CSRF/state checks.",
       "The temporary legacy admin password flow uses an httpOnly cookie named seeksmart_admin_session. It is sameSite=lax, secure in production, scoped to the site path, and expires after 8 hours.",
       "PostHog analytics may use first-party cookies or browser storage to recognize a browser across product events and measure usage. These analytics identifiers are used for product improvement, not advertising.",
       "SeekSmart does not currently use advertising cookies, retargeting cookies, third-party marketing cookies, heatmaps, or session replay. PostHog autocapture, automatic pageleave capture, automatic pageview capture, and session recording are disabled in the current implementation.",
@@ -52,9 +52,9 @@ const privacySections = [
     title: "Analytics",
     body: [
       "SeekSmart uses PostHog product analytics. Browser events are also dispatched through a provider-neutral seeksmart:analytics event and dataLayer push so the analytics setup can remain auditable and replaceable.",
-      "Current tracked events include page views, audit start, audit questions viewed, audit questions submitted, audit results viewed, outbound tool website clicks, tool likes and unlikes, public submission completion and failure, server-side tool submission creation, Google sign-in success, command palette opens, and command palette result selections.",
-      "Typical event properties include page path, audit budget range, company size, data sensitivity level, top recommended opportunity, tool slug, event source, tool id, tool name, submission category, pricing type, failure reason, command trigger, selected command label, and selected command URL.",
-      "SeekSmart does not intentionally send passwords, Google OAuth tokens, full free-text audit answers, private documents, submitter email addresses, user email addresses, user names, or payment information to PostHog analytics.",
+      "Current tracked events include page views, audit start, audit questions viewed, audit questions submitted, audit results viewed, outbound tool website clicks, tool likes and unlikes, public submission completion and failure, server-side tool submission creation, sign-in success by provider, command palette opens, and command palette result selections.",
+      "Typical event properties include page path, audit budget range, company size, data sensitivity level, top recommended opportunity, tool slug, event source, tool id, tool name, submission category, pricing type, failure reason, sign-in provider, command trigger, selected command label, and selected command URL.",
+      "SeekSmart does not intentionally send passwords, verification tokens, Google OAuth tokens, full free-text audit answers, private documents, submitter email addresses, user email addresses, user names, or payment information to PostHog analytics.",
       "PostHog may process technical metadata associated with events, such as browser, device, URL, referrer, timestamps, and IP-derived network information, depending on provider configuration and infrastructure.",
       "The current PostHog configuration is intended to use EU PostHog ingestion and UI hosts. If the analytics provider, region, or event list changes materially, this notice should be updated."
     ]
@@ -79,7 +79,7 @@ const privacySections = [
     title: "Sharing and service providers",
     body: [
       "SeekSmart may share information with service providers that support hosting, database storage, authentication, analytics, diagnostics, email, monitoring, security, and product operations. These providers should only process information as needed to operate, secure, and improve the service.",
-      "Google is used for OAuth sign-in. Your use of Google sign-in is also subject to Google's own account and privacy terms.",
+      "Google is used for OAuth sign-in, and Resend is used to deliver passwordless sign-in and welcome emails. Your use of those services is also subject to their own terms and privacy practices.",
       "PostHog is used for product analytics and diagnostic event capture.",
       "SeekSmart may disclose information if required to comply with law, enforce terms, protect rights or safety, investigate abuse, or complete a business transaction such as a merger, acquisition, financing, or asset transfer."
     ]
@@ -94,8 +94,8 @@ const privacySections = [
   {
     title: "Security",
     body: [
-      "SeekSmart uses technical and organizational safeguards such as authentication, httpOnly session cookies where appropriate, input validation, rate limiting, security headers, admin access controls, and operational logs.",
-      "No internet service can guarantee absolute security. You are responsible for keeping your Google account and devices secure and for avoiding the submission of secrets or sensitive records."
+      "SeekSmart uses technical and organizational safeguards such as authentication, httpOnly session cookies where appropriate, input validation, rate limiting, short-lived verification links, security headers, admin access controls, and operational logs.",
+      "No internet service can guarantee absolute security. You are responsible for keeping your email account, Google account when used, and devices secure and for avoiding the submission of secrets or sensitive records."
     ]
   },
   {
@@ -129,7 +129,7 @@ export default function PrivacyPage() {
             privacy requests.
           </p>
           <p className="mt-4 text-sm font-medium text-ink/55">
-            Last updated: May 20, 2026
+            Last updated: June 17, 2026
           </p>
         </section>
 

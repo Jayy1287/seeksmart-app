@@ -7,7 +7,11 @@ import type { ApiResponse } from "@/shared/api";
 
 type SubmitState = "idle" | "submitting" | "success" | "error";
 
-export function SubmitToolForm() {
+type SubmitToolFormProps = {
+  submitterEmail: string;
+};
+
+export function SubmitToolForm({ submitterEmail }: SubmitToolFormProps) {
   const [state, setState] = useState<SubmitState>("idle");
   const [message, setMessage] = useState("");
 
@@ -23,7 +27,6 @@ export function SubmitToolForm() {
       description: String(formData.get("description") ?? ""),
       category: String(formData.get("category") ?? ""),
       pricingType: String(formData.get("pricingType") ?? ""),
-      submitterEmail: String(formData.get("submitterEmail") ?? ""),
       companyName: String(formData.get("companyName") ?? "")
     };
 
@@ -110,6 +113,12 @@ export function SubmitToolForm() {
           </select>
         </label>
       </div>
+      <div className="grid gap-2">
+        <span className="text-sm font-medium">Signed in as</span>
+        <div className="control-field flex items-center bg-white/50 text-sm text-ink/70">
+          {submitterEmail}
+        </div>
+      </div>
       <label className="grid gap-2">
         <span className="text-sm font-medium">Description</span>
         <textarea
@@ -118,16 +127,6 @@ export function SubmitToolForm() {
           minLength={20}
           name="description"
           required
-        />
-      </label>
-      <label className="grid gap-2">
-        <span className="text-sm font-medium">Your email</span>
-        <input
-          className="control-field"
-          maxLength={180}
-          name="submitterEmail"
-          required
-          type="email"
         />
       </label>
       <button

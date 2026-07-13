@@ -70,7 +70,7 @@ export default async function DashboardPage() {
                 Account
               </div>
               <p className="mt-2 break-words text-sm text-ink/60">
-                {session.user.email ?? "Google account"}
+                {session.user.email ?? "Signed-in account"}
               </p>
               <p className="mt-2 text-xs font-semibold uppercase text-accent/70">
                 {formatRole(session.user.role)}

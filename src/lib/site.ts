@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "SeekSmart",
   url: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
   description:
-    "Make clearer AI decisions for your business with practical use cases, playbooks, and curated tool guidance."
+    "Find the right AI workflow before you buy, with practical guidance, clear next steps, and curated tool shortlists."
 };
 
 export function absoluteUrl(path = "/") {

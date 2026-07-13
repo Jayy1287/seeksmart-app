@@ -6,14 +6,14 @@ import { methodologySignals } from "@/lib/platform-content";
 export const metadata: Metadata = {
   title: "Recommendation Methodology",
   description:
-    "How SeekSmart turns business goals into explainable AI use cases and tool guidance.",
+    "How SeekSmart turns business goals into practical AI recommendations and tool guidance.",
   alternates: {
     canonical: "/methodology"
   },
   openGraph: {
     title: "Recommendation Methodology",
     description:
-      "How SeekSmart turns business goals into explainable AI use cases and tool guidance.",
+      "How SeekSmart turns business goals into practical AI recommendations and tool guidance.",
     url: "/methodology",
     type: "website"
   }
@@ -41,15 +41,15 @@ export default function MethodologyPage() {
                 How SeekSmart recommends AI paths
               </h1>
               <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-                SeekSmart&apos;s first intelligence layer is deliberately structured:
-                taxonomy, editorial review, and explainable rules before any
-                model-powered automation.
+                SeekSmart is designed to help teams move from a business problem
+                to a practical next step, with logic that can be reviewed instead
+                of guessed at.
               </p>
             </div>
             <div className="metric-tile rounded-xl p-4">
-              <div className="text-2xl font-semibold">0</div>
+              <div className="text-2xl font-semibold">4</div>
               <p className="mt-1 text-sm text-ink/55">
-                Model calls in current recommendations
+                Core recommendation principles
               </p>
             </div>
           </div>
@@ -75,8 +75,8 @@ export default function MethodologyPage() {
           <div className="surface-panel rounded-xl p-5">
             <h2 className="text-xl font-semibold">Scoring dimensions</h2>
             <p className="mt-3 text-sm leading-6 text-ink/60">
-              Recommendations should be useful because the reasoning is visible.
-              These dimensions will become the base for the rules-based audit.
+              Recommendations are only useful when the tradeoffs are visible.
+              These dimensions shape how opportunities and tools are prioritized.
             </p>
             <div className="mt-5 grid gap-2">
               {scoringDimensions.map((dimension) => (
@@ -144,8 +144,8 @@ export default function MethodologyPage() {
                 See the method applied
               </h2>
               <p className="mt-2 text-sm leading-6 text-ink/60">
-                Start with industries, playbooks, or the audit preview to move
-                from a business problem to a practical next step.
+                Use the audit, industry maps, and playbooks to move from a
+                broad AI idea to a concrete first pilot.
               </p>
             </div>
             <Link className="primary-button" href="/audit">

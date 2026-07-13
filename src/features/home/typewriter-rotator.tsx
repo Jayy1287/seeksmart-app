@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useReducedMotion } from "motion/react";
 
 const phrases = [
@@ -10,70 +10,62 @@ const phrases = [
   "playbooks"
 ];
 
-const typeDelayMs = 58;
-const deleteDelayMs = 34;
-const holdDelayMs = 1500;
+const typeDelayMs = 65;
+const deleteDelayMs = 38;
+const holdDelayMs = 1450;
+const restartDelayMs = 260;
 
 export function TypewriterRotator() {
   const shouldReduceMotion = useReducedMotion();
   const [phraseIndex, setPhraseIndex] = useState(0);
-  const [characterCount, setCharacterCount] = useState(phrases[0].length);
-  const [mode, setMode] = useState<"typing" | "holding" | "deleting">(
-    "holding"
-  );
-
-  const phrase = phrases[phraseIndex];
-  const visibleText = useMemo(
-    () => phrase.slice(0, characterCount),
-    [characterCount, phrase]
-  );
+  const [visibleText, setVisibleText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (shouldReduceMotion) {
       setPhraseIndex(0);
-      setCharacterCount(phrases[0].length);
-      setMode("holding");
+      setVisibleText(phrases[0]);
+      setIsDeleting(false);
       return;
     }
 
-    const timeout = window.setTimeout(
-      () => {
-        if (mode === "holding") {
-          setMode("deleting");
-          return;
-        }
+    const currentPhrase = phrases[phraseIndex];
 
-        if (mode === "deleting") {
-          if (characterCount > 0) {
-            setCharacterCount((count) => count - 1);
-            return;
-          }
+    if (!isDeleting && visibleText === currentPhrase) {
+      const holdTimeout = window.setTimeout(() => {
+        setIsDeleting(true);
+      }, holdDelayMs);
 
-          setPhraseIndex((index) => (index + 1) % phrases.length);
-          setMode("typing");
-          return;
-        }
+      return () => window.clearTimeout(holdTimeout);
+    }
 
-        if (characterCount < phrase.length) {
-          setCharacterCount((count) => count + 1);
-          return;
-        }
+    if (isDeleting && visibleText.length === 0) {
+      const restartTimeout = window.setTimeout(() => {
+        setIsDeleting(false);
+        setPhraseIndex((index) => (index + 1) % phrases.length);
+      }, restartDelayMs);
 
-        setMode("holding");
-      },
-      mode === "holding"
-        ? holdDelayMs
-        : mode === "deleting"
-          ? deleteDelayMs
-          : typeDelayMs
-    );
+      return () => window.clearTimeout(restartTimeout);
+    }
 
-    return () => window.clearTimeout(timeout);
-  }, [characterCount, mode, phrase.length, shouldReduceMotion]);
+    const stepTimeout = window.setTimeout(() => {
+      if (isDeleting) {
+        setVisibleText(currentPhrase.slice(0, visibleText.length - 1));
+        return;
+      }
+
+      setVisibleText(currentPhrase.slice(0, visibleText.length + 1));
+    }, isDeleting ? deleteDelayMs : typeDelayMs);
+
+    return () => window.clearTimeout(stepTimeout);
+  }, [isDeleting, phraseIndex, shouldReduceMotion, visibleText]);
 
   return (
-    <p className="hero-typewriter" aria-label="Decision engine for AI with tool shortlists, use cases, opportunities, and playbooks.">
-      <span>Decision engine for AI with</span>
+    <p
+      aria-label="Decision engine for AI with tool shortlists, use cases, opportunities, and playbooks."
+      className="hero-typewriter"
+    >
+      <span className="hero-typewriter-prefix">Decision engine for AI with</span>
       <span aria-hidden="true" className="hero-typewriter-text">
         {visibleText}
       </span>

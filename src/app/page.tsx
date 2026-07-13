@@ -3,6 +3,7 @@ import {
   ArrowRight,
   BarChart3,
   CheckCircle2,
+  ChevronDown,
   ClipboardList,
   Gauge,
   Layers3,
@@ -40,15 +41,21 @@ export const dynamic = "force-dynamic";
 const decisionPath = [
   {
     title: "Business context",
-    description: "Industry, team, urgency, risk, and budget constraints."
+    summary: "We start with the way your team works today.",
+    description:
+      "The audit looks at your industry, team function, urgency, budget range, technical comfort, approval style, data sensitivity, and existing tools. Those inputs help rule out ideas that may be too risky, too expensive, or too heavy for the first pilot."
   },
   {
     title: "Opportunity ranking",
-    description: "Impact, effort, risk, confidence, and time to value."
+    summary: "Then we score the most practical places to use AI.",
+    description:
+      "SeekSmart compares mapped business opportunities by likely impact, implementation effort, operating risk, confidence, time to value, and fit with your stated goals. The result is a ranked list that explains why one workflow should come before another."
   },
   {
     title: "Workflow plan",
-    description: "Recommended first workflow, checklist, and tool shortlist."
+    summary: "Finally, we turn the ranking into a first move.",
+    description:
+      "The brief recommends one starting workflow, the use cases that support it, a pilot checklist, cautions to watch, success metrics, and a shortlist of tools to compare after the workflow is clear."
   }
 ];
 
@@ -76,7 +83,7 @@ export default async function Home() {
             <StaggerItem>
               <p className="eyebrow">
                 <ShieldCheck aria-hidden="true" size={15} />
-                Smarter AI Choices
+                AI decisions, made practical
               </p>
             </StaggerItem>
             <StaggerItem>
@@ -89,9 +96,9 @@ export default async function Home() {
             </StaggerItem>
             <StaggerItem>
               <p className="mt-7 max-w-2xl text-lg leading-8 text-ink/68 md:text-xl md:leading-9">
-                SeekSmart turns business goals into ranked AI opportunities,
-                workflow playbooks, and tool shortlists with transparent
-                reasoning. No chatbot dependency. No generic directory dump.
+                SeekSmart helps you find the right workflow to improve, the
+                safest place to start, and the tools worth comparing only after
+                the business case is clear.
               </p>
             </StaggerItem>
             <StaggerItem>
@@ -143,35 +150,52 @@ export default async function Home() {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="text-xs font-extrabold uppercase text-accent">
-                  Audit output
+                  What you get
                 </p>
                 <h2 className="mt-1 text-2xl font-semibold">
                   First workflow brief
                 </h2>
               </div>
-              <span className="status-pill w-fit">Rules-based V1</span>
+              <span className="status-pill w-fit">Clear next steps</span>
             </div>
-            <div className="mt-7 grid gap-6 md:grid-cols-3">
-              {decisionPath.map((step, index) => (
-                <div
-                  className="relative border-t border-line/70 pt-5"
-                  key={step.title}
-                >
-                  <span className="absolute -top-4 flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white shadow-lg shadow-ink/10">
-                    {index + 1}
-                  </span>
-                  <h3 className="mt-3 font-semibold">{step.title}</h3>
-                  <p className="mt-1 text-sm leading-6 text-ink/58">
-                    {step.description}
-                  </p>
-                </div>
-              ))}
-            </div>
+            <p className="mt-5 max-w-2xl text-sm leading-6 text-ink/62">
+              You get one recommended starting workflow, the reason it ranked
+              first, the risks to watch, and the tools worth comparing next.
+            </p>
+            <details className="group mt-5 rounded-2xl border border-line/60 bg-white/45 p-4">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-ink [&::-webkit-details-marker]:hidden">
+                <span>How were these recommendations generated?</span>
+                <ChevronDown
+                  aria-hidden="true"
+                  className="shrink-0 transition group-open:rotate-180"
+                  size={17}
+                />
+              </summary>
+              <div className="mt-6 grid gap-6 md:grid-cols-3">
+                {decisionPath.map((step, index) => (
+                  <div
+                    className="relative border-t border-line/70 pt-5"
+                    key={step.title}
+                  >
+                    <span className="absolute -top-4 flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white shadow-lg shadow-ink/10">
+                      {index + 1}
+                    </span>
+                    <h3 className="mt-3 font-semibold">{step.title}</h3>
+                    <p className="mt-2 text-sm font-medium leading-6 text-ink/72">
+                      {step.summary}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-ink/58">
+                      {step.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </details>
           </div>
           <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
             <Stat label="Curated tools" value={toolCount} />
-            <Stat label="Business opportunities" value={opportunities.length} />
-            <Stat label="In-app model calls" value="0" />
+            <Stat label="Opportunity maps" value={opportunities.length} />
+            <Stat label="Decision paths" value={playbooks.length} />
           </div>
         </div>
       </Reveal>
@@ -187,9 +211,8 @@ export default async function Home() {
               Pick the business result, then the workflow, then the tool.
             </h2>
             <p className="mt-4 leading-7 text-ink/62">
-              The product is organized around decisions, not categories. That
-              keeps the catalog useful without letting it become the whole
-              experience.
+              Start with what needs to improve, narrow to a practical workflow,
+              and only then compare the software that supports it.
             </p>
             <MotionLink className="secondary-button mt-6" href="/use-cases">
               Browse use cases
@@ -223,30 +246,30 @@ export default async function Home() {
           <div className="py-2">
             <p className="eyebrow">
               <Layers3 aria-hidden="true" size={14} />
-              Intelligence layer
+              How it works
             </p>
             <h2 className="mt-4 text-3xl font-semibold">
-              Directory data, turned into advisory logic.
+              Clear inputs, better recommendations.
             </h2>
             <p className="mt-4 leading-7 text-ink/62">
-              SeekSmart maps industries, functions, opportunities, use cases,
-              and tool fit notes into one explainable recommendation path.
+              SeekSmart brings together business context, opportunity maps, and
+              tool guidance so the recommendation feels actionable instead of vague.
             </p>
             <div className="mt-6 grid gap-3">
               <LayerRow
                 icon={ClipboardList}
-                label="Input"
-                title="Business context and constraints"
+                label="Context"
+                title="Your team, workflow, and constraints"
               />
               <LayerRow
                 icon={BarChart3}
-                label="Logic"
-                title="Rules, taxonomy, and editorial scoring"
+                label="Prioritize"
+                title="Ranked opportunities with visible tradeoffs"
               />
               <LayerRow
                 icon={CheckCircle2}
-                label="Output"
-                title="Plan, shortlist, checklist, and cautions"
+                label="Recommend"
+                title="A shortlist, pilot plan, and guardrails"
               />
             </div>
           </div>
@@ -291,10 +314,10 @@ export default async function Home() {
             <div className="mb-5 flex items-end justify-between gap-4">
               <div>
                 <p className="text-sm font-extrabold uppercase text-accent">
-                  Tool proof points
+                  Recommended tools
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold">
-                  Curated tools still matter
+                  Compare tools once the path is clear
                 </h2>
               </div>
               <MotionLink className="secondary-button" href="/tools">
@@ -354,7 +377,7 @@ export default async function Home() {
                   Playbooks
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold">
-                  Operational next steps
+                  Practical rollout guides
                 </h2>
               </div>
               <MotionLink className="secondary-button" href="/playbooks">
@@ -399,15 +422,14 @@ export default async function Home() {
           <div>
             <p className="eyebrow">
               <Gauge aria-hidden="true" size={14} />
-              Trust model
+              Why teams trust it
             </p>
             <h2 className="mt-4 text-3xl font-semibold">
-              Clear reasoning, no hidden model wrapper.
+              Advice you can review before you act on it.
             </h2>
             <p className="mt-4 leading-7 text-ink/62">
-              Recommendations start with structured data, deterministic rules,
-              and editorial judgment. Models can be added later only where they
-              improve the product.
+              SeekSmart is built to make the decision clearer: what to pilot,
+              what to measure, and what to watch before you commit.
             </p>
           </div>
           <div className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
@@ -438,7 +460,7 @@ export default async function Home() {
         <Reveal className="app-container pb-12">
           <div className="flex flex-wrap items-center gap-3 border-t border-line pt-6 text-sm">
             <span className="font-bold text-accent">
-              Recently added intelligence
+              Recently added tools
             </span>
             <RecentToolsMarquee tools={recentTools} />
           </div>

@@ -30,7 +30,6 @@ export const toolSubmissionSchema = z.object({
   description: z.string().trim().min(20).max(1200),
   category: z.string().trim().min(2).max(80),
   pricingType: pricingTypeSchema,
-  submitterEmail: z.string().trim().toLowerCase().email(),
   companyName: z.string().max(0).optional()
 });
 

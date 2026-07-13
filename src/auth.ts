@@ -1,9 +1,15 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
+import Resend from "next-auth/providers/resend";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { UserRole } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { withPostHogClient } from "@/lib/posthog-server";
+import {
+  buildEmailProviderConfig,
+  isEmailAuthConfigured,
+  sendWelcomeEmail
+} from "@/server/auth/email";
 
 const DEFAULT_ADMIN_EMAIL = "seeksmartapp@gmail.com";
 
@@ -53,7 +59,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     }
   },
   events: {
-    async signIn({ user, isNewUser }) {
+    async signIn({ account, user, isNewUser }) {
       await withPostHogClient((posthog) => {
         if (!user.id) {
           return;
@@ -70,10 +76,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           event: "user_signed_in",
           properties: {
             is_new_user: isNewUser ?? false,
-            provider: "google"
+            provider: account?.provider ?? "unknown"
           }
         });
       });
+
+      if (isNewUser && user.email) {
+        try {
+          await sendWelcomeEmail(user.email);
+        } catch (error) {
+          console.warn("Welcome email delivery failed.", error);
+        }
+      }
 
       if (!user.id || !isAdminEmail(user.email)) {
         return;
@@ -90,9 +104,20 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     }
   },
   pages: {
-    signIn: "/login"
+    signIn: "/login",
+    verifyRequest: "/login/check-email"
   },
-  providers: [Google],
+  providers: [
+    Google,
+    ...(isEmailAuthConfigured()
+      ? [
+          Resend({
+            apiKey: process.env.RESEND_API_KEY,
+            ...buildEmailProviderConfig()
+          })
+        ]
+      : [])
+  ],
   session: {
     strategy: "database"
   },
