@@ -40,6 +40,7 @@ function normalizeUrl(value: string) {
 async function assertNoDuplicateSubmission(
   toolName: string,
   websiteUrl: string,
+  userId?: string,
   excludeSubmissionId?: string
 ) {
   const normalizedWebsiteUrl = normalizeUrl(websiteUrl);
@@ -59,6 +60,7 @@ async function assertNoDuplicateSubmission(
     prisma.submission.findFirst({
       where: {
         ...(excludeSubmissionId ? { id: { not: excludeSubmissionId } } : {}),
+        ...(userId ? { userId } : {}),
         status: {
           in: [SubmissionStatus.PENDING, SubmissionStatus.APPROVED]
         },
@@ -79,24 +81,32 @@ async function assertNoDuplicateSubmission(
   }
 }
 
-export async function createToolSubmission(input: unknown) {
+export async function createToolSubmission(
+  input: unknown,
+  user: { id: string; email: string }
+) {
   const submission = toolSubmissionSchema.parse(input);
   const websiteUrl = normalizeUrl(submission.websiteUrl);
 
-  await assertNoDuplicateSubmission(submission.toolName, websiteUrl);
+  await assertNoDuplicateSubmission(
+    submission.toolName,
+    websiteUrl,
+    user.id
+  );
 
   return prisma.submission.create({
     data: {
+      userId: user.id,
       toolName: submission.toolName,
       websiteUrl,
-      submitterEmail: submission.submitterEmail,
+      submitterEmail: user.email,
       payload: {
         toolName: submission.toolName,
         websiteUrl,
         description: submission.description,
         category: submission.category,
         pricingType: submission.pricingType,
-        submitterEmail: submission.submitterEmail
+        submitterEmail: user.email
       }
     },
     select: {
@@ -157,6 +167,7 @@ export async function approveSubmission(
   await assertNoDuplicateSubmission(
     review.name,
     review.websiteUrl,
+    undefined,
     submission.id
   );
 

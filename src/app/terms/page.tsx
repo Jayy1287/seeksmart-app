@@ -36,10 +36,10 @@ const termsSections = [
   {
     title: "Accounts, sign-in, and cookies",
     body: [
-      "Running an AI audit requires Google sign-in so audit briefs can be saved to a specific account and reopened from the dashboard.",
+      "Running an AI audit requires a signed-in account so audit briefs can be saved to a specific workspace and reopened from the dashboard.",
       "Essential cookies are required for sign-in, OAuth security, session handling, admin access, and saved audit functionality. If these cookies are blocked, login, audit history, dashboard access, or admin features may not work.",
       "The temporary legacy admin password fallback may set the seeksmart_admin_session cookie for admin access. This fallback can be removed after Google admin access is fully trusted.",
-      "You are responsible for keeping your Google account, devices, browser, and network secure and for promptly reporting suspected unauthorized access."
+      "You are responsible for keeping your email account, Google account when used, devices, browser, and network secure and for promptly reporting suspected unauthorized access."
     ]
   },
   {
@@ -87,7 +87,7 @@ const termsSections = [
   {
     title: "Third-party services and links",
     body: [
-      "SeekSmart may link to third-party AI tools, vendor websites, Google sign-in, analytics providers, hosting providers, and other services.",
+      "SeekSmart may link to third-party AI tools, vendor websites, sign-in providers, analytics providers, hosting providers, and other services.",
       "Third-party services are controlled by their own operators and may have separate terms, privacy notices, pricing, security practices, data processing practices, and availability.",
       "SeekSmart is not responsible for third-party websites, products, contracts, data processing, security incidents, support, billing, or changes."
     ]
@@ -159,7 +159,7 @@ export default function TermsPage() {
             limits.
           </p>
           <p className="mt-4 text-sm font-medium text-ink/55">
-            Last updated: May 20, 2026
+            Last updated: June 17, 2026
           </p>
         </section>
 

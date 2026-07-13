@@ -30,11 +30,11 @@ export default function PlaybooksPage() {
           <div className="mt-3 grid gap-5 md:grid-cols-[1fr_260px] md:items-end">
             <div>
               <h1 className="text-4xl font-semibold">
-                Practical AI adoption guides
+                Practical guides for the first AI rollout
               </h1>
               <p className="mt-3 max-w-2xl leading-7 text-ink/65">
                 Use playbooks to move from a business problem to a first
-                workflow, measurement plan, and tool shortlist.
+                workflow, a rollout plan, and a tighter shortlist.
               </p>
             </div>
             <div className="metric-tile rounded-xl p-4">

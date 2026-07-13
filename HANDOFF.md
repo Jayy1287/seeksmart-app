@@ -1,6 +1,6 @@
 # SeekSmart Handoff
 
-Last updated: 2026-05-20
+Last updated: 2026-06-17
 
 ## Current State
 
@@ -23,7 +23,7 @@ main
 Current implementation checkpoint:
 
 ```text
-f8007ea Add PostHog analytics integration
+2026-06-17 Passwordless email auth, safer login flow, and submission duplicate-check fix
 ```
 
 Expected local changes after committing this handoff:
@@ -35,32 +35,32 @@ None.
 Current local preview status:
 
 ```text
-No dev server is currently running.
+No local server is currently running.
 ```
 
 Use this when a local preview is needed:
 
 ```bash
-npm run dev -- -p 3002
+npm run dev
 ```
 
 Last verified local URL:
 
 ```text
-http://localhost:3002
+http://localhost:3000
 ```
 
-The latest verification pass completed successfully with:
+The most recent documented verification pass used:
 
 ```bash
 npm run lint
 npm run typecheck
 npm run test:recommendations
 npm run build
-SMOKE_BASE_URL=http://localhost:3002 npm run test:smoke
+SMOKE_BASE_URL=http://localhost:3000 npm run test:smoke
 ```
 
-The last smoke test returned healthy responses for `/`, `/tools`, `/use-cases`, `/industries`, `/opportunities`, `/audit`, `/feedback`, `/privacy`, `/terms`, and `/api/v1/health`.
+The last documented smoke test returned healthy responses for `/`, `/tools`, `/use-cases`, `/industries`, `/opportunities`, `/audit`, `/feedback`, `/privacy`, `/terms`, and `/api/v1/health`.
 
 ## Product Position
 
@@ -154,7 +154,7 @@ Signed-in users can save audit runs. Saved runs are stored in the `audit_runs` t
 
 ### Authentication And User Workspace
 
-Auth uses NextAuth v5 with Google OAuth and Prisma adapter.
+Auth uses NextAuth v5 with Prisma adapter, Google OAuth, and optional passwordless email sign-in through Resend.
 
 Main files:
 
@@ -162,11 +162,14 @@ Main files:
 src/auth.ts
 src/app/api/auth/[...nextauth]/route.ts
 src/app/login/page.tsx
+src/app/login/check-email/page.tsx
 src/app/dashboard/page.tsx
+src/server/auth/email.ts
 ```
 
 User-facing behavior:
 
+- Passwordless email sign-in with Auth.js verification tokens when `RESEND_API_KEY` is configured.
 - Google sign-in.
 - Database-backed sessions.
 - Dashboard requires login.
@@ -174,6 +177,8 @@ User-facing behavior:
 - Users can like and unlike tools.
 - Likes require login.
 - If not signed in, liking sends users to login with a callback URL.
+- Login callback URLs are sanitized to local app routes only.
+- Email sign-in requests are normalized and soft rate-limited by email hash and IP before mail is sent.
 
 Admin role:
 
@@ -237,7 +242,7 @@ src/app/api/v1/submissions/route.ts
 Behavior:
 
 - Client PostHog initialization happens in `instrumentation-client.ts`.
-- Browser PostHog traffic is proxied through `/ingest/*` in `next.config.mjs`.
+- Browser PostHog traffic should be proxied through `/ingest/*` in `next.config.mjs`.
 - PostHog env vars are optional; missing keys should not break local dev, sign-in, or submissions.
 - `posthog-js` automatic pageview, pageleave, and autocapture are disabled so dashboards stay event-driven and intentional.
 - PostHog exception capture is enabled.
@@ -299,7 +304,12 @@ src/features/submissions/submit-tool-form.tsx
 src/server/submissions/mutations.ts
 ```
 
-Submitted tools are stored as `Submission` records with `PENDING` status. The public API validates input, normalizes URLs, blocks duplicates, checks same-origin for POST, and rate limits by IP.
+Submission behavior:
+
+- `/submit` now requires a signed-in user and redirects anonymous visitors to `/login?callbackUrl=/submit`.
+- The submission form no longer asks for an email address; the signed-in account supplies the submitter identity.
+- Each signed-in user can create at most one submission because `Submission` now has a unique optional `userId` relation.
+- The public API still validates input, normalizes URLs, blocks duplicates, checks same-origin for POST, and rate limits by IP.
 
 Admin review:
 
@@ -543,6 +553,9 @@ AUTH_URL
 AUTH_SECRET
 AUTH_GOOGLE_ID
 AUTH_GOOGLE_SECRET
+RESEND_API_KEY
+AUTH_EMAIL_FROM
+AUTH_EMAIL_REPLY_TO
 ADMIN_EMAILS
 ADMIN_PASSWORD
 ADMIN_SESSION_SECRET
@@ -610,7 +623,7 @@ npm run prisma:migrate
 npm run db:seed
 npm run dev
 npm run build
-npm run start -- -p 3002
+npm run start
 npm run lint
 npm run typecheck
 npm run test:recommendations
@@ -701,9 +714,9 @@ Highest leverage next steps:
    - Methodology transparency and update history.
 
 6. Account experience:
-   - Manual email/password login only if needed.
-   - If added, use a provider such as Resend, Postmark, SendGrid, or SMTP for verification, magic links, and password recovery.
-   - Keep Google login as the low-friction default.
+   - Passwordless email auth is now supported through Resend-backed magic links.
+   - Keep Google login as the low-friction default alongside email.
+   - Add account settings, delete-account flow, and resend-friendly auth observability before expanding auth providers further.
 
 7. Technical hardening:
    - Durable rate limiting.
@@ -811,7 +824,7 @@ src/lib/posthog-server.ts
 - `.env` is ignored; update `.env.example` for any new required variables.
 - `.env.local` is ignored and may contain local PostHog overrides.
 - `SHOW_TOOL_LIKE_COUNTS=false` is the expected default.
-- If hosting locally, use port `3002`; no local server is currently running.
+- If hosting locally, use port `3000`; no local server is currently running.
 - Run `npm run build` before saying production preview is good.
 - PostHog is intentionally event-driven; do not enable automatic pageview/autocapture without updating the event strategy.
 - `.claude/` and `posthog-setup-report.md` are ignored local wizard artifacts and are not required by the app.

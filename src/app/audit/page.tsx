@@ -12,16 +12,16 @@ import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
-  title: "Rules-Based AI Audit",
+  title: "AI Audit",
   description:
-    "Run a rules-based AI audit to identify business opportunities, recommended workflows, and tool shortlists.",
+    "Run a guided AI audit to identify practical opportunities, first workflows, and tool shortlists.",
   alternates: {
     canonical: "/audit"
   },
   openGraph: {
-    title: "Rules-Based AI Audit",
+    title: "AI Audit",
     description:
-      "Run a rules-based AI audit to identify business opportunities, recommended workflows, and tool shortlists.",
+      "Run a guided AI audit to identify practical opportunities, first workflows, and tool shortlists.",
     url: "/audit",
     type: "website"
   }
@@ -65,9 +65,8 @@ export default function AuditPage() {
                 Find the first AI workflow your business should improve.
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
-                Answer a short structured audit and get a deterministic
-                recommendation brief. Sign in before starting so your audit
-                history is saved automatically.
+                Answer a short guided audit and get a clear recommendation
+                brief with where to start, what to measure, and which tools to compare.
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <MotionLink className="primary-button min-h-12" href="/audit/start">
@@ -85,10 +84,10 @@ export default function AuditPage() {
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <p className="text-sm font-semibold text-accent">
-                      Audit output
+                      You will leave with
                     </p>
                     <h2 className="mt-1 text-2xl font-semibold">
-                      Business plan, not a tool dump
+                      A plan, not a pile of links
                     </h2>
                   </div>
                   <BarChart3 aria-hidden="true" className="text-accent" />
@@ -138,11 +137,11 @@ export default function AuditPage() {
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-2xl font-semibold">
-                Built from SeekSmart taxonomy
+                Built for a practical first pilot
               </h2>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/60">
-                The audit uses the structured intelligence layer: industries,
-                functions, opportunities, use cases, and tool-fit notes.
+                The audit turns your business context into a recommended
+                workflow, a shortlist, and the guardrails to review before rollout.
               </p>
             </div>
             <MotionLink className="primary-button" href="/audit/start">

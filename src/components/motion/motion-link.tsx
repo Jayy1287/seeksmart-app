@@ -41,8 +41,8 @@ export function MotionLink({
     <AnimatedLink
       className={className}
       href={href as LinkProps<unknown>["href"]}
-      transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={shouldReduceMotion ? undefined : { y: -1 }}
+      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={shouldReduceMotion ? undefined : { y: -2 }}
       whileTap={shouldReduceMotion ? undefined : { scale: 0.985 }}
       {...props}
     >
