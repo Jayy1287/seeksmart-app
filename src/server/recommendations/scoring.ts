@@ -184,6 +184,16 @@ function scoreOpportunity({
   if (industryMatch) {
     impactScore += Math.max(12, 24 - industryMatch.priority * 3);
     reasons.push("Matches your selected industry.");
+  } else if (opportunity.industries.length > 0) {
+    // Mapped to other specific industries but not this one: still possible,
+    // but it should not outrank a general or industry-matched opportunity.
+    impactScore -= 8;
+    cautions.push(
+      `Usually seen in ${opportunity.industries
+        .slice(0, 2)
+        .map((industry) => industry.name.toLowerCase())
+        .join(" and ")}; check the examples translate to your business.`
+    );
   }
 
   if (opportunity.businessFunction?.slug === selectedFunctionSlug) {

@@ -16,8 +16,7 @@ import {
   methodologySignals,
   playbooks
 } from "@/lib/platform-content";
-import { HomepageLottieVisual } from "@/features/home/homepage-lottie-visual";
-import { TypewriterRotator } from "@/features/home/typewriter-rotator";
+import { HomeBriefPreview } from "@/features/home/home-brief-preview";
 import { listCategorySummaries } from "@/server/categories/queries";
 import {
   listIndustrySummaries,
@@ -91,25 +90,26 @@ export default async function Home() {
               </h1>
             </StaggerItem>
             <StaggerItem>
-              <TypewriterRotator />
-            </StaggerItem>
-            <StaggerItem>
-              <p className="mt-7 max-w-2xl text-lg leading-8 text-ink/68 md:text-xl md:leading-9">
-                SeekSmart helps you find the right workflow to improve, the
-                safest place to start, and the tools worth comparing only after
-                the business case is clear.
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-ink/68 md:text-xl md:leading-9">
+                A free three-minute audit that ranks where AI pays back first
+                for your business, then gives you a two-week pilot plan and the
+                tools worth comparing. Built for online stores, local shops,
+                and small service businesses.
               </p>
             </StaggerItem>
             <StaggerItem>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <MotionLink className="primary-button min-h-12" href={startAuditHref}>
-                  Start AI audit
+                  Start the free audit
                   <ArrowRight aria-hidden="true" size={18} />
                 </MotionLink>
                 <MotionLink className="secondary-button min-h-12" href="/opportunities">
                   Explore opportunities
                 </MotionLink>
               </div>
+              <p className="mt-3 text-sm text-ink/50">
+                No account needed. Results on screen immediately.
+              </p>
             </StaggerItem>
             <StaggerItem>
               <form
@@ -138,7 +138,7 @@ export default async function Home() {
           </Stagger>
 
           <Reveal className="relative self-center" delay={0.16}>
-            <HomepageLottieVisual />
+            <HomeBriefPreview />
           </Reveal>
         </div>
       </section>

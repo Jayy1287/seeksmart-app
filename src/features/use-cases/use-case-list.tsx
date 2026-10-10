@@ -5,11 +5,8 @@ import Link from "next/link";
 import {
   ArrowRight,
   Clock3,
-  Gauge,
   Search,
-  ShieldAlert,
   SlidersHorizontal,
-  Workflow,
   X
 } from "lucide-react";
 import type { PublicUseCaseSummary } from "@/server/use-cases/queries";
@@ -73,6 +70,28 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
     });
   }, [effortLevel, functionSlug, query, riskLevel, useCases]);
 
+  // Group by team so a 59-item list reads as ten short lists.
+  const groups = useMemo(() => {
+    const byFunction = new Map<string, PublicUseCaseSummary[]>();
+
+    for (const useCase of filteredUseCases) {
+      const key = useCase.businessFunction?.name ?? "Other workflows";
+      byFunction.set(key, [...(byFunction.get(key) ?? []), useCase]);
+    }
+
+    return Array.from(byFunction.entries())
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([name, items]) => ({
+        name,
+        items: [...items].sort(
+          (a, b) =>
+            levelRank(a.effortLevel) - levelRank(b.effortLevel) ||
+            levelRank(a.riskLevel) - levelRank(b.riskLevel) ||
+            a.name.localeCompare(b.name)
+        )
+      }));
+  }, [filteredUseCases]);
+
   const hasActiveFilters = Boolean(
     query.trim() ||
       functionSlug !== "all" ||
@@ -88,7 +107,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div className="rounded-[1.55rem] border border-line/60 bg-white/85 p-4 shadow-[0_22px_60px_rgb(8_126_139/0.1)] backdrop-blur">
         <div className="grid gap-3 lg:grid-cols-[minmax(16rem,1fr)_auto_auto_auto] lg:items-center">
           <label className="relative block">
@@ -186,85 +205,54 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
         </div>
       </div>
 
-      {filteredUseCases.length > 0 ? (
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {filteredUseCases.map((useCase, index) => (
-            <article
-              className="decision-card group flex min-h-[18rem] flex-col p-6"
-              key={useCase.id}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="decision-card-icon">
-                    <Workflow aria-hidden="true" size={18} />
-                  </div>
-                  <p className="decision-card-kicker mt-4">
-                    Workflow {String(index + 1).padStart(2, "0")}
-                  </p>
-                  <h2 className="decision-card-title mt-2 text-xl transition group-hover:text-accent">
-                    {useCase.name}
-                  </h2>
-                </div>
-                <Link
-                  aria-label={`View ${useCase.toolCount} mapped tools for ${useCase.name}`}
-                  className="decision-card-stat shrink-0 transition hover:border-accent/45 hover:bg-accent/10 hover:text-accent focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-primary-light/25"
-                  href={`/use-cases/${useCase.slug}#mapped-tools`}
-                >
-                  <strong>{useCase.toolCount}</strong>
-                  <span>Tools</span>
-                </Link>
+      {groups.length > 0 ? (
+        <div className="grid gap-8">
+          {groups.map((group) => (
+            <section key={group.name}>
+              <div className="flex items-baseline justify-between gap-4 border-b border-line/60 pb-2">
+                <h3 className="text-lg font-semibold">{group.name}</h3>
+                <span className="text-xs font-bold uppercase text-ink/45">
+                  {group.items.length} workflow{group.items.length === 1 ? "" : "s"}
+                </span>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {useCase.businessFunction ? (
-                  <span className="status-pill">
-                    {useCase.businessFunction.name}
-                  </span>
-                ) : null}
-                {useCase.timeToValue ? (
-                  <span className="status-pill">
-                    <Clock3 aria-hidden="true" size={13} />
-                    {useCase.timeToValue}
-                  </span>
-                ) : null}
-              </div>
-              <div className="decision-card-copy mt-4 flex-1 space-y-3 text-sm">
-                <p>
-                  {useCase.outcome ??
-                    useCase.description ??
-                    `Browse AI tools for ${useCase.name.toLowerCase()}.`}
-                </p>
-                <p className="rounded-r-xl border-l-2 border-signal/70 bg-signal/5 py-2 pl-3 pr-2 text-ink/62">
-                  {buildSelectionCue(useCase)}
-                </p>
-              </div>
-              <div className="decision-card-footer">
-                <div className="grid grid-cols-2 gap-2 text-xs font-medium text-ink/55">
-                  <span className="inline-flex items-center gap-1.5">
-                    <Gauge
-                      aria-hidden="true"
-                      className="text-accent"
-                      size={14}
-                    />
-                    {formatLevel(useCase.effortLevel)} effort
-                  </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <ShieldAlert
-                      aria-hidden="true"
-                      className="text-signal"
-                      size={14}
-                    />
-                    {formatLevel(useCase.riskLevel)} risk
-                  </span>
-                </div>
-                <Link
-                  className="secondary-button mt-4 min-h-11 w-full justify-between border-accent/30 bg-accent/10 px-4 text-accent"
-                  href={`/use-cases/${useCase.slug}`}
-                >
-                  View workflow
-                  <ArrowRight aria-hidden="true" size={14} />
-                </Link>
-              </div>
-            </article>
+              <ul className="divide-y divide-line/50">
+                {group.items.map((useCase) => (
+                  <li key={useCase.id}>
+                    <Link
+                      className="use-case-row group"
+                      href={`/use-cases/${useCase.slug}`}
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="font-semibold text-ink transition group-hover:text-accent">
+                          {useCase.name}
+                        </p>
+                        <p className="mt-1 line-clamp-2 text-sm leading-6 text-ink/60">
+                          {useCase.outcome ??
+                            useCase.description ??
+                            `AI tools and guidance for ${useCase.name.toLowerCase()}.`}
+                        </p>
+                      </div>
+                      <div className="use-case-row-meta">
+                        <LevelPill label="effort" level={useCase.effortLevel} />
+                        <LevelPill label="risk" level={useCase.riskLevel} />
+                        {useCase.timeToValue ? (
+                          <span className="status-pill">
+                            <Clock3 aria-hidden="true" size={12} />
+                            {useCase.timeToValue}
+                          </span>
+                        ) : null}
+                        <span className="status-pill">{useCase.toolCount} tools</span>
+                      </div>
+                      <ArrowRight
+                        aria-hidden="true"
+                        className="hidden shrink-0 text-accent transition group-hover:translate-x-0.5 sm:block"
+                        size={16}
+                      />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
           ))}
         </div>
       ) : (
@@ -290,19 +278,18 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
   );
 }
 
+function LevelPill({ label, level }: { label: string; level: string }) {
+  return (
+    <span className="status-pill" data-level={level.toLowerCase()}>
+      {formatLevel(level)} {label}
+    </span>
+  );
+}
+
 function formatLevel(value: string) {
   return value.charAt(0) + value.slice(1).toLowerCase();
 }
 
-function buildSelectionCue(useCase: PublicUseCaseSummary) {
-  const team = useCase.businessFunction?.name
-    ? `the ${useCase.businessFunction.name} team`
-    : "your team";
-  const effort = formatLevel(useCase.effortLevel).toLowerCase();
-  const risk = formatLevel(useCase.riskLevel).toLowerCase();
-  const timing = useCase.timeToValue
-    ? ` and you need a ${useCase.timeToValue} value window`
-    : "";
-
-  return `Choose this when ${team.toLowerCase()} needs a ${effort}-effort, ${risk}-risk workflow improvement${timing}.`;
+function levelRank(value: string) {
+  return value === "LOW" ? 0 : value === "MEDIUM" ? 1 : 2;
 }

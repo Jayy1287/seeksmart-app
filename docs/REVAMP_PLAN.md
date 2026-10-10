@@ -1,7 +1,7 @@
 # SeekSmart Revamp Plan
 
 Last updated: 2026-10-10
-Status: Phase 0 shipped on branch `revamp/phase-0-technical-seo`. Phases 1-3 need a product decision from Matteo (see "Decisions needed").
+Status: Phases 0 and 1 shipped on branch `revamp/phase-0-technical-seo` (2026-10-10). Decisions A, C, D are made (see section 6). Phase 2 (content) and the rest of Phase 3 are next.
 
 This document records what the October 2026 review found, what was changed, and the recommended direction. It is written for Matteo and for whoever picks up the code next.
 
@@ -149,18 +149,18 @@ Keep the visual language (it is distinctive and calm) but simplify the system:
 | Phase | Scope | Effort | Depends on |
 |---|---|---|---|
 | 0 (done) | Fonts, JSON-LD, OG images, 404, sitemap, robots, noindex, ISR for auth-free pages, Lottie deferral | 1 day | nothing |
-| 1 | Audit redesign: ungated, one-question-per-screen, POST runs with ids, results-first with email unlock, scoring tiebreakers and tag-based matching, PDF/share | 1-2 weeks | Decision A, B |
+| 1 (done) | Audit redesign: ungated, one-question-per-screen wizard, POST runs with permanent ids, results-first with email unlock, scoring v3.0 tiebreaks and specificity, print/share. Tag-based matching (replacing substring keywords) is still open. | shipped 2026-10-10 | Decision A |
 | 2 | Content: enrich or noindex tool pages, add 10-20 alternatives/vs pages, rewrite use-case and industry pages answer-first, industry branches in the audit | 2-4 weeks, mostly writing | Decision C |
-| 3 | UI simplification: one hero, two surfaces, listing rows with filters, replace Lottie, like-state client fetch so everything is ISR | 1 week | Phase 1 |
+| 3 (partly done) | UI simplification: hero now shows a static brief preview instead of Lottie, typewriter removed, use-cases listing is grouped rows. Still open: one hero pattern everywhere, two surfaces, like-state client fetch so tool pages are ISR, opportunities and industries listings as rows | 1 week | Phase 1 |
 | 4 | Monetization: validated-audit checkout, partner matching, newsletter | after Phase 1 traffic data | Decision D |
 
 ## 6. Decisions needed from Matteo
 
-- A. Ungate the audit (email on results instead of Google login up front)? Recommended: yes.
-- B. Keep the rules engine or add an LLM step for narrative only? Recommended: keep rules for ranking, optionally use an LLM to write the brief prose from the structured result, clearly labelled.
-- C. Which 2-3 industries to go deep on first? Candidates from the seed: ecommerce, professional services / agencies, insurance operations, legal services.
-- D. Which monetization step to validate first? Recommended: the $199-$499 validated audit, because it needs no new software.
-- E. Keep the vendor submission form? Recommended: keep the route, remove it from navigation until there is traffic to sell.
+- A. Ungate the audit: decided yes (2026-10-10). Shipped.
+- B. Keep the rules engine or add an LLM step for narrative only? Open. Recommendation unchanged: rules for ranking; an LLM only for prose, clearly labelled.
+- C. Industries: decided ecommerce, local retailers, and smaller service businesses (2026-10-10). The wizard features "Online store", "Shop, restaurant, or venue", and "Local service business" first, with industry-specific pain point and system ordering. Deeper content for these three is Phase 2.
+- D. Monetization: decided none for now (2026-10-10). Phase 4 is parked; the email list from the audit is still collected so the option stays open.
+- E. Keep the vendor submission form? Open. Recommendation: keep the route, remove it from navigation until there is traffic to sell.
 
 ## 7. How to run locally
 

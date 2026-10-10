@@ -125,40 +125,23 @@ Business differentiation:
 
 Routes:
 
-- `/audit`
-- `/audit/start`
-- `/audit/questions`
-- `/audit/results`
-- `/dashboard/audits/[id]`
+- `/audit`: landing page (indexable, FAQ structured data, industry quick starts).
+- `/audit/questions`: 11-step client wizard (`src/features/audit/audit-wizard.tsx`). No login. Accepts `?industry=` and `?function=` presets. Draft answers are kept in `sessionStorage`.
+- `/audit/r/[id]`: permanent results page for a stored run. Free: readiness score, first workflow, top 3 opportunities. Email unlocks the pilot plan, opportunity detail, tool shortlists, readiness detail, checklist, and print/share.
+- `/audit/results`: compatibility route for the old GET form; scores once, stores a run, redirects to `/audit/r/[id]`.
+- `/audit/start` and `/dashboard/audits/[id]`: permanent redirects.
 
-The audit is rules-based and does not call an AI model in-app. It uses structured inputs such as industry, business function, goals, pain points, budget, technical comfort, data sensitivity, urgency, workflow maturity, approval mode, integration needs, workflow volume, data readiness, decision owner, existing tools, and success metrics.
+Flow:
 
-Main logic:
+1. The wizard calls the server action `submitAuditAction` (`src/server/audit-runs/actions.ts`), which validates with Zod, maps wizard answers to the engine input (`src/shared/recommendations/wizard.ts`), scores with `scoreAudit`, stores an `AuditRun`, remembers the run id in the `seeksmart_audit_runs` cookie, and redirects.
+2. Anonymous runs expire after 30 days (`expires_at`). Unlocking with an email (`unlockAuditAction`) sets `email`, `unlocked_at`, clears the expiry, and stores the email in the `seeksmart_audit_email` cookie so later runs in the same browser unlock automatically.
+3. Signed-in users get runs stored against their account (upsert on `userId + ruleVersion + inputHash`). On sign-in, runs created in the same browser or unlocked with the same email are claimed (`claimAuditRun`, `claimAuditRunsByEmail` in `src/auth.ts`).
 
-```text
-src/server/recommendations/scoring.ts
-src/server/recommendations/input.ts
-src/server/recommendations/queries.ts
-src/shared/recommendations/audit.ts
-```
+The rules version is `audit-rules-v3.0` (`src/server/recommendations/scoring.ts`). Changes from v2.3: keyword specificity bonus, payback bonus, penalty for opportunities mapped only to other industries, deterministic tiebreaks, a distinct closing reason per opportunity, strictly decreasing displayed scores in the top 3, and placeholder tool copy ("mapped based on current curated use-case data", "Teams that want to pilot this use case") is never shown as a reason.
 
-The current rules version is:
+Featured industries for the questionnaire: `ecommerce`, `retail-and-hospitality`, `local-services` (see `featuredIndustries` in `src/shared/recommendations/wizard.ts`).
 
-```text
-audit-rules-v2.3
-```
-
-Audit output includes:
-
-- Executive brief.
-- Readiness score and readiness level.
-- Ranked top opportunities.
-- Recommended use cases.
-- Tool recommendations.
-- Pilot plan.
-- Checklist and cautions.
-
-Signed-in users can save audit runs. Saved runs are stored in the `audit_runs` table and shown in the dashboard.
+Analytics events: `audit_questions_viewed`, `audit_step_completed`, `audit_questions_submitted`, `audit_completed` (server), `audit_results_viewed` (with `unlocked`), `audit_unlock_viewed`, `audit_unlocked` (server).
 
 ### Authentication And User Workspace
 
@@ -181,7 +164,7 @@ User-facing behavior:
 - Google sign-in.
 - Database-backed sessions.
 - Dashboard requires login.
-- Dashboard shows saved audit runs and liked tools.
+- Dashboard shows saved audit runs (linking to `/audit/r/[id]`) and liked tools.
 - Users can like and unlike tools.
 - Likes require login.
 - If not signed in, liking sends users to login with a callback URL.

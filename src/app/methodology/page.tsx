@@ -20,13 +20,31 @@ export const metadata: Metadata = {
 };
 
 const scoringDimensions = [
-  "Business impact",
-  "Implementation effort",
-  "Budget fit",
-  "Data and privacy risk",
-  "Team size fit",
-  "Time to first value",
-  "Editorial confidence"
+  "Business impact (42% of the score)",
+  "Effort fit for your team and process clarity (20%)",
+  "Risk fit for your data sensitivity and review style (18%)",
+  "Confidence: how specific your answers were and how much curated data exists (20%)",
+  "Payback speed and keyword specificity add small bonuses",
+  "Opportunities mapped only to other industries are penalized"
+];
+
+const auditFacts = [
+  {
+    title: "Rules, not a chatbot",
+    body: "Every audit is scored by the same published rules (version audit-rules-v3.0). The same answers always give the same ranking, and every recommendation lists its reasons."
+  },
+  {
+    title: "Free first, email for the rest",
+    body: "The readiness score and ranked opportunities are shown immediately without an account. An email unlocks the pilot plan, tool shortlists, and a printable brief, and keeps the link alive."
+  },
+  {
+    title: "Industry-aware questions",
+    body: "Online stores, local shops and venues, and local service businesses get their most common pain points and systems first. Other industries use the general question set."
+  },
+  {
+    title: "Scores are directional",
+    body: "A 93 is not better than a 91 in any precise sense. Use the ranking to decide what to pilot first, then test the top two on your own examples."
+  }
 ];
 
 export default function MethodologyPage() {
@@ -135,6 +153,15 @@ export default function MethodologyPage() {
               ))}
             </div>
           </div>
+        </section>
+
+        <section className="mt-6 grid gap-4 md:grid-cols-2">
+          {auditFacts.map((fact) => (
+            <article className="surface-panel rounded-xl p-5" key={fact.title}>
+              <h2 className="text-xl font-semibold">{fact.title}</h2>
+              <p className="mt-3 leading-7 text-ink/65">{fact.body}</p>
+            </article>
+          ))}
         </section>
 
         <section className="surface-strong mt-8 rounded-2xl p-6">

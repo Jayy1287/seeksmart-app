@@ -90,8 +90,8 @@ export default async function UseCasesPage() {
                   the mapped shortlist once the workflow is clear.
                 </p>
               </div>
-              <Link className="primary-button mt-5 w-full" href="/audit">
-                Preview audit
+              <Link className="primary-button mt-5 w-full" href="/audit/questions">
+                Start the free audit
                 <ArrowRight aria-hidden="true" size={16} />
               </Link>
             </div>
