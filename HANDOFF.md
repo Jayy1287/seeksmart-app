@@ -105,7 +105,8 @@ Business differentiation:
 
 ### Public Product Surfaces
 
-- `/`: homepage with positioning, audit preview, categories, industries, opportunities, playbooks, and recent/trending tools. Served with ISR (10 minutes).
+- `/`: homepage with positioning, a static brief preview, categories, industries, opportunities, playbooks, and recent/trending tools. Served with ISR (10 minutes).
+- Rendering model: every public content page is static with hourly ISR (`revalidate = 3600` plus `generateStaticParams`), except `/tools` (search params), the audit results page, login, dashboard, and admin. PostHog initialises on idle (`instrumentation-client.ts`).
 - `/tools`: searchable/filterable AI tool directory.
 - `/tools/[slug]`: tool detail pages with use-case fit, alternatives, website CTA, like button, and comparison information.
 - `/categories` and `/categories/[slug]`: category browsing.
@@ -177,6 +178,8 @@ Admin role:
 - There is also legacy password admin auth through `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET`.
 
 ### Tool Likes
+
+Like state is resolved on the client. Tool, use-case, and category pages are statically rendered with hourly ISR; `ToolLikeProvider` (`src/features/tools/tool-like-context.tsx`, mounted in the root layout) collects the tool ids on the page and, only when the viewer is signed in, fetches them in one request from `GET /api/v1/tools/likes?ids=...`. The dashboard still passes server-known state through `initialState`.
 
 Database model:
 
@@ -509,6 +512,8 @@ https://logotyp.us/file/*
 SEO support currently includes:
 
 - Metadata in route files, with generated 1200x630 Open Graph images per route type (`src/lib/og.tsx` plus `opengraph-image.tsx` files).
+- Thin-page policy: only `isFeatured` tool pages are indexable and listed in the sitemap (55 of 90 at the time of writing). Non-featured tool pages are `noindex, follow` until their write-ups are enriched. Flip `isFeatured` in the admin to index a tool.
+- Industry guides: `src/lib/industry-guides.ts` holds hand-written depth (answer-first summary, five workflows with measures, skip list, data rules, FAQ with FAQPage JSON-LD) for `ecommerce`, `retail-and-hospitality`, and `local-services`, rendered by `src/features/industries/industry-guide.tsx` on `/industries/[slug]`.
 - JSON-LD via `src/lib/structured-data.tsx`: Organization and WebSite site-wide, SoftwareApplication and BreadcrumbList on tool pages, BreadcrumbList on use-case, industry, and opportunity pages, Article on articles.
 - Self-hosted Plus Jakarta Sans through `next/font` (`--font-sans`).
 - Custom `src/app/not-found.tsx`.

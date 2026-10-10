@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import type { UrlObject } from "node:url";
 import Link from "next/link";
 import { Filter, SearchX, SlidersHorizontal } from "lucide-react";
-import { auth } from "@/auth";
 import { listToolsQuerySchema } from "@/lib/validation";
 import { listCategories } from "@/server/categories/queries";
-import { attachToolLikeStates } from "@/server/tools/likes";
 import { searchPublishedTools } from "@/server/tools/queries";
 import { ToolCard } from "@/features/tools/tool-card";
 import { ToolFilterBar } from "@/features/tools/tool-filter-bar";
@@ -43,8 +41,7 @@ type ToolsPageProps = {
 export default async function ToolsPage({ searchParams }: ToolsPageProps) {
   const rawParams = await searchParams;
   const params = listToolsQuerySchema.parse(rawParams);
-  const [session, result, categories] = await Promise.all([
-    auth(),
+  const [result, categories] = await Promise.all([
     searchPublishedTools({
       query: params.q,
       categorySlug: params.category,
@@ -54,8 +51,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
     }),
     listCategories()
   ]);
-  const tools = await attachToolLikeStates(result.tools, session?.user?.id);
-  const isSignedIn = Boolean(session?.user);
+  const tools = result.tools;
   const activeCategory = categories.find(
     (category) => category.slug === params.category
   );
@@ -136,7 +132,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
             <Stagger className="grid gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
               {tools.map((tool) => (
                 <StaggerItem key={tool.id}>
-                  <ToolCard isSignedIn={isSignedIn} tool={tool} />
+                  <ToolCard tool={tool} />
                 </StaggerItem>
               ))}
             </Stagger>

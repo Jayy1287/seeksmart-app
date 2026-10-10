@@ -1,7 +1,7 @@
 # SeekSmart Revamp Plan
 
 Last updated: 2026-10-10
-Status: Phases 0 and 1 shipped on branch `revamp/phase-0-technical-seo` (2026-10-10). Decisions A, C, D are made (see section 6). Phase 2 (content) and the rest of Phase 3 are next.
+Status: Phases 0, 1, and 3 shipped, plus the first slice of Phase 2 (industry guides for the three focus verticals and the thin-page noindex policy), all on branch `revamp/phase-0-technical-seo` (2026-10-10). Remaining Phase 2 work is writing: enriched tool write-ups so more tools can be re-indexed, and alternatives/vs pages.
 
 This document records what the October 2026 review found, what was changed, and the recommended direction. It is written for Matteo and for whoever picks up the code next.
 
@@ -150,8 +150,8 @@ Keep the visual language (it is distinctive and calm) but simplify the system:
 |---|---|---|---|
 | 0 (done) | Fonts, JSON-LD, OG images, 404, sitemap, robots, noindex, ISR for auth-free pages, Lottie deferral | 1 day | nothing |
 | 1 (done) | Audit redesign: ungated, one-question-per-screen wizard, POST runs with permanent ids, results-first with email unlock, scoring v3.0 tiebreaks and specificity, print/share. Tag-based matching (replacing substring keywords) is still open. | shipped 2026-10-10 | Decision A |
-| 2 | Content: enrich or noindex tool pages, add 10-20 alternatives/vs pages, rewrite use-case and industry pages answer-first, industry branches in the audit | 2-4 weeks, mostly writing | Decision C |
-| 3 (partly done) | UI simplification: hero now shows a static brief preview instead of Lottie, typewriter removed, use-cases listing is grouped rows. Still open: one hero pattern everywhere, two surfaces, like-state client fetch so tool pages are ISR, opportunities and industries listings as rows | 1 week | Phase 1 |
+| 2 (started) | Done: non-featured tool pages are noindex and out of the sitemap; industry guides for ecommerce, retail/hospitality, local services; industry branches in the audit. Open: enrich tool write-ups (then flip `isFeatured`), 10-20 alternatives/vs pages, answer-first rewrites of use-case pages | 2-4 weeks, mostly writing | Decision C |
+| 3 (done) | Hero shows a static brief preview, typewriter removed, use-cases listing is grouped rows, like-state moved to a client fetch so tool, use-case, and category pages are static with ISR, PostHog deferred to idle. Still open (cosmetic): one hero pattern everywhere, opportunities and industries listings as rows | shipped 2026-10-10 | Phase 1 |
 | 4 | Monetization: validated-audit checkout, partner matching, newsletter | after Phase 1 traffic data | Decision D |
 
 ## 6. Decisions needed from Matteo

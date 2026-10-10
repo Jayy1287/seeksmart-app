@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import type { FormEvent } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Heart, Loader2 } from "lucide-react";
 import clsx from "clsx";
 import { capturePostHogEvent } from "@/features/analytics/posthog-client";
+import { useToolLike } from "@/features/tools/tool-like-context";
 import {
   toggleToolLikeAction,
   toggleToolLikeStateAction
@@ -14,8 +15,8 @@ import type { ToolLikeState } from "@/shared/domain";
 
 type ToolLikeButtonProps = {
   className?: string;
-  isSignedIn: boolean;
-  state: ToolLikeState;
+  /** Known state from a server-rendered, per-user page (the dashboard). */
+  initialState?: ToolLikeState;
   toolId: string;
   toolName: string;
   toolSlug: string;
@@ -24,8 +25,7 @@ type ToolLikeButtonProps = {
 
 export function ToolLikeButton({
   className,
-  isSignedIn,
-  state,
+  initialState,
   toolId,
   toolName,
   toolSlug,
@@ -33,19 +33,15 @@ export function ToolLikeButton({
 }: ToolLikeButtonProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [currentState, setCurrentState] = useState(state);
+  const { isSignedIn, setState, state } = useToolLike(toolId, initialState);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const redirectTo = useMemo(() => {
-    const queryString = searchParams.toString();
-
-    return queryString ? `${pathname}?${queryString}` : pathname;
-  }, [pathname, searchParams]);
-
-  useEffect(() => {
-    setCurrentState(state);
-  }, [state]);
+  // Read the query string at submit time instead of via useSearchParams so
+  // this button does not force the page out of static rendering.
+  const redirectTo =
+    typeof window === "undefined"
+      ? pathname
+      : `${window.location.pathname}${window.location.search}`;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -59,12 +55,10 @@ export function ToolLikeButton({
       return;
     }
 
-    const previousState = currentState;
+    const previousState = state;
     setError(null);
-    setCurrentState(getOptimisticLikeState(currentState));
+    setState(getOptimisticLikeState(state));
     setIsSaving(true);
-
-    const isCurrentlyLiked = currentState.isLiked;
 
     try {
       const nextState = await toggleToolLikeStateAction({
@@ -72,14 +66,14 @@ export function ToolLikeButton({
         toolId,
         toolSlug
       });
-      setCurrentState(nextState);
-      capturePostHogEvent(isCurrentlyLiked ? "tool_unliked" : "tool_liked", {
+      setState(nextState);
+      capturePostHogEvent(previousState.isLiked ? "tool_unliked" : "tool_liked", {
         tool_id: toolId,
         tool_slug: toolSlug,
         tool_name: toolName
       });
     } catch {
-      setCurrentState(previousState);
+      setState(previousState);
       setError("Could not save like. Try again.");
     } finally {
       setIsSaving(false);
@@ -98,7 +92,7 @@ export function ToolLikeButton({
       <LikeSubmitButton
         isSignedIn={isSignedIn}
         isSaving={isSaving}
-        state={currentState}
+        state={state}
         toolName={toolName}
         variant={variant}
       />

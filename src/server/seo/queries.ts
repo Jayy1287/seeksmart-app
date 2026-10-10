@@ -17,7 +17,7 @@ export async function listSitemapEntries(): Promise<{
   const [tools, categories, useCases, industries, opportunities] =
     await Promise.all([
       prisma.tool.findMany({
-        where: { status: PublishStatus.PUBLISHED },
+        where: { status: PublishStatus.PUBLISHED, isFeatured: true },
         select,
         orderBy: { updatedAt: "desc" }
       }),

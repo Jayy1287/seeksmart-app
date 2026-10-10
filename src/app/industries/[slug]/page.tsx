@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Building2, CheckCircle2, ShieldAlert } from "lucide-react";
+import { getIndustryGuide } from "@/lib/industry-guides";
 import { playbooks } from "@/lib/platform-content";
+import { IndustryGuideSections } from "@/features/industries/industry-guide";
 import {
   getIndustryBySlug,
   listIndustrySummaries
@@ -42,15 +44,21 @@ export async function generateMetadata({
     };
   }
 
+  const guide = getIndustryGuide(industry.slug);
+  const title = guide?.headline ?? `${industry.name} AI Roadmap`;
+  const description = guide
+    ? `${guide.answerFirst.split(". ").slice(0, 2).join(". ")}.`
+    : industry.description ?? `AI roadmap for ${industry.name}.`;
+
   return {
-    title: `${industry.name} AI Roadmap`,
-    description: industry.description ?? `AI roadmap for ${industry.name}.`,
+    title,
+    description,
     alternates: {
       canonical: `/industries/${industry.slug}`
     },
     openGraph: {
-      title: `${industry.name} AI Roadmap`,
-      description: industry.description ?? `AI roadmap for ${industry.name}.`,
+      title,
+      description,
       url: `/industries/${industry.slug}`,
       type: "website"
     }
@@ -65,13 +73,30 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
     notFound();
   }
 
+  const guide = getIndustryGuide(industry.slug);
+
   return (
     <main className="page-shell">
       <JsonLd
-        data={breadcrumbJsonLd([
-          { name: "Industries", path: "/industries" },
-          { name: industry.name, path: `/industries/${industry.slug}` }
-        ])}
+        data={[
+          breadcrumbJsonLd([
+            { name: "Industries", path: "/industries" },
+            { name: industry.name, path: `/industries/${industry.slug}` }
+          ]),
+          ...(guide
+            ? [
+                {
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  mainEntity: guide.faq.map((item) => ({
+                    "@type": "Question",
+                    name: item.question,
+                    acceptedAnswer: { "@type": "Answer", text: item.answer }
+                  }))
+                }
+              ]
+            : [])
+        ]}
       />
       <div className="app-container">
         <Reveal className="surface-strong rounded-2xl p-6">
@@ -82,7 +107,7 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
             <div>
               <Building2 aria-hidden="true" className="text-accent" size={28} />
               <h1 className="mt-4 text-4xl font-semibold">
-                {industry.name} AI roadmap
+                {guide?.headline ?? `${industry.name} AI roadmap`}
               </h1>
               <p className="mt-3 max-w-2xl leading-7 text-ink/65">
                 {industry.description}
@@ -98,6 +123,8 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
             </div>
           </div>
         </Reveal>
+
+        {guide ? <IndustryGuideSections guide={guide} /> : null}
 
         <Reveal className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="surface-panel rounded-xl p-5">
@@ -179,8 +206,11 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
                 workflow, a tighter shortlist, and a clearer next step.
               </p>
             </div>
-            <MotionLink className="primary-button" href="/audit">
-              Open audit preview
+            <MotionLink
+              className="primary-button"
+              href={`/audit/questions?industry=${industry.slug}`}
+            >
+              Start the free audit
               <ArrowRight aria-hidden="true" size={16} />
             </MotionLink>
           </div>

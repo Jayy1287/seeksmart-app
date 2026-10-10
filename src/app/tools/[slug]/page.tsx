@@ -17,13 +17,14 @@ import {
   Sparkles,
   Table2
 } from "lucide-react";
-import { auth } from "@/auth";
 import { TrackedExternalLink } from "@/features/analytics/tracked-link";
 import { ToolLikeButton } from "@/features/tools/tool-like-button";
 import { ToolLogo } from "@/features/tools/tool-logo";
-import { attachToolLikeStates } from "@/server/tools/likes";
-import { getPublishedToolBySlug } from "@/server/tools/queries";
-import type { PublicToolDetail, ToolLikeState } from "@/shared/domain";
+import {
+  getPublishedToolBySlug,
+  listPublishedTools
+} from "@/server/tools/queries";
+import type { PublicToolDetail } from "@/shared/domain";
 import { AnimatedBar } from "@/components/motion/animated-bar";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { Reveal } from "@/components/motion/reveal";
@@ -34,7 +35,16 @@ import {
   softwareApplicationJsonLd
 } from "@/lib/structured-data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  try {
+    const tools = await listPublishedTools({ limit: 100 });
+    return tools.map((tool) => ({ slug: tool.slug }));
+  } catch {
+    return [];
+  }
+}
 
 type ToolDetailPageProps = {
   params: Promise<{
@@ -57,6 +67,10 @@ export async function generateMetadata({
   return {
     title: tool.metaTitle ?? `${tool.name} Review, Use Cases, and Alternatives`,
     description: tool.metaDescription ?? tool.shortDescription,
+    // Only editorially featured tools carry enough original content to be
+    // worth indexing; the rest stay crawlable but out of the index until
+    // their write-ups are enriched (see docs/REVAMP_PLAN.md, Phase 2).
+    robots: tool.isFeatured ? undefined : { index: false, follow: true },
     alternates: {
       canonical: `/tools/${tool.slug}`
     },
@@ -71,21 +85,13 @@ export async function generateMetadata({
 
 export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   const { slug } = await params;
-  const [session, toolResult] = await Promise.all([
-    auth(),
-    getPublishedToolBySlug(slug)
-  ]);
+  const tool = await getPublishedToolBySlug(slug);
 
-  if (!toolResult) {
+  if (!tool) {
     notFound();
   }
 
-  const [tool] = await attachToolLikeStates([toolResult], session?.user?.id);
-  const alternatives = await attachToolLikeStates(
-    tool.alternatives,
-    session?.user?.id
-  );
-  const isSignedIn = Boolean(session?.user);
+  const alternatives = tool.alternatives;
   const topUseCase = [...tool.useCases].sort(
     (a, b) => b.fitScore - a.fitScore
   )[0];
@@ -157,8 +163,6 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               </div>
               <div className="mt-6 flex flex-wrap items-center gap-3">
                 <ToolLikeButton
-                  isSignedIn={isSignedIn}
-                  state={tool.like}
                   toolId={tool.id}
                   toolName={tool.name}
                   toolSlug={tool.slug}
@@ -477,7 +481,6 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
           {alternatives.length > 0 ? (
             <ComparableToolsTable
               alternatives={alternatives}
-              isSignedIn={isSignedIn}
             />
           ) : (
             <EmptyState
@@ -511,16 +514,12 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   );
 }
 
-type ComparableTool = PublicToolDetail["alternatives"][number] & {
-  like?: ToolLikeState;
-};
+type ComparableTool = PublicToolDetail["alternatives"][number];
 
 function ComparableToolsTable({
-  alternatives,
-  isSignedIn
+  alternatives
 }: {
   alternatives: ComparableTool[];
-  isSignedIn: boolean;
 }) {
   return (
     <>
@@ -646,15 +645,11 @@ function ComparableToolsTable({
                     >
                       Details
                     </Link>
-                    {alternative.like ? (
-                      <ToolLikeButton
-                        isSignedIn={isSignedIn}
-                        state={alternative.like}
+                    <ToolLikeButton
                         toolId={alternative.id}
                         toolName={alternative.name}
                         toolSlug={alternative.slug}
                       />
-                    ) : null}
                   </div>
                 </td>
               </tr>

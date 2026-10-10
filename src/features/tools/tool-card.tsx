@@ -9,16 +9,13 @@ import {
 } from "lucide-react";
 import { ToolLikeButton } from "@/features/tools/tool-like-button";
 import { ToolLogo } from "@/features/tools/tool-logo";
-import type { PublicToolCard, ToolLikeState } from "@/shared/domain";
+import type { PublicToolCard } from "@/shared/domain";
 
 type ToolCardProps = {
-  isSignedIn?: boolean;
-  tool: PublicToolCard & {
-    like?: ToolLikeState;
-  };
+  tool: PublicToolCard;
 };
 
-export function ToolCard({ isSignedIn = false, tool }: ToolCardProps) {
+export function ToolCard({ tool }: ToolCardProps) {
   const titleParts = splitFinalWord(tool.name);
   const signalBadge = tool.isFeatured
     ? { icon: Sparkles, label: "Featured" }
@@ -76,15 +73,11 @@ export function ToolCard({ isSignedIn = false, tool }: ToolCardProps) {
       </div>
       <div className="decision-card-footer flex flex-wrap items-center justify-between gap-3">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
-          {tool.like ? (
-            <ToolLikeButton
-              isSignedIn={isSignedIn}
-              state={tool.like}
-              toolId={tool.id}
-              toolName={tool.name}
-              toolSlug={tool.slug}
-            />
-          ) : null}
+          <ToolLikeButton
+            toolId={tool.id}
+            toolName={tool.name}
+            toolSlug={tool.slug}
+          />
         </div>
         <Link
           className="inline-flex items-center gap-1 text-sm font-medium text-accent/85 transition group-hover:translate-x-0.5 group-hover:text-accent"

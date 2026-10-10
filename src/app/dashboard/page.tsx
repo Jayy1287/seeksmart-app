@@ -270,8 +270,7 @@ function LikedToolItem({ tool }: { tool: LikedTool }) {
         </Link>
         <div className="flex items-center md:justify-end">
           <ToolLikeButton
-            isSignedIn={true}
-            state={tool.like}
+            initialState={tool.like}
             toolId={tool.id}
             toolName={tool.name}
             toolSlug={tool.slug}

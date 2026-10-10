@@ -14,24 +14,31 @@ import {
   Target
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { auth } from "@/auth";
 import {
   getUseCaseBySlug,
   listToolsForUseCase,
+  listUseCaseSummaries,
   type PublicUseCaseToolFit
 } from "@/server/use-cases/queries";
 import { TrackedExternalLink } from "@/features/analytics/tracked-link";
 import { ToolLikeButton } from "@/features/tools/tool-like-button";
 import { ToolLogo } from "@/features/tools/tool-logo";
-import { attachToolLikeStates } from "@/server/tools/likes";
-import type { ToolLikeState } from "@/shared/domain";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
 import { EmptyState } from "@/components/state-surfaces";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  try {
+    const useCases = await listUseCaseSummaries();
+    return useCases.map((useCase) => ({ slug: useCase.slug }));
+  } catch {
+    return [];
+  }
+}
 
 type UseCasePageProps = {
   params: Promise<{
@@ -75,8 +82,7 @@ export async function generateMetadata({
 
 export default async function UseCasePage({ params }: UseCasePageProps) {
   const { slug } = await params;
-  const [session, useCase, toolsResult] = await Promise.all([
-    auth(),
+  const [useCase, tools] = await Promise.all([
     getUseCaseBySlug(slug),
     listToolsForUseCase(slug)
   ]);
@@ -85,8 +91,6 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
     notFound();
   }
 
-  const tools = await attachToolLikeStates(toolsResult, session?.user?.id);
-  const isSignedIn = Boolean(session?.user);
   const firstTool = tools[0];
 
   return (
@@ -270,14 +274,12 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
                 <div className="grid gap-4 md:hidden">
                   {tools.slice(0, 6).map((tool) => (
                     <ToolFitCard
-                      isSignedIn={isSignedIn}
                       key={tool.id}
                       tool={tool}
                     />
                   ))}
                 </div>
                 <ToolFitComparisonTable
-                  isSignedIn={isSignedIn}
                   tools={tools.slice(0, 8)}
                 />
               </>
@@ -298,13 +300,9 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
 }
 
 function ToolFitCard({
-  isSignedIn,
   tool
 }: {
-  isSignedIn: boolean;
-  tool: PublicUseCaseToolFit & {
-    like?: ToolLikeState;
-  };
+  tool: PublicUseCaseToolFit;
 }) {
   return (
     <article className="surface-panel rounded-xl p-5">
@@ -351,30 +349,22 @@ function ToolFitCard({
           Website
         </TrackedExternalLink>
       </div>
-      {tool.like ? (
-        <ToolLikeButton
+      <ToolLikeButton
           className="mt-3 w-full"
-          isSignedIn={isSignedIn}
-          state={tool.like}
           toolId={tool.id}
           toolName={tool.name}
           toolSlug={tool.slug}
           variant="fit"
         />
-      ) : null}
     </article>
   );
 }
 
 function ToolFitComparisonTable({
-  isSignedIn,
   tools
 }: {
-  isSignedIn: boolean;
   tools: Array<
-    PublicUseCaseToolFit & {
-      like?: ToolLikeState;
-    }
+    PublicUseCaseToolFit
   >;
 }) {
   return (
@@ -434,15 +424,11 @@ function ToolFitComparisonTable({
                   <Link className="secondary-button" href={`/tools/${tool.slug}`}>
                     Details
                   </Link>
-                  {tool.like ? (
-                    <ToolLikeButton
-                      isSignedIn={isSignedIn}
-                      state={tool.like}
+                  <ToolLikeButton
                       toolId={tool.id}
                       toolName={tool.name}
                       toolSlug={tool.slug}
                     />
-                  ) : null}
                 </div>
               </td>
             </tr>
