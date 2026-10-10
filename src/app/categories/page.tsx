@@ -4,7 +4,7 @@ import { listCategorySummaries } from "@/server/categories/queries";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { Reveal } from "@/components/motion/reveal";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "AI Tool Categories",

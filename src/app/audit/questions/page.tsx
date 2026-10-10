@@ -43,6 +43,10 @@ export const metadata: Metadata = {
   title: "AI Audit Questions",
   description:
     "Answer a short guided intake for a practical AI recommendation brief.",
+  robots: {
+    index: false,
+    follow: false
+  },
   alternates: {
     canonical: "/audit/questions"
   }

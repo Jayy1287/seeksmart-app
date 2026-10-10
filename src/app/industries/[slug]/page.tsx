@@ -3,22 +3,32 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, Building2, CheckCircle2, ShieldAlert } from "lucide-react";
 import { playbooks } from "@/lib/platform-content";
-import { getIndustryBySlug } from "@/server/intelligence/queries";
+import {
+  getIndustryBySlug,
+  listIndustrySummaries
+} from "@/server/intelligence/queries";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
+import { JsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+// Pre-render every published industry at build time; new ones render on demand.
+export async function generateStaticParams() {
+  try {
+    const industries = await listIndustrySummaries();
+    return industries.map((industry) => ({ slug: industry.slug }));
+  } catch {
+    return [];
+  }
+}
 
 type IndustryPageProps = {
   params: Promise<{
     slug: string;
   }>;
 };
-
-export function generateStaticParams() {
-  return [];
-}
 
 export async function generateMetadata({
   params
@@ -57,6 +67,12 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
 
   return (
     <main className="page-shell">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Industries", path: "/industries" },
+          { name: industry.name, path: `/industries/${industry.slug}` }
+        ])}
+      />
       <div className="app-container">
         <Reveal className="surface-strong rounded-2xl p-6">
           <Link className="text-sm font-medium text-accent" href="/industries">

@@ -28,6 +28,11 @@ import { AnimatedBar } from "@/components/motion/animated-bar";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { Reveal } from "@/components/motion/reveal";
 import { EmptyState } from "@/components/state-surfaces";
+import {
+  JsonLd,
+  breadcrumbJsonLd,
+  softwareApplicationJsonLd
+} from "@/lib/structured-data";
 
 export const dynamic = "force-dynamic";
 
@@ -94,6 +99,16 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
 
   return (
     <main className="page-shell">
+      <JsonLd
+        data={[
+          softwareApplicationJsonLd(tool),
+          breadcrumbJsonLd([
+            { name: "Tools", path: "/tools" },
+            { name: tool.category.name, path: `/categories/${tool.category.slug}` },
+            { name: tool.name, path: `/tools/${tool.slug}` }
+          ])
+        ]}
+      />
       <div className="app-container">
         <Reveal className="tool-detail-hero rounded-2xl p-6 md:p-7">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">

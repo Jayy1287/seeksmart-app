@@ -16,7 +16,6 @@ import {
   methodologySignals,
   playbooks
 } from "@/lib/platform-content";
-import { auth } from "@/auth";
 import { HomepageLottieVisual } from "@/features/home/homepage-lottie-visual";
 import { TypewriterRotator } from "@/features/home/typewriter-rotator";
 import { listCategorySummaries } from "@/server/categories/queries";
@@ -36,7 +35,8 @@ import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
-export const dynamic = "force-dynamic";
+// Home is content-driven; refresh every 10 minutes instead of on every request.
+export const revalidate = 600;
 
 const decisionPath = [
   {
@@ -60,7 +60,6 @@ const decisionPath = [
 ];
 
 export default async function Home() {
-  const session = await auth();
   const [categories, trendingTools, recentTools, industries, opportunities] =
     await Promise.all([
       listCategorySummaries(),
@@ -73,7 +72,7 @@ export default async function Home() {
     (total, category) => total + category.toolCount,
     0
   );
-  const startAuditHref = session?.user ? "/audit/start" : "/login?callbackUrl=/audit/start";
+  const startAuditHref = "/audit/start";
 
   return (
     <main>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, BriefcaseBusiness } from "lucide-react";
 import { listBusinessFunctions } from "@/server/intelligence/queries";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "AI by Business Function",

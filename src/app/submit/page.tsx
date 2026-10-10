@@ -6,6 +6,10 @@ import { SubmitToolForm } from "@/features/submissions/submit-tool-form";
 export const metadata: Metadata = {
   title: "Submit an AI Tool",
   description: "Submit an AI tool for review on SeekSmart.",
+  robots: {
+    index: false,
+    follow: false
+  },
   alternates: {
     canonical: "/submit"
   },

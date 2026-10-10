@@ -2,11 +2,25 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, CheckCircle2, Gauge, ShieldAlert, Target } from "lucide-react";
-import { getOpportunityBySlug } from "@/server/intelligence/queries";
+import {
+  getOpportunityBySlug,
+  listOpportunitySummaries
+} from "@/server/intelligence/queries";
 import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
+import { JsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+// Pre-render every published opportunity at build time; new ones render on demand.
+export async function generateStaticParams() {
+  try {
+    const opportunities = await listOpportunitySummaries();
+    return opportunities.map((opportunity) => ({ slug: opportunity.slug }));
+  } catch {
+    return [];
+  }
+}
 
 type OpportunityPageProps = {
   params: Promise<{
@@ -55,6 +69,12 @@ export default async function OpportunityPage({
 
   return (
     <main className="page-shell">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Opportunities", path: "/opportunities" },
+          { name: opportunity.name, path: `/opportunities/${opportunity.slug}` }
+        ])}
+      />
       <div className="app-container">
         <Reveal className="surface-strong rounded-2xl p-6">
           <Link

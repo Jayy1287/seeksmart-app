@@ -29,6 +29,7 @@ import { AnimatedNumber } from "@/components/motion/animated-number";
 import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
 import { EmptyState } from "@/components/state-surfaces";
+import { JsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 
 export const dynamic = "force-dynamic";
 
@@ -90,6 +91,12 @@ export default async function UseCasePage({ params }: UseCasePageProps) {
 
   return (
     <main className="page-shell">
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Use cases", path: "/use-cases" },
+          { name: useCase.name, path: `/use-cases/${useCase.slug}` }
+        ])}
+      />
       <div className="app-container">
         <Reveal className="surface-strong rounded-2xl p-6">
           <Link className="text-sm font-medium text-accent" href="/use-cases">

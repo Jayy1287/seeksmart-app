@@ -2,196 +2,75 @@ import type { MetadataRoute } from "next";
 import { articles } from "@/lib/articles";
 import { playbooks } from "@/lib/platform-content";
 import { siteConfig } from "@/lib/site";
-import { listCategories } from "@/server/categories/queries";
-import {
-  listBusinessFunctions,
-  listIndustrySummaries,
-  listOpportunitySummaries
-} from "@/server/intelligence/queries";
-import { listPublishedTools } from "@/server/tools/queries";
-import { listUseCaseSummaries } from "@/server/use-cases/queries";
+import { latestDate, listSitemapEntries } from "@/server/seo/queries";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+// Static editorial pages use a fixed "last meaningful change" date rather than
+// the request time, so crawlers are not told everything changed every day.
+const editorialLastModified = new Date("2026-10-10");
+
+type Entry = { slug: string; updatedAt: Date };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [categories, tools, useCases, industries, opportunities, functions] =
-    await Promise.all([
-    listCategories(),
-    listPublishedTools({ limit: 100 }),
-    listUseCaseSummaries(),
-    listIndustrySummaries(),
-    listOpportunitySummaries(),
-    listBusinessFunctions()
-  ]);
-  const now = new Date();
+  const entries = await listSitemapEntries();
+  const toolsLastModified = latestDate(entries.tools, editorialLastModified);
+  const useCasesLastModified = latestDate(entries.useCases, editorialLastModified);
+  const industriesLastModified = latestDate(entries.industries, editorialLastModified);
+  const opportunitiesLastModified = latestDate(entries.opportunities, editorialLastModified);
+  const categoriesLastModified = latestDate(entries.categories, editorialLastModified);
+
   const staticRoutes: MetadataRoute.Sitemap = [
-    {
-      url: siteConfig.url,
-      lastModified: now,
-      changeFrequency: "daily",
-      priority: 1
-    },
-    {
-      url: `${siteConfig.url}/tools`,
-      lastModified: now,
-      changeFrequency: "daily",
-      priority: 0.9
-    },
-    {
-      url: `${siteConfig.url}/categories`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.8
-    },
-    {
-      url: `${siteConfig.url}/use-cases`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.8
-    },
-    {
-      url: `${siteConfig.url}/industries`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.75
-    },
-    {
-      url: `${siteConfig.url}/playbooks`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.75
-    },
-    {
-      url: `${siteConfig.url}/methodology`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.65
-    },
-    {
-      url: `${siteConfig.url}/audit`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.65
-    },
-    {
-      url: `${siteConfig.url}/audit/start`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.6
-    },
-    {
-      url: `${siteConfig.url}/audit/questions`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5
-    },
-    {
-      url: `${siteConfig.url}/resources`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.65
-    },
-    {
-      url: `${siteConfig.url}/articles`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.7
-    },
-    {
-      url: `${siteConfig.url}/feedback`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5
-    },
-    {
-      url: `${siteConfig.url}/privacy`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.35
-    },
-    {
-      url: `${siteConfig.url}/terms`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.35
-    },
-    {
-      url: `${siteConfig.url}/opportunities`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.75
-    },
-    {
-      url: `${siteConfig.url}/business-functions`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.65
-    },
-    {
-      url: `${siteConfig.url}/submit`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.4
-    }
+    { url: siteConfig.url, lastModified: toolsLastModified, changeFrequency: "daily", priority: 1 },
+    { url: `${siteConfig.url}/tools`, lastModified: toolsLastModified, changeFrequency: "daily", priority: 0.9 },
+    { url: `${siteConfig.url}/categories`, lastModified: categoriesLastModified, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${siteConfig.url}/use-cases`, lastModified: useCasesLastModified, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${siteConfig.url}/industries`, lastModified: industriesLastModified, changeFrequency: "weekly", priority: 0.75 },
+    { url: `${siteConfig.url}/opportunities`, lastModified: opportunitiesLastModified, changeFrequency: "weekly", priority: 0.75 },
+    { url: `${siteConfig.url}/business-functions`, lastModified: opportunitiesLastModified, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${siteConfig.url}/playbooks`, lastModified: editorialLastModified, changeFrequency: "monthly", priority: 0.75 },
+    { url: `${siteConfig.url}/articles`, lastModified: editorialLastModified, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${siteConfig.url}/methodology`, lastModified: editorialLastModified, changeFrequency: "monthly", priority: 0.65 },
+    { url: `${siteConfig.url}/audit`, lastModified: editorialLastModified, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${siteConfig.url}/resources`, lastModified: editorialLastModified, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${siteConfig.url}/feedback`, lastModified: editorialLastModified, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${siteConfig.url}/privacy`, lastModified: editorialLastModified, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteConfig.url}/terms`, lastModified: editorialLastModified, changeFrequency: "yearly", priority: 0.2 }
   ];
-  const categoryRoutes = categories.map((category) => ({
-    url: `${siteConfig.url}/categories/${category.slug}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    priority: 0.7
-  }));
-  const toolRoutes = tools.map((tool) => ({
-    url: `${siteConfig.url}/tools/${tool.slug}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    priority: 0.8
-  }));
-  const useCaseRoutes = useCases.map((useCase) => ({
-    url: `${siteConfig.url}/use-cases/${useCase.slug}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    priority: 0.7
-  }));
-  const industryRoutes = industries.map((industry) => ({
-    url: `${siteConfig.url}/industries/${industry.slug}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    priority: 0.7
-  }));
-  const playbookRoutes = playbooks.map((playbook) => ({
+
+  const mapEntries = (
+    path: string,
+    items: Entry[],
+    priority: number
+  ): MetadataRoute.Sitemap =>
+    items.map((item) => ({
+      url: `${siteConfig.url}/${path}/${item.slug}`,
+      lastModified: item.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority
+    }));
+
+  const playbookRoutes: MetadataRoute.Sitemap = playbooks.map((playbook) => ({
     url: `${siteConfig.url}/playbooks/${playbook.slug}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
+    lastModified: editorialLastModified,
+    changeFrequency: "monthly",
     priority: 0.7
   }));
-  const opportunityRoutes = opportunities.map((opportunity) => ({
-    url: `${siteConfig.url}/opportunities/${opportunity.slug}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    priority: 0.7
-  }));
-  const functionRoutes = functions.map((businessFunction) => ({
-    url: `${siteConfig.url}/business-functions#${businessFunction.slug}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    priority: 0.5
-  }));
-  const articleRoutes = articles.map((article) => ({
+  const articleRoutes: MetadataRoute.Sitemap = articles.map((article) => ({
     url: `${siteConfig.url}/articles/${article.slug}`,
     lastModified: new Date(article.updatedAt),
-    changeFrequency: "monthly" as const,
+    changeFrequency: "monthly",
     priority: 0.75
   }));
 
   return [
     ...staticRoutes,
     ...articleRoutes,
-    ...categoryRoutes,
-    ...useCaseRoutes,
-    ...industryRoutes,
-    ...opportunityRoutes,
-    ...functionRoutes,
-    ...playbookRoutes,
-    ...toolRoutes
+    ...mapEntries("tools", entries.tools, 0.8),
+    ...mapEntries("use-cases", entries.useCases, 0.7),
+    ...mapEntries("industries", entries.industries, 0.7),
+    ...mapEntries("opportunities", entries.opportunities, 0.7),
+    ...mapEntries("categories", entries.categories, 0.65),
+    ...playbookRoutes
   ];
 }

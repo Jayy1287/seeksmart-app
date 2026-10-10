@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Command as CommandIcon } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { capturePostHogEvent } from "@/features/analytics/posthog-client";
 
 const CommandPaletteDialog = dynamic(
@@ -16,18 +17,15 @@ const CommandPaletteDialog = dynamic(
 );
 
 type CommandPaletteProps = {
-  isAdmin: boolean;
-  isSignedIn: boolean;
   trigger?: "footer" | "none";
 };
 
-export function CommandPalette({
-  isAdmin,
-  isSignedIn,
-  trigger = "none"
-}: CommandPaletteProps) {
+export function CommandPalette({ trigger = "none" }: CommandPaletteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [shortcutLabel, setShortcutLabel] = useState("Ctrl K");
+  const { data: session } = useSession();
+  const isSignedIn = Boolean(session?.user);
+  const isAdmin = session?.user?.role === "ADMIN";
 
   useEffect(() => {
     const isMac =

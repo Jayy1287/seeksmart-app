@@ -4,23 +4,16 @@ import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { signOut, useSession } from "next-auth/react";
 import { navigationLinks } from "@/components/site-navigation";
 
-type SiteMobileMenuProps = {
-  isAdmin: boolean;
-  isSignedIn: boolean;
-  signOutAction?: () => Promise<void>;
-  userLabel?: string;
-};
-
-export function SiteMobileMenu({
-  isAdmin,
-  isSignedIn,
-  signOutAction,
-  userLabel
-}: SiteMobileMenuProps) {
+export function SiteMobileMenu() {
   const shouldReduceMotion = useReducedMotion();
   const [isOpen, setIsOpen] = useState(false);
+  const { data: session } = useSession();
+  const isSignedIn = Boolean(session?.user);
+  const isAdmin = session?.user?.role === "ADMIN";
+  const userLabel = session?.user?.name?.split(" ")[0] ?? "Dashboard";
 
   return (
     <div className="mobile-menu-control md:hidden">
@@ -79,7 +72,7 @@ export function SiteMobileMenu({
                       href="/dashboard"
                       onClick={() => setIsOpen(false)}
                     >
-                      {userLabel ?? "Dashboard"}
+                      {userLabel}
                     </Link>
                     {isAdmin ? (
                       <Link
@@ -90,16 +83,13 @@ export function SiteMobileMenu({
                         Admin
                       </Link>
                     ) : null}
-                    {signOutAction ? (
-                      <form action={signOutAction}>
-                        <button
-                          className="secondary-button min-h-11 w-full"
-                          type="submit"
-                        >
-                          Sign out
-                        </button>
-                      </form>
-                    ) : null}
+                    <button
+                      className="secondary-button min-h-11 w-full"
+                      onClick={() => void signOut({ redirectTo: "/" })}
+                      type="button"
+                    >
+                      Sign out
+                    </button>
                   </>
                 ) : (
                   <Link
