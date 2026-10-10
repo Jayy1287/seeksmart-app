@@ -76,7 +76,7 @@ export default async function Home() {
   return (
     <main>
       <section className="relative overflow-hidden py-14 md:py-20">
-        <div className="app-container grid gap-12 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
+        <div className="app-container grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
           <Stagger>
             <StaggerItem>
               <p className="eyebrow">
