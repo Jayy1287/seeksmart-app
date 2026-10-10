@@ -187,7 +187,7 @@ function HeroSignal({
   label: string;
 }) {
   return (
-    <div className="flex min-h-12 flex-col justify-center gap-1 rounded-2xl border border-line/60 bg-white/72 px-3 py-2 text-xs font-bold leading-4 text-ink/68 shadow-[0_14px_34px_rgb(8_126_139/0.08)] sm:min-h-14 sm:flex-row sm:items-center sm:justify-start sm:gap-3 sm:text-sm">
+    <div className="flex min-h-12 flex-col justify-center gap-1 rounded-2xl border border-line/60 bg-white/72 px-3 py-2 text-xs font-bold leading-4 text-ink/68 shadow-[0_14px_34px_rgb(22_28_36/0.08)] sm:min-h-14 sm:flex-row sm:items-center sm:justify-start sm:gap-3 sm:text-sm">
       <Icon aria-hidden="true" className="shrink-0 text-accent" size={18} />
       {label}
     </div>
@@ -209,7 +209,7 @@ function DecisionTile({
   title: string;
 }) {
   return (
-    <article className="flex h-full flex-col rounded-[1.35rem] border border-line/70 bg-white/90 p-6 shadow-[0_18px_54px_rgb(8_126_139/0.08)] backdrop-blur">
+    <article className="flex h-full flex-col rounded-[1.35rem] border border-line/70 bg-white/90 p-6 shadow-[0_18px_54px_rgb(22_28_36/0.08)] backdrop-blur">
       <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-line/70 bg-accent/10 text-accent">
         <Icon aria-hidden="true" size={22} />
       </div>

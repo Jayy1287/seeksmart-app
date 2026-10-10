@@ -108,7 +108,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[1.55rem] border border-line/60 bg-white/85 p-4 shadow-[0_22px_60px_rgb(8_126_139/0.1)] backdrop-blur">
+      <div className="rounded-[1.55rem] border border-line/60 bg-white/85 p-4 shadow-[0_22px_60px_rgb(22_28_36/0.1)] backdrop-blur">
         <div className="grid gap-3 lg:grid-cols-[minmax(16rem,1fr)_auto_auto_auto] lg:items-center">
           <label className="relative block">
             <Search
@@ -256,7 +256,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
           ))}
         </div>
       ) : (
-        <div className="rounded-[1.35rem] border border-line/55 bg-white/85 p-8 text-center shadow-[0_18px_54px_rgb(8_126_139/0.08)]">
+        <div className="rounded-[1.35rem] border border-line/55 bg-white/85 p-8 text-center shadow-[0_18px_54px_rgb(22_28_36/0.08)]">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-line/60 bg-surface text-accent">
             <Search aria-hidden="true" size={20} />
           </div>

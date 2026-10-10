@@ -7,7 +7,7 @@ import type { IndustryGuide } from "@/lib/industry-guides";
 export function IndustryGuideSections({ guide }: { guide: IndustryGuide }) {
   return (
     <>
-      <Reveal className="mt-6 rounded-2xl border border-accent/25 bg-white/75 p-6 shadow-[0_18px_54px_rgb(8_126_139/0.08)]">
+      <Reveal className="mt-6 rounded-2xl border border-accent/25 bg-white/75 p-6 shadow-[0_18px_54px_rgb(22_28_36/0.08)]">
         <p className="text-xs font-extrabold uppercase tracking-wide text-accent">
           Short answer
         </p>

@@ -471,14 +471,14 @@ Content source split:
 
 ## Design And UX Direction
 
-The current design direction is a warm, light, premium SaaS interface. Keep the product on the original light theme unless there is a deliberate future dark-mode pass with complete QA.
+Theme v2 (2026-10-11): neutral warm paper, ink (near-black) primary buttons, flat header without glass or pill container, no tinted shadows, and teal reduced to a deep accent used only for kickers, links, and small highlights. The overrides live at the end of `src/app/globals.css` in a second `@layer components` block so they win over the older rules; tokens are in `:root`. Keep new UI inside that system: white surfaces, `rgb(var(--color-ink) / 0.1)` borders, ink shadows at 6 to 12 percent, one accent colour per screen.
 
 Design principles:
 
 - Calm, practical, decision-oriented.
 - Workflow-first information hierarchy.
 - Professional and investor-ready, but not flashy.
-- Muted warm background with dark ink, navy accent, and restrained orange signal color.
+- Neutral paper background with dark ink actions, a deep teal accent used sparingly, and orange only for warnings and the unlock prompt.
 - Cards and panels should support scanning and comparison.
 - Mobile should be fully usable, not an afterthought.
 - Motion should stay subtle: reveals, animated numbers, small hover lift, typewriter text, and progress bars.

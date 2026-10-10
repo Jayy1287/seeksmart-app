@@ -129,7 +129,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 : "Use email or Google to keep audit briefs, shortlists, and decision history attached to your account."}
           </p>
 
-          <div className="mt-8 grid gap-4 rounded-[1.6rem] border border-line/65 bg-white/70 p-4 shadow-[0_20px_60px_rgb(13_48_92/0.07)] backdrop-blur md:p-5">
+          <div className="mt-8 grid gap-4 rounded-[1.6rem] border border-line/65 bg-white/70 p-4 shadow-[0_20px_60px_rgb(22_28_36/0.07)] backdrop-blur md:p-5">
             {errorMessage ? (
               <div className="rounded-2xl border border-signal/25 bg-signal/10 px-4 py-3 text-sm leading-6 text-ink/72">
                 {errorMessage}

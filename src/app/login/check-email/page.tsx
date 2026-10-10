@@ -29,7 +29,7 @@ export default function CheckEmailPage() {
             continue. The link expires quickly for safety.
           </p>
 
-          <div className="mt-8 grid gap-4 rounded-[1.6rem] border border-line/65 bg-white/72 p-5 shadow-[0_20px_60px_rgb(13_48_92/0.07)] backdrop-blur">
+          <div className="mt-8 grid gap-4 rounded-[1.6rem] border border-line/65 bg-white/72 p-5 shadow-[0_20px_60px_rgb(22_28_36/0.07)] backdrop-blur">
             <div className="rounded-[1.4rem] border border-line/60 bg-white/88 p-4">
               <div className="flex items-start gap-3">
                 <span className="mt-0.5 flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/8 text-accent">
