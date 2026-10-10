@@ -72,7 +72,7 @@ export default async function Home() {
     (total, category) => total + category.toolCount,
     0
   );
-  const startAuditHref = "/audit/start";
+  const startAuditHref = "/audit/questions";
 
   return (
     <main>

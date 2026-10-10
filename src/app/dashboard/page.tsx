@@ -78,7 +78,7 @@ export default async function DashboardPage() {
             </div>
 
             <nav aria-label="Workspace actions" className="mt-5 grid gap-2">
-              <MotionLink className="primary-button w-full" href="/audit/start">
+              <MotionLink className="primary-button w-full" href="/audit/questions">
                 <Plus aria-hidden="true" size={16} />
                 New audit
               </MotionLink>
@@ -106,7 +106,7 @@ export default async function DashboardPage() {
                     pilot brief without returning to a blank page.
                   </p>
                 </div>
-                <MotionLink className="primary-button min-h-12" href="/audit/start">
+                <MotionLink className="primary-button min-h-12" href="/audit/questions">
                   Start new audit
                   <ArrowRight aria-hidden="true" size={16} />
                 </MotionLink>

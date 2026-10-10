@@ -198,7 +198,7 @@ function buildStaticCommands({
   const commands: StaticCommand[] = [
     {
       description: "Start or continue an AI audit",
-      href: "/audit/start",
+      href: "/audit/questions",
       icon: Gauge,
       label: "Run AI audit"
     },

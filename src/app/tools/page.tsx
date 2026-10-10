@@ -154,7 +154,7 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
             description="No published tools match the current filter set. Remove one constraint or search by a broader workflow term."
             eyebrow="No matching tools"
             icon={SearchX}
-            secondaryAction={{ href: "/audit/start", label: "Run the audit" }}
+            secondaryAction={{ href: "/audit/questions", label: "Run the audit" }}
             title="This shortlist is too narrow."
           />
         )}

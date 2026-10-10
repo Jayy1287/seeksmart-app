@@ -427,7 +427,7 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
                 Opportunities this tool may support
               </h2>
             </div>
-            <Link className="secondary-button" href="/audit/start">
+            <Link className="secondary-button" href="/audit/questions">
               Run audit first
               <ArrowRight aria-hidden="true" size={16} />
             </Link>

@@ -60,7 +60,7 @@ export function SiteMobileMenu() {
               <div className="mt-4 grid gap-2 border-t border-line/50 pt-4">
                 <Link
                   className="primary-button min-h-11"
-                  href="/audit/start"
+                  href="/audit/questions"
                   onClick={() => setIsOpen(false)}
                 >
                   Start audit

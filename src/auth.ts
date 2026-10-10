@@ -5,6 +5,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { UserRole } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { withPostHogClient } from "@/lib/posthog-server";
+import { claimAuditRunsByEmail } from "@/server/audit-runs/queries";
 import {
   buildEmailProviderConfig,
   isEmailAuthConfigured,
@@ -86,6 +87,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           await sendWelcomeEmail(user.email);
         } catch (error) {
           console.warn("Welcome email delivery failed.", error);
+        }
+      }
+
+      if (user.id && user.email) {
+        try {
+          await claimAuditRunsByEmail({ email: user.email, userId: user.id });
+        } catch (error) {
+          console.warn("Claiming anonymous audit runs failed.", error);
         }
       }
 

@@ -54,7 +54,7 @@ export const articles: Article[] = [
     publishedAt: articleDates.choosing,
     readingTime: "9 min read",
     related: [
-      { href: "/audit/start", label: "Run the AI audit" },
+      { href: "/audit/questions", label: "Run the AI audit" },
       { href: "/tools", label: "Browse AI tools" },
       { href: "/methodology", label: "See the recommendation method" }
     ],
@@ -154,7 +154,7 @@ export const articles: Article[] = [
     related: [
       { href: "/tools", label: "Search AI tools" },
       { href: "/use-cases", label: "Explore use cases" },
-      { href: "/audit/start", label: "Find your first workflow" }
+      { href: "/audit/questions", label: "Find your first workflow" }
     ],
     slug: "best-ai-tools-for-small-business",
     title: "Best AI Tools for Small Business: Where to Use AI First",
@@ -341,7 +341,7 @@ export const articles: Article[] = [
     related: [
       { href: "/tools", label: "Compare AI tools" },
       { href: "/use-cases", label: "Map tools to use cases" },
-      { href: "/audit/start", label: "Find the right starting point" }
+      { href: "/audit/questions", label: "Find the right starting point" }
     ],
     slug: "chatgpt-vs-ai-tools-for-business",
     title: "ChatGPT vs Specialized AI Tools: Which Should Your Team Use?",
@@ -425,7 +425,7 @@ export const articles: Article[] = [
     readingTime: "12 min read",
     related: [
       { href: "/methodology", label: "Review the scoring method" },
-      { href: "/audit/start", label: "Run a structured audit" },
+      { href: "/audit/questions", label: "Run a structured audit" },
       { href: "/tools", label: "Browse tools by category" }
     ],
     slug: "ai-tool-evaluation-checklist",

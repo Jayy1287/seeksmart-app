@@ -1,27 +1,29 @@
 import type { Metadata } from "next";
 import {
   ArrowRight,
-  BarChart3,
   ClipboardCheck,
   Gauge,
   ListChecks,
   ShieldCheck,
+  Store,
   Target
 } from "lucide-react";
 import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
+import { JsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
+import { featuredIndustries } from "@/shared/recommendations/wizard";
 
 export const metadata: Metadata = {
-  title: "AI Audit",
+  title: "Free AI Audit for Small Business",
   description:
-    "Run a guided AI audit to identify practical opportunities, first workflows, and tool shortlists.",
+    "Answer eleven questions and get a readiness score, ranked AI opportunities, and a two-week pilot plan for your business. Free, no account needed.",
   alternates: {
     canonical: "/audit"
   },
   openGraph: {
-    title: "AI Audit",
+    title: "Free AI Audit for Small Business",
     description:
-      "Run a guided AI audit to identify practical opportunities, first workflows, and tool shortlists.",
+      "Answer eleven questions and get a readiness score, ranked AI opportunities, and a two-week pilot plan. Free, no account needed.",
     url: "/audit",
     type: "website"
   }
@@ -29,48 +31,89 @@ export const metadata: Metadata = {
 
 const outcomes = [
   {
-    icon: Target,
-    title: "Top opportunities",
-    description: "Ranked business opportunities based on your context."
+    icon: Gauge,
+    title: "Readiness score",
+    description:
+      "A 0 to 100 score that says whether to pilot now, prepare first, or do discovery."
   },
   {
-    icon: Gauge,
-    title: "Effort and risk",
-    description: "Clear scores for impact, effort, risk, and confidence."
+    icon: Target,
+    title: "Ranked opportunities",
+    description:
+      "The three places AI pays back first for your business, with the reasons."
   },
   {
     icon: ListChecks,
-    title: "First workflow",
-    description: "A focused starting workflow and practical checklist."
+    title: "Two-week pilot plan",
+    description:
+      "Owner, baseline question, target, week-one actions, and guardrails."
   },
   {
     icon: ShieldCheck,
-    title: "Explainable reasons",
-    description: "Transparent rules and cautions behind each recommendation."
+    title: "Tool shortlist",
+    description:
+      "Three tools per opportunity, filtered by your budget and data sensitivity."
+  }
+];
+
+const faq = [
+  {
+    question: "Do I need an account?",
+    answer:
+      "No. The score and ranked opportunities show immediately. Enter an email if you want the full pilot plan, tool shortlist, and a link that stays alive."
+  },
+  {
+    question: "How are the recommendations made?",
+    answer:
+      "A transparent rules engine, not a chatbot. It weighs business fit, effort, risk, and how specific your answers were. Every recommendation lists its reasons."
+  },
+  {
+    question: "How long does it take?",
+    answer: "About three minutes. Eleven questions, one per screen, multiple choice."
+  },
+  {
+    question: "Is my data used for anything else?",
+    answer:
+      "Answers are stored with the brief so you can reopen it. Anonymous briefs expire after 30 days. Do not enter customer data or secrets; the questions do not ask for any."
   }
 ];
 
 export default function AuditPage() {
   return (
     <main className="page-shell">
+      <JsonLd
+        data={[
+          breadcrumbJsonLd([{ name: "AI audit", path: "/audit" }]),
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faq.map((item) => ({
+              "@type": "Question",
+              name: item.question,
+              acceptedAnswer: { "@type": "Answer", text: item.answer }
+            }))
+          }
+        ]}
+      />
       <div className="app-container">
         <Reveal className="border-b border-line/50 pb-10">
           <div className="grid gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-center">
             <div>
               <p className="eyebrow">
                 <ClipboardCheck aria-hidden="true" size={14} />
-                AI audit
+                Free AI audit
               </p>
               <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[0.98] md:text-6xl">
                 Find the first AI workflow your business should improve.
               </h1>
               <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
-                Answer a short guided audit and get a clear recommendation
-                brief with where to start, what to measure, and which tools to compare.
+                Eleven questions, three minutes, no account. You get a readiness
+                score, the three opportunities that pay back first, and a plan
+                for a two-week pilot.
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <MotionLink className="primary-button min-h-12" href="/audit/start">
-                  Start audit
+                <MotionLink className="primary-button min-h-12" href="/audit/questions">
+                  Start the audit
                   <ArrowRight aria-hidden="true" size={18} />
                 </MotionLink>
                 <MotionLink className="secondary-button min-h-12" href="/methodology">
@@ -79,40 +122,38 @@ export default function AuditPage() {
               </div>
             </div>
 
-            <div className="relative">
-              <div>
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-sm font-semibold text-accent">
-                      You will leave with
-                    </p>
-                    <h2 className="mt-1 text-2xl font-semibold">
-                      A plan, not a pile of links
-                    </h2>
-                  </div>
-                  <BarChart3 aria-hidden="true" className="text-accent" />
-                </div>
-                <div className="mt-5 grid gap-4">
-                  {[
-                    "Opportunity ranking",
-                    "Recommended first workflow",
-                    "Tool shortlist with reasons",
-                    "Risk and privacy cautions"
-                  ].map((item, index) => (
-                    <div
-                      className="border-t border-line/70 pt-4"
-                      key={item}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-paper">
-                          {index + 1}
-                        </span>
-                        <span className="font-semibold">{item}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+            <div>
+              <p className="text-sm font-bold uppercase tracking-wide text-accent">
+                Built for businesses like these
+              </p>
+              <div className="mt-4 grid gap-3">
+                {featuredIndustries.map((industry) => (
+                  <MotionLink
+                    className="group flex items-center gap-4 rounded-2xl border border-line/60 bg-white/70 p-4 transition hover:border-accent"
+                    href={`/audit/questions?industry=${industry.slug}`}
+                    key={industry.slug}
+                  >
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+                      <Store aria-hidden="true" size={20} />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-semibold">{industry.label}</span>
+                      <span className="mt-0.5 block text-sm leading-5 text-ink/58">
+                        {industry.examplePrompt}
+                      </span>
+                    </span>
+                    <ArrowRight
+                      aria-hidden="true"
+                      className="shrink-0 text-accent transition group-hover:translate-x-0.5"
+                      size={16}
+                    />
+                  </MotionLink>
+                ))}
               </div>
+              <p className="mt-3 text-xs text-ink/50">
+                Other industries work too; these three have the most specific
+                guidance.
+              </p>
             </div>
           </div>
         </Reveal>
@@ -134,21 +175,19 @@ export default function AuditPage() {
         </Reveal>
 
         <Reveal className="section-band -mx-4 mt-10 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 className="text-2xl font-semibold">
-                Built for a practical first pilot
-              </h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/60">
-                The audit turns your business context into a recommended
-                workflow, a shortlist, and the guardrails to review before rollout.
-              </p>
-            </div>
-            <MotionLink className="primary-button" href="/audit/start">
-              Begin
-              <ArrowRight aria-hidden="true" size={16} />
-            </MotionLink>
+          <h2 className="text-2xl font-semibold">Questions people ask first</h2>
+          <div className="mt-5 grid gap-x-8 gap-y-5 md:grid-cols-2">
+            {faq.map((item) => (
+              <div className="border-t border-line/70 pt-4" key={item.question}>
+                <h3 className="font-semibold">{item.question}</h3>
+                <p className="mt-2 text-sm leading-6 text-ink/62">{item.answer}</p>
+              </div>
+            ))}
           </div>
+          <MotionLink className="primary-button mt-7" href="/audit/questions">
+            Start the audit
+            <ArrowRight aria-hidden="true" size={16} />
+          </MotionLink>
         </Reveal>
       </div>
     </main>

@@ -65,7 +65,7 @@ export default function FeedbackPage() {
             tool page. That is the core beta journey.
           </p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-            <Link className="primary-button" href="/audit/start">
+            <Link className="primary-button" href="/audit/questions">
               Start audit
             </Link>
             <Link className="secondary-button" href="/tools">
