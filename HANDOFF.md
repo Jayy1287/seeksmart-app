@@ -1,15 +1,21 @@
 # SeekSmart Handoff
 
-Last updated: 2026-06-17
+Last updated: 2026-10-10
 
 ## Current State
 
 SeekSmart is a full-stack Next.js app for helping practical business teams decide where AI belongs before buying tools. The product positioning is intentionally broader than an AI tool directory: it is a decision engine for AI adoption with tool shortlists, use cases, opportunities, industries, playbooks, and a rules-based AI workflow audit.
 
-Canonical repo:
+Canonical repo (macOS checkout):
 
 ```text
 /Users/sanrajak/Desktop/SSP/seeksmart-app
+```
+
+Windows checkout used for the October 2026 review:
+
+```text
+C:\Users\sanja\Downloads\ss\seeksmart-app
 ```
 
 Do not use or depend on `seeksmart-app-baseline`. The current working app is this repo only.
@@ -23,8 +29,10 @@ main
 Current implementation checkpoint:
 
 ```text
-2026-06-17 Passwordless email auth, safer login flow, and submission duplicate-check fix
+2026-10-10 Revamp phase 0: technical SEO, ISR, fonts, OG images, 404 (branch revamp/phase-0-technical-seo)
 ```
+
+Revamp review, findings, and the phased plan: `docs/REVAMP_PLAN.md`.
 
 Expected local changes after committing this handoff:
 
@@ -97,7 +105,7 @@ Business differentiation:
 
 ### Public Product Surfaces
 
-- `/`: homepage with positioning, audit preview, categories, industries, opportunities, playbooks, and recent/trending tools.
+- `/`: homepage with positioning, audit preview, categories, industries, opportunities, playbooks, and recent/trending tools. Served with ISR (10 minutes).
 - `/tools`: searchable/filterable AI tool directory.
 - `/tools/[slug]`: tool detail pages with use-case fit, alternatives, website CTA, like button, and comparison information.
 - `/categories` and `/categories/[slug]`: category browsing.
@@ -517,9 +525,13 @@ https://logotyp.us/file/*
 
 SEO support currently includes:
 
-- Metadata in route files.
-- `src/app/sitemap.ts` with dynamic URLs for tools, categories, use cases, industries, opportunities, business functions, playbooks, and articles.
-- `src/app/robots.ts` allows public pages and disallows `/api/` and `/admin/`.
+- Metadata in route files, with generated 1200x630 Open Graph images per route type (`src/lib/og.tsx` plus `opengraph-image.tsx` files).
+- JSON-LD via `src/lib/structured-data.tsx`: Organization and WebSite site-wide, SoftwareApplication and BreadcrumbList on tool pages, BreadcrumbList on use-case, industry, and opportunity pages, Article on articles.
+- Self-hosted Plus Jakarta Sans through `next/font` (`--font-sans`).
+- Custom `src/app/not-found.tsx`.
+- Login-gated pages (`/audit/start`, `/audit/questions`, `/audit/results`, `/submit`, `/dashboard`) are `noindex` and excluded from the sitemap.
+- `src/app/sitemap.ts` with real `lastmod` dates from the database (`src/server/seo/queries.ts`), revalidated hourly.
+- `src/app/robots.ts` disallows `/api/`, `/admin/`, `/dashboard/`, `/login`, audit results/questions, `/submit`, and search/pagination parameters.
 - Five hardcoded SEO articles in `src/lib/articles.ts`.
 - Articles are linked in the footer, not the header, to keep the primary app navigation product-focused.
 
@@ -630,6 +642,25 @@ npm run test:recommendations
 npm run test:smoke
 ```
 
+## Local Development Without Supabase
+
+Used for the October 2026 review on Windows when no Supabase credentials were available.
+
+1. PostgreSQL 15 is installed at `C:\Program Files\PostgreSQL\15`. Create an isolated cluster so no existing password is needed:
+
+```bash
+"/c/Program Files/PostgreSQL/15/bin/initdb.exe" -D <scratch>/pgdata -U postgres -A trust -E UTF8 --locale=C
+"/c/Program Files/PostgreSQL/15/bin/pg_ctl.exe" -D <scratch>/pgdata -o "-p 5433 -c listen_addresses=127.0.0.1" -l <scratch>/pg.log start
+"/c/Program Files/PostgreSQL/15/bin/psql.exe" -h 127.0.0.1 -p 5433 -U postgres -c "CREATE DATABASE seeksmart;"
+```
+
+2. `.env` (ignored) sets both `DATABASE_URL` and `DIRECT_URL` to `postgresql://postgres@127.0.0.1:5433/seeksmart`, a random `AUTH_SECRET`, placeholder Google OAuth values, and `ADMIN_EMAILS`.
+3. `npx prisma generate && npx prisma migrate deploy && npm run db:seed` then `npm run build && npm run start` (or `npm run dev`).
+4. Google login does not work with placeholder OAuth values. To test signed-in pages, insert a `users` row and a `sessions` row with a random `session_token`, then send cookie `authjs.session-token=<token>`.
+5. Node 25 works. `tsx` scripts cannot use top-level await here (CJS output); wrap in an async `main()`.
+
+Known caveat: the Lottie hero and PostHog are still in the client bundle; see `docs/REVAMP_PLAN.md` section 4.6.
+
 ## Security Posture
 
 Implemented protections:
@@ -651,6 +682,7 @@ Implemented protections:
 - Basic in-memory rate limiting for submissions, tool list API, and likes.
 - API responses use a consistent error envelope.
 - Dashboard and admin routes require auth.
+- The root layout no longer reads the session; header account state comes from `next-auth/react` `useSession` via `src/components/session-provider.tsx`, so content pages can be cached (ISR).
 - `/robots.txt` disallows `/api/` and `/admin/`.
 
 Important limitations:
