@@ -9752,5 +9752,1586 @@
     "popularityScore": 76,
     "vendor": "Metabase, Inc.",
     "sourceUrl": "https://www.metabase.com/pricing/"
+  },
+  {
+    "name": "QuickBooks Online",
+    "websiteUrl": "https://quickbooks.intuit.com",
+    "categorySlug": "finance",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 38,
+    "pricingNote": "Simple Start $38/month; Essentials $85/month; Plus $140/month; Advanced $340/month; 30-day trial or 50% off for 3 months (Oct 2026).",
+    "shortDescription": "Small business accounting with Intuit Assist AI for categorizing transactions, chasing invoices and explaining cash flow.",
+    "longDescription": "QuickBooks Online is Intuit's cloud accounting product for small businesses, covering bank feeds, invoicing, bills, sales tax, reporting and optional payroll. Intuit Assist, included in every plan, categorizes bank transactions, flags anomalies for review, drafts invoice reminder emails, and answers plain-language questions about cash flow and reports. Owners of online stores, local shops and service firms use it as the system of record their accountant also logs into, since most US bookkeepers already know the product. It connects to Shopify, Amazon, Square, Stripe, PayPal, Gusto and thousands of bank accounts, and apps like Dext and Expensify push receipts into it. A typical workflow is connecting bank and sales channels, letting the AI propose categories, then reviewing the suggestions weekly before month-end close. One caveat: Intuit has raised prices twice in two years and the entry plan allows only one user, so multi-person teams end up on Essentials or Plus quickly.",
+    "bestFor": "US small businesses that want mainstream accounting their bookkeeper already uses, with AI categorization built in.",
+    "notFor": "Businesses outside Intuit's core markets or very small solo operators who only need free invoicing.",
+    "integrations": [
+      "Shopify",
+      "Amazon",
+      "Square",
+      "Stripe",
+      "PayPal",
+      "Gusto",
+      "Dext",
+      "Expensify"
+    ],
+    "featureSlugs": [
+      "invoice-processing",
+      "document-extraction",
+      "forecasting",
+      "integrations",
+      "chat-interface",
+      "bi-dashboards",
+      "api-access"
+    ],
+    "useCases": [
+      {
+        "slug": "accounts-payable-automation",
+        "fitScore": 80,
+        "bestFor": "Capturing vendor bills by photo or email and scheduling payments inside the ledger.",
+        "limitations": "Bill approval workflows only exist on Advanced, so small teams approve manually.",
+        "implementationNote": "Forward supplier bills to the QuickBooks inbox for one month and compare AI categorization against your bookkeeper's coding."
+      },
+      {
+        "slug": "document-extraction",
+        "fitScore": 75,
+        "bestFor": "Pulling vendor, date and amount from receipts snapped in the mobile app.",
+        "limitations": "Line-item extraction is weaker than dedicated capture tools like Dext.",
+        "implementationNote": "Have one person photograph every receipt for two weeks and check match accuracy before rolling out to staff."
+      },
+      {
+        "slug": "fp-a-reporting",
+        "fitScore": 70,
+        "bestFor": "Asking Intuit Assist for cash-flow explanations and short-term forecasts without building spreadsheets.",
+        "limitations": "Forecasts are basic and depend on clean, reconciled books.",
+        "implementationNote": "Reconcile three months of data first, then test the cash-flow planner against your own estimates."
+      },
+      {
+        "slug": "data-analysis",
+        "fitScore": 65,
+        "bestFor": "Plain-language questions about sales, expenses and profit by customer or product.",
+        "limitations": "Custom report building and dimensional tagging are limited on lower plans.",
+        "implementationNote": "Set up classes or locations for your store or branches before relying on AI summaries."
+      }
+    ],
+    "alternatives": [
+      "Xero",
+      "FreshBooks",
+      "Wave",
+      "Zoho Books"
+    ],
+    "popularityScore": 93,
+    "vendor": "Intuit",
+    "sourceUrl": "https://quickbooks.intuit.com/subscription/"
+  },
+  {
+    "name": "Xero",
+    "websiteUrl": "https://xero.com",
+    "categorySlug": "finance",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 27,
+    "pricingNote": "US plans: Early $27/month; Growing $59/month; Established $97/month; 80% off first 3 months for new US customers, 30-day trial (Oct 2026).",
+    "shortDescription": "Cloud accounting with JAX, an AI agent that reconciles bank transactions, drafts invoices and answers questions about your books.",
+    "longDescription": "Xero is a cloud accounting platform used by small businesses and their accountants in the US, UK, Australia and New Zealand. Its AI assistant, JAX (Just Ask Xero), is included at no extra charge: it suggests bank reconciliation matches, creates invoices and quotes from chat, and answers questions such as who owes you money this week. Hubdoc receipt capture is bundled, and after Xero's acquisition of Melio, US plans include free standard ACH bill payments. The product suits online stores and service businesses that want unlimited users on every plan, since staff, bookkeeper and owner can all log in without extra seat fees. It integrates with Shopify, Stripe, Square, Gusto, Dext, HubSpot and over a thousand marketplace apps. A practical pilot is connecting bank feeds and sales channels, then checking JAX reconciliation suggestions for a month before accepting them in bulk. Caveat: the Early plan caps invoices and bills at 20 per month, so active businesses move to Growing almost immediately.",
+    "bestFor": "Small teams that want unlimited users and an AI reconciliation agent included in standard accounting.",
+    "notFor": "Businesses sending more than 20 invoices a month on a tight budget, since the entry plan caps volume.",
+    "integrations": [
+      "Shopify",
+      "Stripe",
+      "Square",
+      "Gusto",
+      "Dext",
+      "HubSpot",
+      "Melio",
+      "PayPal"
+    ],
+    "featureSlugs": [
+      "invoice-processing",
+      "ai-agents",
+      "document-extraction",
+      "integrations",
+      "chat-interface",
+      "bi-dashboards",
+      "api-access"
+    ],
+    "useCases": [
+      {
+        "slug": "accounts-payable-automation",
+        "fitScore": 78,
+        "bestFor": "Capturing bills through Hubdoc and paying them by ACH from inside Xero.",
+        "limitations": "Multi-step bill approvals are limited compared with dedicated AP tools.",
+        "implementationNote": "Route supplier invoices to the Hubdoc email address and pay one vendor batch through Melio to test the flow."
+      },
+      {
+        "slug": "document-extraction",
+        "fitScore": 72,
+        "bestFor": "Turning receipt photos and emailed invoices into draft transactions.",
+        "limitations": "Hubdoc extraction is header-level and can misread handwritten receipts.",
+        "implementationNote": "Compare 50 Hubdoc extractions against the originals before trusting auto-publish."
+      },
+      {
+        "slug": "data-analysis",
+        "fitScore": 70,
+        "bestFor": "Asking JAX for quick answers on receivables, spend and margins.",
+        "limitations": "Advanced analytics and cash-flow forecasting sit on the Established plan.",
+        "implementationNote": "Give the owner a weekly five-minute routine of three JAX questions and compare answers to the reports."
+      },
+      {
+        "slug": "workflow-automation",
+        "fitScore": 65,
+        "bestFor": "Automatic invoice reminders, recurring invoices and bank rules that code transactions.",
+        "limitations": "Complex cross-app automation still needs Zapier or Make.",
+        "implementationNote": "Set up bank rules for your top ten recurring vendors and measure how many transactions still need manual coding."
+      }
+    ],
+    "alternatives": [
+      "QuickBooks Online",
+      "FreshBooks",
+      "Wave",
+      "Zoho Books"
+    ],
+    "popularityScore": 88,
+    "vendor": "Xero",
+    "sourceUrl": "https://www.xero.com/us/pricing-plans/"
+  },
+  {
+    "name": "FreshBooks",
+    "websiteUrl": "https://freshbooks.com",
+    "categorySlug": "finance",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 23,
+    "pricingNote": "Lite $23/month (5 clients); Plus $43/month (50 clients); Premium $70/month (unlimited); Select custom; team members $11 each; 30-day trial (Oct 2026).",
+    "shortDescription": "Invoicing-first accounting for service businesses with automatic expense categorization, payment reminders and time tracking.",
+    "longDescription": "FreshBooks is accounting software built around invoicing for freelancers and small service businesses such as contractors, agencies, cleaners and consultants. It handles estimates, proposals, recurring invoices, online payments, time tracking and project billing, with double-entry reports on higher plans. Automation includes receipt capture that reads vendor, date and amount, bank transactions auto-categorized into expense accounts, and scheduled late-payment reminders and late fees. Clients can pay by card, ACH or Apple Pay from the invoice itself. It connects to Gusto for payroll, Stripe and PayPal for payments, plus Shopify, Squarespace, HubSpot and Zapier. A small team would pilot it by moving one month of invoicing and expenses over, checking the auto-categorization against the prior bookkeeping, and measuring days-to-paid after reminders switch on. Caveat: plans are capped by number of billable clients, and each additional team member costs $11 per month, so pricing climbs for growing teams with many customers.",
+    "bestFor": "Service businesses and freelancers whose main finance pain is getting invoices out and paid.",
+    "notFor": "Product businesses that need inventory accounting or multi-entity consolidation.",
+    "integrations": [
+      "Gusto",
+      "Stripe",
+      "PayPal",
+      "Shopify",
+      "Squarespace",
+      "HubSpot",
+      "Zapier",
+      "Google Workspace"
+    ],
+    "featureSlugs": [
+      "invoice-processing",
+      "document-extraction",
+      "templates",
+      "integrations",
+      "export-options",
+      "bi-dashboards"
+    ],
+    "useCases": [
+      {
+        "slug": "accounts-payable-automation",
+        "fitScore": 65,
+        "bestFor": "Logging vendor bills and receipts so expenses hit the right account automatically.",
+        "limitations": "No bill approval routing or vendor payment scheduling.",
+        "implementationNote": "Snap receipts in the mobile app for two weeks and check the suggested categories before month end."
+      },
+      {
+        "slug": "document-extraction",
+        "fitScore": 68,
+        "bestFor": "Reading receipts and bills into expense records for rebilling to clients.",
+        "limitations": "Extraction is header-level only, with no line items.",
+        "implementationNote": "Test with your messiest 20 receipts to see how many fields need manual correction."
+      },
+      {
+        "slug": "workflow-automation",
+        "fitScore": 72,
+        "bestFor": "Recurring invoices, automatic reminders and late fees that remove manual chasing.",
+        "limitations": "Retainers and proposals require the Plus plan or above.",
+        "implementationNote": "Turn on reminders for all open invoices and track average days to payment over one quarter."
+      }
+    ],
+    "alternatives": [
+      "QuickBooks Online",
+      "Wave",
+      "Xero",
+      "Zoho Books"
+    ],
+    "popularityScore": 80,
+    "vendor": "FreshBooks",
+    "sourceUrl": "https://www.freshbooks.com/pricing"
+  },
+  {
+    "name": "Wave",
+    "websiteUrl": "https://waveapps.com",
+    "categorySlug": "finance",
+    "pricingType": "FREEMIUM",
+    "hasFreePlan": true,
+    "startingPrice": 19,
+    "pricingNote": "Starter free with unlimited invoices and bookkeeping; Pro $19/month or $190/year adds bank import, auto-categorization and unlimited receipt capture (Oct 2026).",
+    "shortDescription": "Free double-entry accounting and invoicing for very small businesses, with paid AI receipt capture and bank auto-categorization.",
+    "longDescription": "Wave is accounting and invoicing software aimed at solopreneurs and businesses with fewer than ten employees. The Starter plan is free and includes unlimited invoices, estimates, bills, double-entry bookkeeping, basic reports and the mobile app. The Pro plan adds automatic bank transaction import, auto-categorization of transactions, unlimited receipt scanning that reads totals and vendors from photos, late-payment reminders and discounted card processing. Payroll and bookkeeping advisors are paid add-ons. Wave is a common first system for Etsy sellers, tradespeople, tutors and small shops who want to invoice professionally without a subscription, then upgrade when bank feeds become worth paying for. It integrates with Stripe-style card payments through Wave Payments, PayPal via Zapier, Google Sheets and a public API. A pilot is simple: create the free account, send real invoices for a month, then trial Pro to see whether bank import saves enough bookkeeping time. Caveat: Wave is only available to US and Canadian businesses and has fewer integrations than QuickBooks or Xero.",
+    "bestFor": "US and Canadian solo operators and micro businesses that want free invoicing and bookkeeping with optional paid automation.",
+    "notFor": "Businesses outside North America or teams needing inventory, project accounting or many third-party integrations.",
+    "integrations": [
+      "Wave Payments",
+      "PayPal",
+      "Zapier",
+      "Google Sheets",
+      "Etsy",
+      "Shopify"
+    ],
+    "featureSlugs": [
+      "invoice-processing",
+      "document-extraction",
+      "templates",
+      "export-options",
+      "api-access"
+    ],
+    "useCases": [
+      {
+        "slug": "document-extraction",
+        "fitScore": 65,
+        "bestFor": "Scanning receipts on the phone and attaching them to expense transactions.",
+        "limitations": "Receipt capture is limited on the free plan and only reads header fields.",
+        "implementationNote": "Upgrade one user to Pro and scan a month of receipts to compare against manual entry time."
+      },
+      {
+        "slug": "accounts-payable-automation",
+        "fitScore": 60,
+        "bestFor": "Recording vendor bills and marking them paid in a free ledger.",
+        "limitations": "No bill payment or approval workflows; bills are tracked, not paid, through Wave.",
+        "implementationNote": "Enter your recurring vendor bills and use the aged payables report to plan weekly payments."
+      },
+      {
+        "slug": "workflow-automation",
+        "fitScore": 62,
+        "bestFor": "Recurring invoices and automatic payment reminders for repeat customers.",
+        "limitations": "Reminders require the Pro plan.",
+        "implementationNote": "Set recurring invoices for retainer clients and measure how many manual sends you remove."
+      }
+    ],
+    "alternatives": [
+      "FreshBooks",
+      "QuickBooks Online",
+      "Zoho Books",
+      "Xero"
+    ],
+    "popularityScore": 72,
+    "vendor": "Wave Financial (H&R Block)",
+    "sourceUrl": "https://www.waveapps.com/pricing"
+  },
+  {
+    "name": "Expensify",
+    "websiteUrl": "https://expensify.com",
+    "categorySlug": "finance",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 5,
+    "pricingNote": "Collect $5 per member/month pay-per-use; Control $18 per member/month on annual subscription (as low as $9 with the Expensify Card) or $36 pay-per-use (Oct 2026).",
+    "shortDescription": "Receipt scanning and expense reports with SmartScan OCR, corporate cards, approvals and accounting sync for small teams.",
+    "longDescription": "Expensify is expense management software where employees photograph receipts and SmartScan reads merchant, date, amount and category, then merges them with card transactions into expense reports. The Collect plan covers receipt capture, basic approvals, reimbursements and sync to QuickBooks, Xero and NetSuite; Control adds multi-level approval chains, custom expense rules and policy enforcement. The Expensify Card issues virtual and physical cards with real-time spend limits and reduces the subscription price. Small businesses use it when staff buy supplies, travel or entertain clients and the owner wants receipts attached to the ledger without chasing people. AI features include duplicate detection, automatic categorization and receipt-to-invoice matching. Integrations include QuickBooks Online, Xero, Gusto, Slack, Uber and Lyft. A pilot would enroll three or four employees on Collect, forward existing receipts, and sync one month of reports to accounting. Caveat: Control pricing varies widely depending on card usage and annual commitment, so the headline price is easy to misread.",
+    "bestFor": "Small teams with several employees spending on behalf of the business who need receipts matched and approved quickly.",
+    "notFor": "Solo operators who can just photograph receipts into their accounting app for free.",
+    "integrations": [
+      "QuickBooks Online",
+      "Xero",
+      "NetSuite",
+      "Gusto",
+      "Slack",
+      "Uber",
+      "Lyft",
+      "Google Workspace"
+    ],
+    "featureSlugs": [
+      "document-extraction",
+      "spend-controls",
+      "policy-enforcement",
+      "integrations",
+      "workflow-builder",
+      "api-access"
+    ],
+    "useCases": [
+      {
+        "slug": "spend-policy-review",
+        "fitScore": 85,
+        "bestFor": "Flagging out-of-policy expenses and routing them to an approver before reimbursement.",
+        "limitations": "Custom rules and multi-level approvals require the Control plan.",
+        "implementationNote": "Write three policy rules (meal cap, receipt threshold, category limits) and run them on last month's expenses."
+      },
+      {
+        "slug": "document-extraction",
+        "fitScore": 88,
+        "bestFor": "Reading receipts into structured expense lines with minimal typing.",
+        "limitations": "Crumpled or foreign-language receipts still need manual fixes.",
+        "implementationNote": "Have staff SmartScan every receipt for two weeks and track the correction rate."
+      },
+      {
+        "slug": "accounts-payable-automation",
+        "fitScore": 62,
+        "bestFor": "Capturing vendor bills by email and pushing them to accounting for payment.",
+        "limitations": "Bill pay is lighter than dedicated AP tools and better suited to employee expenses.",
+        "implementationNote": "Forward ten vendor bills to the Expensify intake address and verify coding in QuickBooks."
+      }
+    ],
+    "alternatives": [
+      "Ramp Intelligence",
+      "Dext",
+      "Zoho Expense",
+      "Brex"
+    ],
+    "popularityScore": 82,
+    "vendor": "Expensify",
+    "sourceUrl": "https://help.expensify.com/articles/new-expensify/billing-and-subscriptions/explore-plans-subscriptions-and-pricing/Understand-Expensify-Pricing"
+  },
+  {
+    "name": "Dext",
+    "websiteUrl": "https://dext.com",
+    "categorySlug": "finance",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 25.21,
+    "pricingNote": "US Business plan $25.21/month or $302.50/year for 5 users and 250 documents/month; line-item and bank statement extraction bundles from $13/month; free trial (Oct 2026).",
+    "shortDescription": "Receipt and invoice capture that extracts data with AI and publishes coded transactions to QuickBooks, Xero or Sage.",
+    "longDescription": "Dext, formerly Receipt Bank, is a bookkeeping automation tool that collects receipts, bills and supplier statements by mobile photo, email forwarding or supplier fetch, extracts the fields with machine learning, applies supplier rules and tax codes, then publishes the transactions to QuickBooks Online, Xero, Sage or FreeAgent. Small businesses such as restaurants, retailers and contractors with steady paper volume use it so the owner or bookkeeper never retypes a receipt. Add-on extraction handles line items, bank statements and supplier statement reconciliation, and expense claims let staff submit purchases for approval. A pilot is forwarding all supplier emails to the Dext inbox and photographing receipts for one month, then reviewing the published items in the accounting system for coding accuracy. Dext also offers separate Practice plans for accounting firms, which often provide it to clients at a discount. Caveat: the plan is sized by documents per month, and extra users add allowance rather than being free, so volume should be estimated before buying.",
+    "bestFor": "Small businesses with regular receipt and supplier invoice volume that want automated capture feeding QuickBooks or Xero.",
+    "notFor": "Businesses with only a handful of receipts a month, where the built-in capture in their accounting app is enough.",
+    "integrations": [
+      "QuickBooks Online",
+      "Xero",
+      "Sage",
+      "FreeAgent",
+      "Dropbox",
+      "Google Drive",
+      "PayPal",
+      "Tripcatcher"
+    ],
+    "featureSlugs": [
+      "document-extraction",
+      "invoice-processing",
+      "integrations",
+      "workflow-builder",
+      "policy-enforcement"
+    ],
+    "useCases": [
+      {
+        "slug": "document-extraction",
+        "fitScore": 90,
+        "bestFor": "Extracting supplier, totals, tax and line items from receipts and invoices at volume.",
+        "limitations": "Line-item extraction is a paid add-on billed per document.",
+        "implementationNote": "Run one month of real documents and measure how many need manual correction before publishing."
+      },
+      {
+        "slug": "accounts-payable-automation",
+        "fitScore": 82,
+        "bestFor": "Collecting supplier invoices automatically and coding them before they reach the ledger.",
+        "limitations": "Payment execution happens in the accounting system or Dext Payments, not in capture.",
+        "implementationNote": "Set supplier rules for your top 15 vendors so invoices publish with the right account and tax code."
+      },
+      {
+        "slug": "spend-policy-review",
+        "fitScore": 65,
+        "bestFor": "Staff expense claims with approval before reimbursement.",
+        "limitations": "Policy rules are simpler than dedicated expense tools like Expensify.",
+        "implementationNote": "Enable expense claims for two employees and route approvals to the owner for a month."
+      }
+    ],
+    "alternatives": [
+      "Expensify",
+      "Hubdoc",
+      "AutoEntry",
+      "Ramp Intelligence"
+    ],
+    "popularityScore": 68,
+    "vendor": "Dext Software",
+    "sourceUrl": "https://dext.com/us/business/pricing"
+  },
+  {
+    "name": "Float Cash Flow",
+    "websiteUrl": "https://floatapp.com",
+    "categorySlug": "finance",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 59,
+    "pricingNote": "Essential $59/month; Premium $99/month; Enterprise $199/month; 20% off annual billing; free trial (Oct 2026).",
+    "shortDescription": "Cash-flow forecasting and scenario planning that syncs with QuickBooks, Xero or FreeAgent for small businesses.",
+    "longDescription": "Float is a cash-flow forecasting tool that connects to QuickBooks Online, Xero or FreeAgent, pulls invoices, bills and bank balances, and builds a rolling forecast up to three years out. Users layer budgets and scenarios on top, such as hiring a second technician, opening a new location or a key customer paying 30 days late, and see the projected bank balance for each. Expected payment dates can be adjusted per invoice, and the weekly cash summary email keeps owners informed without opening the app. Small service firms, agencies and shops with lumpy cash use it to avoid overdrafts and time big purchases. Accountants and bookkeepers can manage multiple clients through a partner program. A small team would connect the accounting system, set a baseline forecast, then build two scenarios for the next quarter and review variance monthly. Caveat: Float only works if the underlying accounting data is current and reconciled, and it does not connect directly to banks outside the accounting integration.",
+    "bestFor": "Small businesses on QuickBooks or Xero that want a visual cash forecast and scenario planning without spreadsheets.",
+    "notFor": "Businesses whose books are updated only at tax time, since the forecast depends on live accounting data.",
+    "integrations": [
+      "QuickBooks Online",
+      "Xero",
+      "FreeAgent"
+    ],
+    "featureSlugs": [
+      "forecasting",
+      "fp-a-reporting",
+      "bi-dashboards",
+      "integrations",
+      "team-workspace"
+    ],
+    "useCases": [
+      {
+        "slug": "fp-a-reporting",
+        "fitScore": 85,
+        "bestFor": "Monthly cash forecasts and scenario comparisons for owners and advisors.",
+        "limitations": "Budget-versus-actual reporting is simpler than full FP&A suites.",
+        "implementationNote": "Build a base forecast plus a best-case and worst-case scenario, then compare against actuals after 60 days."
+      },
+      {
+        "slug": "executive-reporting",
+        "fitScore": 70,
+        "bestFor": "Sharing a projected cash position with partners, lenders or investors.",
+        "limitations": "Export and presentation formats are limited to charts and spreadsheets.",
+        "implementationNote": "Use the weekly cash summary as the opening item in your management meeting for a quarter."
+      },
+      {
+        "slug": "data-analysis",
+        "fitScore": 62,
+        "bestFor": "Understanding which customers or expense categories drive cash swings.",
+        "limitations": "Analysis stays within cash flow; no sales or marketing data.",
+        "implementationNote": "Tag your five largest customers and watch how late payments move the forecast."
+      }
+    ],
+    "alternatives": [
+      "Fathom",
+      "Jirav",
+      "Pulse",
+      "Datarails"
+    ],
+    "popularityScore": 55,
+    "vendor": "Float",
+    "sourceUrl": "https://www.capterra.com/p/226486/Float-Cash-Flow/"
+  },
+  {
+    "name": "Digits",
+    "websiteUrl": "https://digits.com",
+    "categorySlug": "finance",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 65,
+    "pricingNote": "Essentials $65/month; Core $100/month; Pro $250/month per business entity; firm plans priced per client; 30-day free trial (Oct 2026).",
+    "shortDescription": "AI-native general ledger that auto-categorizes transactions, closes the books and answers finance questions for small companies.",
+    "longDescription": "Digits is an AI-first accounting platform for US small businesses and startups that replaces or sits on top of a traditional ledger. It connects bank, card, payroll and revenue sources such as Stripe and Shopify, then uses machine learning trained on millions of transactions to categorize activity, match receipts and invoices, draft journal entries and flag anomalies. A chat interface answers questions like how much did we spend on contractors last quarter, and dashboards update continuously rather than at month end. The Core plan adds revenue and spend integrations, custom dashboards and dimensional tagging; Pro adds close automation. Accounting firms use the firm plans to run client books with outcome-based pricing, billing only when at least 95% of transactions are handled without manual work. A founder or owner would pilot it by connecting accounts for a 30-day trial alongside the existing bookkeeper and comparing categorization and close speed. Caveat: Digits serves US entities only and is newer than incumbents, so some accountants may prefer to keep QuickBooks as the system of record.",
+    "bestFor": "US startups and small companies that want books closed automatically with an AI assistant answering finance questions.",
+    "notFor": "Non-US businesses or owners whose accountant insists on QuickBooks or Xero as the only ledger.",
+    "integrations": [
+      "Stripe",
+      "Shopify",
+      "Gusto",
+      "Rippling",
+      "Brex",
+      "Ramp",
+      "Mercury",
+      "QuickBooks Online"
+    ],
+    "featureSlugs": [
+      "ai-agents",
+      "invoice-processing",
+      "chat-interface",
+      "bi-dashboards",
+      "document-extraction",
+      "integrations",
+      "fp-a-reporting"
+    ],
+    "useCases": [
+      {
+        "slug": "accounts-payable-automation",
+        "fitScore": 78,
+        "bestFor": "Capturing vendor bills, coding them with AI and preparing payment runs.",
+        "limitations": "Vendor payment rails are less mature than BILL or Melio.",
+        "implementationNote": "Forward one month of vendor invoices and review the AI-coded bills before approving payment."
+      },
+      {
+        "slug": "fp-a-reporting",
+        "fitScore": 75,
+        "bestFor": "Always-current dashboards and AI narratives on burn, margin and spend trends.",
+        "limitations": "Deep scenario modeling is not the focus; pair with a forecasting tool.",
+        "implementationNote": "Set up a monthly review where the owner asks Digits five questions and compares answers to the P&L."
+      },
+      {
+        "slug": "data-analysis",
+        "fitScore": 80,
+        "bestFor": "Plain-language questions about spend by vendor, category or department.",
+        "limitations": "Answers are only as good as the categorization you have confirmed.",
+        "implementationNote": "Confirm categorization for your top 50 vendors in week one so the assistant has clean data."
+      }
+    ],
+    "alternatives": [
+      "QuickBooks Online",
+      "Xero",
+      "Pilot",
+      "Bench"
+    ],
+    "popularityScore": 52,
+    "vendor": "Digits Financial",
+    "sourceUrl": "https://getpulsesignal.com/pricing/digits"
+  },
+  {
+    "name": "Gusto",
+    "websiteUrl": "https://gusto.com",
+    "categorySlug": "hr-and-recruiting",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 49,
+    "pricingNote": "Simple $49/month plus $6 per person; Plus $80/month plus $12 per person; Premium $180/month plus $22 per person; Contractor Only $35/month plus $6 per contractor (Oct 2026).",
+    "shortDescription": "Payroll, benefits and HR for small businesses with automated tax filing, onboarding and an AI assistant for HR questions.",
+    "longDescription": "Gusto is a payroll and HR platform used by more than 400,000 small US businesses. It runs unlimited payrolls, files federal, state and local taxes, issues W-2s and 1099s, and manages health benefits, 401(k), workers comp and PTO. Employees self-onboard, sign documents and view pay stubs in their own accounts. Gusto's AI assistant, Gus, answers payroll and compliance questions inside the product, and the Plus plan adds time tracking, multi-state payroll, hiring tools with job postings and offer letters, and performance reviews. Premium adds certified HR advisors and compliance alerts. It integrates with QuickBooks Online, Xero, FreshBooks, Homebase, Deputy, When I Work, Expensify and Slack. A small shop or agency would pilot by running one parallel payroll against the current provider before the quarter starts, then switching so year-to-date figures migrate cleanly. Caveat: hiring a single employee in a second state forces the Plus plan and doubles the per-person fee, and Gusto only serves US-based employers.",
+    "bestFor": "US small businesses with a handful to a few dozen W-2 employees who want payroll, benefits and basic HR in one place.",
+    "notFor": "Companies with international employees or complex enterprise HR requirements.",
+    "integrations": [
+      "QuickBooks Online",
+      "Xero",
+      "FreshBooks",
+      "Homebase",
+      "Deputy",
+      "Expensify",
+      "Slack",
+      "Google Workspace"
+    ],
+    "featureSlugs": [
+      "integrations",
+      "chat-interface",
+      "policy-enforcement",
+      "templates",
+      "workflow-builder",
+      "api-access"
+    ],
+    "useCases": [
+      {
+        "slug": "recruiting-support",
+        "fitScore": 65,
+        "bestFor": "Posting jobs, sending offer letters and onboarding new hires with checklists.",
+        "limitations": "Hiring tools require the Plus plan and are lighter than a dedicated ATS.",
+        "implementationNote": "Use the built-in job board for your next role and measure time from offer to first-day paperwork."
+      },
+      {
+        "slug": "workflow-automation",
+        "fitScore": 78,
+        "bestFor": "Automated payroll runs, tax filings and onboarding document collection.",
+        "limitations": "Custom workflows beyond payroll and onboarding are not configurable.",
+        "implementationNote": "Set payroll to autopilot for salaried staff and review the pre-run summary email each cycle."
+      },
+      {
+        "slug": "learning-and-enablement",
+        "fitScore": 55,
+        "bestFor": "Required compliance training and policy acknowledgments for new employees.",
+        "limitations": "Training content is limited to harassment prevention and basic HR topics.",
+        "implementationNote": "Assign the harassment training module to all staff and track completion in the dashboard."
+      },
+      {
+        "slug": "general-assistant",
+        "fitScore": 60,
+        "bestFor": "Asking Gus about pay dates, tax deadlines and leave policies.",
+        "limitations": "Answers cover Gusto and general HR; not a substitute for legal advice.",
+        "implementationNote": "Have the office manager log every HR question for a month and see how many Gus answers correctly."
+      }
+    ],
+    "alternatives": [
+      "Rippling",
+      "Homebase",
+      "Deel",
+      "QuickBooks Payroll"
+    ],
+    "popularityScore": 88,
+    "vendor": "Gusto",
+    "sourceUrl": "https://gusto.com/product/pricing"
+  },
+  {
+    "name": "Deel",
+    "websiteUrl": "https://deel.com",
+    "categorySlug": "hr-and-recruiting",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 49,
+    "pricingNote": "Contractor management from $49 per contractor/month; US payroll from $19 per employee/month; EOR from $599 per employee/month; HR tools free with paid modules (Oct 2026).",
+    "shortDescription": "Global contractor and employee payments, employer of record and HR with AI compliance monitoring for distributed small teams.",
+    "longDescription": "Deel is a global payroll and HR platform that lets small businesses hire and pay contractors in more than 150 countries, employ staff abroad through its employer of record entities, and run US payroll. Contracts are generated from localized templates, invoices and payments run in local currency, and tax forms such as W-9 and W-8BEN are collected automatically. Deel AI answers questions about country-specific labor rules, flags misclassification risk and monitors regulatory changes, while the free Deel HR module handles onboarding, time off and org charts. It suits lean teams such as ecommerce brands or agencies that work with overseas designers, developers and support staff. Integrations include QuickBooks, Xero, NetSuite, Slack, Google Workspace, BambooHR, Greenhouse and Workable. A small team would pilot by moving three or four international contractors onto Deel contracts and comparing fees against wire or PayPal costs for one quarter. Caveat: contractor seats are billed monthly even if a contractor is idle, and FX markups apply to cross-currency payments.",
+    "bestFor": "Small teams paying contractors or employees in several countries who want contracts, payments and compliance handled together.",
+    "notFor": "Businesses with only local US employees, where Gusto or Homebase is cheaper and simpler.",
+    "integrations": [
+      "QuickBooks Online",
+      "Xero",
+      "NetSuite",
+      "Slack",
+      "Google Workspace",
+      "BambooHR",
+      "Greenhouse",
+      "Workable"
+    ],
+    "featureSlugs": [
+      "integrations",
+      "templates",
+      "policy-enforcement",
+      "chat-interface",
+      "workflow-builder",
+      "api-access",
+      "ai-agents"
+    ],
+    "useCases": [
+      {
+        "slug": "compliance-automation",
+        "fitScore": 78,
+        "bestFor": "Keeping contractor classification and local labor rules monitored across countries.",
+        "limitations": "Compliance guidance is informational and country coverage varies by depth.",
+        "implementationNote": "Run the misclassification assessment on your existing contractors before signing new agreements."
+      },
+      {
+        "slug": "workflow-automation",
+        "fitScore": 75,
+        "bestFor": "Automating contract creation, invoice approval and multi-currency payouts.",
+        "limitations": "Approval chains are simple and customization requires higher tiers.",
+        "implementationNote": "Set a monthly pay cycle for all contractors and compare admin time against manual transfers."
+      },
+      {
+        "slug": "contract-review",
+        "fitScore": 62,
+        "bestFor": "Generating locally compliant contractor and employment agreements from templates.",
+        "limitations": "Templates are standardized; bespoke clauses need your own lawyer.",
+        "implementationNote": "Generate one contractor agreement per country and have counsel review before scaling."
+      }
+    ],
+    "alternatives": [
+      "Gusto",
+      "Rippling",
+      "Remote",
+      "Oyster"
+    ],
+    "popularityScore": 82,
+    "vendor": "Deel",
+    "sourceUrl": "https://gloroots.com/blog/deel-pricing"
+  },
+  {
+    "name": "Homebase",
+    "websiteUrl": "https://joinhomebase.com",
+    "categorySlug": "hr-and-recruiting",
+    "pricingType": "FREEMIUM",
+    "hasFreePlan": true,
+    "startingPrice": 30,
+    "pricingNote": "Basic free for 1 location and up to 10 employees; Essentials $30/month per location; Plus $70/month per location with AI scheduling; All-in-One $120/month per location; payroll add-on $49/month plus $6 per employee (Oct 2026).",
+    "shortDescription": "Scheduling, time clock, team messaging and hiring for hourly teams, with AI-assisted scheduling and payroll add-on.",
+    "longDescription": "Homebase is a team management app for restaurants, retail stores, salons and other businesses with hourly staff. It covers shift scheduling, a time clock that runs on tablets and phones, timesheets that export to payroll, team messaging, hiring with free job postings to major boards, and employee onboarding documents. The Plus plan adds AI-assisted scheduling that builds shifts from availability, sales forecasts and labor targets, along with PTO policies and departmental permissions. All-in-One adds labor cost analytics, compliance resources and HR advisor access. Pricing is per location rather than per employee, which keeps costs predictable for a single shop with a large crew. Integrations include Square, Clover, Toast, Shopify POS, Lightspeed, QuickBooks, Gusto and ADP. A pilot would start on the free plan with one location, publish two weeks of schedules, and have staff clock in on a tablet before adding paid features. Caveat: the free tier caps at ten team members and one location, and multi-location businesses pay for each site.",
+    "bestFor": "Single-location shops and restaurants with hourly staff that want free scheduling and time tracking with an upgrade path.",
+    "notFor": "Salaried office teams or businesses with many locations, where per-location pricing adds up.",
+    "integrations": [
+      "Square",
+      "Clover",
+      "Toast",
+      "Shopify POS",
+      "Lightspeed",
+      "QuickBooks Online",
+      "Gusto",
+      "ADP"
+    ],
+    "featureSlugs": [
+      "forecasting",
+      "integrations",
+      "team-workspace",
+      "templates",
+      "policy-enforcement",
+      "candidate-scheduling"
+    ],
+    "useCases": [
+      {
+        "slug": "workflow-automation",
+        "fitScore": 80,
+        "bestFor": "Auto-building schedules, sending shift reminders and turning timesheets into payroll.",
+        "limitations": "AI scheduling needs the Plus plan and some weeks of history to be useful.",
+        "implementationNote": "Run the auto-scheduler for one week against your manually built schedule and compare labor cost."
+      },
+      {
+        "slug": "recruiting-automation",
+        "fitScore": 70,
+        "bestFor": "Posting hourly jobs to multiple boards and screening applicants with built-in questions.",
+        "limitations": "No structured interviewing or scorecards.",
+        "implementationNote": "Post your next front-of-house role through Homebase and track applicant volume versus your usual channels."
+      },
+      {
+        "slug": "learning-and-enablement",
+        "fitScore": 55,
+        "bestFor": "Onboarding paperwork and policy acknowledgments for new hourly hires.",
+        "limitations": "No training content beyond document sign-off.",
+        "implementationNote": "Load your employee handbook and W-4 packet so new hires complete everything before day one."
+      }
+    ],
+    "alternatives": [
+      "Deputy",
+      "When I Work",
+      "7shifts",
+      "Gusto"
+    ],
+    "popularityScore": 75,
+    "vendor": "Homebase",
+    "sourceUrl": "https://www.joinhomebase.com/compare/homebase-vs-square"
+  },
+  {
+    "name": "Deputy",
+    "websiteUrl": "https://deputy.com",
+    "categorySlug": "hr-and-recruiting",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 5,
+    "pricingNote": "Lite $5 per user/month; Core $6.50 per user/month with auto-scheduling and demand forecasting; Pro $9 per user/month; $30 monthly minimum; free trial (Oct 2026).",
+    "shortDescription": "Employee scheduling and time tracking with AI auto-scheduling and demand forecasting for hospitality, retail and healthcare teams.",
+    "longDescription": "Deputy is workforce management software for shift-based businesses. Managers build rosters by drag and drop or let the auto-scheduler generate shifts from employee availability, skills, labor budgets and predicted demand, which Deputy forecasts from historical sales or foot traffic data pulled from POS integrations. Staff clock in with facial recognition or GPS on the mobile app, timesheets are auto-approved against the schedule, and hours flow to payroll. Compliance rules cover breaks, overtime and fair workweek laws in several US cities. Pricing is per user, which suits teams of ten to a few hundred across one or more sites. Integrations include Square, Lightspeed, Toast, Shopify, Gusto, ADP, Paychex, QuickBooks and Xero. A small restaurant would pilot by importing staff, connecting the POS, and running auto-scheduling for two weeks against the manager's own roster to compare labor cost and coverage. Caveat: demand forecasting needs several weeks of sales history before its suggestions beat a manager's instinct, and the $30 monthly minimum applies to very small teams.",
+    "bestFor": "Shift-based businesses that want AI-built rosters tied to sales forecasts and labor compliance rules.",
+    "notFor": "Teams of two or three with fixed hours, where a shared calendar is enough.",
+    "integrations": [
+      "Square",
+      "Lightspeed",
+      "Toast",
+      "Shopify",
+      "Gusto",
+      "ADP",
+      "QuickBooks Online",
+      "Xero"
+    ],
+    "featureSlugs": [
+      "forecasting",
+      "policy-enforcement",
+      "integrations",
+      "team-workspace",
+      "api-access",
+      "bi-dashboards"
+    ],
+    "useCases": [
+      {
+        "slug": "workflow-automation",
+        "fitScore": 82,
+        "bestFor": "Auto-generating compliant schedules and approving timesheets without manual review.",
+        "limitations": "Auto-scheduling and forecasting require the Core plan or above.",
+        "implementationNote": "Connect your POS, let Deputy forecast one week, and compare projected versus actual labor percentage."
+      },
+      {
+        "slug": "data-analysis",
+        "fitScore": 65,
+        "bestFor": "Labor cost versus sales reporting by location and shift.",
+        "limitations": "Analytics beyond labor metrics need an add-on or export.",
+        "implementationNote": "Review the labor-to-sales dashboard weekly for a month and adjust staffing targets."
+      },
+      {
+        "slug": "compliance-automation",
+        "fitScore": 68,
+        "bestFor": "Enforcing break, overtime and predictive scheduling rules automatically.",
+        "limitations": "Rule coverage is strongest for US, UK and Australian jurisdictions.",
+        "implementationNote": "Load your state's break and overtime rules and test them against last month's timesheets."
+      }
+    ],
+    "alternatives": [
+      "Homebase",
+      "When I Work",
+      "7shifts",
+      "Connecteam"
+    ],
+    "popularityScore": 72,
+    "vendor": "Deputy",
+    "sourceUrl": "https://capterra.com/p/167811/Deputy/pricing/"
+  },
+  {
+    "name": "Workable",
+    "websiteUrl": "https://workable.com",
+    "categorySlug": "hr-and-recruiting",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 299,
+    "pricingNote": "Standard $299/month for 1-20 employees (monthly or $3,588/year); Premier $599/month and Enterprise $719/month annual only; 3,000 AI credits included; 15-day trial (Oct 2026).",
+    "shortDescription": "Applicant tracking with AI job descriptions, candidate sourcing and screening, plus optional HR tools for small teams.",
+    "longDescription": "Workable is a recruiting platform that lets small businesses post jobs to more than 200 boards in one click, manage applicants through a pipeline, and collaborate on interviews and offers. Its AI features write job descriptions and interview questions, screen and rank applicants against the role, source passive candidates from a database of over 400 million profiles, and draft outreach emails; every paid plan includes 3,000 AI credits a month for the Workable Agent. Self-scheduled interviews, video interviews, assessments and texting are available as add-ons, and an HR module adds onboarding, time off and employee records. Integrations include LinkedIn, Indeed, Gmail and Outlook, Slack, Zoom, Gusto, BambooHR and Checkr. A small company would pilot by posting one open role, letting the AI rank the first 50 applicants, and comparing its shortlist against the hiring manager's. Caveat: pricing scales with company headcount and the Premier and Enterprise plans require annual commitment, so the monthly Standard plan is the only flexible option.",
+    "bestFor": "Small companies hiring several roles a year that want one place to post, screen and schedule with AI assistance.",
+    "notFor": "Businesses hiring one role every year or two, where a free job board plus a spreadsheet is sufficient.",
+    "integrations": [
+      "LinkedIn",
+      "Indeed",
+      "Gmail",
+      "Slack",
+      "Zoom",
+      "Gusto",
+      "BambooHR",
+      "Checkr"
+    ],
+    "featureSlugs": [
+      "ats-sync",
+      "candidate-scheduling",
+      "ai-agents",
+      "templates",
+      "integrations",
+      "talent-intelligence",
+      "api-access"
+    ],
+    "useCases": [
+      {
+        "slug": "recruiting-automation",
+        "fitScore": 88,
+        "bestFor": "Multi-board posting, AI applicant screening and self-service interview scheduling.",
+        "limitations": "Texting and video interview add-ons cost extra on the Standard plan.",
+        "implementationNote": "Post one role, enable AI screening, and measure time-to-shortlist against your last hire."
+      },
+      {
+        "slug": "recruiting-support",
+        "fitScore": 82,
+        "bestFor": "Structured scorecards, interview kits and shared feedback for hiring teams.",
+        "limitations": "Reporting depth is limited on the Standard plan.",
+        "implementationNote": "Build a scorecard for your next role and require every interviewer to complete it within 24 hours."
+      },
+      {
+        "slug": "copywriting",
+        "fitScore": 65,
+        "bestFor": "Generating job descriptions and candidate emails from a short role brief.",
+        "limitations": "Output needs editing for brand voice and local compliance language.",
+        "implementationNote": "Draft three job ads with the AI and A/B test applicant volume against your usual template."
+      }
+    ],
+    "alternatives": [
+      "Breezy HR",
+      "JazzHR",
+      "Greenhouse AI",
+      "Manatal"
+    ],
+    "popularityScore": 74,
+    "vendor": "Workable Software",
+    "sourceUrl": "https://www.workable.com/pricing"
+  },
+  {
+    "name": "Breezy HR",
+    "websiteUrl": "https://breezy.hr",
+    "categorySlug": "hr-and-recruiting",
+    "pricingType": "FREEMIUM",
+    "hasFreePlan": true,
+    "startingPrice": 189,
+    "pricingNote": "Bootstrap free for 1 active position; Startup $189/month ($157 annual); Growth $329/month ($273 annual); Business $529/month ($439 annual); unlimited users; 14-day trial (Oct 2026).",
+    "shortDescription": "Visual applicant tracking with free job board posting, AI candidate matching and automated scheduling for small teams.",
+    "longDescription": "Breezy HR is an applicant tracking system designed for small and mid-sized businesses that want a simple drag-and-drop hiring pipeline. It posts jobs to more than 50 free boards including Indeed, LinkedIn and ZipRecruiter, hosts a branded careers page, and lets candidates apply from mobile. AI features score and rank applicants against the job description, generate job ads, summarize resumes and draft outreach, billed through AI credits on paid plans. Automations move candidates between stages, send templated emails and SMS, and offer self-scheduling links tied to Google or Outlook calendars; video interviews and scorecards come with higher tiers. Flat monthly pricing with unlimited users suits owners who want hiring managers involved without per-seat costs. Integrations include Gusto, BambooHR, Rippling, Slack, Zoom, Checkr and Zapier. A small business would pilot on the free Bootstrap plan for one role, then upgrade when a second opening appears. Caveat: the free plan allows only one active position, and features like scorecards and HRIS sync are gated to Growth or Business.",
+    "bestFor": "Small businesses hiring a few roles a year that want an easy visual pipeline and a free tier to start.",
+    "notFor": "High-volume recruiters needing sourcing databases or enterprise-grade reporting.",
+    "integrations": [
+      "Indeed",
+      "LinkedIn",
+      "Gusto",
+      "BambooHR",
+      "Slack",
+      "Zoom",
+      "Checkr",
+      "Zapier"
+    ],
+    "featureSlugs": [
+      "ats-sync",
+      "candidate-scheduling",
+      "templates",
+      "workflow-builder",
+      "integrations",
+      "team-workspace"
+    ],
+    "useCases": [
+      {
+        "slug": "recruiting-automation",
+        "fitScore": 84,
+        "bestFor": "Automatic stage moves, templated follow-ups and self-scheduled interviews.",
+        "limitations": "SMS and onboarding are paid add-ons.",
+        "implementationNote": "Set up one pipeline with automatic rejection and interview invitation emails and track response time."
+      },
+      {
+        "slug": "recruiting-support",
+        "fitScore": 75,
+        "bestFor": "Shared candidate profiles, team comments and interview scorecards.",
+        "limitations": "Scorecards require the Growth plan.",
+        "implementationNote": "Invite two hiring managers and have them rate candidates in-app instead of by email for one role."
+      },
+      {
+        "slug": "copywriting",
+        "fitScore": 60,
+        "bestFor": "AI-generated job descriptions and candidate messages.",
+        "limitations": "AI usage is metered by credits.",
+        "implementationNote": "Generate a job ad from a bullet list and edit for tone before posting."
+      }
+    ],
+    "alternatives": [
+      "Workable",
+      "JazzHR",
+      "Manatal",
+      "Greenhouse AI"
+    ],
+    "popularityScore": 66,
+    "vendor": "Breezy HR (Learning Technologies Group)",
+    "sourceUrl": "https://www.pin.com/blog/breezy-hr-pricing"
+  },
+  {
+    "name": "JazzHR",
+    "websiteUrl": "https://jazzhr.com",
+    "categorySlug": "hr-and-recruiting",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 99,
+    "pricingNote": "Hero $99/month ($75 annual) for 3 open jobs; Plus $325/month ($269 annual); Pro $499/month ($420 annual); add-ons for texting, eSignature and reporting (Oct 2026).",
+    "shortDescription": "Affordable applicant tracking for small businesses with job syndication, AI candidate matching and collaborative screening.",
+    "longDescription": "JazzHR, part of Employ, is an applicant tracking system aimed at small businesses that hire regularly but do not have a recruiting team. It syndicates jobs to free and paid boards, builds a careers page, and provides customizable workflows with knockout questions, assessments and interview guides. Its TalentFit AI matching on the Plus plan ranks applicants against job requirements, and the system can auto-send rejection and interview scheduling emails. Offers and e-signatures, background checks and advanced reporting are available on Pro or as add-ons. Unlimited users on every plan let owners pull in managers without extra cost. Integrations include Indeed, LinkedIn, ZipRecruiter, Gusto, BambooHR, Rippling, Checkr, Zoom and Slack. A small company would pilot the Hero plan with up to three open jobs for a quarter and compare applicant volume and time-to-hire with its prior process. Caveat: contracts are annual with auto-renewal unless you choose the higher monthly rate, and several useful features such as texting and reporting are extra line items.",
+    "bestFor": "Small businesses with up to three concurrent openings that want a budget ATS with job syndication and basic AI matching.",
+    "notFor": "Teams that need built-in sourcing or want everything included without add-on fees.",
+    "integrations": [
+      "Indeed",
+      "LinkedIn",
+      "ZipRecruiter",
+      "Gusto",
+      "BambooHR",
+      "Checkr",
+      "Zoom",
+      "Slack"
+    ],
+    "featureSlugs": [
+      "ats-sync",
+      "candidate-scheduling",
+      "templates",
+      "workflow-builder",
+      "integrations",
+      "export-options"
+    ],
+    "useCases": [
+      {
+        "slug": "recruiting-automation",
+        "fitScore": 80,
+        "bestFor": "Job syndication, knockout questions and automated candidate emails.",
+        "limitations": "Hero plan caps active jobs at three.",
+        "implementationNote": "Configure knockout questions for one role and measure how many applicants are auto-filtered."
+      },
+      {
+        "slug": "recruiting-support",
+        "fitScore": 76,
+        "bestFor": "Interview guides, scorecards and team ratings shared in one profile.",
+        "limitations": "Advanced reporting costs extra.",
+        "implementationNote": "Standardize one interview guide and have every interviewer submit scores before the debrief."
+      },
+      {
+        "slug": "talent-intelligence",
+        "fitScore": 55,
+        "bestFor": "Ranking applicants with TalentFit AI matching against job criteria.",
+        "limitations": "Matching is available only on Plus and above.",
+        "implementationNote": "Compare the AI ranking with the hiring manager's top five for one posting."
+      }
+    ],
+    "alternatives": [
+      "Breezy HR",
+      "Workable",
+      "Manatal",
+      "BambooHR"
+    ],
+    "popularityScore": 64,
+    "vendor": "Employ",
+    "sourceUrl": "https://www.pin.com/blog/jazzhr-pricing/"
+  },
+  {
+    "name": "Spellbook",
+    "websiteUrl": "https://spellbook.legal",
+    "categorySlug": "legal",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": null,
+    "pricingNote": "Custom per-seat annual pricing quoted via demo; third-party estimates range from about $40 to $150 per user/month for small teams; 7-day free trial (Oct 2026).",
+    "shortDescription": "AI contract drafting and redlining inside Microsoft Word, built for lawyers and in-house teams reviewing commercial agreements.",
+    "longDescription": "Spellbook is a Microsoft Word add-in that uses large language models to draft, review and redline contracts. It suggests clauses and defined terms as you type, flags risky or missing provisions, summarizes agreements, compares a draft against your playbook and proposes tracked-change redlines. Users include small law firms, solo practitioners and in-house counsel at growing companies who spend their day in Word rather than in a contract management system. For a small business without a legal team, it is most useful when a contracts-savvy operator or outside counsel adopts it to speed up vendor, customer and lease agreements. It works with Word on Windows, Mac and web, with document storage in SharePoint or OneDrive, and offers a benchmarking feature trained on public deal data. A pilot would run the 7-day trial on five recent contracts, comparing Spellbook's flagged issues with the reviewer's own notes. Caveat: pricing is not public and requires an annual commitment, and the tool assists a reviewer rather than replacing legal advice.",
+    "bestFor": "Small law firms and in-house reviewers who want AI redlines and clause suggestions without leaving Word.",
+    "notFor": "Business owners with no legal background expecting the tool to approve contracts on its own.",
+    "integrations": [
+      "Microsoft Word",
+      "SharePoint",
+      "OneDrive",
+      "Microsoft 365"
+    ],
+    "featureSlugs": [
+      "contract-analysis",
+      "clause-detection",
+      "templates",
+      "document-upload",
+      "chat-interface"
+    ],
+    "useCases": [
+      {
+        "slug": "contract-review",
+        "fitScore": 90,
+        "bestFor": "Redlining vendor and customer agreements against a playbook with tracked changes.",
+        "limitations": "Requires a human reviewer to accept or reject each suggestion.",
+        "implementationNote": "Load your standard terms as a playbook and review three inbound contracts with it during the trial."
+      },
+      {
+        "slug": "legal-research",
+        "fitScore": 60,
+        "bestFor": "Checking whether a clause is market standard using benchmarking data.",
+        "limitations": "Not a case-law research tool.",
+        "implementationNote": "Ask it to benchmark the limitation of liability clause in your next supplier agreement."
+      },
+      {
+        "slug": "writing-assistant",
+        "fitScore": 65,
+        "bestFor": "Drafting first-pass agreements and clause language from plain instructions.",
+        "limitations": "Drafts follow general practice and need jurisdiction checks.",
+        "implementationNote": "Draft an NDA and a services agreement, then have counsel mark up the output."
+      }
+    ],
+    "alternatives": [
+      "Harvey",
+      "CoCounsel",
+      "Juro",
+      "Ironclad AI"
+    ],
+    "popularityScore": 62,
+    "vendor": "Spellbook (Rally Legal)",
+    "sourceUrl": "https://www.spellbook.legal/briefs/spellbook-vs-cocounsel"
+  },
+  {
+    "name": "Juro",
+    "websiteUrl": "https://juro.com",
+    "categorySlug": "legal",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": null,
+    "pricingNote": "Custom quote based on monthly contract volume, contract types, AI features and integrations; unlimited users; third-party benchmarks put typical deals in the low tens of thousands per year (Oct 2026).",
+    "shortDescription": "Browser-based contract automation with AI drafting, review and extraction, e-signature and a searchable contract repository.",
+    "longDescription": "Juro is a contract lifecycle management platform where contracts are created from templates, negotiated in a browser editor, signed electronically and stored in a searchable repository. Its AI assistant drafts agreements from a short brief, reviews third-party paper against your guidelines, suggests redlines, summarizes terms and extracts key dates and values into structured fields for renewals and obligations tracking. Approvals and workflows let sales, HR and operations self-serve on standard contracts while legal keeps control of templates. Juro is used by scaling companies and lean legal teams rather than micro businesses, though a growing ecommerce brand or agency with recurring customer, supplier and employment contracts can run everything in one system. Integrations include Salesforce, HubSpot, Slack, Google Drive, Greenhouse, Workday and Zapier. A pilot would migrate one contract type, such as customer MSAs, build the template and approval flow, and measure cycle time against the previous email-based process. Caveat: pricing is quote-based and annual, and user count is not the main driver, so small teams with high contract volume may still face a sizable bill.",
+    "bestFor": "Growing companies with recurring contracts that want templates, AI review and e-signature in one browser-based system.",
+    "notFor": "Very small businesses signing a few contracts a year, where DocuSign plus Word templates is cheaper.",
+    "integrations": [
+      "Salesforce",
+      "HubSpot",
+      "Slack",
+      "Google Drive",
+      "Greenhouse",
+      "Workday",
+      "Zapier",
+      "DocuSign"
+    ],
+    "featureSlugs": [
+      "contract-analysis",
+      "clause-detection",
+      "document-extraction",
+      "templates",
+      "workflow-builder",
+      "integrations",
+      "ai-agents"
+    ],
+    "useCases": [
+      {
+        "slug": "contract-review",
+        "fitScore": 85,
+        "bestFor": "Reviewing inbound contracts against your playbook and summarizing risks.",
+        "limitations": "Review quality depends on how well your guidelines are configured.",
+        "implementationNote": "Load five negotiated agreements and compare AI redlines with your lawyer's past comments."
+      },
+      {
+        "slug": "document-extraction",
+        "fitScore": 78,
+        "bestFor": "Pulling renewal dates, values and counterparties from legacy contracts into a repository.",
+        "limitations": "Bulk extraction of large historical archives may be scoped as a paid service.",
+        "implementationNote": "Upload your 30 most important contracts and verify extracted renewal dates against the originals."
+      },
+      {
+        "slug": "workflow-automation",
+        "fitScore": 80,
+        "bestFor": "Self-serve contract generation with conditional approvals for sales and HR.",
+        "limitations": "Complex approval logic requires setup time.",
+        "implementationNote": "Automate your NDA from a web form to signature and track how many legal touches remain."
+      }
+    ],
+    "alternatives": [
+      "Ironclad AI",
+      "Spellbook",
+      "PandaDoc",
+      "DocuSign"
+    ],
+    "popularityScore": 60,
+    "vendor": "Juro Online",
+    "sourceUrl": "https://signeasy.com/blog/business/juro-pricing"
+  },
+  {
+    "name": "LegalZoom",
+    "websiteUrl": "https://legalzoom.com",
+    "categorySlug": "legal",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 39,
+    "pricingNote": "Business Attorney Plan $469/year (about $39/month) or $259 per 6 months; formation, trademark and document services priced per item; Doc Assist AI document summaries available in-platform (Oct 2026).",
+    "shortDescription": "Online legal services for small businesses: formation, compliance, document templates, AI document summaries and attorney consultations.",
+    "longDescription": "LegalZoom is an online legal services company used by millions of US small businesses for LLC and corporation formation, registered agent service, trademarks, operating agreements and ongoing compliance filings. Its AI features include Doc Assist, which summarizes and explains uploaded legal documents in plain language and lets users ask follow-up questions, and an AI legal agent launched in 2026 that guides users through tasks and routes to network attorneys when needed. The Business Attorney Plan adds unlimited 30-minute consultations on new matters, attorney review of documents up to ten pages, and 25% off further work. Local service businesses and online stores use it to form the company, keep annual reports filed and get a quick legal opinion on a lease or contract. It connects with QuickBooks and offers a business license lookup and a document library. A small business would pilot by uploading a vendor contract to Doc Assist, then booking an attorney consultation on the same document to compare. Caveat: LegalZoom is not a law firm and attorney plans require annual or six-month prepayment.",
+    "bestFor": "US small businesses that want formation, compliance filings and affordable attorney access from one provider.",
+    "notFor": "Companies with complex litigation, international structures or a need for dedicated counsel.",
+    "integrations": [
+      "QuickBooks Online",
+      "Stripe",
+      "Google Workspace"
+    ],
+    "featureSlugs": [
+      "templates",
+      "document-upload",
+      "contract-analysis",
+      "chat-interface",
+      "human-handoff"
+    ],
+    "useCases": [
+      {
+        "slug": "contract-review",
+        "fitScore": 68,
+        "bestFor": "Getting a plain-language summary of a lease or supplier agreement before signing.",
+        "limitations": "AI summaries are informational; a true review requires the attorney plan.",
+        "implementationNote": "Upload your next contract to Doc Assist, note the questions it raises, then confirm with a plan attorney."
+      },
+      {
+        "slug": "compliance-automation",
+        "fitScore": 70,
+        "bestFor": "Annual reports, registered agent service and license tracking for a small entity.",
+        "limitations": "Compliance covers entity filings, not security or privacy frameworks.",
+        "implementationNote": "Enable compliance reminders for your state and verify the first annual report deadline."
+      },
+      {
+        "slug": "legal-research",
+        "fitScore": 55,
+        "bestFor": "Quick answers on common business legal questions with attorney follow-up.",
+        "limitations": "Not a legal research database.",
+        "implementationNote": "Use one attorney consultation to validate the AI answer on an employee classification question."
+      }
+    ],
+    "alternatives": [
+      "Rocket Lawyer",
+      "ZenBusiness",
+      "LegalShield",
+      "Spellbook"
+    ],
+    "popularityScore": 85,
+    "vendor": "LegalZoom.com",
+    "sourceUrl": "https://www.legalzoom.com/attorneys/"
+  },
+  {
+    "name": "DocuSign",
+    "websiteUrl": "https://docusign.com",
+    "categorySlug": "legal",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 11,
+    "pricingNote": "eSignature Personal $11/month (annual, 5 envelopes/month); Standard $30 per user/month; Business Pro $45 per user/month; IAM Starter from about $45 per user/month; monthly billing costs more; free trial (Oct 2026).",
+    "shortDescription": "Electronic signature and agreement management with AI that extracts terms, summarizes contracts and flags risks.",
+    "longDescription": "DocuSign is the most widely used e-signature service, letting small businesses send contracts, proposals, lease agreements and onboarding forms for legally binding signature from desktop or mobile. Its Intelligent Agreement Management (IAM) plans add Docusign Iris, the AI layer that extracts key terms and dates from signed agreements, generates summaries, flags unusual clauses during review, and makes the repository searchable, plus Navigator for storing all agreements in one place and Maestro for no-code agreement workflows. Templates, reusable fields, reminders, payments collection and ID verification are available depending on plan. Integrations include Salesforce, HubSpot, Google Workspace, Microsoft 365, Slack, Box, Dropbox and Zapier. A small team would pilot on the Standard plan with templates for its two most common documents, then test IAM Starter for AI extraction on signed contracts. Caveat: the entry Personal plan caps at five envelopes a month and annual plans limit each user to 100 envelopes a year, with per-envelope overage fees beyond that.",
+    "bestFor": "Small businesses that send contracts, quotes and HR forms for signature and want AI summaries of what they signed.",
+    "notFor": "Teams sending one or two documents a month, where free signing in PandaDoc or Dropbox Sign may suffice.",
+    "integrations": [
+      "Salesforce",
+      "HubSpot",
+      "Google Workspace",
+      "Microsoft 365",
+      "Slack",
+      "Box",
+      "Dropbox",
+      "Zapier"
+    ],
+    "featureSlugs": [
+      "templates",
+      "contract-analysis",
+      "document-extraction",
+      "workflow-builder",
+      "integrations",
+      "api-access",
+      "governance-controls"
+    ],
+    "useCases": [
+      {
+        "slug": "contract-review",
+        "fitScore": 72,
+        "bestFor": "AI summaries and risk flags on agreements before and after signature.",
+        "limitations": "Deep review features need the IAM plans rather than basic eSignature.",
+        "implementationNote": "Send ten signed contracts through Navigator and verify the extracted renewal dates."
+      },
+      {
+        "slug": "document-extraction",
+        "fitScore": 75,
+        "bestFor": "Pulling parties, dates, values and obligations from signed agreements into a searchable record.",
+        "limitations": "Extraction works best on standard contract types.",
+        "implementationNote": "Upload your supplier and lease agreements and set renewal alerts from the extracted dates."
+      },
+      {
+        "slug": "workflow-automation",
+        "fitScore": 78,
+        "bestFor": "Automatic routing, reminders and completion actions for signature packets.",
+        "limitations": "Maestro workflow builder is available on IAM plans only.",
+        "implementationNote": "Build a template for your client agreement with auto-reminders and measure time to completion."
+      }
+    ],
+    "alternatives": [
+      "PandaDoc",
+      "Dropbox Sign",
+      "Adobe Acrobat Sign",
+      "Juro"
+    ],
+    "popularityScore": 92,
+    "vendor": "Docusign",
+    "sourceUrl": "https://ecom.docusign.com/plans-and-pricing/esignature"
+  },
+  {
+    "name": "Secureframe",
+    "websiteUrl": "https://secureframe.com",
+    "categorySlug": "security-and-compliance",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": null,
+    "pricingNote": "Quote-based Fundamentals, Complete and Defense tiers; third-party benchmarks report entry contracts around $7,500/year for single-framework startups and a median near $20,000/year (Oct 2026).",
+    "shortDescription": "Compliance automation for SOC 2, ISO 27001, HIPAA and GDPR with AI remediation guidance and continuous control monitoring.",
+    "longDescription": "Secureframe is a compliance automation platform that helps small and growing companies get and stay certified against frameworks such as SOC 2, ISO 27001, HIPAA, PCI DSS and GDPR. It connects to cloud providers, identity tools, HR systems and code repositories to collect evidence automatically, monitors controls continuously and alerts on failures. Comply AI suggests remediation steps for failing cloud configurations, generates policy documents tailored to the company, and drafts answers to security questionnaires from prospects. A trust center page publishes certifications to customers. Lean software and services teams selling to larger clients use it when a buyer asks for a SOC 2 report; a ten-person company can typically reach audit readiness in a few months with a mostly automated evidence trail. Integrations include AWS, Google Cloud, Azure, GitHub, Okta, Google Workspace, Gusto, Rippling and Jira. A pilot would connect the core systems, review the gap report and estimate remediation effort before committing to an audit. Caveat: the platform fee excludes the auditor, and pricing is quote-based with annual contracts.",
+    "bestFor": "Small B2B companies that need a SOC 2 or ISO 27001 report to close deals and want evidence collection automated.",
+    "notFor": "Local retailers or service businesses whose customers never request security certifications.",
+    "integrations": [
+      "AWS",
+      "Google Cloud",
+      "Azure",
+      "GitHub",
+      "Okta",
+      "Google Workspace",
+      "Gusto",
+      "Jira"
+    ],
+    "featureSlugs": [
+      "control-monitoring",
+      "policy-enforcement",
+      "security-scanning",
+      "vulnerability-remediation",
+      "integrations",
+      "templates",
+      "ai-agents"
+    ],
+    "useCases": [
+      {
+        "slug": "compliance-automation",
+        "fitScore": 90,
+        "bestFor": "Continuous monitoring of SOC 2 and ISO controls with automated alerts.",
+        "limitations": "Each additional framework increases the subscription.",
+        "implementationNote": "Connect AWS, Google Workspace and your HR system, then work the gap list for 30 days before scheduling the audit."
+      },
+      {
+        "slug": "compliance-evidence-collection",
+        "fitScore": 88,
+        "bestFor": "Pulling screenshots, logs and configurations as audit evidence without manual gathering.",
+        "limitations": "Some evidence from manual processes still needs uploading.",
+        "implementationNote": "Map your top 20 controls to integrations and check how many collect evidence automatically."
+      },
+      {
+        "slug": "ai-code-security-review",
+        "fitScore": 55,
+        "bestFor": "Flagging misconfigurations in cloud and repository settings with remediation guidance.",
+        "limitations": "Not a code scanner; pair with Snyk or similar for application security.",
+        "implementationNote": "Review Comply AI remediation suggestions for the first ten failing cloud tests."
+      }
+    ],
+    "alternatives": [
+      "Vanta",
+      "Drata",
+      "Sprinto",
+      "Thoropass"
+    ],
+    "popularityScore": 66,
+    "vendor": "Secureframe",
+    "sourceUrl": "https://vendr.com/marketplace/secureframe"
+  },
+  {
+    "name": "Termly",
+    "websiteUrl": "https://termly.io",
+    "categorySlug": "security-and-compliance",
+    "pricingType": "FREEMIUM",
+    "hasFreePlan": true,
+    "startingPrice": 14,
+    "pricingNote": "Free plan with 1 policy and basic cookie banner; Starter $14/month ($10 annual) per website; Pro+ $20/month ($15 annual) per website; Agency custom (Oct 2026).",
+    "shortDescription": "Privacy policy, terms and cookie consent generator with automatic website scanning and policy updates for small sites.",
+    "longDescription": "Termly is a compliance tool that generates privacy policies, terms and conditions, refund policies, disclaimers and cookie policies from a questionnaire, then hosts them and keeps them updated as laws such as GDPR, CCPA and newer US state privacy acts change. Its consent management platform scans the website for cookies and trackers, auto-blocks scripts until consent is given, displays a configurable banner with regional rules, and keeps consent logs. It also provides data subject access request forms. Online stores, local service sites and small SaaS products use it to avoid paying a lawyer for boilerplate while staying current. It installs via a script, a WordPress plugin or Shopify, Wix, Squarespace and Webflow embeds, and integrates with Google Consent Mode. A pilot would generate a privacy policy on the free plan, install the banner and review the cookie scan results. Caveat: licenses are per website and features such as multi-language banners, consent logs and weekly scans sit on Pro+, so multi-site owners pay per domain.",
+    "bestFor": "Small websites and online stores that need compliant legal policies and a cookie banner without hiring a lawyer.",
+    "notFor": "Companies with complex data processing that require custom privacy counsel or enterprise consent orchestration.",
+    "integrations": [
+      "WordPress",
+      "Shopify",
+      "Wix",
+      "Squarespace",
+      "Webflow",
+      "Google Consent Mode",
+      "Google Tag Manager"
+    ],
+    "featureSlugs": [
+      "templates",
+      "policy-enforcement",
+      "control-monitoring",
+      "security-scanning",
+      "integrations"
+    ],
+    "useCases": [
+      {
+        "slug": "compliance-automation",
+        "fitScore": 82,
+        "bestFor": "Keeping privacy and cookie policies updated as regulations change.",
+        "limitations": "Generated policies cover standard cases, not unusual data practices.",
+        "implementationNote": "Generate and publish your privacy policy, then run the site scan and fix unclassified cookies."
+      },
+      {
+        "slug": "compliance-evidence-collection",
+        "fitScore": 65,
+        "bestFor": "Consent logs and scan reports as evidence of cookie compliance.",
+        "limitations": "Consent logs require the Pro+ plan.",
+        "implementationNote": "Export the consent log after one month to confirm banner interactions are being recorded."
+      },
+      {
+        "slug": "workflow-automation",
+        "fitScore": 55,
+        "bestFor": "Routing data subject requests through a hosted form.",
+        "limitations": "Request handling after intake is manual.",
+        "implementationNote": "Add the DSAR form to your footer and set an owner to respond within 30 days."
+      }
+    ],
+    "alternatives": [
+      "iubenda",
+      "Termageddon",
+      "CookieYes",
+      "Usercentrics"
+    ],
+    "popularityScore": 60,
+    "vendor": "Termly",
+    "sourceUrl": "https://termly.io/resources/compare/termly-vs-iubenda/"
+  },
+  {
+    "name": "iubenda",
+    "websiteUrl": "https://iubenda.com",
+    "categorySlug": "security-and-compliance",
+    "pricingType": "FREEMIUM",
+    "hasFreePlan": true,
+    "startingPrice": 6.99,
+    "pricingNote": "Free plan up to 5,000 pageviews; Essentials $6.99/month ($5.99 annual); Advanced $27.99/month ($24.99 annual); Ultimate $119.99/month ($99.99 annual), all per website (Oct 2026).",
+    "shortDescription": "Lawyer-maintained privacy and cookie policy generator with consent banner, consent records and compliance scanning for websites and apps.",
+    "longDescription": "iubenda generates privacy policies, cookie policies and terms and conditions from a library of clauses maintained by an international legal team, and updates them automatically when regulations change. Its cookie solution scans the site, blocks scripts before consent, shows a customizable banner with geolocation-based rules for GDPR, CCPA and other regimes, and stores consent records. Higher tiers add a register of data processing activities, whistleblowing tools, hourly scans and white-label banners. It is popular with agencies and small businesses in Europe and increasingly in the US, and supports websites, mobile apps and multiple languages. Installation works via script, WordPress plugin, Shopify, Wix, Squarespace, Webflow and Google Consent Mode. Agencies can resell and manage many client sites from one dashboard. A pilot would use the free plan to generate a policy and banner on one site, then move to Essentials when traffic passes the pageview cap. Caveat: every site is a separate subscription with pageview limits and overage billing, and the Essentials tier supports a single banner language.",
+    "bestFor": "Small sites, apps and agencies that want lawyer-maintained policies and a consent banner at a low per-site cost.",
+    "notFor": "High-traffic sites where per-pageview pricing becomes expensive, or firms needing custom legal review.",
+    "integrations": [
+      "WordPress",
+      "Shopify",
+      "Wix",
+      "Squarespace",
+      "Webflow",
+      "Google Consent Mode",
+      "Google Tag Manager",
+      "Zapier"
+    ],
+    "featureSlugs": [
+      "templates",
+      "policy-enforcement",
+      "control-monitoring",
+      "security-scanning",
+      "integrations",
+      "translation"
+    ],
+    "useCases": [
+      {
+        "slug": "compliance-automation",
+        "fitScore": 82,
+        "bestFor": "Auto-updated policies and region-aware cookie consent for a small site or app.",
+        "limitations": "Multi-language banners and geolocation rules require Advanced.",
+        "implementationNote": "Set up the banner with Google Consent Mode and verify analytics tags fire only after consent."
+      },
+      {
+        "slug": "compliance-evidence-collection",
+        "fitScore": 68,
+        "bestFor": "Storing consent records for forms and banners as audit evidence.",
+        "limitations": "Consent storage is billed per 1,000 new consents.",
+        "implementationNote": "Connect your newsletter signup form to consent recording and check the log after two weeks."
+      },
+      {
+        "slug": "translation-and-localization",
+        "fitScore": 60,
+        "bestFor": "Serving policies and banners in the visitor's language.",
+        "limitations": "All languages are only available on Advanced and above.",
+        "implementationNote": "Enable two languages your customers use and review the translated policy text."
+      }
+    ],
+    "alternatives": [
+      "Termly",
+      "CookieYes",
+      "Usercentrics",
+      "Osano"
+    ],
+    "popularityScore": 62,
+    "vendor": "iubenda (team.blue)",
+    "sourceUrl": "https://www.iubenda.com/en/pricing/"
+  },
+  {
+    "name": "1Password",
+    "websiteUrl": "https://1password.com",
+    "categorySlug": "security-and-compliance",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": 24.95,
+    "pricingNote": "Teams Starter Pack $24.95/month flat for up to 10 members (annual), extra seats $4.99; Business $8.99 per user/month (annual); Enterprise custom; 14-day trial (Oct 2026).",
+    "shortDescription": "Business password manager with shared vaults, breach monitoring, passkeys and AI-assisted security insights for small teams.",
+    "longDescription": "1Password is a password and secrets manager for teams. Staff store logins, cards, documents and passkeys in personal and shared vaults, autofill them in browsers and apps, and share access to tools like the store admin, social accounts and bank portals without emailing passwords. Watchtower flags weak, reused or breached credentials, and the Business plan adds reporting, custom roles, guest accounts for contractors and integration with identity providers such as Okta, Entra ID and Google Workspace. 1Password Extended Access Management, available on higher tiers, uses AI to surface unmanaged apps and risky devices. The flat-rate Teams Starter Pack suits a shop or agency with up to ten people, and Business adds per-user pricing for larger teams. Integrations include Slack, Google Workspace, Microsoft Entra ID, Okta, Duo, Rippling and GitHub. A pilot would create shared vaults for the three most-shared accounts, invite the team, and enforce the browser extension for two weeks. Caveat: no free business tier exists and adoption depends on everyone actually using the extension rather than browser-saved passwords.",
+    "bestFor": "Small teams sharing logins to store, ad, bank and social accounts that want them secured and monitored for breaches.",
+    "notFor": "Solo operators who only need a personal password manager or teams already standardized on another vault.",
+    "integrations": [
+      "Slack",
+      "Google Workspace",
+      "Microsoft Entra ID",
+      "Okta",
+      "Duo",
+      "Rippling",
+      "GitHub",
+      "Jira"
+    ],
+    "featureSlugs": [
+      "security-scanning",
+      "governance-controls",
+      "team-workspace",
+      "integrations",
+      "browser-extension",
+      "api-access"
+    ],
+    "useCases": [
+      {
+        "slug": "compliance-automation",
+        "fitScore": 68,
+        "bestFor": "Enforcing password policies and producing access reports for SOC 2 or cyber insurance.",
+        "limitations": "Reporting and policy controls require the Business plan.",
+        "implementationNote": "Enable the Watchtower report and remediate reused passwords flagged in the first week."
+      },
+      {
+        "slug": "compliance-evidence-collection",
+        "fitScore": 60,
+        "bestFor": "Activity logs showing who accessed which credentials and when.",
+        "limitations": "Advanced audit log export is an Enterprise feature.",
+        "implementationNote": "Pull the access report for your admin vault when your insurer or auditor asks."
+      },
+      {
+        "slug": "workflow-automation",
+        "fitScore": 55,
+        "bestFor": "Onboarding and offboarding staff access with group-based vault permissions.",
+        "limitations": "Automated provisioning needs an identity provider integration.",
+        "implementationNote": "Create groups for front-of-house and management and test removing a departing employee."
+      }
+    ],
+    "alternatives": [
+      "Bitwarden",
+      "Dashlane",
+      "Keeper",
+      "LastPass"
+    ],
+    "popularityScore": 86,
+    "vendor": "AgileBits (1Password)",
+    "sourceUrl": "https://1password.com/pricing/business"
+  },
+  {
+    "name": "Chargeflow",
+    "websiteUrl": "https://chargeflow.io",
+    "categorySlug": "security-and-compliance",
+    "pricingType": "PAID",
+    "hasFreePlan": false,
+    "startingPrice": null,
+    "pricingNote": "Automation 25% of recovered chargeback amount only; Alerts $29 per deflected chargeback; Prevent fraud scans per transaction with first 1,000 free; Insights free; no contracts or minimums (Oct 2026).",
+    "shortDescription": "AI chargeback automation for Shopify and Stripe merchants that fights disputes end to end and charges only on recovered revenue.",
+    "longDescription": "Chargeflow is a chargeback management platform for ecommerce merchants. When a dispute arrives, it gathers order, shipping, customer and session data from the store, payment processor and carriers, assembles evidence using AI tuned to card network rules, and submits the response automatically. Alerts from Visa and Mastercard networks let merchants refund before a dispute escalates, Prevent scores transactions for fraud at checkout, and Insights reports dispute rates and win rates. Small online stores use it so that nobody has to compile evidence by hand or track deadlines, and the success-fee model means there is no cost when a case is lost. It installs from the Shopify App Store and integrates with Stripe, PayPal, Braintree, Adyen, WooCommerce, BigCommerce, Klarna and ShipStation. A pilot would connect the store and processor, let Chargeflow handle every dispute for 60 days, and compare the win rate with historical manual responses. Caveat: the 25% fee is on recovered amounts and alerts are billed per event, so stores with very few disputes may pay more than the time saved is worth.",
+    "bestFor": "Shopify and Stripe stores that lose time and money to chargebacks and want them handled automatically on a results-only fee.",
+    "notFor": "Stores with a handful of disputes a year or merchants whose payment processor already resolves disputes well.",
+    "integrations": [
+      "Shopify",
+      "Stripe",
+      "PayPal",
+      "Braintree",
+      "Adyen",
+      "WooCommerce",
+      "BigCommerce",
+      "ShipStation"
+    ],
+    "featureSlugs": [
+      "ai-agents",
+      "document-extraction",
+      "integrations",
+      "bi-dashboards",
+      "security-scanning",
+      "api-access"
+    ],
+    "useCases": [
+      {
+        "slug": "workflow-automation",
+        "fitScore": 85,
+        "bestFor": "Fully automated evidence assembly and dispute submission with deadline tracking.",
+        "limitations": "Some processors require manual connection or have limited API access.",
+        "implementationNote": "Connect Shopify and your processor, then review the first five automated submissions before going hands-off."
+      },
+      {
+        "slug": "data-analysis",
+        "fitScore": 65,
+        "bestFor": "Understanding dispute reasons, win rates and chargeback ratios by product and channel.",
+        "limitations": "Analytics cover disputes only, not overall store performance.",
+        "implementationNote": "Use the Insights dashboard to identify the top three dispute reasons and fix policies behind them."
+      },
+      {
+        "slug": "customer-support",
+        "fitScore": 55,
+        "bestFor": "Refunding alerted disputes quickly to avoid chargebacks counting against the store.",
+        "limitations": "Alerts cost $29 each regardless of order value.",
+        "implementationNote": "Enable alerts only for orders above the fee threshold and measure the ratio avoided."
+      }
+    ],
+    "alternatives": [
+      "NoFraud",
+      "Signifyd",
+      "Chargebacks911",
+      "Disputifier"
+    ],
+    "popularityScore": 58,
+    "vendor": "Chargeflow",
+    "sourceUrl": "https://redo.com/resources/articles/comparisons/chargeflow-pricing"
+  },
+  {
+    "name": "NoFraud",
+    "websiteUrl": "https://nofraud.com",
+    "categorySlug": "security-and-compliance",
+    "pricingType": "FREEMIUM",
+    "hasFreePlan": true,
+    "startingPrice": null,
+    "pricingNote": "Free Starter plan for small volumes without chargeback protection; paid plans with chargeback guarantee priced as a percentage of screened revenue via instant quote, custom above $50,000/month (Oct 2026).",
+    "shortDescription": "Ecommerce fraud screening with AI plus human review and a chargeback guarantee that reimburses approved orders.",
+    "longDescription": "NoFraud is a fraud prevention service for online stores that screens every order in real time using machine learning on device, behavioral and identity signals, then routes borderline cases to human analysts who may contact the customer before deciding. Approved orders are covered by a financial guarantee, so if a fraud chargeback occurs on an order NoFraud passed, the merchant is reimbursed. It also handles chargeback management, policy abuse such as coupon and return abuse, and account takeover protection following its merger with Yofi AI. Pricing has no setup fees and is based on approved orders, with a free Starter plan for small shops and a quote-based rate for businesses under $50,000 in monthly revenue that want the guarantee. It integrates with Shopify, BigCommerce, WooCommerce, Magento, Salesforce Commerce Cloud, Stripe, Braintree and NetSuite. A store would pilot by installing the app, running in review-only mode for two weeks to see decisions, then switching to automatic cancellation of declined orders. Caveat: the guarantee excludes orders that were flagged and later overridden, and exact rates are only available through the pricing form.",
+    "bestFor": "Online stores with real fraud losses or high-value orders that want screening backed by a chargeback guarantee.",
+    "notFor": "Stores with negligible fraud or merchants whose platform already includes adequate built-in fraud analysis.",
+    "integrations": [
+      "Shopify",
+      "BigCommerce",
+      "WooCommerce",
+      "Magento",
+      "Salesforce Commerce Cloud",
+      "Stripe",
+      "Braintree",
+      "NetSuite"
+    ],
+    "featureSlugs": [
+      "ai-agents",
+      "human-handoff",
+      "security-scanning",
+      "integrations",
+      "bi-dashboards",
+      "api-access"
+    ],
+    "useCases": [
+      {
+        "slug": "workflow-automation",
+        "fitScore": 80,
+        "bestFor": "Automatically approving, reviewing or cancelling orders before fulfillment.",
+        "limitations": "Manual review can delay a small share of orders by hours.",
+        "implementationNote": "Run two weeks in monitor mode, compare decisions to your own cancellations, then enable auto-cancel."
+      },
+      {
+        "slug": "customer-support",
+        "fitScore": 60,
+        "bestFor": "Reducing false declines by having analysts verify legitimate customers instead of rejecting them.",
+        "limitations": "Customer contact by NoFraud may surprise buyers if not disclosed.",
+        "implementationNote": "Track approval rate and false-decline complaints for 30 days after enabling."
+      },
+      {
+        "slug": "data-analysis",
+        "fitScore": 58,
+        "bestFor": "Reports on fraud attempts, approval rates and chargeback trends.",
+        "limitations": "Analytics focus on fraud and abuse, not sales performance.",
+        "implementationNote": "Review the monthly fraud report and adjust shipping or payment policies accordingly."
+      }
+    ],
+    "alternatives": [
+      "Signifyd",
+      "Chargeflow",
+      "Riskified",
+      "Kount"
+    ],
+    "popularityScore": 55,
+    "vendor": "NoFraud",
+    "sourceUrl": "https://www.nofraud.com/pricing/"
   }
 ]
