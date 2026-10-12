@@ -1,7 +1,7 @@
 # SeekSmart Revamp Plan
 
 Last updated: 2026-10-10
-Status: Phases 0, 1, and 3 shipped, plus the first slice of Phase 2 (industry guides for the three focus verticals and the thin-page noindex policy), all on branch `revamp/phase-0-technical-seo` (2026-10-10). Remaining Phase 2 work is writing: enriched tool write-ups so more tools can be re-indexed, and alternatives/vs pages.
+Status: Phases 0, 1, and 3 shipped, plus the first slice of Phase 2 (industry guides for the three focus verticals and the thin-page noindex policy), all on branch `revamp/phase-0-technical-seo` (2026-10-10). On 2026-10-11/12 the catalogue was expanded with a researched, structured set of tools (see HANDOFF.md, Tool Catalogue v2): local logos, homepage screenshots, checked pricing, best-for/not-for, integrations, use-case fits with notes, and alternatives. Remaining Phase 2 work: alternatives/vs pages, and enriching the 90 base-seed tools to the same standard so they become indexable.
 
 This document records what the October 2026 review found, what was changed, and the recommended direction. It is written for Matteo and for whoever picks up the code next.
 

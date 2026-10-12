@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -25,6 +26,7 @@ import {
   listPublishedTools
 } from "@/server/tools/queries";
 import type { PublicToolDetail } from "@/shared/domain";
+import { hasRichToolContent } from "@/server/tools/content-quality";
 import { AnimatedBar } from "@/components/motion/animated-bar";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { Reveal } from "@/components/motion/reveal";
@@ -70,7 +72,7 @@ export async function generateMetadata({
     // Only editorially featured tools carry enough original content to be
     // worth indexing; the rest stay crawlable but out of the index until
     // their write-ups are enriched (see docs/REVAMP_PLAN.md, Phase 2).
-    robots: tool.isFeatured ? undefined : { index: false, follow: true },
+    robots: hasRichToolContent(tool) ? undefined : { index: false, follow: true },
     alternates: {
       canonical: `/tools/${tool.slug}`
     },
@@ -208,7 +210,15 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               </p>
               <dl className="mt-5 grid gap-3 text-sm">
                 <SnapshotRow label="Category" value={tool.category.name} />
-                <SnapshotRow label="Pricing" value={formatPricing(tool.pricingType)} />
+                <SnapshotRow
+                  label="Pricing"
+                  value={
+                    tool.startingPrice !== null
+                      ? `${formatPricing(tool.pricingType)} · from $${tool.startingPrice}/mo`
+                      : formatPricing(tool.pricingType)
+                  }
+                />
+                {tool.vendor ? <SnapshotRow label="Vendor" value={tool.vendor} /> : null}
                 <SnapshotRow
                   label="Best-fit workflow"
                   value={topUseCase ? `${topUseCase.name} (${topUseCase.fitScore})` : "Needs curation"}
@@ -221,6 +231,25 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             </aside>
           </div>
         </Reveal>
+
+        {tool.screenshotUrl ? (
+          <Reveal className="tool-screenshot mt-6">
+            <Image
+              alt={`${tool.name} website`}
+              className="tool-screenshot-image"
+              height={800}
+              sizes="(min-width: 1024px) 1200px, 100vw"
+              src={tool.screenshotUrl}
+              width={1280}
+            />
+            <p className="tool-screenshot-caption">
+              {tool.name} homepage
+              {tool.contentUpdatedAt
+                ? `, captured ${formatMonth(tool.contentUpdatedAt)}`
+                : ""}
+            </p>
+          </Reveal>
+        ) : null}
 
         <Reveal className="mt-6 grid gap-4 md:grid-cols-4">
           <DecisionMetric
@@ -254,9 +283,26 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
               <Layers3 aria-hidden="true" className="text-accent" size={20} />
               <h2 className="text-xl font-semibold">Overview</h2>
             </div>
-            <p className="mt-4 leading-8 text-ink/70">
+            <p className="mt-4 whitespace-pre-line leading-8 text-ink/70">
               {tool.longDescription ?? tool.shortDescription}
             </p>
+            {tool.pricingNote ? (
+              <p className="mt-4 rounded-xl border border-line/60 bg-paper px-4 py-3 text-sm leading-6 text-ink/70">
+                <span className="font-semibold text-ink">Pricing, as checked:</span>{" "}
+                {tool.pricingNote}
+              </p>
+            ) : null}
+            {tool.integrations.length > 0 ? (
+              <p className="mt-4 text-sm leading-6 text-ink/62">
+                <span className="font-semibold text-ink">Works with:</span>{" "}
+                {tool.integrations.join(", ")}
+              </p>
+            ) : null}
+            {tool.contentUpdatedAt ? (
+              <p className="mt-3 text-xs text-ink/45">
+                Details checked {formatMonth(tool.contentUpdatedAt)}
+              </p>
+            ) : null}
             {tool.features.length > 0 ? (
               <div className="mt-5 flex flex-wrap gap-2">
                 {tool.features.slice(0, 8).map((feature) => (
@@ -707,10 +753,10 @@ function ChecklistItem({ children }: { children: ReactNode }) {
 
 function bestForSignals(tool: PublicToolDetail) {
   const mappedSignals = uniqueStrings(
-    tool.useCases
-      .map((useCase) => useCase.bestFor)
+    [tool.bestFor, ...tool.useCases.map((useCase) => useCase.bestFor)]
       .filter((value): value is string => Boolean(value))
-  ).slice(0, 3);
+      .filter((value) => !isPlaceholderCopy(value))
+  ).slice(0, 4);
 
   if (mappedSignals.length > 0) {
     return mappedSignals;
@@ -725,10 +771,10 @@ function bestForSignals(tool: PublicToolDetail) {
 
 function notIdealSignals(tool: PublicToolDetail) {
   const mappedSignals = uniqueStrings(
-    tool.useCases
-      .map((useCase) => useCase.limitations)
+    [tool.notFor, ...tool.useCases.map((useCase) => useCase.limitations)]
       .filter((value): value is string => Boolean(value))
-  ).slice(0, 3);
+      .filter((value) => !isPlaceholderCopy(value))
+  ).slice(0, 4);
 
   if (mappedSignals.length > 0) {
     return mappedSignals;
@@ -743,6 +789,23 @@ function notIdealSignals(tool: PublicToolDetail) {
 
 function uniqueStrings(values: string[]) {
   return Array.from(new Set(values));
+}
+
+const placeholderFragments = [
+  "current curated use-case data",
+  "teams that want to pilot this use case",
+  "validate fit against your workflow"
+];
+
+function isPlaceholderCopy(value: string) {
+  const normalized = value.toLowerCase();
+  return placeholderFragments.some((fragment) => normalized.includes(fragment));
+}
+
+function formatMonth(value: string) {
+  return new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric" }).format(
+    new Date(value)
+  );
 }
 
 function uniqueOpportunities(tool: PublicToolDetail) {

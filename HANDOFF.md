@@ -177,6 +177,23 @@ Admin role:
 - Google accounts whose email is in `ADMIN_EMAILS` get effective admin access.
 - There is also legacy password admin auth through `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET`.
 
+### Tool Catalogue (v2)
+
+The catalogue has two layers:
+
+- Base seed: `prisma/seed.ts` (90 hand-entered tools, categories, use cases, features, industries, opportunities).
+- Researched tools: `prisma/data/tools-v2.json` (the complete researched set, one object per tool with pricing note, best for, not for, integrations, vendor, source URL, use-case fits with scores and notes, feature slugs, alternatives). Loaded idempotently by `npx tsx prisma/seed-tools-v2.ts` (matches by slug, replaces mappings, links alternatives by name).
+
+Pipeline used to build it (all scripts are repeatable):
+
+1. Research batches (JSON arrays, one per category cluster) are merged with `node scripts/merge-tool-research.mjs <dir>`. The script validates every record against the live taxonomy, dedupes by name slug and website domain, clamps numbers, keeps whatever the data file already holds, and writes a merge report.
+2. `node scripts/fetch-logos.mjs` downloads a logo per tool into `public/logos/<slug>.<ext>` (Clearbit, unavatar, icon.horse, uplead, Google favicon, DuckDuckGo in that order, rejecting tiny or non-image responses) and points `logo_url` at the local file. Tools without a usable logo fall back to initials in the UI.
+3. Homepage screenshots are captured with Playwright (`capture-screenshots.mjs`, kept outside the repo) into `public/screenshots/<slug>.jpg` (1280x800, JPEG 60) and attached with `node scripts/sync-screenshots.mjs`.
+
+New Tool columns (migration `add_tool_detail_fields`): `pricing_note`, `best_for`, `not_for`, `integrations[]`, `vendor`, `source_url`, `screenshot_url`, `content_updated_at`. The admin tool form edits pricing note, best for, and not for.
+
+Indexability no longer depends on `isFeatured`: a tool page is indexable (and in the sitemap) when `hasRichToolContent` passes (long description of at least 400 characters plus best-for and not-for), see `src/server/tools/content-quality.ts`.
+
 ### Tool Likes
 
 Like state is resolved on the client. Tool, use-case, and category pages are statically rendered with hourly ISR; `ToolLikeProvider` (`src/features/tools/tool-like-context.tsx`, mounted in the root layout) collects the tool ids on the page and, only when the viewer is signed in, fetches them in one request from `GET /api/v1/tools/likes?ids=...`. The dashboard still passes server-known state through `initialState`.
@@ -512,7 +529,7 @@ https://logotyp.us/file/*
 SEO support currently includes:
 
 - Metadata in route files, with generated 1200x630 Open Graph images per route type (`src/lib/og.tsx` plus `opengraph-image.tsx` files).
-- Thin-page policy: only `isFeatured` tool pages are indexable and listed in the sitemap (55 of 90 at the time of writing). Non-featured tool pages are `noindex, follow` until their write-ups are enriched. Flip `isFeatured` in the admin to index a tool.
+- Thin-page policy: a tool page is indexable and in the sitemap only when it has rich content (`hasRichToolContent`: long description of 400+ characters plus best-for and not-for). Others are `noindex, follow` until enriched in the admin.
 - Industry guides: `src/lib/industry-guides.ts` holds hand-written depth (answer-first summary, five workflows with measures, skip list, data rules, FAQ with FAQPage JSON-LD) for `ecommerce`, `retail-and-hospitality`, and `local-services`, rendered by `src/features/industries/industry-guide.tsx` on `/industries/[slug]`.
 - JSON-LD via `src/lib/structured-data.tsx`: Organization and WebSite site-wide, SoftwareApplication and BreadcrumbList on tool pages, BreadcrumbList on use-case, industry, and opportunity pages, Article on articles.
 - Self-hosted Plus Jakarta Sans through `next/font` (`--font-sans`).

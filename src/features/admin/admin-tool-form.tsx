@@ -191,6 +191,36 @@ export function AdminToolForm({ tool, taxonomy }: AdminToolFormProps) {
         />
       </label>
 
+      <div className="grid gap-4 md:grid-cols-3">
+        <label className="grid gap-2">
+          <span className="text-sm font-medium">Pricing note</span>
+          <textarea
+            className="control-field min-h-24 py-3"
+            defaultValue={tool.pricingNote ?? ""}
+            maxLength={300}
+            name="pricingNote"
+          />
+        </label>
+        <label className="grid gap-2">
+          <span className="text-sm font-medium">Best for</span>
+          <textarea
+            className="control-field min-h-24 py-3"
+            defaultValue={tool.bestFor ?? ""}
+            maxLength={300}
+            name="bestFor"
+          />
+        </label>
+        <label className="grid gap-2">
+          <span className="text-sm font-medium">Not for</span>
+          <textarea
+            className="control-field min-h-24 py-3"
+            defaultValue={tool.notFor ?? ""}
+            maxLength={300}
+            name="notFor"
+          />
+        </label>
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2">
         <label className="grid gap-2">
           <span className="text-sm font-medium">Meta title</span>

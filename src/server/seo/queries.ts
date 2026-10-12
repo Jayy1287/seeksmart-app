@@ -1,5 +1,6 @@
 import { PublishStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { hasRichToolContent } from "@/server/tools/content-quality";
 
 export type SitemapEntry = {
   slug: string;
@@ -16,11 +17,17 @@ export async function listSitemapEntries(): Promise<{
   const select = { slug: true, updatedAt: true } as const;
   const [tools, categories, useCases, industries, opportunities] =
     await Promise.all([
-      prisma.tool.findMany({
-        where: { status: PublishStatus.PUBLISHED, isFeatured: true },
-        select,
-        orderBy: { updatedAt: "desc" }
-      }),
+      prisma.tool
+        .findMany({
+          where: { status: PublishStatus.PUBLISHED },
+          select: { ...select, longDescription: true, bestFor: true, notFor: true },
+          orderBy: { updatedAt: "desc" }
+        })
+        .then((rows) =>
+          rows
+            .filter(hasRichToolContent)
+            .map(({ slug, updatedAt }) => ({ slug, updatedAt }))
+        ),
       prisma.category.findMany({ select }),
       prisma.useCase.findMany({ select }),
       prisma.industry.findMany({

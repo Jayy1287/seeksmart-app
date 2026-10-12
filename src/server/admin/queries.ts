@@ -63,6 +63,9 @@ export type AdminToolSummary = {
 export type AdminToolDetail = AdminToolSummary & {
   shortDescription: string;
   longDescription: string | null;
+  pricingNote: string | null;
+  bestFor: string | null;
+  notFor: string | null;
   logoUrl: string | null;
   categoryId: string;
   hasFreePlan: boolean;
@@ -432,6 +435,9 @@ export async function getAdminToolById(
     updatedAt: tool.updatedAt,
     shortDescription: tool.shortDescription,
     longDescription: tool.longDescription,
+    pricingNote: tool.pricingNote,
+    bestFor: tool.bestFor,
+    notFor: tool.notFor,
     logoUrl: tool.logoUrl,
     categoryId: tool.categoryId,
     hasFreePlan: tool.hasFreePlan,

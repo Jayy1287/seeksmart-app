@@ -2771,3 +2771,26 @@ textarea {
     backdrop-filter: none;
   }
 }
+
+@layer components {
+  .tool-screenshot {
+    overflow: hidden;
+    border-radius: 1.5rem;
+    border: 1px solid rgb(var(--color-ink) / 0.1);
+    background: white;
+    box-shadow: 0 20px 60px rgb(var(--color-ink) / 0.08);
+  }
+
+  .tool-screenshot-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid rgb(var(--color-ink) / 0.08);
+  }
+
+  .tool-screenshot-caption {
+    padding: 0.7rem 1rem;
+    font-size: 0.78rem;
+    color: rgb(var(--color-ink) / 0.5);
+  }
+}
