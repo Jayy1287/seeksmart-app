@@ -15,7 +15,6 @@ import {
   organizationJsonLd,
   websiteJsonLd,
 } from "@/lib/structured-data";
-import "../styles/legacy.css";
 import "./globals.css";
 
 const brandLogo = "/brand/seeksmart-logo-v3.png";
