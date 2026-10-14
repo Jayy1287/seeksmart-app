@@ -49,7 +49,7 @@ const flow = [
 
 const rules = [
   { title: "Rules, not a chatbot", body: "Same answers, same ranking. Every pick lists its reasons." },
-  { title: "Free first", body: "Score and ranking on screen, no account. Email unlocks the pilot plan." },
+  { title: "Free with an account", body: "Score, ranking and pilot plan, saved to your dashboard." },
   { title: "Industry-aware", body: "Stores, venues and local services get their own questions first." },
   ...methodologySignals.slice(0, 2).map((signal) => ({
     title: signal.title,

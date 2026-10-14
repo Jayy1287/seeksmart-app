@@ -39,9 +39,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const isAdminCallback =
     callbackUrl === "/admin" || callbackUrl.startsWith("/admin/");
   const isAuditCallback =
-    callbackUrl === "/audit/start" ||
-    callbackUrl === "/audit/questions" ||
+    callbackUrl.startsWith("/audit/questions") ||
+    callbackUrl.startsWith("/audit/start") ||
     callbackUrl.startsWith("/audit/results");
+  const isBriefCallback = callbackUrl.startsWith("/audit/r/");
   const isSignedInWithoutAdminAccess =
     Boolean(session?.user) &&
     isAdminCallback &&
@@ -115,8 +116,15 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const lead = isSignedInWithoutAdminAccess
     ? `${signedInEmail} does not have admin access. Sign out and use the approved admin account.`
     : isAuditCallback
-      ? "Sign in to continue your audit. The result saves to your workspace."
-      : "Keep briefs and shortlists attached to your account.";
+      ? "The audit is free with an account. Your brief saves to your dashboard."
+      : isBriefCallback
+        ? "Sign in to open the full brief. If you ran it on this device, it moves to your dashboard."
+        : "Keep briefs and shortlists attached to your account.";
+  const headline: [string, string] = isAuditCallback
+    ? ["Sign in to", "run the audit."]
+    : isBriefCallback
+      ? ["Sign in to", "see the plan."]
+      : ["Welcome", "back."];
 
   return (
     <main className="app-container pb-16 pt-4 md:pb-24 md:pt-8">
@@ -155,7 +163,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <SplitReveal
               className="h1 mt-6"
               delay={0.1}
-              lines={[["Welcome"], [{ text: "back.", className: "ghost-word" }]]}
+              lines={[[headline[0]], [{ text: headline[1], className: "ghost-word" }]]}
             />
             <Reveal delay={0.3}>
               <p className="mt-5 text-ink/55">{lead}</p>

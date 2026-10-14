@@ -12,14 +12,14 @@ import { featuredIndustries } from "@/shared/recommendations/wizard";
 export const metadata: Metadata = {
   title: "Free AI Audit for Small Business",
   description:
-    "Answer eleven questions and get a readiness score, ranked AI opportunities, and a two-week pilot plan for your business. Free, no account needed.",
+    "Answer eleven questions and get a readiness score, ranked AI opportunities, and a two-week pilot plan for your business. Free with a SeekSmart account.",
   alternates: {
     canonical: "/audit"
   },
   openGraph: {
     title: "Free AI Audit for Small Business",
     description:
-      "Answer eleven questions and get a readiness score, ranked AI opportunities, and a two-week pilot plan. Free, no account needed.",
+      "Answer eleven questions and get a readiness score, ranked AI opportunities, and a two-week pilot plan. Free with a SeekSmart account.",
     url: "/audit",
     type: "website"
   }
@@ -35,7 +35,7 @@ const faq = [
   {
     question: "Do I need an account?",
     answer:
-      "No. The score and ranked opportunities show immediately. Enter an email if you want the full pilot plan, tool shortlist, and a link that stays alive."
+      "Yes, a free one. Sign in with Google or email, then the score, ranked opportunities, pilot plan and tool shortlist all save to your dashboard. Browsing tools and guides needs no account."
   },
   {
     question: "How are the recommendations made?",
@@ -107,7 +107,7 @@ export default function AuditPage() {
                 </div>
                 <p className="mt-5 flex items-center gap-2 text-sm text-ink/50">
                   <span className="h-1.5 w-1.5 rounded-full bg-success" />
-                  No account. Results on screen.
+                  Free account. Results in three minutes.
                 </p>
               </StaggerItem>
             </Stagger>

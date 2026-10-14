@@ -104,7 +104,7 @@ export default async function Home() {
                 </div>
                 <p className="mt-5 flex items-center gap-2 text-sm text-ink/50">
                   <span className="h-1.5 w-1.5 rounded-full bg-success" />
-                  No account. Results on screen.
+                  Free account. Results in three minutes.
                 </p>
               </StaggerItem>
             </Stagger>

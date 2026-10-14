@@ -16,7 +16,7 @@ import { ScoreDial } from "@/components/ui/score-dial";
 const steps = [
   {
     title: "Answer eleven questions",
-    body: "Business type, team size, the work that eats your week. No account.",
+    body: "Business type, team size, the work that eats your week. Free account.",
     visual: "questions"
   },
   {

@@ -7,7 +7,6 @@ const paths = [
   "/industries",
   "/opportunities",
   "/audit",
-  "/audit/questions",
   "/tools/chatgpt",
   "/use-cases/customer-support",
   "/methodology",
@@ -32,6 +31,20 @@ for (const path of paths) {
   }
 
   console.log(`${response.status} ${path}`);
+}
+
+// Running the audit needs an account: anonymous visitors must be sent to login.
+const gatedPaths = ["/audit/questions", "/audit/questions?industry=ecommerce"];
+
+for (const path of gatedPaths) {
+  const response = await fetch(new URL(path, baseUrl), { redirect: "manual" });
+  const location = response.headers.get("location") ?? "";
+
+  if (response.status < 300 || response.status >= 400 || !location.includes("/login?callbackUrl=")) {
+    failures.push(`${response.status} ${path} (expected redirect to /login, got "${location}")`);
+  }
+
+  console.log(`${response.status} ${path} -> ${location}`);
 }
 
 if (failures.length > 0) {
