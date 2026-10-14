@@ -377,3 +377,16 @@ export type AuditResult = {
   pilotPlan: AuditPilotPlan;
   nextStepChecklist: string[];
 };
+
+// Level weights shared by the audit scorer and the public "ease to start" score.
+export const effortLevelWeights: Record<string, number> = {
+  LOW: 92,
+  MEDIUM: 72,
+  HIGH: 46
+};
+
+export const riskLevelWeights: Record<string, number> = {
+  LOW: 92,
+  MEDIUM: 70,
+  HIGH: 38
+};

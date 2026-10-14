@@ -2,6 +2,8 @@ import {
   auditGoalOptions,
   auditIntegrationNeeds,
   auditPainPointOptions,
+  effortLevelWeights,
+  riskLevelWeights,
   type AuditInput,
   type AuditOpportunityRecommendation,
   type AuditPilotPlan,
@@ -77,17 +79,8 @@ export type AuditDatasetToolFit = {
   };
 };
 
-const effortWeights: Record<string, number> = {
-  LOW: 92,
-  MEDIUM: 72,
-  HIGH: 46
-};
-
-const riskWeights: Record<string, number> = {
-  LOW: 92,
-  MEDIUM: 70,
-  HIGH: 38
-};
+const effortWeights = effortLevelWeights;
+const riskWeights = riskLevelWeights;
 
 export function scoreAudit(
   input: AuditInput,

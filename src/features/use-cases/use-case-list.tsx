@@ -1,19 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Clock3,
-  Search,
-  SlidersHorizontal,
-  X
-} from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowRight, Search, X } from "lucide-react";
 import type { PublicUseCaseSummary } from "@/server/use-cases/queries";
+import { formatLevel, levelRank } from "@/features/opportunities/ease";
+import { LevelTag } from "@/features/use-cases/level-tag";
 
 type UseCaseListProps = {
   useCases: PublicUseCaseSummary[];
 };
+
+const levels = ["all", "LOW", "MEDIUM", "HIGH"] as const;
+const ease = [0.22, 1, 0.36, 1] as const;
 
 export function UseCaseList({ useCases }: UseCaseListProps) {
   const [query, setQuery] = useState("");
@@ -22,31 +22,36 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
   const [riskLevel, setRiskLevel] = useState("all");
 
   const businessFunctions = useMemo(() => {
-    const uniqueFunctions = new Map<string, { name: string; slug: string }>();
+    const uniqueFunctions = new Map<string, { name: string; slug: string; count: number }>();
 
     for (const useCase of useCases) {
       if (useCase.businessFunction) {
-        uniqueFunctions.set(
-          useCase.businessFunction.slug,
-          useCase.businessFunction
-        );
+        const existing = uniqueFunctions.get(useCase.businessFunction.slug);
+        uniqueFunctions.set(useCase.businessFunction.slug, {
+          ...useCase.businessFunction,
+          count: (existing?.count ?? 0) + 1
+        });
       }
     }
 
-    return Array.from(uniqueFunctions.values()).sort((functionA, functionB) =>
-      functionA.name.localeCompare(functionB.name)
-    );
+    return Array.from(uniqueFunctions.values()).sort((a, b) => a.name.localeCompare(b.name));
   }, [useCases]);
+
+  // /use-cases#sales (linked from /business-functions) preselects a team.
+  useEffect(() => {
+    const hash = decodeURIComponent(window.location.hash.replace(/^#/, ""));
+    if (hash && businessFunctions.some((item) => item.slug === hash)) {
+      setFunctionSlug(hash);
+    }
+  }, [businessFunctions]);
 
   const filteredUseCases = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
     return useCases.filter((useCase) => {
       const matchesFunction =
-        functionSlug === "all" ||
-        useCase.businessFunction?.slug === functionSlug;
-      const matchesEffort =
-        effortLevel === "all" || useCase.effortLevel === effortLevel;
+        functionSlug === "all" || useCase.businessFunction?.slug === functionSlug;
+      const matchesEffort = effortLevel === "all" || useCase.effortLevel === effortLevel;
       const matchesRisk = riskLevel === "all" || useCase.riskLevel === riskLevel;
       const searchableText = [
         useCase.name,
@@ -70,20 +75,23 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
     });
   }, [effortLevel, functionSlug, query, riskLevel, useCases]);
 
-  // Group by team so a 59-item list reads as ten short lists.
+  // Group by team so a long list reads as short lists.
   const groups = useMemo(() => {
-    const byFunction = new Map<string, PublicUseCaseSummary[]>();
+    const byFunction = new Map<string, { name: string; slug: string; items: PublicUseCaseSummary[] }>();
 
     for (const useCase of filteredUseCases) {
-      const key = useCase.businessFunction?.name ?? "Other workflows";
-      byFunction.set(key, [...(byFunction.get(key) ?? []), useCase]);
+      const name = useCase.businessFunction?.name ?? "Other workflows";
+      const slug = useCase.businessFunction?.slug ?? "other";
+      const group = byFunction.get(slug) ?? { name, slug, items: [] };
+      group.items.push(useCase);
+      byFunction.set(slug, group);
     }
 
-    return Array.from(byFunction.entries())
-      .sort(([left], [right]) => left.localeCompare(right))
-      .map(([name, items]) => ({
-        name,
-        items: [...items].sort(
+    return Array.from(byFunction.values())
+      .sort((left, right) => left.name.localeCompare(right.name))
+      .map((group) => ({
+        ...group,
+        items: [...group.items].sort(
           (a, b) =>
             levelRank(a.effortLevel) - levelRank(b.effortLevel) ||
             levelRank(a.riskLevel) - levelRank(b.riskLevel) ||
@@ -93,10 +101,7 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
   }, [filteredUseCases]);
 
   const hasActiveFilters = Boolean(
-    query.trim() ||
-      functionSlug !== "all" ||
-      effortLevel !== "all" ||
-      riskLevel !== "all"
+    query.trim() || functionSlug !== "all" || effortLevel !== "all" || riskLevel !== "all"
   );
 
   function clearFilters() {
@@ -107,27 +112,24 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-[1.55rem] border border-line/60 bg-white/85 p-4 shadow-[0_22px_60px_rgb(22_28_36/0.1)] backdrop-blur">
-        <div className="grid gap-3 lg:grid-cols-[minmax(16rem,1fr)_auto_auto_auto] lg:items-center">
-          <label className="relative block">
-            <Search
-              aria-hidden="true"
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink/42"
-              size={18}
-            />
+    <div>
+      {/* ---------- Toolbar ---------- */}
+      <div className="grid gap-4">
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-center">
+          <label className="search-field">
+            <Search aria-hidden="true" size={18} />
             <input
               aria-label="Search workflows"
-              className="control-field min-h-12 w-full pl-11 pr-11"
+              className="field pr-12"
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search workflows, outcomes, or teams"
+              placeholder="Search workflows or outcomes"
               type="search"
               value={query}
             />
             {query ? (
               <button
-                aria-label="Clear workflow search"
-                className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-ink/45 transition hover:bg-accent/10 hover:text-accent"
+                aria-label="Clear search"
+                className="icon-button absolute right-2 h-10 w-10"
                 onClick={() => setQuery("")}
                 type="button"
               >
@@ -135,56 +137,13 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
               </button>
             ) : null}
           </label>
-
-          <label className="relative block">
-            <span className="sr-only">Filter by effort</span>
-            <select
-              className="control-field min-h-12 w-full min-w-36 lg:w-40"
-              onChange={(event) => setEffortLevel(event.target.value)}
-              value={effortLevel}
-            >
-              <option value="all">Any effort</option>
-              <option value="LOW">Low effort</option>
-              <option value="MEDIUM">Medium effort</option>
-              <option value="HIGH">High effort</option>
-            </select>
-          </label>
-
-          <label className="relative block">
-            <span className="sr-only">Filter by risk</span>
-            <select
-              className="control-field min-h-12 w-full min-w-36 lg:w-40"
-              onChange={(event) => setRiskLevel(event.target.value)}
-              value={riskLevel}
-            >
-              <option value="all">Any risk</option>
-              <option value="LOW">Low risk</option>
-              <option value="MEDIUM">Medium risk</option>
-              <option value="HIGH">High risk</option>
-            </select>
-          </label>
-
-          <div className="flex min-h-12 items-center justify-between gap-3 rounded-2xl border border-line/60 bg-accent/10 px-4 text-sm font-semibold text-ink/68 lg:min-w-36">
-            <span className="inline-flex items-center gap-2">
-              <SlidersHorizontal aria-hidden="true" size={16} />
-              {filteredUseCases.length} shown
-            </span>
-            {hasActiveFilters ? (
-              <button
-                aria-label="Clear workflow filters"
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-ink/42 transition hover:bg-accent/10 hover:text-accent"
-                onClick={clearFilters}
-                type="button"
-              >
-                <X aria-hidden="true" size={16} />
-              </button>
-            ) : null}
-          </div>
+          <LevelControl id="effort" label="Effort" onChange={setEffortLevel} value={effortLevel} />
+          <LevelControl id="risk" label="Risk" onChange={setRiskLevel} value={riskLevel} />
         </div>
 
-        <div className="mt-4 flex gap-2 overflow-x-auto border-t border-line/50 pt-4">
+        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
           <button
-            className="status-pill shrink-0 transition hover:border-accent hover:text-accent data-[active=true]:border-accent data-[active=true]:bg-accent/10 data-[active=true]:text-accent"
+            className="chip shrink-0"
             data-active={functionSlug === "all"}
             onClick={() => setFunctionSlug("all")}
             type="button"
@@ -193,103 +152,177 @@ export function UseCaseList({ useCases }: UseCaseListProps) {
           </button>
           {businessFunctions.map((businessFunction) => (
             <button
-              className="status-pill shrink-0 transition hover:border-accent hover:text-accent data-[active=true]:border-accent data-[active=true]:bg-accent/10 data-[active=true]:text-accent"
+              className="chip shrink-0"
               data-active={functionSlug === businessFunction.slug}
               key={businessFunction.slug}
-              onClick={() => setFunctionSlug(businessFunction.slug)}
+              onClick={() =>
+                setFunctionSlug(functionSlug === businessFunction.slug ? "all" : businessFunction.slug)
+              }
               type="button"
             >
               {businessFunction.name}
+              <span className="font-mono text-[0.7rem] opacity-50">{businessFunction.count}</span>
             </button>
           ))}
         </div>
+
+        <div className="flex items-center justify-between gap-4 border-t border-ink/10 pt-4 text-sm">
+          <p aria-live="polite" className="font-mono text-ink/55">
+            <span className="text-ink">{filteredUseCases.length}</span> / {useCases.length} workflows
+          </p>
+          {hasActiveFilters ? (
+            <button className="link-underline text-ink/70" onClick={clearFilters} type="button">
+              Clear filters
+              <X aria-hidden="true" size={14} />
+            </button>
+          ) : (
+            <p className="hidden items-center gap-4 text-ink/45 sm:flex">
+              <span>Effort: work to launch</span>
+              <span>Risk: cost of a mistake</span>
+            </p>
+          )}
+        </div>
       </div>
 
-      {groups.length > 0 ? (
-        <div className="grid gap-8">
-          {groups.map((group) => (
-            <section key={group.name}>
-              <div className="flex items-baseline justify-between gap-4 border-b border-line/60 pb-2">
-                <h3 className="text-lg font-semibold">{group.name}</h3>
-                <span className="text-xs font-bold uppercase text-ink/45">
-                  {group.items.length} workflow{group.items.length === 1 ? "" : "s"}
-                </span>
-              </div>
-              <ul className="divide-y divide-line/50">
-                {group.items.map((useCase) => (
-                  <li key={useCase.id}>
-                    <Link
-                      className="use-case-row group"
-                      href={`/use-cases/${useCase.slug}`}
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="font-semibold text-ink transition group-hover:text-accent">
-                          {useCase.name}
-                        </p>
-                        <p className="mt-1 line-clamp-2 text-sm leading-6 text-ink/60">
-                          {useCase.outcome ??
-                            useCase.description ??
-                            `AI tools and guidance for ${useCase.name.toLowerCase()}.`}
-                        </p>
-                      </div>
-                      <div className="use-case-row-meta">
-                        <LevelPill label="effort" level={useCase.effortLevel} />
-                        <LevelPill label="risk" level={useCase.riskLevel} />
-                        {useCase.timeToValue ? (
-                          <span className="status-pill">
-                            <Clock3 aria-hidden="true" size={12} />
-                            {useCase.timeToValue}
-                          </span>
-                        ) : null}
-                        <span className="status-pill">{useCase.toolCount} tools</span>
-                      </div>
-                      <ArrowRight
-                        aria-hidden="true"
-                        className="hidden shrink-0 text-accent transition group-hover:translate-x-0.5 sm:block"
-                        size={16}
-                      />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
-      ) : (
-        <div className="rounded-[1.35rem] border border-line/55 bg-white/85 p-8 text-center shadow-[0_18px_54px_rgb(22_28_36/0.08)]">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl border border-line/60 bg-surface text-accent">
-            <Search aria-hidden="true" size={20} />
-          </div>
-          <h3 className="mt-4 text-xl font-semibold">No workflows found</h3>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/58">
-            Try a broader search or clear one of the selected filters.
-          </p>
-          <button
-            className="secondary-button mt-5"
-            onClick={clearFilters}
-            type="button"
-          >
-            Clear filters
-            <X aria-hidden="true" size={15} />
-          </button>
-        </div>
-      )}
+      {/* ---------- Groups ---------- */}
+      <div className="mt-10 md:mt-14">
+        <AnimatePresence initial={false} mode="popLayout">
+          {groups.length > 0 ? (
+            groups.map((group) => (
+              <motion.section
+                animate={{ opacity: 1 }}
+                className="mb-14 scroll-mt-28 md:mb-20"
+                exit={{ opacity: 0 }}
+                id={group.slug}
+                initial={{ opacity: 0 }}
+                key={group.slug}
+                layout="position"
+                transition={{ duration: 0.4, ease }}
+              >
+                <div className="mb-4 flex items-end justify-between gap-4 md:mb-6">
+                  <h2 className="font-display text-[2rem] font-bold leading-none tracking-[-0.04em] md:text-[3rem]">
+                    {group.name}
+                  </h2>
+                  <span className="pb-1 font-mono text-sm text-ink/40">
+                    {String(group.items.length).padStart(2, "0")}
+                  </span>
+                </div>
+                <ul className="row-list">
+                  <AnimatePresence initial={false}>
+                    {group.items.map((useCase) => (
+                      <motion.li
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        initial={{ opacity: 0, y: 12 }}
+                        key={useCase.id}
+                        layout="position"
+                        transition={{ duration: 0.35, ease }}
+                      >
+                        <UseCaseRow useCase={useCase} />
+                      </motion.li>
+                    ))}
+                  </AnimatePresence>
+                </ul>
+              </motion.section>
+            ))
+          ) : (
+            <motion.div
+              animate={{ opacity: 1, y: 0 }}
+              className="border-y border-ink/10 py-16 text-center"
+              exit={{ opacity: 0 }}
+              initial={{ opacity: 0, y: 12 }}
+              key="empty"
+            >
+              <p className="h3">No workflows match.</p>
+              <button className="btn btn-ghost mt-6" onClick={clearFilters} type="button">
+                Clear filters
+                <X aria-hidden="true" size={15} />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
 
-function LevelPill({ label, level }: { label: string; level: string }) {
+function UseCaseRow({ useCase }: { useCase: PublicUseCaseSummary }) {
+  const outcome =
+    useCase.outcome ?? useCase.description ?? `AI tools and guidance for ${useCase.name.toLowerCase()}.`;
+
   return (
-    <span className="status-pill" data-level={level.toLowerCase()}>
-      {formatLevel(level)} {label}
-    </span>
+    <Link
+      className="row-item group grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-3 py-5 md:grid-cols-[minmax(0,1fr)_14.5rem_6rem_5.5rem_auto] md:gap-x-6 md:py-6"
+      href={`/use-cases/${useCase.slug}`}
+    >
+      <span className="min-w-0">
+        <span className="block font-display text-[1.3rem] font-semibold leading-tight tracking-[-0.025em] transition-transform duration-500 ease-out group-hover:translate-x-1.5 md:text-[1.5rem]">
+          {useCase.name}
+        </span>
+        <span className="mt-1 block text-[0.95rem] text-ink/55 md:line-clamp-1">{outcome}</span>
+      </span>
+      <span className="col-span-2 row-start-2 flex flex-wrap items-center gap-1.5 md:col-span-1 md:col-start-2 md:row-start-1">
+        <LevelTag label="effort" level={useCase.effortLevel} />
+        <LevelTag label="risk" level={useCase.riskLevel} />
+        <span className="ml-1 font-mono text-xs text-ink/50 md:hidden">
+          {useCase.timeToValue ? `${useCase.timeToValue} · ` : ""}
+          {useCase.toolCount} tools
+        </span>
+      </span>
+      <span className="hidden text-right font-mono text-sm text-ink/60 md:block">
+        {useCase.timeToValue ?? "-"}
+      </span>
+      <span className="hidden text-right font-mono text-sm md:block">
+        <span className="text-ink">{useCase.toolCount}</span>
+        <span className="text-ink/40"> tools</span>
+      </span>
+      <span className="row-arrow col-start-2 row-start-1 md:col-start-5">
+        <ArrowRight aria-hidden="true" size={16} />
+      </span>
+    </Link>
   );
 }
 
-function formatLevel(value: string) {
-  return value.charAt(0) + value.slice(1).toLowerCase();
-}
-
-function levelRank(value: string) {
-  return value === "LOW" ? 0 : value === "MEDIUM" ? 1 : 2;
+function LevelControl({
+  id,
+  label,
+  onChange,
+  value
+}: {
+  id: string;
+  label: string;
+  onChange: (value: string) => void;
+  value: string;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="w-12 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink/45 lg:w-auto">
+        {label}
+      </span>
+      <div aria-label={`Filter by ${label.toLowerCase()}`} className="segmented" role="group">
+        {levels.map((level) => {
+          const active = value === level;
+          return (
+            <button
+              aria-pressed={active}
+              className="segmented-item"
+              data-active={active}
+              key={level}
+              onClick={() => onChange(level)}
+              type="button"
+            >
+              {active ? (
+                <motion.span
+                  className="segmented-pill"
+                  layoutId={`${id}-pill`}
+                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                />
+              ) : null}
+              {level === "all" ? "Any" : formatLevel(level)}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
 }

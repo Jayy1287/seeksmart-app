@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Building2, CheckCircle2, ShieldAlert } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getIndustryGuide } from "@/lib/industry-guides";
 import { playbooks } from "@/lib/platform-content";
-import { IndustryGuideSections } from "@/features/industries/industry-guide";
 import {
-  getIndustryBySlug,
-  listIndustrySummaries
-} from "@/server/intelligence/queries";
+  GuideAnswer,
+  GuideFaq,
+  GuideRules,
+  GuideWorkflows,
+  guideNavItems
+} from "@/features/industries/industry-guide";
+import { SectionNav } from "@/features/industries/section-nav";
+import { easeScore } from "@/features/opportunities/ease";
+import { OpportunityRow } from "@/features/opportunities/opportunity-row";
+import { getIndustryBySlug, listIndustrySummaries } from "@/server/intelligence/queries";
 import { AnimatedNumber } from "@/components/motion/animated-number";
-import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitReveal } from "@/components/motion/split-reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 
 export const revalidate = 3600;
@@ -32,9 +39,7 @@ type IndustryPageProps = {
   }>;
 };
 
-export async function generateMetadata({
-  params
-}: IndustryPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: IndustryPageProps): Promise<Metadata> {
   const { slug } = await params;
   const industry = await getIndustryBySlug(slug);
 
@@ -74,9 +79,18 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
   }
 
   const guide = getIndustryGuide(industry.slug);
+  const [headlineLead, headlineRest] = splitHeadline(guide?.headline ?? `${industry.name}: an AI roadmap`);
+  const topScore = Math.max(0, ...industry.opportunities.map((item) => easeScore(item.effortLevel, item.riskLevel)));
+
+  const navItems = [
+    ...(guide ? guideNavItems : [{ id: "start", label: "Where to start" }]),
+    { id: "opportunities", label: "Opportunities" },
+    ...(guide ? [{ id: "faq", label: "Questions" }] : []),
+    { id: "next", label: "Before you start" }
+  ];
 
   return (
-    <main className="page-shell">
+    <main>
       <JsonLd
         data={[
           breadcrumbJsonLd([
@@ -98,124 +112,157 @@ export default async function IndustryPage({ params }: IndustryPageProps) {
             : [])
         ]}
       />
-      <div className="app-container">
-        <Reveal className="surface-strong rounded-2xl p-6">
-          <Link className="text-sm font-medium text-accent" href="/industries">
-            Industries
+
+      {/* ---------- Hero ---------- */}
+      <section className="app-container page-hero">
+        <Reveal>
+          <Link className="link-underline text-sm text-ink/60" href="/industries">
+            <ArrowLeft aria-hidden="true" size={14} />
+            All industries
           </Link>
-          <div className="mt-4 grid gap-6 md:grid-cols-[1fr_280px] md:items-end">
-            <div>
-              <Building2 aria-hidden="true" className="text-accent" size={28} />
-              <h1 className="mt-4 text-4xl font-semibold">
-                {guide?.headline ?? `${industry.name} AI roadmap`}
-              </h1>
-              <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-                {industry.description}
-              </p>
-            </div>
-            <div className="metric-tile rounded-xl p-4">
-              <div className="text-2xl font-semibold">
-                <AnimatedNumber value={industry.opportunities.length} />
-              </div>
-              <p className="mt-1 text-sm text-ink/55">
-                Priority opportunities
-              </p>
-            </div>
-          </div>
         </Reveal>
+        <Reveal delay={0.05}>
+          <p className="eyebrow mt-8">{industry.name}</p>
+        </Reveal>
+        <SplitReveal
+          className="h1 mt-6 max-w-5xl"
+          delay={0.1}
+          lines={[[headlineLead], [{ text: headlineRest, className: "ghost-word" }]]}
+        />
+        <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+          <Reveal delay={0.35}>
+            {industry.description ? <p className="lead">{industry.description}</p> : null}
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link className="btn btn-primary" href={`/audit/questions?industry=${industry.slug}`}>
+                Start the free audit
+                <ArrowRight aria-hidden="true" size={16} />
+              </Link>
+            </div>
+          </Reveal>
+          <Stagger className="grid grid-cols-3 gap-6 sm:gap-10" delay={0.4}>
+            {[
+              { value: industry.opportunities.length, label: "Opportunities" },
+              { value: guide?.workflows.length ?? 0, label: "Ranked workflows", hide: !guide },
+              { value: topScore, label: "Best ease score" }
+            ]
+              .filter((stat) => !stat.hide)
+              .map((stat) => (
+                <StaggerItem className="border-t border-ink/15 pt-3 sm:min-w-32" key={stat.label}>
+                  <span className="stat-number block text-[clamp(2.2rem,4.5vw,3.4rem)]">
+                    <AnimatedNumber value={stat.value} />
+                  </span>
+                  <span className="mt-1 block text-sm text-ink/55">{stat.label}</span>
+                </StaggerItem>
+              ))}
+          </Stagger>
+        </div>
+      </section>
 
-        {guide ? <IndustryGuideSections guide={guide} /> : null}
+      {/* ---------- Body with sticky nav ---------- */}
+      <div className="app-container grid gap-12 pb-24 pt-6 md:pb-32 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-16 xl:gap-24">
+        <aside className="hidden lg:block">
+          <div className="sticky top-28">
+            <SectionNav items={navItems} />
+          </div>
+        </aside>
 
-        <Reveal className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="surface-panel rounded-xl p-5">
-            <h2 className="text-xl font-semibold">Where to start</h2>
-            <p className="mt-3 leading-7 text-ink/65">
-              {industry.startingPoint}
-            </p>
-            <div className="mt-5 grid gap-3">
-              {industry.opportunities.map((opportunity) => (
-                <div
-                  className="flex items-start gap-3 rounded-xl border border-line bg-surface/70 p-4"
-                  key={opportunity.id}
-                >
-                  <CheckCircle2
-                    aria-hidden="true"
-                    className="mt-0.5 shrink-0 text-accent"
-                    size={18}
-                  />
-                  <div>
-                    <Link
-                      className="font-semibold hover:text-accent"
-                      href={`/opportunities/${opportunity.slug}`}
-                    >
-                      {opportunity.name}
-                    </Link>
-                    <p className="mt-1 text-sm leading-6 text-ink/58">
-                      {opportunity.description}
+        <div className="grid min-w-0 max-w-4xl gap-20 md:gap-28">
+          {guide ? (
+            <>
+              <GuideAnswer guide={guide} />
+              <GuideWorkflows guide={guide} />
+              <GuideRules guide={guide} />
+            </>
+          ) : (
+            <section className="scroll-mt-28" id="start">
+              <Reveal>
+                <div className="night spotlight spotlight-strong rounded-[2rem] px-6 py-10 sm:px-10 md:py-14" data-spotlight>
+                  <div aria-hidden="true" className="dot-grid absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_100%_0%,black,transparent_60%)]" />
+                  <div className="relative">
+                    <p className="eyebrow">Where to start</p>
+                    <p className="mt-6 font-display text-[1.45rem] font-medium leading-[1.3] tracking-[-0.02em] text-white md:text-[1.85rem]">
+                      {industry.startingPoint ?? "Start with one repeated workflow a person can review."}
                     </p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
+              </Reveal>
+            </section>
+          )}
 
-          <aside className="grid gap-4">
-            <div className="surface-panel rounded-xl p-5">
-              <div className="flex items-start gap-3">
-                <ShieldAlert
-                  aria-hidden="true"
-                  className="mt-0.5 shrink-0 text-signal"
-                  size={20}
-                />
-                <div>
-                  <h2 className="font-semibold">Caution</h2>
-                  <p className="mt-2 text-sm leading-6 text-ink/62">
+          <section className="scroll-mt-28" id="opportunities">
+            <div className="flex items-end justify-between gap-4">
+              <SplitReveal
+                as="h2"
+                className="h2"
+                inView
+                lines={[["Opportunities,"], [{ text: "easiest first.", className: "ghost-word" }]]}
+              />
+              <span className="pb-1 font-mono text-sm text-ink/40">
+                {String(industry.opportunities.length).padStart(2, "0")}
+              </span>
+            </div>
+            <Stagger as="ul" className="row-list mt-10" gap={0.05} inView>
+              {[...industry.opportunities]
+                .sort(
+                  (a, b) => easeScore(b.effortLevel, b.riskLevel) - easeScore(a.effortLevel, a.riskLevel)
+                )
+                .map((opportunity, index) => (
+                  <StaggerItem as="li" key={opportunity.id}>
+                    <OpportunityRow highlight={index === 0} opportunity={opportunity} />
+                  </StaggerItem>
+                ))}
+            </Stagger>
+          </section>
+
+          {guide ? <GuideFaq guide={guide} /> : null}
+
+          <section className="scroll-mt-28" id="next">
+            <div className="grid gap-12 md:grid-cols-2 md:gap-10">
+              {industry.cautions ? (
+                <Reveal>
+                  <p className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink/40">Watch out</p>
+                  <p className="mt-4 border-l-2 border-signal pl-5 font-display text-[1.25rem] font-medium leading-snug tracking-[-0.015em]">
                     {industry.cautions}
                   </p>
-                </div>
+                </Reveal>
+              ) : null}
+              <div>
+                <p className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink/40">Playbooks</p>
+                <Stagger as="ul" className="row-list mt-4" inView>
+                  {playbooks.slice(0, 2).map((playbook) => (
+                    <StaggerItem as="li" key={playbook.slug}>
+                      <Link
+                        className="row-item group grid-cols-[minmax(0,1fr)_auto] py-5"
+                        href={`/playbooks/${playbook.slug}`}
+                      >
+                        <span className="min-w-0">
+                          <span className="block font-semibold transition-transform duration-500 group-hover:translate-x-1">
+                            {playbook.title}
+                          </span>
+                          <span className="mt-1 text-sm text-ink/50 line-clamp-1">{playbook.outcome}</span>
+                        </span>
+                        <span className="row-arrow">
+                          <ArrowRight aria-hidden="true" size={15} />
+                        </span>
+                      </Link>
+                    </StaggerItem>
+                  ))}
+                </Stagger>
               </div>
             </div>
-            <div className="surface-strong rounded-xl p-5">
-              <h2 className="font-semibold">Recommended next playbooks</h2>
-              <div className="mt-4 grid gap-3">
-                {playbooks.slice(0, 2).map((playbook) => (
-                  <Link
-                    className="rounded-lg border border-line bg-surface/70 p-3 text-sm transition hover:border-accent"
-                    href={`/playbooks/${playbook.slug}`}
-                    key={playbook.slug}
-                  >
-                    <span className="font-medium">{playbook.title}</span>
-                    <span className="mt-1 block leading-6 text-ink/55">
-                      {playbook.outcome}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </aside>
-        </Reveal>
-
-        <Reveal className="surface-strong mt-8 rounded-2xl p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 className="text-2xl font-semibold">
-                Turn this into a business-specific audit
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-ink/60">
-                Use the audit to turn this industry view into a specific first
-                workflow, a tighter shortlist, and a clearer next step.
-              </p>
-            </div>
-            <MotionLink
-              className="primary-button"
-              href={`/audit/questions?industry=${industry.slug}`}
-            >
-              Start the free audit
-              <ArrowRight aria-hidden="true" size={16} />
-            </MotionLink>
-          </div>
-        </Reveal>
+          </section>
+        </div>
       </div>
     </main>
   );
+}
+
+// "AI for online stores: where it pays back first" -> lead + ghost clause.
+function splitHeadline(headline: string): [string, string] {
+  const index = headline.indexOf(":");
+  if (index === -1) {
+    return [headline, ""];
+  }
+  const rest = headline.slice(index + 1).trim();
+  return [headline.slice(0, index), rest ? `${rest.charAt(0).toUpperCase()}${rest.slice(1)}.` : ""];
 }

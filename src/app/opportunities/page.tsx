@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { ArrowRight, BriefcaseBusiness, Gauge, ShieldAlert } from "lucide-react";
 import { listOpportunitySummaries } from "@/server/intelligence/queries";
+import { easeScore } from "@/features/opportunities/ease";
+import { OpportunityRow } from "@/features/opportunities/opportunity-row";
 import { AnimatedNumber } from "@/components/motion/animated-number";
-import { MotionLink } from "@/components/motion/motion-link";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitReveal } from "@/components/motion/split-reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
 export const revalidate = 3600;
 
@@ -26,116 +28,83 @@ export const metadata: Metadata = {
 export default async function OpportunitiesPage() {
   const opportunities = await listOpportunitySummaries();
   const opportunityGroups = groupOpportunitiesByFunction(opportunities);
+  const quickWins = opportunities.filter(
+    (opportunity) => easeScore(opportunity.effortLevel, opportunity.riskLevel) >= 80
+  ).length;
 
   return (
-    <main className="page-shell">
-      <div className="app-container">
-        <Reveal className="surface-strong rounded-2xl p-6">
-          <p className="eyebrow">
-            <BriefcaseBusiness aria-hidden="true" size={14} />
-            Opportunities
-          </p>
-          <div className="mt-3 grid gap-5 md:grid-cols-[1fr_260px] md:items-end">
-            <div>
-              <h1 className="text-4xl font-semibold">
-                Business problems worth improving with AI
-              </h1>
-              <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-                Start with the problem that matters, then review the likely
-                effort, risk, and outcomes before you chase tools.
-              </p>
-            </div>
-            <div className="metric-tile rounded-xl p-4">
-              <div className="text-2xl font-semibold">
-                <AnimatedNumber value={opportunities.length} />
-              </div>
-              <p className="mt-1 text-sm text-ink/55">Mapped opportunities</p>
-            </div>
+    <main>
+      <section className="app-container page-hero">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+          <div>
+            <Reveal>
+              <p className="eyebrow">Opportunities</p>
+            </Reveal>
+            <SplitReveal
+              className="h1 mt-6 max-w-4xl"
+              lines={[["Problems worth fixing."], [{ text: "Before any tool.", className: "ghost-word" }]]}
+            />
+            <Reveal delay={0.4}>
+              <p className="lead mt-6">Each one scored for ease to start, from effort and risk.</p>
+            </Reveal>
           </div>
+          <Stagger className="grid grid-cols-3 gap-6 sm:gap-10" delay={0.3}>
+            {[
+              { value: opportunities.length, label: "Problems" },
+              { value: quickWins, label: "Easy starts" },
+              { value: opportunityGroups.length, label: "Teams" }
+            ].map((stat) => (
+              <StaggerItem className="border-t border-ink/15 pt-3 sm:min-w-28" key={stat.label}>
+                <span className="stat-number block text-[clamp(2.4rem,5vw,3.6rem)]">
+                  <AnimatedNumber value={stat.value} />
+                </span>
+                <span className="mt-1 block text-sm text-ink/55">{stat.label}</span>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
+      <section className="app-container pb-24 md:pb-32">
+        <Reveal>
+          <nav
+            aria-label="Teams"
+            className="-mx-4 flex gap-2 overflow-x-auto border-b border-ink/10 px-4 pb-5 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
+          >
+            {opportunityGroups.map((group) => (
+              <a className="chip shrink-0" href={`#${group.id}`} key={group.id}>
+                {group.name}
+                <span className="font-mono text-[0.7rem] opacity-50">{group.opportunities.length}</span>
+              </a>
+            ))}
+          </nav>
         </Reveal>
 
-        <Reveal className="mt-6 rounded-2xl border border-line bg-surface/70 p-4">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-ink">Teams</p>
-              <p className="mt-1 text-sm text-ink/55">
-                {opportunityGroups.length} sections
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {opportunityGroups.map((group) => (
-                <a
-                  className="status-pill transition hover:border-accent hover:text-accent"
-                  href={`#${group.id}`}
-                  key={group.id}
-                >
-                  {group.name}
-                </a>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-
-        <div className="mt-8 space-y-10">
+        <div className="mt-12 grid gap-16 md:mt-16 md:gap-24">
           {opportunityGroups.map((group) => (
-            <section id={group.id} key={group.id} className="scroll-mt-24">
-              <Reveal>
-                <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <p className="eyebrow">
-                      <BriefcaseBusiness aria-hidden="true" size={14} />
-                      {group.name}
-                    </p>
-                    <h2 className="mt-2 text-2xl font-semibold">
-                      {group.name} opportunities
-                    </h2>
-                  </div>
-                  <p className="text-sm text-ink/55">
-                    {group.opportunities.length}{" "}
-                    {group.opportunities.length === 1
-                      ? "mapped opportunity"
-                      : "mapped opportunities"}
-                  </p>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  {group.opportunities.map((opportunity) => (
-                    <MotionLink
-                      className="surface-panel group flex h-full flex-col rounded-xl p-5 transition hover:-translate-y-1 hover:border-accent"
-                      href={`/opportunities/${opportunity.slug}`}
-                      key={opportunity.id}
-                    >
-                      <span className="status-pill w-fit">{group.name}</span>
-                      <h3 className="mt-4 text-xl font-semibold">
-                        {opportunity.name}
-                      </h3>
-                      <p className="mt-3 flex-1 text-sm leading-6 text-ink/65">
-                        {opportunity.description}
-                      </p>
-                      <div className="mt-5 grid grid-cols-2 gap-2">
-                        <Signal
-                          icon={Gauge}
-                          label="Effort"
-                          value={formatLevel(opportunity.effortLevel)}
-                        />
-                        <Signal
-                          icon={ShieldAlert}
-                          label="Risk"
-                          value={formatLevel(opportunity.riskLevel)}
-                        />
-                      </div>
-                      <span className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-accent transition group-hover:translate-x-0.5">
-                        View decision path
-                        <ArrowRight aria-hidden="true" size={14} />
-                      </span>
-                    </MotionLink>
-                  ))}
-                </div>
-              </Reveal>
+            <section className="scroll-mt-28" id={group.id} key={group.id}>
+              <div className="mb-4 flex items-end justify-between gap-4 md:mb-6">
+                <SplitReveal
+                  as="h2"
+                  className="font-display text-[2rem] font-bold leading-none tracking-[-0.04em] md:text-[3rem]"
+                  inView
+                  lines={[[group.name]]}
+                />
+                <span className="pb-1 font-mono text-sm text-ink/40">
+                  {String(group.opportunities.length).padStart(2, "0")}
+                </span>
+              </div>
+              <Stagger as="ul" className="row-list" gap={0.05} inView>
+                {group.opportunities.map((opportunity, index) => (
+                  <StaggerItem as="li" key={opportunity.id}>
+                    <OpportunityRow highlight={index === 0} opportunity={opportunity} />
+                  </StaggerItem>
+                ))}
+              </Stagger>
             </section>
           ))}
         </div>
-      </div>
+      </section>
     </main>
   );
 }
@@ -168,29 +137,12 @@ function groupOpportunitiesByFunction(
     }
   }
 
+  // Easiest to start first inside each team.
+  for (const group of groups.values()) {
+    group.opportunities.sort(
+      (a, b) => easeScore(b.effortLevel, b.riskLevel) - easeScore(a.effortLevel, a.riskLevel)
+    );
+  }
+
   return Array.from(groups.values());
-}
-
-function Signal({
-  icon: Icon,
-  label,
-  value
-}: {
-  icon: typeof Gauge;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-lg border border-line bg-surface/70 p-3">
-      <div className="flex items-center gap-2 text-xs text-ink/50">
-        <Icon aria-hidden="true" size={14} />
-        {label}
-      </div>
-      <div className="mt-1 text-sm font-semibold">{value}</div>
-    </div>
-  );
-}
-
-function formatLevel(value: string) {
-  return value.charAt(0) + value.slice(1).toLowerCase();
 }
