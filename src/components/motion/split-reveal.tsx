@@ -50,7 +50,7 @@ export function SplitReveal({
             const animateProps = inView
               ? {
                   whileInView: { y: "0%", rotate: 0 },
-                  viewport: { once: true, margin: "-60px" }
+                  viewport: { once: true, margin: "-60px 0px" }
                 }
               : { animate: { y: "0%", rotate: 0 } };
             return (
