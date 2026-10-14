@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Minus, Plus } from "lucide-react";
 import { methodologySignals } from "@/lib/platform-content";
+import { Magnetic } from "@/components/motion/magnetic";
+import { Reveal } from "@/components/motion/reveal";
+import { SplitReveal } from "@/components/motion/split-reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
+import { ScoreDial } from "@/components/ui/score-dial";
+import { ContentHero } from "@/features/content/content-hero";
+import { pad } from "@/features/content/slug";
+import { WeightMeters } from "@/features/content/weight-meters";
 
 export const metadata: Metadata = {
   title: "Recommendation Methodology",
@@ -19,169 +27,200 @@ export const metadata: Metadata = {
   }
 };
 
-const scoringDimensions = [
-  "Business impact (42% of the score)",
-  "Effort fit for your team and process clarity (20%)",
-  "Risk fit for your data sensitivity and review style (18%)",
-  "Confidence: how specific your answers were and how much curated data exists (20%)",
-  "Payback speed and keyword specificity add small bonuses",
-  "Opportunities mapped only to other industries are penalized"
+const weights = [
+  { label: "Business impact", note: "Time, money or quality it moves", value: 42 },
+  { label: "Effort fit", note: "Team size and process clarity", value: 20 },
+  { label: "Confidence", note: "How specific your answers were", value: 20 },
+  { label: "Risk fit", note: "Data sensitivity and review style", value: 18 }
 ];
 
-const auditFacts = [
-  {
-    title: "Rules, not a chatbot",
-    body: "Every audit is scored by the same published rules (version audit-rules-v3.0). The same answers always give the same ranking, and every recommendation lists its reasons."
-  },
-  {
-    title: "Free first, email for the rest",
-    body: "The readiness score and ranked opportunities are shown immediately without an account. An email unlocks the pilot plan, tool shortlists, and a printable brief, and keeps the link alive."
-  },
-  {
-    title: "Industry-aware questions",
-    body: "Online stores, local shops and venues, and local service businesses get their most common pain points and systems first. Other industries use the general question set."
-  },
-  {
-    title: "Scores are directional",
-    body: "A 93 is not better than a 91 in any precise sense. Use the ranking to decide what to pilot first, then test the top two on your own examples."
-  }
+const modifiers = [
+  { label: "Fast payback", sign: "plus" as const },
+  { label: "Specific keywords", sign: "plus" as const },
+  { label: "Other-industry only", sign: "minus" as const }
+];
+
+const flow = [
+  { title: "Context", body: "Industry, size, pain, budget, risk" },
+  { title: "Use case", body: "Rules map the problem to workflows" },
+  { title: "Tool fit", body: "Tools ranked after the job is clear" },
+  { title: "Next move", body: "What to try, measure and avoid" }
+];
+
+const rules = [
+  { title: "Rules, not a chatbot", body: "Same answers, same ranking. Every pick lists its reasons." },
+  { title: "Free first", body: "Score and ranking on screen, no account. Email unlocks the pilot plan." },
+  { title: "Industry-aware", body: "Stores, venues and local services get their own questions first." },
+  ...methodologySignals.slice(0, 2).map((signal) => ({
+    title: signal.title,
+    body: signal.description
+  }))
 ];
 
 export default function MethodologyPage() {
   return (
-    <main className="page-shell">
-      <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6">
-          <p className="eyebrow">Methodology</p>
-          <div className="mt-3 grid gap-5 md:grid-cols-[1fr_280px] md:items-end">
-            <div>
-              <h1 className="text-4xl font-semibold">
-                How SeekSmart recommends AI paths
-              </h1>
-              <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-                SeekSmart is designed to help teams move from a business problem
-                to a practical next step, with logic that can be reviewed instead
-                of guessed at.
-              </p>
-            </div>
-            <div className="metric-tile rounded-xl p-4">
-              <div className="text-2xl font-semibold">4</div>
-              <p className="mt-1 text-sm text-ink/55">
-                Core recommendation principles
-              </p>
-            </div>
+    <main>
+      <ContentHero
+        aside={
+          <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.14em] text-ink/50">
+            <span className="pulse-dot h-2 w-2 rounded-full bg-success" />
+            audit-rules-v3.0
           </div>
-        </section>
-
-        <section className="mt-6 grid gap-4 md:grid-cols-2">
-          {methodologySignals.map((signal) => {
-            const Icon = signal.icon;
-
-            return (
-              <article className="surface-panel rounded-xl p-5" key={signal.title}>
-                <Icon aria-hidden="true" className="text-accent" size={24} />
-                <h2 className="mt-4 text-xl font-semibold">{signal.title}</h2>
-                <p className="mt-3 leading-7 text-ink/65">
-                  {signal.description}
-                </p>
-              </article>
-            );
-          })}
-        </section>
-
-        <section className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="surface-panel rounded-xl p-5">
-            <h2 className="text-xl font-semibold">Scoring dimensions</h2>
-            <p className="mt-3 text-sm leading-6 text-ink/60">
-              Recommendations are only useful when the tradeoffs are visible.
-              These dimensions shape how opportunities and tools are prioritized.
-            </p>
-            <div className="mt-5 grid gap-2">
-              {scoringDimensions.map((dimension) => (
-                <div
-                  className="flex items-center gap-2 rounded-lg border border-line bg-surface/70 px-3 py-2 text-sm"
-                  key={dimension}
-                >
-                  <CheckCircle2
-                    aria-hidden="true"
-                    className="shrink-0 text-accent"
-                    size={15}
-                  />
-                  <span>{dimension}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="surface-strong rounded-xl p-5">
-            <h2 className="text-xl font-semibold">Decision flow</h2>
-            <div className="mt-5 grid gap-3">
-              {[
-                {
-                  title: "Business context",
-                  body: "Industry, team size, workflow, pain point, budget, urgency, and risk tolerance."
-                },
-                {
-                  title: "Use-case mapping",
-                  body: "Structured rules connect the problem to practical use cases and implementation patterns."
-                },
-                {
-                  title: "Tool fit",
-                  body: "Tools are ranked after the use case is clear, with visible reasons and tradeoffs."
-                },
-                {
-                  title: "Next action",
-                  body: "The output should tell the user what to try first, what to measure, and what to avoid."
-                }
-              ].map((item, index) => (
-                <div
-                  className="rounded-xl border border-line bg-surface/72 p-4"
-                  key={item.title}
-                >
-                  <div className="flex items-start gap-3">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent text-sm font-semibold text-paper">
-                      {index + 1}
-                    </span>
-                    <div>
-                      <h3 className="font-semibold">{item.title}</h3>
-                      <p className="mt-1 text-sm leading-6 text-ink/60">
-                        {item.body}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-6 grid gap-4 md:grid-cols-2">
-          {auditFacts.map((fact) => (
-            <article className="surface-panel rounded-xl p-5" key={fact.title}>
-              <h2 className="text-xl font-semibold">{fact.title}</h2>
-              <p className="mt-3 leading-7 text-ink/65">{fact.body}</p>
-            </article>
-          ))}
-        </section>
-
-        <section className="surface-strong mt-8 rounded-2xl p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 className="text-2xl font-semibold">
-                See the method applied
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-ink/60">
-                Use the audit, industry maps, and playbooks to move from a
-                broad AI idea to a concrete first pilot.
-              </p>
-            </div>
-            <Link className="primary-button" href="/audit">
-              Open audit preview
-              <ArrowRight aria-hidden="true" size={16} />
+        }
+        eyebrow="Methodology"
+        lead="Every audit runs on the same published rules. This is the whole recipe."
+        lines={[["Same rules."], [{ text: "Every time.", className: "ghost-word" }]]}
+      >
+        <div className="flex flex-wrap gap-3">
+          <Magnetic>
+            <Link className="btn btn-primary btn-lg" href="/audit/questions">
+              Start the audit
+              <ArrowRight aria-hidden="true" size={18} />
             </Link>
+          </Magnetic>
+        </div>
+      </ContentHero>
+
+      {/* ---------- Weights ---------- */}
+      <section className="app-container section-tight">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-20">
+          <div>
+            <Reveal>
+              <p className="eyebrow">The score</p>
+            </Reveal>
+            <SplitReveal
+              as="h2"
+              className="h2 mt-5"
+              inView
+              lines={[["What it"], [{ text: "weighs.", className: "ghost-word" }]]}
+            />
+            <Reveal delay={0.15}>
+              <ul className="mt-10 flex flex-wrap gap-2">
+                {modifiers.map((modifier) => (
+                  <li
+                    className={`tag ${modifier.sign === "plus" ? "tag-success" : "tag-danger"}`}
+                    key={modifier.label}
+                  >
+                    {modifier.sign === "plus" ? (
+                      <Plus aria-label="Bonus" size={12} />
+                    ) : (
+                      <Minus aria-label="Penalty" size={12} />
+                    )}
+                    {modifier.label}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
           </div>
-        </section>
-      </div>
+          <WeightMeters weights={weights} />
+        </div>
+      </section>
+
+      {/* ---------- Flow ---------- */}
+      <section className="app-container section-tight">
+        <SplitReveal
+          as="h2"
+          className="h2"
+          inView
+          lines={[["Problem first."], [{ text: "Tools last.", className: "ghost-word" }]]}
+        />
+        <Stagger as="ol" className="mt-12 grid gap-px overflow-hidden rounded-[1.75rem] bg-ink/10 grid-cols-2 lg:grid-cols-4" inView>
+          {flow.map((step, index) => (
+            <StaggerItem
+              as="li"
+              className="group relative bg-paper p-5 transition-colors duration-500 hover:bg-surface md:p-8"
+              key={step.title}
+            >
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-sm text-signal tabular">{pad(index)}</span>
+                <span className="h-px flex-1 bg-ink/10" />
+                {index < flow.length - 1 ? (
+                  <ArrowRight
+                    aria-hidden="true"
+                    className="text-ink/25 transition-transform duration-500 group-hover:translate-x-1 group-hover:text-ink"
+                    size={16}
+                  />
+                ) : (
+                  <span className="h-2 w-2 rounded-full bg-signal" />
+                )}
+              </div>
+              <p className="mt-8 font-display text-[1.45rem] font-bold leading-none tracking-[-0.04em] md:mt-16 md:text-[2.3rem]">
+                {step.title}
+              </p>
+              <p className="mt-3 text-sm text-ink/55">{step.body}</p>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
+
+      {/* ---------- Rules ---------- */}
+      <section className="app-container section-tight">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-20">
+          <div>
+            <Reveal>
+              <p className="eyebrow">Ground rules</p>
+            </Reveal>
+            <SplitReveal
+              as="h2"
+              className="h2 mt-5"
+              inView
+              lines={[["No black"], [{ text: "box.", className: "ghost-word" }]]}
+            />
+          </div>
+          <Stagger as="ol" className="row-list" inView>
+            {rules.map((rule, index) => (
+              <StaggerItem
+                as="li"
+                className="row-item grid-cols-[2.5rem_minmax(0,1fr)] items-start gap-y-2 py-6 md:grid-cols-[3.5rem_minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-x-8 md:py-8"
+                key={rule.title}
+              >
+                <span className="pt-1 font-mono text-sm text-ink/40 tabular">{pad(index)}</span>
+                <span className="font-display text-[1.35rem] font-bold leading-[1.1] tracking-[-0.03em] md:text-[1.6rem]">
+                  {rule.title}
+                </span>
+                <span className="col-start-2 text-ink/55 md:col-start-3 md:pt-1">{rule.body}</span>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
+      {/* ---------- Night: scores are directional ---------- */}
+      <section className="app-container pb-24 pt-10 md:pb-32">
+        <div
+          className="night spotlight spotlight-strong rounded-[2rem] px-6 py-14 sm:px-10 md:rounded-[2.5rem] md:px-16 md:py-20"
+          data-spotlight
+        >
+          <div
+            aria-hidden="true"
+            className="dot-grid absolute inset-0 opacity-50 [mask-image:radial-gradient(ellipse_at_80%_30%,black,transparent_60%)]"
+          />
+          <div className="relative grid gap-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <div>
+              <p className="eyebrow">Read it right</p>
+              <SplitReveal
+                as="h2"
+                className="mt-6 font-display text-[clamp(2.8rem,7vw,6rem)] font-bold leading-[0.92] tracking-[-0.05em] text-white"
+                inView
+                lines={[["93 is not"], [{ text: "better than 91.", className: "text-signal" }]]}
+              />
+              <p className="mt-7 max-w-md text-white/55">
+                Scores are directional. Pilot the top two on your own examples.
+              </p>
+            </div>
+            <Reveal className="flex items-end gap-6 sm:gap-10" delay={0.2}>
+              <div className="text-center">
+                <ScoreDial size={148} stroke={8} tone="light" value={93} />
+                <p className="mt-4 font-mono text-xs uppercase tracking-[0.14em] text-white/45">Pick A</p>
+              </div>
+              <div className="text-center">
+                <ScoreDial size={148} stroke={8} tone="light" value={91} />
+                <p className="mt-4 font-mono text-xs uppercase tracking-[0.14em] text-white/45">Pick B</p>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }

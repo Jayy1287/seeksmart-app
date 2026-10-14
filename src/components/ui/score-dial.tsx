@@ -27,7 +27,7 @@ export function ScoreDial({
   value
 }: ScoreDialProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
+  const inView = useInView(ref, { once: true, margin: "100000px 0px -48px 0px" });
   const sw = stroke ?? Math.max(3, Math.round(size / 15));
   const r = (size - sw) / 2 - 0.5;
   const c = 2 * Math.PI * r;

@@ -103,7 +103,7 @@ export function HowItWorks() {
 }
 
 function StepVisual({ kind }: { kind: (typeof steps)[number]["visual"] }) {
-  const trigger = { viewport: { once: true, margin: "-20%" } };
+  const trigger = { viewport: { once: true, margin: "100000px 0px -48px 0px" } };
 
   if (kind === "questions") {
     const options = ["Online store", "Shop or venue", "Local service", "Something else"];

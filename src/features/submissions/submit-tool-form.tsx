@@ -20,7 +20,8 @@ export function SubmitToolForm({ submitterEmail }: SubmitToolFormProps) {
     setState("submitting");
     setMessage("");
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const payload = {
       toolName: String(formData.get("toolName") ?? ""),
       websiteUrl: String(formData.get("websiteUrl") ?? ""),
@@ -49,7 +50,7 @@ export function SubmitToolForm({ submitterEmail }: SubmitToolFormProps) {
         return;
       }
 
-      event.currentTarget.reset();
+      form.reset();
       setState("success");
       setMessage("Submission received. It will appear after review.");
       trackEvent("submission_completed");
@@ -64,46 +65,56 @@ export function SubmitToolForm({ submitterEmail }: SubmitToolFormProps) {
 
   return (
     <form
-      className="surface-panel grid gap-4 rounded-xl p-5"
+      className="surface grid gap-6 p-6 shadow-[0_30px_70px_-40px_rgb(14_14_16/0.35)] md:p-10"
       onSubmit={handleSubmit}
     >
       <label className="hidden">
         Company name
         <input autoComplete="off" name="companyName" tabIndex={-1} />
       </label>
-      <label className="grid gap-2">
-        <span className="text-sm font-medium">Tool name</span>
+      <div className="flex items-center justify-between gap-4 border-b border-ink/10 pb-5">
+        <p className="font-display text-2xl font-bold tracking-[-0.03em]">New listing</p>
+        <span className="tag max-w-[55%] truncate" title={submitterEmail}>
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-success" />
+          <span className="truncate">{submitterEmail}</span>
+        </span>
+      </div>
+      <label className="block">
+        <span className="field-label">Tool name</span>
         <input
-          className="control-field"
+          className="field"
           maxLength={120}
           name="toolName"
+          placeholder="e.g. Tidio"
           required
         />
       </label>
-      <label className="grid gap-2">
-        <span className="text-sm font-medium">Website URL</span>
+      <label className="block">
+        <span className="field-label">Website URL</span>
         <input
-          className="control-field"
+          className="field"
           maxLength={300}
           name="websiteUrl"
+          placeholder="https://"
           required
           type="url"
         />
       </label>
-      <div className="grid gap-4 md:grid-cols-2">
-        <label className="grid gap-2">
-          <span className="text-sm font-medium">Category</span>
+      <div className="grid gap-6 sm:grid-cols-2">
+        <label className="block">
+          <span className="field-label">Category</span>
           <input
-            className="control-field"
+            className="field"
             maxLength={80}
             name="category"
+            placeholder="e.g. Customer support"
             required
           />
         </label>
-        <label className="grid gap-2">
-          <span className="text-sm font-medium">Pricing</span>
+        <label className="block">
+          <span className="field-label">Pricing</span>
           <select
-            className="control-field"
+            className="field"
             defaultValue="FREEMIUM"
             name="pricingType"
           >
@@ -113,38 +124,42 @@ export function SubmitToolForm({ submitterEmail }: SubmitToolFormProps) {
           </select>
         </label>
       </div>
-      <div className="grid gap-2">
-        <span className="text-sm font-medium">Signed in as</span>
-        <div className="control-field flex items-center bg-white/50 text-sm text-ink/70">
-          {submitterEmail}
-        </div>
-      </div>
-      <label className="grid gap-2">
-        <span className="text-sm font-medium">Description</span>
+      <label className="block">
+        <span className="field-label">Description</span>
         <textarea
-          className="control-field min-h-32 py-3"
+          className="field min-h-36"
           maxLength={1200}
           minLength={20}
           name="description"
+          placeholder="What it does and who it is for."
           required
         />
       </label>
-      <button
-        className="primary-button disabled:opacity-60"
-        disabled={state === "submitting"}
-      >
-        {state === "submitting" ? "Submitting" : "Submit tool"}
-        <Send aria-hidden="true" size={17} />
-      </button>
-      {message ? (
-        <p
-          className={
-            state === "success" ? "text-sm text-accent" : "text-sm text-signal"
-          }
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <button
+          className="btn btn-primary btn-lg"
+          disabled={state === "submitting"}
         >
-          {message}
-        </p>
-      ) : null}
+          {state === "submitting" ? "Submitting" : "Submit tool"}
+          <Send aria-hidden="true" size={17} />
+        </button>
+        {message ? (
+          <p
+            aria-live="polite"
+            className={
+              state === "success"
+                ? "flex items-center gap-2 text-sm font-medium text-success"
+                : "flex items-center gap-2 text-sm font-medium text-danger"
+            }
+            role="status"
+          >
+            <span
+              className={`h-1.5 w-1.5 rounded-full ${state === "success" ? "bg-success" : "bg-danger"}`}
+            />
+            {message}
+          </p>
+        ) : null}
+      </div>
     </form>
   );
 }

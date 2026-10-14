@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { ArrowRight, CheckCircle2, Route } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { playbooks } from "@/lib/platform-content";
 import { AnimatedNumber } from "@/components/motion/animated-number";
-import { MotionLink } from "@/components/motion/motion-link";
-import { Reveal } from "@/components/motion/reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
+import { ContentHero } from "@/features/content/content-hero";
+import { pad } from "@/features/content/slug";
 
 export const metadata: Metadata = {
   title: "AI Playbooks",
@@ -22,95 +24,69 @@ export const metadata: Metadata = {
 };
 
 export default function PlaybooksPage() {
+  const totalSteps = playbooks.reduce((sum, playbook) => sum + playbook.steps.length, 0);
+
   return (
-    <main className="page-shell">
-      <div className="app-container">
-        <Reveal className="surface-strong rounded-2xl p-6">
-          <p className="eyebrow">Playbooks</p>
-          <div className="mt-3 grid gap-5 md:grid-cols-[1fr_260px] md:items-end">
+    <main>
+      <ContentHero
+        aside={
+          <div className="flex gap-10 lg:gap-14">
             <div>
-              <h1 className="text-4xl font-semibold">
-                Practical guides for the first AI rollout
-              </h1>
-              <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-                Use playbooks to move from a business problem to a first
-                workflow, a rollout plan, and a tighter shortlist.
+              <p className="stat-number text-[clamp(3.5rem,7vw,5.5rem)]">
+                <AnimatedNumber value={playbooks.length} />
+              </p>
+              <p className="mt-2 font-mono text-xs uppercase tracking-[0.14em] text-ink/50">
+                Playbooks
               </p>
             </div>
-            <div className="metric-tile rounded-xl p-4">
-              <div className="text-2xl font-semibold">
-                <AnimatedNumber value={playbooks.length} />
-              </div>
-              <p className="mt-1 text-sm text-ink/55">Starter playbooks</p>
+            <div>
+              <p className="stat-number text-[clamp(3.5rem,7vw,5.5rem)] text-ink/25">
+                <AnimatedNumber value={totalSteps} />
+              </p>
+              <p className="mt-2 font-mono text-xs uppercase tracking-[0.14em] text-ink/50">
+                Steps
+              </p>
             </div>
           </div>
-        </Reveal>
+        }
+        eyebrow="Playbooks"
+        lead="Short, ordered plans for your first AI rollout. Workflow first, tools last."
+        lines={[["Start small."], [{ text: "Ship the first one.", className: "ghost-word" }]]}
+      />
 
-        <Reveal className="mt-6 grid gap-5 lg:grid-cols-3">
-          {playbooks.map((playbook) => {
-            const Icon = playbook.icon;
-
-            return (
-              <MotionLink
-                className="decision-card group flex h-full min-h-[20rem] flex-col p-6"
+      <section className="app-container pb-24 md:pb-32">
+        <Stagger as="ol" className="row-list" gap={0.05} inView>
+          {playbooks.map((playbook, index) => (
+            <StaggerItem as="li" key={playbook.slug}>
+              <Link
+                className="row-item group grid-cols-[2.25rem_minmax(0,1fr)_auto] gap-x-4 gap-y-2 py-7 md:grid-cols-[4.5rem_minmax(0,1.1fr)_minmax(0,0.9fr)_6rem_auto] md:gap-x-8 md:py-9"
                 href={`/playbooks/${playbook.slug}`}
-                key={playbook.slug}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <div className="decision-card-icon">
-                      <Icon aria-hidden="true" size={18} />
-                    </div>
-                    <p className="decision-card-kicker mt-4">Playbook</p>
-                  </div>
-                  <div className="decision-card-stat shrink-0">
-                    <strong>{playbook.steps.length}</strong>
-                    <span>Steps</span>
-                  </div>
-                </div>
-                <h2 className="decision-card-title mt-4 text-2xl transition group-hover:text-accent">
-                  {playbook.title}
-                </h2>
-                <p className="decision-card-copy mt-3 text-sm">
-                  {playbook.description}
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="status-pill">{playbook.audience}</span>
-                </div>
-                <div className="mt-4 flex items-start gap-2 border-l-2 border-signal/70 pl-3 text-sm leading-6 text-ink/64">
-                  <Route
-                    aria-hidden="true"
-                    className="mt-0.5 shrink-0 text-signal"
-                    size={15}
-                  />
-                  <span>{playbook.outcome}</span>
-                </div>
-                <div className="mt-5 grid gap-2">
-                  {playbook.steps.slice(0, 2).map((step) => (
-                    <div
-                      className="flex items-start gap-2 text-sm leading-6 text-ink/62"
-                      key={step}
-                    >
-                      <CheckCircle2
-                        aria-hidden="true"
-                        className="mt-0.5 shrink-0 text-accent"
-                        size={15}
-                      />
-                      <span>{step}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="decision-card-footer">
-                  <span className="inline-flex items-center gap-1 text-sm font-medium text-accent/85 transition group-hover:translate-x-0.5 group-hover:text-accent">
-                    Open playbook
-                    <ArrowRight aria-hidden="true" size={14} />
+                <span className="self-start pt-1.5 font-mono text-sm text-ink/40 tabular md:self-center md:pt-0">
+                  {pad(index)}
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-display text-[1.6rem] font-bold leading-[1.02] tracking-[-0.04em] transition-transform duration-500 ease-out group-hover:translate-x-2 md:text-[2.35rem]">
+                    {playbook.title}
                   </span>
-                </div>
-              </MotionLink>
-            );
-          })}
-        </Reveal>
-      </div>
+                  <span className="mt-2 block font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink/40">
+                    {playbook.audience}
+                  </span>
+                </span>
+                <span className="col-start-2 row-start-2 text-[0.95rem] leading-relaxed text-ink/55 md:col-start-3 md:row-start-1">
+                  {playbook.description}
+                </span>
+                <span className="hidden font-mono text-sm text-ink/45 tabular md:block">
+                  {playbook.steps.length} steps
+                </span>
+                <span className="row-arrow col-start-3 row-start-1 md:col-start-5">
+                  <ArrowRight aria-hidden="true" size={16} />
+                </span>
+              </Link>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
     </main>
   );
 }

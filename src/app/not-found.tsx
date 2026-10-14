@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Compass, SearchX } from "lucide-react";
+import { ArrowRight, Search } from "lucide-react";
+import { Reveal } from "@/components/motion/reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
+import { NotFoundGlyph } from "@/features/content/not-found-glyph";
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -11,49 +14,66 @@ export const metadata: Metadata = {
 };
 
 const suggestions = [
-  { href: "/tools", label: "Browse the tool directory" },
-  { href: "/use-cases", label: "Explore AI use cases" },
-  { href: "/industries", label: "See industry roadmaps" },
-  { href: "/audit", label: "Run the AI audit" }
+  { href: "/tools", label: "Tools" },
+  { href: "/use-cases", label: "Use cases" },
+  { href: "/industries", label: "Industries" },
+  { href: "/audit", label: "AI audit" }
 ] as const;
 
 export default function NotFound() {
   return (
-    <main className="page-shell">
-      <div className="app-container">
-        <div className="empty-state mx-auto max-w-2xl">
-          <span className="empty-state-icon">
-            <SearchX aria-hidden="true" size={22} />
-          </span>
-          <p className="empty-state-eyebrow">404 - Page not found</p>
-          <h1 className="empty-state-title">That page is not on the map.</h1>
-          <p className="empty-state-copy">
-            The link may be outdated, or the tool, use case, or page may have
-            moved. Start from one of the main decision paths instead.
-          </p>
-          <div className="empty-state-actions">
-            <Link className="primary-button" href="/">
-              <Compass aria-hidden="true" size={16} />
-              Back to home
-            </Link>
-            <Link className="secondary-button" href="/tools">
-              Browse tools
-              <ArrowRight aria-hidden="true" size={15} />
-            </Link>
-          </div>
-          <ul className="mt-6 grid gap-2 border-t border-line/60 pt-5 text-sm sm:grid-cols-2">
-            {suggestions.map((item) => (
-              <li key={item.href}>
-                <Link
-                  className="editorial-link font-semibold text-accent"
-                  href={item.href}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+    <main className="relative overflow-hidden">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="grid-lines absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_center,black_10%,transparent_65%)]" />
+        <div className="glow-orb left-1/2 top-24 h-[26rem] w-[26rem] -translate-x-1/2 opacity-20" />
+      </div>
+      <div className="app-container relative flex flex-col items-center pb-24 pt-10 text-center md:pb-32 md:pt-16">
+        <p className="eyebrow">Error 404</p>
+        <div className="mt-4 w-full">
+          <NotFoundGlyph />
         </div>
+        <Reveal delay={0.35} y={16}>
+          <h1 className="h2">
+            Not on the map. <span className="ghost-word">Yet.</span>
+          </h1>
+        </Reveal>
+        <Reveal className="mt-10 w-full max-w-xl" delay={0.45} y={16}>
+          <form action="/tools" className="search-field" role="search">
+            <Search aria-hidden="true" size={18} />
+            <label className="sr-only" htmlFor="not-found-search">
+              Search tools
+            </label>
+            <input
+              className="field pr-32"
+              id="not-found-search"
+              name="q"
+              placeholder="Search tools"
+              type="search"
+            />
+            <button className="btn btn-primary btn-sm absolute right-2" type="submit">
+              Search
+            </button>
+          </form>
+        </Reveal>
+        <Stagger as="ul" className="mt-8 flex flex-wrap justify-center gap-2" delay={0.6}>
+          <StaggerItem as="li">
+            <Link className="chip" data-active="true" href="/">
+              Home
+            </Link>
+          </StaggerItem>
+          {suggestions.map((item) => (
+            <StaggerItem as="li" key={item.href}>
+              <Link className="chip group" href={item.href}>
+                {item.label}
+                <ArrowRight
+                  aria-hidden="true"
+                  className="transition-transform duration-300 group-hover:translate-x-0.5"
+                  size={13}
+                />
+              </Link>
+            </StaggerItem>
+          ))}
+        </Stagger>
       </div>
     </main>
   );

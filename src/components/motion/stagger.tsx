@@ -31,7 +31,7 @@ export function Stagger({
 }: StaggerProps) {
   const Tag = motion[as];
   const trigger = inView
-    ? { whileInView: "show", viewport: { once: true, margin: "-60px 0px" } }
+    ? { whileInView: "show", viewport: { once: true, margin: "100000px 0px -48px 0px" } }
     : { animate: "show" };
 
   return (

@@ -33,7 +33,7 @@ export function AuditOpportunityRows({
             initial={{ opacity: 0, y: 24 }}
             key={opportunity.id}
             transition={{ delay: index * 0.08, duration: 0.75, ease }}
-            viewport={{ once: true, margin: "-40px" }}
+            viewport={{ once: true, margin: "100000px 0px -48px 0px" }}
             whileInView={{ opacity: 1, y: 0 }}
           >
             <button
@@ -238,7 +238,7 @@ export function Meter({
         }`}
         initial={{ width: "0%" }}
         transition={{ duration: 1.1, ease, delay: 0.15 }}
-        viewport={{ once: true, margin: "-40px" }}
+        viewport={{ once: true, margin: "100000px 0px -48px 0px" }}
         whileInView={{ width: `${Math.max(0, Math.min(100, value))}%` }}
       />
     </span>

@@ -14,7 +14,7 @@ export function AdminLogoutButton() {
 
   return (
     <form action={logout}>
-      <button className="secondary-button" type="submit">
+      <button className="btn btn-ghost" type="submit">
         <LogOut aria-hidden="true" size={16} />
         Sign out
       </button>

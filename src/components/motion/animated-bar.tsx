@@ -16,7 +16,7 @@ export function AnimatedBar({ className, value }: AnimatedBarProps) {
       className={className}
       initial={{ width: "0%" }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      viewport={{ once: true, margin: "-80px" }}
+      viewport={{ once: true, margin: "100000px 0px -48px 0px" }}
       whileInView={{ width }}
     />
   );

@@ -38,12 +38,12 @@ export function EmptyState({
       {action || secondaryAction ? (
         <div className="empty-state-actions">
           {action ? (
-            <Link className="primary-button" href={action.href}>
+            <Link className="btn btn-primary" href={action.href}>
               {action.label}
             </Link>
           ) : null}
           {secondaryAction ? (
-            <Link className="secondary-button" href={secondaryAction.href}>
+            <Link className="btn btn-ghost" href={secondaryAction.href}>
               {secondaryAction.label}
             </Link>
           ) : null}

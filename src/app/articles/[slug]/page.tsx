@@ -2,16 +2,15 @@ import type { Metadata } from "next";
 import type { Route } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle2,
-  Clock3,
-  SearchCheck
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitReveal } from "@/components/motion/split-reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { articles, getArticleBySlug, type ArticleBlock } from "@/lib/articles";
 import { absoluteUrl, siteConfig } from "@/lib/site";
+import { ReadingProgress } from "@/features/content/reading-progress";
+import { formatShortDate, headingId, pad } from "@/features/content/slug";
+import { TableOfContents } from "@/features/content/table-of-contents";
 
 type ArticlePageProps = {
   params: Promise<{
@@ -110,8 +109,16 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     ]
   };
 
+  const toc = article.blocks.map((block) => ({
+    id: headingId(block.heading),
+    label: block.heading
+  }));
+  const currentIndex = articles.findIndex((item) => item.slug === article.slug);
+  const nextArticle = articles[(currentIndex + 1) % articles.length];
+  const [firstIntro, ...restIntro] = article.intro;
+
   return (
-    <main className="page-shell">
+    <main>
       <script
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
         type="application/ld+json"
@@ -120,142 +127,175 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
         type="application/ld+json"
       />
-      <div className="app-container">
-        <Reveal className="surface-strong rounded-2xl p-6 md:p-8">
+      <ReadingProgress />
+
+      <header className="app-container page-hero">
+        <Reveal y={10}>
           <Link
-            className="inline-flex items-center gap-2 text-sm font-medium text-accent"
+            className="group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-ink/50 transition-colors hover:text-ink"
             href="/articles"
           >
-            <ArrowLeft aria-hidden="true" size={15} />
+            <ArrowLeft
+              aria-hidden="true"
+              className="transition-transform duration-300 group-hover:-translate-x-1"
+              size={14}
+            />
             Articles
           </Link>
-          <div className="mt-5 grid gap-6 lg:grid-cols-[1fr_280px] lg:items-end">
-            <div>
-              <p className="eyebrow">
-                <SearchCheck aria-hidden="true" size={14} />
-                {article.audience}
-              </p>
-              <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-tight md:text-5xl">
-                {article.title}
-              </h1>
-              <p className="mt-4 max-w-3xl text-lg leading-8 text-ink/68">
-                {article.description}
-              </p>
-            </div>
-            <div className="metric-tile rounded-xl p-4">
-              <p className="text-xs font-semibold uppercase text-ink/45">
-                Updated
-              </p>
-              <p className="mt-2 font-semibold">{formatDate(article.updatedAt)}</p>
-              <p className="mt-2 inline-flex items-center gap-1 text-sm text-ink/58">
-                <Clock3 aria-hidden="true" size={14} />
-                {article.readingTime}
-              </p>
-            </div>
+        </Reveal>
+        <Reveal delay={0.05} y={10}>
+          <p className="eyebrow mt-10">{article.audience}</p>
+        </Reveal>
+        <SplitReveal
+          className="h1 mt-6 max-w-5xl"
+          delay={0.1}
+          lines={[[article.title]]}
+          stagger={0.04}
+        />
+        <Reveal delay={0.4} y={14}>
+          <p className="lead mt-6 max-w-2xl">{article.description}</p>
+          <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-ink/10 pt-5 font-mono text-xs uppercase tracking-[0.12em] text-ink/50">
+            <span>
+              Updated{" "}
+              <time dateTime={article.updatedAt}>{formatShortDate(article.updatedAt)}</time>
+            </span>
+            <span aria-hidden="true" className="h-1 w-1 rounded-full bg-ink/25" />
+            <span>{article.readingTime}</span>
+            <span aria-hidden="true" className="h-1 w-1 rounded-full bg-ink/25" />
+            <span>{article.blocks.length} sections</span>
           </div>
         </Reveal>
+      </header>
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_290px] lg:items-start">
-          <article className="surface-panel rounded-2xl p-5 md:p-8">
-            <div className="grid gap-5 text-lg leading-8 text-ink/70">
-              {article.intro.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </div>
+      <div className="app-container grid gap-12 pb-24 md:pb-32 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-20">
+        <aside className="hidden lg:block">
+          <div className="sticky top-32">
+            <TableOfContents items={toc} />
+          </div>
+        </aside>
 
-            <div className="mt-8 grid gap-8">
-              {article.blocks.map((block) => (
-                <ArticleBlockView block={block} key={block.heading} />
-              ))}
-            </div>
+        <div className="min-w-0">
+          <article className="prose-ss">
+            {firstIntro ? (
+              <p className="!text-[1.3rem] !leading-[1.6] !text-ink md:!text-[1.45rem]">{firstIntro}</p>
+            ) : null}
+            {restIntro.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+
+            {article.blocks.map((block, index) => (
+              <ArticleBlockView block={block} index={index} key={block.heading} />
+            ))}
           </article>
 
-          <aside className="grid gap-4 lg:sticky lg:top-28">
-            <div className="surface-panel rounded-xl p-5">
-              <p className="text-xs font-semibold uppercase text-accent">
-                Related paths
-              </p>
-              <div className="mt-4 grid gap-2">
-                {article.related.map((item) => (
-                  <Link
-                    className="group flex items-center justify-between gap-3 rounded-lg border border-line bg-surface/70 px-3 py-2 text-sm font-medium transition hover:border-accent hover:text-accent"
-                    href={item.href as Route}
-                    key={item.href}
-                  >
-                    {item.label}
-                    <ArrowRight
-                      aria-hidden="true"
-                      className="transition group-hover:translate-x-0.5"
-                      size={14}
-                    />
-                  </Link>
-                ))}
-              </div>
+          <Reveal className="mt-16 max-w-[44rem] border-t border-ink/10 pt-8">
+            <p className="eyebrow eyebrow-plain">Topics</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {article.keywords.map((keyword) => (
+                <span className="tag" key={keyword}>
+                  {keyword}
+                </span>
+              ))}
             </div>
+          </Reveal>
 
-            <div className="metric-tile rounded-xl p-5">
-              <p className="text-xs font-semibold uppercase text-ink/45">
-                Topics
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {article.keywords.map((keyword) => (
-                  <span
-                    className="rounded-full border border-line bg-surface/70 px-2.5 py-1 text-xs font-medium text-ink/58"
-                    key={keyword}
+          <section className="mt-16 max-w-[44rem]">
+            <Reveal>
+              <p className="eyebrow eyebrow-plain">Keep going</p>
+            </Reveal>
+            <Stagger as="ul" className="row-list mt-6" inView>
+              {article.related.map((item) => (
+                <StaggerItem as="li" key={item.href}>
+                  <Link
+                    className="row-item group grid-cols-[minmax(0,1fr)_auto] py-5"
+                    href={item.href as Route}
                   >
-                    {keyword}
+                    <span className="text-lg font-medium tracking-[-0.01em] transition-transform duration-500 ease-out group-hover:translate-x-1.5">
+                      {item.label}
+                    </span>
+                    <span className="row-arrow">
+                      <ArrowRight aria-hidden="true" size={16} />
+                    </span>
+                  </Link>
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </section>
+
+          {nextArticle && nextArticle.slug !== article.slug ? (
+            <Reveal className="mt-16">
+              <Link
+                className="night group relative block overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 md:px-12 md:py-14"
+                href={`/articles/${nextArticle.slug}` as Route}
+              >
+                <div
+                  aria-hidden="true"
+                  className="dot-grid absolute inset-0 opacity-50 [mask-image:radial-gradient(ellipse_at_90%_10%,black,transparent_60%)]"
+                />
+                <div className="relative flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+                  <div className="min-w-0">
+                    <p className="eyebrow">Next article</p>
+                    <p className="mt-5 max-w-2xl font-display text-[clamp(1.8rem,3.6vw,3rem)] font-bold leading-[1.02] tracking-[-0.04em] text-white">
+                      {nextArticle.title}
+                    </p>
+                    <p className="mt-4 font-mono text-xs uppercase tracking-[0.12em] text-white/45">
+                      {nextArticle.readingTime}
+                    </p>
+                  </div>
+                  <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white text-ink transition-all duration-500 ease-out group-hover:-rotate-45 group-hover:bg-signal group-hover:text-white">
+                    <ArrowRight aria-hidden="true" size={20} />
                   </span>
-                ))}
-              </div>
-            </div>
-          </aside>
+                </div>
+              </Link>
+            </Reveal>
+          ) : null}
         </div>
       </div>
     </main>
   );
 }
 
-function ArticleBlockView({ block }: { block: ArticleBlock }) {
+function ArticleBlockView({ block, index }: { block: ArticleBlock; index: number }) {
+  const id = headingId(block.heading);
+
   if (block.kind === "checklist") {
     return (
-      <section className="rounded-2xl border border-accent/20 bg-accent/[0.035] p-5">
-        <h2 className="text-2xl font-semibold leading-tight text-ink">
+      <section className="scroll-mt-32" id={id}>
+        <h2>
+          <span className="mb-3 block font-mono text-xs font-normal tracking-[0.14em] text-signal">
+            {pad(index)}
+          </span>
           {block.heading}
         </h2>
-        <ul className="mt-4 grid gap-3">
-          {block.items.map((item) => (
-            <li className="flex gap-3 text-sm leading-6 text-ink/68" key={item}>
-              <CheckCircle2
-                aria-hidden="true"
-                className="mt-0.5 shrink-0 text-accent"
-                size={17}
-              />
+        <ol className="!my-6 !list-none !pl-0">
+          {block.items.map((item, itemIndex) => (
+            <li
+              className="!mb-0 flex gap-4 border-t border-ink/10 py-4 last:border-b"
+              key={item}
+            >
+              <span className="mt-1 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-paper">
+                <Check aria-hidden="true" size={13} strokeWidth={2.5} />
+                <span className="sr-only">{itemIndex + 1}.</span>
+              </span>
               <span>{item}</span>
             </li>
           ))}
-        </ul>
+        </ol>
       </section>
     );
   }
 
   return (
-    <section>
-      <h2 className="text-2xl font-semibold leading-tight text-ink md:text-3xl">
+    <section className="scroll-mt-32" id={id}>
+      <h2>
+        <span className="mb-3 block font-mono text-xs font-normal tracking-[0.14em] text-signal">
+          {pad(index)}
+        </span>
         {block.heading}
       </h2>
-      <div className="mt-4 grid gap-4 text-base leading-8 text-ink/68 md:text-[1.05rem]">
-        {block.body.map((paragraph) => (
-          <p key={paragraph}>{paragraph}</p>
-        ))}
-      </div>
+      {block.body.map((paragraph) => (
+        <p key={paragraph}>{paragraph}</p>
+      ))}
     </section>
   );
-}
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en", {
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  }).format(new Date(value));
 }

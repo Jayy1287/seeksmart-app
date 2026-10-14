@@ -7,7 +7,7 @@ import { motion, useInView } from "motion/react";
 // trims the bottom edge so bars at the left gutter on mobile still trigger.
 export function FitMeter({ signal = false, value }: { signal?: boolean; value: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "0px 0px -40px 0px" });
+  const inView = useInView(ref, { once: true, margin: "100000px 0px -40px 0px" });
   const width = `${Math.max(0, Math.min(value, 100))}%`;
 
   return (

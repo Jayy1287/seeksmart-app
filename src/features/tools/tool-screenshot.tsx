@@ -52,7 +52,7 @@ export function ToolScreenshot({ caption, name, src, websiteUrl }: ToolScreensho
         initial={{ opacity: 0, y: 48 }}
         style={{ rotateX }}
         transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        viewport={{ once: true, margin: "-80px" }}
+        viewport={{ once: true, margin: "100000px 0px -48px 0px" }}
         whileInView={{ opacity: 1, y: 0 }}
       >
         <div className="flex items-center gap-3 px-2 pb-2 pt-1 md:px-3 md:pb-2.5 md:pt-1.5">
