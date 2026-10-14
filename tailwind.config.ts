@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+const color = (name: string) => `rgb(var(--color-${name}) / <alpha-value>)`;
+
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,19 +12,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: "rgb(var(--color-ink) / <alpha-value>)",
-        paper: "rgb(var(--color-paper) / <alpha-value>)",
-        line: "rgb(var(--color-line) / <alpha-value>)",
-        accent: "rgb(var(--color-accent) / <alpha-value>)",
-        signal: "rgb(var(--color-signal) / <alpha-value>)",
-        success: "rgb(var(--color-success) / <alpha-value>)",
-        secondary: "rgb(var(--color-secondary) / <alpha-value>)",
-        surface: "rgb(var(--color-surface) / <alpha-value>)",
-        muted: "rgb(var(--color-muted) / <alpha-value>)",
-        brand: "rgb(var(--color-brand) / <alpha-value>)",
-        warm: "rgb(var(--color-warm) / <alpha-value>)",
-        "primary-light": "rgb(var(--color-primary-light) / <alpha-value>)",
-        "muted-text": "rgb(var(--color-muted-text) / <alpha-value>)"
+        ink: color("ink"),
+        paper: color("paper"),
+        line: color("line"),
+        accent: color("accent"),
+        signal: color("signal"),
+        success: color("success"),
+        warning: color("warning"),
+        danger: color("danger"),
+        secondary: color("secondary"),
+        surface: color("surface"),
+        muted: color("muted"),
+        brand: color("brand"),
+        warm: color("warm"),
+        night: color("night"),
+        "night-2": color("night-2"),
+        "primary-light": color("primary-light"),
+        "muted-text": color("muted-text")
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "var(--font-sans)", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"]
+      },
+      transitionTimingFunction: {
+        out: "cubic-bezier(0.22, 1, 0.36, 1)"
       }
     }
   },

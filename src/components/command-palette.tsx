@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { Command as CommandIcon } from "lucide-react";
+import { Command as CommandIcon, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { capturePostHogEvent } from "@/features/analytics/posthog-client";
 
@@ -17,7 +17,7 @@ const CommandPaletteDialog = dynamic(
 );
 
 type CommandPaletteProps = {
-  trigger?: "footer" | "none";
+  trigger?: "footer" | "header" | "none";
 };
 
 export function CommandPalette({ trigger = "none" }: CommandPaletteProps) {
@@ -60,6 +60,23 @@ export function CommandPalette({ trigger = "none" }: CommandPaletteProps) {
 
   return (
     <>
+      {trigger === "header" ? (
+        <button
+          aria-label="Search SeekSmart"
+          className="group inline-flex h-10 items-center gap-2 rounded-full px-3 text-sm text-ink/55 transition-colors hover:bg-ink/[0.05] hover:text-ink"
+          onClick={() => {
+            capturePostHogEvent("command_palette_opened", {
+              trigger: "header_button"
+            });
+            setIsOpen(true);
+          }}
+          type="button"
+        >
+          <Search aria-hidden="true" size={16} />
+          <span className="hidden xl:inline">Search</span>
+          <kbd className="kbd hidden xl:inline-flex">{shortcutLabel}</kbd>
+        </button>
+      ) : null}
       {trigger === "footer" ? (
         <button
           aria-label="Open command palette"

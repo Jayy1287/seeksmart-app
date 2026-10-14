@@ -1,15 +1,11 @@
-import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
-import Image from "next/image";
-import Link from "next/link";
+import type { Metadata, Viewport } from "next";
+import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { Suspense, type ReactNode } from "react";
-import { CommandPalette } from "@/components/command-palette";
 import { PageTransition } from "@/components/page-transition";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { AppSessionProvider } from "@/components/session-provider";
-import { SiteAccountNav } from "@/components/site-account-nav";
-import { SiteMobileMenu } from "@/components/site-mobile-menu";
-import { SiteNavigation } from "@/components/site-navigation";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 import { SiteAnalytics } from "@/features/analytics/site-analytics";
 import { ToolLikeProvider } from "@/features/tools/tool-like-context";
 import { siteConfig } from "@/lib/site";
@@ -18,16 +14,33 @@ import {
   organizationJsonLd,
   websiteJsonLd,
 } from "@/lib/structured-data";
+import "../styles/legacy.css";
 import "./globals.css";
 
 const brandLogo = "/brand/seeksmart-logo-v3.png";
 
-const fontSans = Plus_Jakarta_Sans({
+const fontSans = Geist({
   display: "swap",
   subsets: ["latin"],
   variable: "--font-sans",
-  weight: ["400", "500", "600", "700", "800"],
 });
+
+const fontDisplay = Bricolage_Grotesque({
+  axes: ["opsz"],
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-display",
+});
+
+const fontMono = Geist_Mono({
+  display: "swap",
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
+
+export const viewport: Viewport = {
+  themeColor: "#f4f2ed",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -62,7 +75,11 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html className={fontSans.variable} lang="en" suppressHydrationWarning>
+    <html
+      className={`${fontSans.variable} ${fontDisplay.variable} ${fontMono.variable}`}
+      lang="en"
+      suppressHydrationWarning
+    >
       <head>
         <JsonLd data={[organizationJsonLd(), websiteJsonLd()]} />
       </head>
@@ -74,126 +91,9 @@ export default function RootLayout({
           <ToolLikeProvider>
             <MotionProvider>
               <div className="flex min-h-screen flex-col">
-                <header className="site-header sticky top-0 z-50">
-                  <div className="app-container grid grid-cols-[1fr_auto] items-center gap-3 py-3 md:grid-cols-[auto_1fr_auto] lg:py-4">
-                    <Link
-                      aria-label="SeekSmart home"
-                      className="brand-lockup flex items-center gap-3"
-                      href="/"
-                    >
-                      <span className="brand-mark flex h-12 w-12 items-center justify-center md:h-[3.25rem] md:w-[3.25rem]">
-                        <Image
-                          alt="SeekSmart"
-                          className="brand-logo-image"
-                          height={64}
-                          priority
-                          src={brandLogo}
-                          width={64}
-                        />
-                      </span>
-                      <span className="brand-type min-w-0 leading-none">
-                        <span className="brand-title block">SeekSmart</span>
-                        <span className="brand-tagline block">
-                          Smarter AI Choices
-                        </span>
-                      </span>
-                    </Link>
-                    <SiteNavigation />
-                    <SiteAccountNav />
-                    <SiteMobileMenu />
-                  </div>
-                </header>
+                <SiteHeader />
                 <PageTransition>{children}</PageTransition>
-                <footer className="site-footer">
-                  <div className="app-container footer-shell">
-                    <div className="footer-main">
-                      <div className="footer-brand-block">
-                        <Link
-                          aria-label="SeekSmart home"
-                          className="footer-brand-lockup"
-                          href="/"
-                        >
-                          <span className="brand-mark footer-brand-mark flex items-center justify-center">
-                            <Image
-                              alt="SeekSmart"
-                              className="brand-logo-image"
-                              height={48}
-                              src={brandLogo}
-                              width={48}
-                            />
-                          </span>
-                          <span className="min-w-0">
-                            <span className="brand-title footer-brand-title block">
-                              SeekSmart
-                            </span>
-                            <span className="footer-brand-tagline block">
-                              Find the right AI workflow first.
-                            </span>
-                          </span>
-                        </Link>
-                        <p className="footer-brand-copy">
-                          Turn an AI idea into a clear next step, a stronger
-                          shortlist, and a more confident pilot plan.
-                        </p>
-                        <CommandPalette trigger="footer" />
-                      </div>
-                      <nav aria-label="Footer" className="footer-nav">
-                        <div className="footer-nav-group">
-                          <span className="footer-nav-heading">Explore</span>
-                          <Link className="footer-link" href="/tools">
-                            Tools
-                          </Link>
-                          <Link className="footer-link" href="/use-cases">
-                            Use cases
-                          </Link>
-                          <Link className="footer-link" href="/industries">
-                            Industries
-                          </Link>
-                          <Link className="footer-link" href="/playbooks">
-                            Playbooks
-                          </Link>
-                        </div>
-                        <div className="footer-nav-group">
-                          <span className="footer-nav-heading">Decide</span>
-                          <Link className="footer-link" href="/audit">
-                            AI audit
-                          </Link>
-                          <Link className="footer-link" href="/opportunities">
-                            Opportunities
-                          </Link>
-                          <Link className="footer-link" href="/methodology">
-                            Methodology
-                          </Link>
-                          <Link className="footer-link" href="/resources">
-                            Resources
-                          </Link>
-                          <Link className="footer-link" href="/articles">
-                            Articles
-                          </Link>
-                        </div>
-                        <div className="footer-nav-group">
-                          <span className="footer-nav-heading">Company</span>
-                          <Link className="footer-link" href="/submit">
-                            Submit tool
-                          </Link>
-                          <Link className="footer-link" href="/feedback">
-                            Feedback
-                          </Link>
-                          <Link className="footer-link" href="/privacy">
-                            Privacy
-                          </Link>
-                          <Link className="footer-link" href="/terms">
-                            Terms
-                          </Link>
-                        </div>
-                      </nav>
-                    </div>
-                    <div className="footer-bottom">
-                      <span>&copy; 2026 SeekSmart. All rights reserved.</span>
-                      <span>Clear decisions before new software.</span>
-                    </div>
-                  </div>
-                </footer>
+                <SiteFooter />
               </div>
             </MotionProvider>
           </ToolLikeProvider>

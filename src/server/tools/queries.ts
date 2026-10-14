@@ -167,3 +167,16 @@ export async function getPublishedToolBySlug(
 
   return toPublicToolDetail(tool);
 }
+
+// Lightweight list for the homepage logo marquee: top tools that have a logo.
+export async function listToolLogos(limit = 36) {
+  return prisma.tool.findMany({
+    where: {
+      status: PublishStatus.PUBLISHED,
+      logoUrl: { not: null }
+    },
+    select: { name: true, slug: true, logoUrl: true },
+    orderBy: [{ popularityScore: "desc" }, { name: "asc" }],
+    take: Math.min(limit, 60)
+  });
+}
