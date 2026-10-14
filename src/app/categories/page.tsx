@@ -3,6 +3,8 @@ import { CategoryList } from "@/features/categories/category-list";
 import { listCategorySummaries } from "@/server/categories/queries";
 import { AnimatedNumber } from "@/components/motion/animated-number";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitReveal } from "@/components/motion/split-reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
 export const revalidate = 3600;
 
@@ -30,38 +32,45 @@ export default async function CategoriesPage() {
   );
 
   return (
-    <main className="page-shell">
-      <div className="app-container">
-      <Reveal className="border-b border-line/50 pb-8">
-        <p className="eyebrow">Categories</p>
-        <div className="mt-2 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <main>
+      <section className="app-container page-hero">
+        <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
           <div>
-            <h1 className="text-4xl font-semibold">AI tool categories</h1>
-            <p className="mt-3 max-w-2xl text-ink/65">
-              Start with the kind of work you want to improve, then compare the
-              tools that fit that category.
-            </p>
+            <Reveal y={12}>
+              <p className="eyebrow">Categories</p>
+            </Reveal>
+            <SplitReveal
+              className="h1 mt-6"
+              delay={0.05}
+              lines={[["Start with"], [{ text: "the job.", className: "ghost-word" }]]}
+            />
+            <Reveal delay={0.35} y={16}>
+              <p className="lead mt-6">Pick the kind of work, then compare what fits.</p>
+            </Reveal>
           </div>
-          <div className="grid grid-cols-2 gap-3 text-sm">
-            <div className="metric-tile rounded-2xl px-4 py-3">
-              <div className="text-2xl font-semibold">
+          <Stagger className="grid shrink-0 grid-cols-2 gap-10 md:text-right" delay={0.3}>
+            <StaggerItem>
+              <p className="stat-number text-[clamp(3rem,6vw,5rem)]">
                 <AnimatedNumber value={categories.length} />
-              </div>
-              <div className="text-ink/55">Categories</div>
-            </div>
-            <div className="metric-tile rounded-2xl px-4 py-3">
-              <div className="text-2xl font-semibold">
+              </p>
+              <p className="mt-2 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink/50">
+                Categories
+              </p>
+            </StaggerItem>
+            <StaggerItem>
+              <p className="stat-number text-[clamp(3rem,6vw,5rem)]">
                 <AnimatedNumber value={toolCount} />
-              </div>
-              <div className="text-ink/55">Published tools</div>
-            </div>
-          </div>
+              </p>
+              <p className="mt-2 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink/50">
+                Tools
+              </p>
+            </StaggerItem>
+          </Stagger>
         </div>
-      </Reveal>
-      <Reveal className="mt-8">
+      </section>
+      <section className="app-container pb-24 md:pb-32">
         <CategoryList categories={categories} />
-      </Reveal>
-      </div>
+      </section>
     </main>
   );
 }

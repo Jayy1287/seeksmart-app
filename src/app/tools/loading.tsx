@@ -3,55 +3,40 @@ import {
   SkeletonBlock,
   SkeletonLine
 } from "@/components/state-surfaces";
+import { ToolRowsSkeleton } from "@/features/tools/tool-rows-skeleton";
 
 export default function ToolsLoading() {
   return (
-    <main className="page-shell">
-      <div className="app-container">
-        <LoadingFrame label="Loading tool directory">
-          <div className="mb-8 border-b border-line/50 pb-8">
-            <SkeletonLine className="h-8 w-36" />
-            <SkeletonLine className="mt-5 h-10 w-full max-w-xl" />
-            <SkeletonLine className="mt-4 h-4 w-full max-w-2xl" />
+    <main>
+      <LoadingFrame label="Loading tool directory">
+        <section className="app-container page-hero">
+          <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
+            <div className="w-full max-w-2xl">
+              <SkeletonLine className="h-3 w-32" />
+              <SkeletonBlock className="mt-7 h-[clamp(2.4rem,5.6vw,4.9rem)] w-4/5" />
+              <SkeletonBlock className="mt-3 h-[clamp(2.4rem,5.6vw,4.9rem)] w-full" />
+              <SkeletonLine className="mt-7 h-4 w-72 max-w-full" />
+            </div>
+            <div className="md:text-right">
+              <SkeletonBlock className="h-20 w-36 md:ml-auto" />
+              <SkeletonLine className="mt-3 h-3 w-24 md:ml-auto" />
+            </div>
           </div>
-          <div className="grid gap-3 rounded-[1.35rem] border border-line/60 bg-white/45 p-3 md:grid-cols-[1fr_190px_170px]">
-            <SkeletonBlock className="h-12" />
-            <SkeletonBlock className="h-12" />
-            <SkeletonBlock className="h-12" />
+        </section>
+        <section className="app-container pb-24">
+          <div className="flex flex-col gap-3 md:flex-row">
+            <SkeletonBlock className="h-14 flex-1 rounded-full" />
+            <SkeletonBlock className="h-11 w-72 max-w-full rounded-full" />
           </div>
-          <div className="mt-7 grid gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }, (_, index) => (
-              <SkeletonToolCard key={index} />
+          <div className="mt-4 flex gap-2 overflow-hidden">
+            {Array.from({ length: 9 }, (_, index) => (
+              <SkeletonBlock className="h-[2.1rem] w-28 shrink-0 rounded-full" key={index} />
             ))}
           </div>
-        </LoadingFrame>
-      </div>
+          <SkeletonLine className="mb-6 mt-14 h-3 w-28" />
+          <ToolRowsSkeleton count={8} />
+        </section>
+      </LoadingFrame>
     </main>
-  );
-}
-
-function SkeletonToolCard() {
-  return (
-    <div className="decision-card tool-decision-card min-h-[19rem] p-6">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex flex-1 items-start gap-3">
-          <SkeletonBlock className="h-11 w-11 rounded-xl" />
-          <div className="flex-1">
-            <SkeletonLine className="h-3 w-14" />
-            <SkeletonLine className="mt-3 h-5 w-36" />
-            <SkeletonLine className="mt-2 h-3 w-24" />
-          </div>
-        </div>
-        <SkeletonBlock className="h-14 w-16" />
-      </div>
-      <SkeletonLine className="mt-6 h-4 w-28" />
-      <SkeletonLine className="mt-5 h-4 w-full" />
-      <SkeletonLine className="mt-3 h-4 w-5/6" />
-      <SkeletonLine className="mt-8 h-1 w-full" />
-      <div className="mt-6 flex items-center justify-between gap-3 border-t border-line/40 pt-4">
-        <SkeletonBlock className="h-9 w-24 rounded-full" />
-        <SkeletonLine className="h-4 w-20" />
-      </div>
-    </div>
   );
 }
