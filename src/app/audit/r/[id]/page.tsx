@@ -10,7 +10,7 @@ import {
   lockedBriefItems
 } from "@/features/audit/audit-result-view";
 import { AuditShareBar } from "@/features/audit/audit-share-bar";
-import { AuditUnlockForm } from "@/features/audit/audit-unlock-form";
+import { AuditSignInPanel } from "@/features/audit/audit-sign-in-panel";
 import { absoluteUrl } from "@/lib/site";
 import { AUDIT_RUNS_COOKIE } from "@/server/audit-runs/cookies";
 import { claimAuditRun, getAuditRunById } from "@/server/audit-runs/queries";
@@ -106,7 +106,13 @@ export default async function AuditRunPage({ params }: AuditRunPageProps) {
       input={input}
       locked={!unlocked}
       result={result}
-      unlockPanel={<AuditUnlockForm auditRunId={run.id} items={lockedBriefItems} />}
+      unlockPanel={
+        <AuditSignInPanel
+          auditRunId={run.id}
+          isSignedIn={Boolean(userId)}
+          items={lockedBriefItems}
+        />
+      }
     />
   );
 }

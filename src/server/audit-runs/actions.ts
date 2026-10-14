@@ -1,21 +1,11 @@
 "use server";
 
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { auth } from "@/auth";
 import { withPostHogClient } from "@/lib/posthog-server";
-import {
-  AUDIT_EMAIL_COOKIE,
-  AUDIT_RUNS_COOKIE
-} from "@/server/audit-runs/cookies";
-import {
-  createAuditRun,
-  getAuditRunById,
-  normalizeAuditEmail,
-  unlockAuditRun
-} from "@/server/audit-runs/queries";
+import { createAuditRun } from "@/server/audit-runs/queries";
 import { assertRateLimit, RateLimitError } from "@/server/http/rate-limit";
 import { getAuditDataset } from "@/server/recommendations/queries";
 import { scoreAudit } from "@/server/recommendations/scoring";
@@ -38,8 +28,6 @@ import {
   type AuditWizardAnswers
 } from "@/shared/recommendations/wizard";
 
-
-const cookieMaxAgeSeconds = 60 * 60 * 24 * 30;
 
 const slugSchema = z.string().trim().min(1).max(120);
 
@@ -80,6 +68,8 @@ const wizardAnswersSchema = z.object({
 
 export type SubmitAuditState = {
   error?: string;
+  /** Set when the session expired mid-audit; the wizard sends the user to sign in. */
+  needsSignIn?: boolean;
 };
 
 export async function submitAuditAction(
@@ -92,6 +82,12 @@ export async function submitAuditAction(
   }
 
   const answers = parsed.data as AuditWizardAnswers;
+  const session = await auth();
+  const user = session?.user;
+
+  if (!user?.id) {
+    return { error: "Sign in to see your results.", needsSignIn: true };
+  }
 
   try {
     const requestHeaders = await headers();
@@ -100,7 +96,7 @@ export async function submitAuditAction(
       requestHeaders.get("x-real-ip") ||
       "unknown";
     assertRateLimit({
-      key: `audit-submit:${ip}`,
+      key: `audit-submit:${user.id}:${ip}`,
       limit: 20,
       windowMs: 10 * 60 * 1000
     });
@@ -111,25 +107,18 @@ export async function submitAuditAction(
     throw error;
   }
 
-  const [session, dataset, cookieStore] = await Promise.all([
-    auth(),
-    getAuditDataset(),
-    cookies()
-  ]);
+  const dataset = await getAuditDataset();
   const input = toAuditInput(answers);
   const result = scoreAudit(input, dataset);
-  const rememberedEmail = cookieStore.get(AUDIT_EMAIL_COOKIE)?.value;
   const run = await createAuditRun({
-    email: session?.user?.email ?? rememberedEmail ?? null,
+    email: user.email ?? null,
     result,
-    userId: session?.user?.id ?? null
+    userId: user.id
   });
-
-  rememberAuditRun(cookieStore, run.id);
 
   await withPostHogClient((posthog) => {
     posthog.capture({
-      distinctId: session?.user?.id ?? `audit-run:${run.id}`,
+      distinctId: user.id,
       event: "audit_completed",
       properties: {
         audit_run_id: run.id,
@@ -140,99 +129,10 @@ export async function submitAuditAction(
         readiness_level: result.readiness.level,
         readiness_score: result.readiness.score,
         top_opportunity: result.topOpportunities[0]?.slug ?? "none",
-        signed_in: Boolean(session?.user)
+        signed_in: true
       }
     });
   });
 
   redirect(`/audit/r/${run.id}`);
-}
-
-export type UnlockAuditState = {
-  error?: string;
-  success?: boolean;
-};
-
-const unlockSchema = z.object({
-  id: z.string().trim().min(1).max(64),
-  email: z.string().trim().toLowerCase().email().max(254)
-});
-
-export async function unlockAuditAction(
-  _previousState: UnlockAuditState,
-  formData: FormData
-): Promise<UnlockAuditState> {
-  const parsed = unlockSchema.safeParse({
-    id: formData.get("id"),
-    email: formData.get("email")
-  });
-
-  if (!parsed.success) {
-    return { error: "Enter a valid email address to unlock the full brief." };
-  }
-
-  const run = await getAuditRunById(parsed.data.id);
-
-  if (!run) {
-    return { error: "This audit has expired. Run it again to get a fresh brief." };
-  }
-
-  try {
-    assertRateLimit({
-      key: `audit-unlock:${parsed.data.id}`,
-      limit: 10,
-      windowMs: 10 * 60 * 1000
-    });
-  } catch (error) {
-    if (error instanceof RateLimitError) {
-      return { error: "Too many attempts. Try again in a few minutes." };
-    }
-    throw error;
-  }
-
-  const email = normalizeAuditEmail(parsed.data.email);
-  await unlockAuditRun({ email, id: run.id });
-
-  const cookieStore = await cookies();
-  cookieStore.set(AUDIT_EMAIL_COOKIE, email, {
-    httpOnly: true,
-    maxAge: cookieMaxAgeSeconds,
-    path: "/",
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production"
-  });
-  rememberAuditRun(cookieStore, run.id);
-
-  await withPostHogClient((posthog) => {
-    posthog.capture({
-      distinctId: `audit-run:${run.id}`,
-      event: "audit_unlocked",
-      properties: {
-        audit_run_id: run.id,
-        readiness_level: run.readinessLevel ?? "unknown",
-        top_opportunity: run.topOpportunitySlug ?? "none"
-      }
-    });
-  });
-
-  revalidatePath(`/audit/r/${run.id}`);
-
-  return { success: true };
-}
-
-type CookieStore = Awaited<ReturnType<typeof cookies>>;
-
-function rememberAuditRun(cookieStore: CookieStore, id: string) {
-  const existing = cookieStore.get(AUDIT_RUNS_COOKIE)?.value ?? "";
-  const ids = [id, ...existing.split(",").filter((value) => value && value !== id)]
-    .slice(0, 10)
-    .join(",");
-
-  cookieStore.set(AUDIT_RUNS_COOKIE, ids, {
-    httpOnly: true,
-    maxAge: cookieMaxAgeSeconds,
-    path: "/",
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production"
-  });
 }

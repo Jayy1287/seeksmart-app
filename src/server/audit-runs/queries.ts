@@ -11,12 +11,10 @@ export type StoredAuditRun = NonNullable<
   Awaited<ReturnType<typeof getAuditRunById>>
 >;
 
-const ANONYMOUS_RUN_TTL_DAYS = 30;
-
 /**
- * Store a scored audit. Signed-in users get one row per distinct input
- * (upsert); anonymous runs are always new rows that expire after 30 days
- * unless they are unlocked with an email or claimed by an account.
+ * Store a scored audit for a signed-in user: one row per distinct input
+ * (upsert). Running the audit requires an account, so there are no new
+ * anonymous runs; older anonymous rows can still be claimed below.
  */
 export async function createAuditRun({
   email,
@@ -25,7 +23,7 @@ export async function createAuditRun({
 }: {
   email?: string | null;
   result: AuditResult;
-  userId?: string | null;
+  userId: string;
 }) {
   const inputHash = hashAuditInput(result.input);
   const topOpportunity = result.topOpportunities[0];
@@ -41,44 +39,30 @@ export async function createAuditRun({
     topOpportunitySlug: topOpportunity?.slug
   };
 
-  if (userId) {
-    return prisma.auditRun.upsert({
-      create: {
-        ...baseData,
-        email: email ?? undefined,
-        unlockedAt: new Date(),
-        userId
-      },
-      select: auditRunSummarySelect,
-      update: {
-        readinessLevel: baseData.readinessLevel,
-        readinessScore: baseData.readinessScore,
-        result: baseData.result,
-        title: baseData.title,
-        topOpportunityName: baseData.topOpportunityName,
-        topOpportunitySlug: baseData.topOpportunitySlug,
-        unlockedAt: new Date()
-      },
-      where: {
-        userId_ruleVersion_inputHash: {
-          inputHash,
-          ruleVersion: result.version,
-          userId
-        }
-      }
-    });
-  }
-
-  const normalizedEmail = email ? normalizeAuditEmail(email) : null;
-
-  return prisma.auditRun.create({
-    data: {
+  return prisma.auditRun.upsert({
+    create: {
       ...baseData,
-      email: normalizedEmail ?? undefined,
-      expiresAt: normalizedEmail ? null : addDays(new Date(), ANONYMOUS_RUN_TTL_DAYS),
-      unlockedAt: normalizedEmail ? new Date() : null
+      email: email ?? undefined,
+      unlockedAt: new Date(),
+      userId
     },
-    select: auditRunSummarySelect
+    select: auditRunSummarySelect,
+    update: {
+      readinessLevel: baseData.readinessLevel,
+      readinessScore: baseData.readinessScore,
+      result: baseData.result,
+      title: baseData.title,
+      topOpportunityName: baseData.topOpportunityName,
+      topOpportunitySlug: baseData.topOpportunitySlug,
+      unlockedAt: new Date()
+    },
+    where: {
+      userId_ruleVersion_inputHash: {
+        inputHash,
+        ruleVersion: result.version,
+        userId
+      }
+    }
   });
 }
 
@@ -96,26 +80,6 @@ export async function getAuditRunById(id: string) {
   }
 
   return run;
-}
-
-export async function unlockAuditRun({
-  email,
-  id
-}: {
-  email: string;
-  id: string;
-}) {
-  const normalizedEmail = normalizeAuditEmail(email);
-
-  return prisma.auditRun.update({
-    data: {
-      email: normalizedEmail,
-      expiresAt: null,
-      unlockedAt: new Date()
-    },
-    select: { id: true, email: true, unlockedAt: true },
-    where: { id }
-  });
 }
 
 /** Attach an anonymous run to a signed-in account and unlock it. */
@@ -212,9 +176,6 @@ const auditRunSummarySelect = {
   updatedAt: true
 } satisfies Prisma.AuditRunSelect;
 
-function addDays(date: Date, days: number) {
-  return new Date(date.getTime() + days * 24 * 60 * 60 * 1000);
-}
 
 function toJsonValue(value: unknown) {
   return JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;

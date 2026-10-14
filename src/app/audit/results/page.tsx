@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/auth";
-import { AUDIT_EMAIL_COOKIE } from "@/server/audit-runs/cookies";
+import { requireUser } from "@/server/auth/require-user";
 import { createAuditRun } from "@/server/audit-runs/queries";
 import { parseAuditInput } from "@/server/recommendations/input";
 import { getAuditDataset } from "@/server/recommendations/queries";
@@ -37,17 +35,19 @@ export default async function LegacyAuditResultsPage({
     redirect("/audit/questions");
   }
 
-  const [session, dataset, cookieStore] = await Promise.all([
-    auth(),
-    getAuditDataset(),
-    cookies()
-  ]);
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    for (const item of Array.isArray(value) ? value : value ? [value] : []) {
+      query.append(key, item);
+    }
+  }
+  const user = await requireUser(`/audit/results?${query.toString()}`);
+  const dataset = await getAuditDataset();
   const result = scoreAudit(input, dataset);
   const run = await createAuditRun({
-    email:
-      session?.user?.email ?? cookieStore.get(AUDIT_EMAIL_COOKIE)?.value ?? null,
+    email: user.email ?? null,
     result,
-    userId: session?.user?.id ?? null
+    userId: user.id
   });
 
   redirect(`/audit/r/${run.id}`);

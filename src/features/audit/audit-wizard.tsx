@@ -238,6 +238,13 @@ export function AuditWizard({
 
     startTransition(async () => {
       const state = await submitAuditAction(draft);
+      if (state?.needsSignIn) {
+        // The draft stays in sessionStorage, so answers are restored after login.
+        window.location.assign(
+          `/login?callbackUrl=${encodeURIComponent("/audit/questions")}`
+        );
+        return;
+      }
       if (state?.error) {
         fail(state.error);
         return;
