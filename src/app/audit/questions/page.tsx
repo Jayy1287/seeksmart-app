@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import { ClipboardCheck } from "lucide-react";
 import { AuditAnalyticsEvent } from "@/features/audit/audit-analytics";
 import { AuditWizard } from "@/features/audit/audit-wizard";
 import { getAuditOptions } from "@/server/recommendations/queries";
-import { Reveal } from "@/components/motion/reveal";
 
 export const revalidate = 3600;
 
@@ -45,31 +43,14 @@ export default async function AuditQuestionsPage({
     : undefined;
 
   return (
-    <main className="page-shell">
+    <main>
       <AuditAnalyticsEvent event="audit_questions_viewed" />
-      <div className="app-container">
-        <Reveal className="mx-auto max-w-3xl">
-          <p className="eyebrow">
-            <ClipboardCheck aria-hidden="true" size={14} />
-            AI audit
-          </p>
-          <h1 className="mt-4 text-3xl font-semibold leading-tight md:text-4xl">
-            Find the first AI workflow worth piloting.
-          </h1>
-          <p className="mt-2 text-sm leading-6 text-ink/60">
-            Eleven quick questions. You get a readiness score and ranked
-            opportunities on screen, free.
-          </p>
-        </Reveal>
-        <Reveal className="mx-auto mt-6 max-w-3xl" delay={0.05}>
-          <AuditWizard
-            businessFunctions={options.businessFunctions}
-            industries={options.industries}
-            initialFunctionSlug={initialFunctionSlug}
-            initialIndustrySlug={initialIndustrySlug}
-          />
-        </Reveal>
-      </div>
+      <AuditWizard
+        businessFunctions={options.businessFunctions}
+        industries={options.industries}
+        initialFunctionSlug={initialFunctionSlug}
+        initialIndustrySlug={initialIndustrySlug}
+      />
     </main>
   );
 }

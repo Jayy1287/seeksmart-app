@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import {
-  ArrowRight,
-  ClipboardCheck,
-  Gauge,
-  ListChecks,
-  ShieldCheck,
-  Store,
-  Target
-} from "lucide-react";
-import { MotionLink } from "@/components/motion/motion-link";
+import Link from "next/link";
+import { ArrowRight, Plus } from "lucide-react";
+import { HeroAuditDemo } from "@/features/home/hero-audit-demo";
+import { Magnetic } from "@/components/motion/magnetic";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitReveal } from "@/components/motion/split-reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 import { featuredIndustries } from "@/shared/recommendations/wizard";
 
@@ -29,31 +25,10 @@ export const metadata: Metadata = {
   }
 };
 
-const outcomes = [
-  {
-    icon: Gauge,
-    title: "Readiness score",
-    description:
-      "A 0 to 100 score that says whether to pilot now, prepare first, or do discovery."
-  },
-  {
-    icon: Target,
-    title: "Ranked opportunities",
-    description:
-      "The three places AI pays back first for your business, with the reasons."
-  },
-  {
-    icon: ListChecks,
-    title: "Two-week pilot plan",
-    description:
-      "Owner, baseline question, target, week-one actions, and guardrails."
-  },
-  {
-    icon: ShieldCheck,
-    title: "Tool shortlist",
-    description:
-      "Three tools per opportunity, filtered by your budget and data sensitivity."
-  }
+const steps = [
+  { title: "Answer eleven questions", body: "One per screen. About three minutes." },
+  { title: "Get a readiness score", body: "Plus the three workflows that pay back first." },
+  { title: "Pilot it in two weeks", body: "Owner, baseline, target and tools to compare." }
 ];
 
 const faq = [
@@ -80,7 +55,7 @@ const faq = [
 
 export default function AuditPage() {
   return (
-    <main className="page-shell">
+    <main>
       <JsonLd
         data={[
           breadcrumbJsonLd([{ name: "AI audit", path: "/audit" }]),
@@ -95,101 +70,139 @@ export default function AuditPage() {
           }
         ]}
       />
-      <div className="app-container">
-        <Reveal className="border-b border-line/50 pb-10">
-          <div className="grid gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-center">
-            <div>
-              <p className="eyebrow">
-                <ClipboardCheck aria-hidden="true" size={14} />
-                Free AI audit
-              </p>
-              <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[0.98] md:text-6xl">
-                Find the first AI workflow your business should improve.
-              </h1>
-              <p className="mt-4 max-w-2xl text-lg leading-8 text-ink/68">
-                Eleven questions, three minutes, no account. You get a readiness
-                score, the three opportunities that pay back first, and a plan
-                for a two-week pilot.
-              </p>
-              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-                <MotionLink className="primary-button min-h-12" href="/audit/questions">
-                  Start the audit
-                  <ArrowRight aria-hidden="true" size={18} />
-                </MotionLink>
-                <MotionLink className="secondary-button min-h-12" href="/methodology">
-                  How scoring works
-                </MotionLink>
-              </div>
-            </div>
 
-            <div>
-              <p className="text-sm font-bold uppercase tracking-wide text-accent">
-                Built for businesses like these
-              </p>
-              <div className="mt-4 grid gap-3">
-                {featuredIndustries.map((industry) => (
-                  <MotionLink
-                    className="group flex items-center gap-4 rounded-2xl border border-line/60 bg-white/70 p-4 transition hover:border-accent"
-                    href={`/audit/questions?industry=${industry.slug}`}
-                    key={industry.slug}
-                  >
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
-                      <Store aria-hidden="true" size={20} />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-semibold">{industry.label}</span>
-                      <span className="mt-0.5 block text-sm leading-5 text-ink/58">
-                        {industry.examplePrompt}
-                      </span>
-                    </span>
-                    <ArrowRight
-                      aria-hidden="true"
-                      className="shrink-0 text-accent transition group-hover:translate-x-0.5"
-                      size={16}
-                    />
-                  </MotionLink>
-                ))}
-              </div>
-              <p className="mt-3 text-xs text-ink/50">
-                Other industries work too; these three have the most specific
-                guidance.
-              </p>
-            </div>
-          </div>
-        </Reveal>
-
-        <Reveal className="mt-10 grid gap-x-8 gap-y-6 md:grid-cols-2 lg:grid-cols-4">
-          {outcomes.map((outcome) => {
-            const Icon = outcome.icon;
-
-            return (
-              <article className="border-t border-line/70 pt-5" key={outcome.title}>
-                <Icon aria-hidden="true" className="text-accent" size={22} />
-                <h2 className="mt-4 text-lg font-semibold">{outcome.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-ink/62">
-                  {outcome.description}
+      {/* ---------- Hero ---------- */}
+      <section className="relative overflow-hidden">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="grid-lines absolute inset-0 opacity-50 [mask-image:radial-gradient(ellipse_at_top_left,black_15%,transparent_65%)]" />
+          <div className="glow-orb -right-48 top-24 h-[30rem] w-[30rem] opacity-25" />
+        </div>
+        <div className="app-container page-hero relative grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12 lg:pb-24">
+          <div>
+            <Reveal>
+              <p className="eyebrow">Free AI audit</p>
+            </Reveal>
+            <SplitReveal
+              className="display mt-7"
+              delay={0.1}
+              lines={[["Find where AI"], ["pays back", { text: " first.", className: "ghost-word" }]]}
+            />
+            <Stagger delay={0.5}>
+              <StaggerItem>
+                <p className="lead mt-7">
+                  Eleven questions. A score, three ranked workflows and a two-week pilot plan.
                 </p>
-              </article>
-            );
-          })}
-        </Reveal>
-
-        <Reveal className="section-band -mx-4 mt-10 px-4 py-8 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-          <h2 className="text-2xl font-semibold">Questions people ask first</h2>
-          <div className="mt-5 grid gap-x-8 gap-y-5 md:grid-cols-2">
-            {faq.map((item) => (
-              <div className="border-t border-line/70 pt-4" key={item.question}>
-                <h3 className="font-semibold">{item.question}</h3>
-                <p className="mt-2 text-sm leading-6 text-ink/62">{item.answer}</p>
-              </div>
-            ))}
+              </StaggerItem>
+              <StaggerItem>
+                <div className="mt-9 flex flex-wrap items-center gap-3">
+                  <Magnetic>
+                    <Link className="btn btn-primary btn-lg" href="/audit/questions">
+                      Start the audit
+                      <ArrowRight aria-hidden="true" size={18} />
+                    </Link>
+                  </Magnetic>
+                  <Link className="btn btn-ghost btn-lg" href="/methodology">
+                    How it scores
+                  </Link>
+                </div>
+                <p className="mt-5 flex items-center gap-2 text-sm text-ink/50">
+                  <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                  No account. Results on screen.
+                </p>
+              </StaggerItem>
+            </Stagger>
           </div>
-          <MotionLink className="primary-button mt-7" href="/audit/questions">
-            Start the audit
-            <ArrowRight aria-hidden="true" size={16} />
-          </MotionLink>
-        </Reveal>
-      </div>
+          <Reveal delay={0.3} y={40}>
+            <HeroAuditDemo />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* ---------- Three steps ---------- */}
+      <section aria-label="How the audit works" className="app-container pb-20 md:pb-28">
+        <Stagger
+          as="ol"
+          className="grid gap-px overflow-hidden rounded-[1.75rem] bg-ink/10 md:grid-cols-3"
+          inView
+        >
+          {steps.map((step, index) => (
+            <StaggerItem
+              as="li"
+              className="group relative bg-paper p-6 transition-colors duration-500 hover:bg-surface md:p-8"
+              key={step.title}
+            >
+              <span className="stat-number block text-[3.5rem] text-ink/10 transition-colors duration-500 group-hover:text-signal md:text-[4.5rem]">
+                0{index + 1}
+              </span>
+              <p className="mt-6 font-display text-xl font-semibold tracking-[-0.02em] md:text-2xl">
+                {step.title}
+              </p>
+              <p className="mt-2 text-ink/55">{step.body}</p>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
+
+      {/* ---------- Start with your business ---------- */}
+      <section className="app-container pb-20 md:pb-28">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <SplitReveal
+            as="h2"
+            className="h2 max-w-2xl"
+            inView
+            lines={[["Start with"], [{ text: "your business.", className: "ghost-word" }]]}
+          />
+          <Reveal>
+            <p className="text-ink/55">Any industry works. These get the most specific guidance.</p>
+          </Reveal>
+        </div>
+        <Stagger as="div" className="row-list mt-10" inView>
+          {featuredIndustries.map((industry, index) => (
+            <StaggerItem key={industry.slug}>
+              <Link
+                className="row-item group grid-cols-[auto_minmax(0,1fr)_auto] gap-5 py-6 md:grid-cols-[4rem_minmax(0,1fr)_minmax(0,1fr)_auto] md:gap-8 md:py-8"
+                href={`/audit/questions?industry=${industry.slug}`}
+              >
+                <span className="font-mono text-sm text-ink/40">0{index + 1}</span>
+                <span className="font-display text-[1.5rem] font-bold leading-none tracking-[-0.04em] transition-transform duration-500 ease-out group-hover:translate-x-2 md:text-[2.25rem]">
+                  {industry.label}
+                </span>
+                <span className="col-span-3 col-start-2 row-start-2 text-ink/55 md:col-span-1 md:col-start-3 md:row-start-1">
+                  {industry.hint}
+                </span>
+                <span className="row-arrow col-start-3 row-start-1 md:col-start-4">
+                  <ArrowRight aria-hidden="true" size={16} />
+                </span>
+              </Link>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
+
+      {/* ---------- FAQ ---------- */}
+      <section className="app-container pb-24 md:pb-36">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+          <SplitReveal
+            as="h2"
+            className="h2"
+            inView
+            lines={[["Before"], [{ text: "you start.", className: "ghost-word" }]]}
+          />
+          <Reveal className="row-list">
+            {faq.map((item) => (
+              <details className="group border-b border-ink/[0.12] [&_summary::-webkit-details-marker]:hidden" key={item.question}>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg font-medium md:py-6 md:text-xl">
+                  {item.question}
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-ink/[0.12] transition-all duration-300 group-open:rotate-45 group-open:border-ink group-open:bg-ink group-open:text-paper">
+                    <Plus aria-hidden="true" size={16} />
+                  </span>
+                </summary>
+                <p className="max-w-2xl pb-6 text-ink/60">{item.answer}</p>
+              </details>
+            ))}
+          </Reveal>
+        </div>
+      </section>
     </main>
   );
 }

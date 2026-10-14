@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Inbox, MailCheck, ShieldCheck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { MailSentMark } from "@/features/account/mail-sent-mark";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitReveal } from "@/components/motion/split-reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
 export const metadata: Metadata = {
   title: "Check Your Email",
@@ -12,73 +15,49 @@ export const metadata: Metadata = {
   }
 };
 
+const steps = ["Open the latest email from SeekSmart", "Tap the sign-in link", "You land back where you were"];
+
 export default function CheckEmailPage() {
   return (
-    <main className="page-shell">
-      <div className="app-container grid max-w-5xl gap-6 lg:grid-cols-[1.05fr_0.95fr]">
-        <Reveal className="surface-strong rounded-[2rem] p-6 md:p-8">
-          <p className="eyebrow">
-            <MailCheck aria-hidden="true" size={14} />
-            Check your email
-          </p>
-          <h1 className="mt-4 max-w-2xl text-4xl font-semibold leading-tight md:text-5xl">
-            Your secure sign-in link is on its way.
-          </h1>
-          <p className="mt-4 max-w-2xl leading-7 text-ink/65">
-            Open the latest email from SeekSmart and use the sign-in link to
-            continue. The link expires quickly for safety.
-          </p>
-
-          <div className="mt-8 grid gap-4 rounded-[1.6rem] border border-line/65 bg-white/72 p-5 shadow-[0_20px_60px_rgb(22_28_36/0.07)] backdrop-blur">
-            <div className="rounded-[1.4rem] border border-line/60 bg-white/88 p-4">
-              <div className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/8 text-accent">
-                  <Inbox aria-hidden="true" size={19} />
-                </span>
-                <div className="min-w-0">
-                  <h2 className="text-lg font-semibold">What to do next</h2>
-                  <div className="mt-2 grid gap-2 text-sm leading-6 text-ink/62">
-                    <p>1. Check your inbox and spam folder.</p>
-                    <p>2. Open the latest email from SeekSmart.</p>
-                    <p>3. Tap the sign-in link to return to your dashboard or audit flow.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link className="primary-button min-h-12 flex-1 justify-center" href="/login">
-                Back to sign in
-              </Link>
-              <Link
-                className="secondary-button min-h-12 flex-1 justify-center"
-                href="/login?error=Verification"
-              >
-                Request a fresh link
-              </Link>
-            </div>
-          </div>
+    <main className="relative overflow-hidden">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="dot-grid absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_center,black_10%,transparent_60%)]" />
+      </div>
+      <div className="app-container relative flex min-h-[calc(100svh-4.5rem)] flex-col items-center justify-center py-16 text-center md:py-24">
+        <MailSentMark />
+        <Reveal className="mt-10" delay={0.2}>
+          <p className="eyebrow">Link sent</p>
+        </Reveal>
+        <SplitReveal
+          className="h1 mt-6"
+          delay={0.3}
+          lines={[["Check your inbox."]]}
+        />
+        <Reveal delay={0.6}>
+          <p className="lead mx-auto mt-5">The sign-in link expires quickly. Check spam if it is not there.</p>
         </Reveal>
 
-        <Reveal className="surface-panel rounded-[2rem] p-6" delay={0.06}>
-          <div className="flex items-center gap-3">
-            <ShieldCheck aria-hidden="true" className="text-accent" size={22} />
-            <h2 className="font-semibold">Why this is safer</h2>
-          </div>
-          <div className="mt-5 grid gap-4 text-sm leading-6 text-ink/62">
-            <p>
-              SeekSmart uses passwordless sign-in links, so there is no password
-              to remember, reset, or accidentally reuse across sites.
-            </p>
-            <p>
-              Links expire quickly and are single-use through the Auth.js
-              verification token flow backed by the database.
-            </p>
-            <p>
-              If the email does not arrive, return to sign in and request a new
-              link instead of refreshing the same old message.
-            </p>
-          </div>
+        <Stagger as="ol" className="mt-12 grid w-full max-w-lg text-left" delay={0.8}>
+          {steps.map((step, index) => (
+            <StaggerItem
+              as="li"
+              className="flex items-center gap-5 border-t border-ink/[0.12] py-4 last:border-b"
+              key={step}
+            >
+              <span className="font-mono text-sm text-ink/35">0{index + 1}</span>
+              <span className="font-medium">{step}</span>
+            </StaggerItem>
+          ))}
+        </Stagger>
+
+        <Reveal className="mt-10 flex flex-wrap items-center justify-center gap-3" delay={1}>
+          <Link className="btn btn-ghost btn-lg" href="/login">
+            <ArrowLeft aria-hidden="true" size={18} />
+            Back to sign in
+          </Link>
+          <Link className="btn btn-primary btn-lg" href="/login?error=Verification">
+            Request a fresh link
+          </Link>
         </Reveal>
       </div>
     </main>

@@ -1,28 +1,21 @@
 import type { Metadata } from "next";
-import type { Route } from "next";
-import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import {
-  ArrowRight,
-  BarChart3,
-  Clock3,
-  Heart,
-  LayoutDashboard,
-  ListChecks,
-  Mail,
-  Plus
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BarChart3, Heart, Plus } from "lucide-react";
 import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
 import { listSavedAuditRuns } from "@/server/audit-runs/queries";
 import { listLikedToolsForUser, type LikedTool } from "@/server/tools/likes";
 import { ToolLikeButton } from "@/features/tools/tool-like-button";
 import { ToolLogo } from "@/features/tools/tool-logo";
 import { AnimatedNumber } from "@/components/motion/animated-number";
-import { MotionLink } from "@/components/motion/motion-link";
+import { Magnetic } from "@/components/motion/magnetic";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitReveal } from "@/components/motion/split-reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
+import { ScoreDial } from "@/components/ui/score-dial";
 import { EmptyState } from "@/components/state-surfaces";
+import { getFeaturedIndustry } from "@/shared/recommendations/wizard";
 
 export const dynamic = "force-dynamic";
 
@@ -46,264 +39,209 @@ export default async function DashboardPage() {
     listSavedAuditRuns(session.user.id),
     listLikedToolsForUser(session.user.id)
   ]);
+  const industries = await loadIndustryNames(auditRuns.map((run) => run.id));
+  const firstName = session.user.name?.split(" ")[0];
 
   return (
-    <main className="page-shell">
-      <div className="app-container">
-        <Reveal className="workspace-shell grid gap-6 lg:grid-cols-[270px_minmax(0,1fr)]">
-          <aside className="workspace-sidebar rounded-2xl p-5">
-            <p className="eyebrow">
-              <LayoutDashboard aria-hidden="true" size={14} />
-              Workspace
-            </p>
-            <h1 className="mt-4 text-3xl font-semibold leading-tight">
-              {session.user.name ? session.user.name : "Decision desk"}
-            </h1>
-            <p className="mt-3 text-sm leading-6 text-ink/62">
-              Your saved briefs and liked tools stay here so shortlists do not
-              get lost between research sessions.
-            </p>
-
-            <div className="workspace-account mt-5">
-              <div className="flex items-center gap-2 text-sm font-semibold">
-                <Mail aria-hidden="true" size={15} />
-                Account
-              </div>
-              <p className="mt-2 break-words text-sm text-ink/60">
-                {session.user.email ?? "Signed-in account"}
+    <main>
+      {/* ---------- Hero ---------- */}
+      <section className="app-container page-hero">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
+          <div className="min-w-0">
+            <Reveal>
+              <p className="eyebrow">Workspace</p>
+            </Reveal>
+            <SplitReveal
+              className="h1 mt-6"
+              delay={0.1}
+              lines={[
+                [firstName ? `Welcome back, ${firstName}.` : "Welcome back."],
+                [{ text: "Pick up where you left off.", className: "ghost-word" }]
+              ]}
+            />
+            <Reveal delay={0.4}>
+              <p className="mt-6 break-all font-mono text-xs uppercase tracking-[0.14em] text-ink/45">
+                {session.user.email ?? "Signed in"}
+                {session.user.role === "ADMIN" ? " / Admin" : ""}
               </p>
-              <p className="mt-2 text-xs font-semibold uppercase text-accent/70">
-                {formatRole(session.user.role)}
-              </p>
-            </div>
-
-            <nav aria-label="Workspace actions" className="mt-5 grid gap-2">
-              <MotionLink className="primary-button w-full" href="/audit/questions">
-                <Plus aria-hidden="true" size={16} />
+            </Reveal>
+          </div>
+          <Reveal className="flex flex-wrap items-center gap-3" delay={0.3}>
+            <Magnetic>
+              <Link className="btn btn-primary btn-lg" href="/audit/questions">
+                <Plus aria-hidden="true" size={18} />
                 New audit
-              </MotionLink>
-              <Link className="secondary-button w-full" href="/tools">
-                Browse tools
               </Link>
-              <Link className="secondary-button w-full" href="/use-cases">
-                Use cases
-              </Link>
-            </nav>
-          </aside>
+            </Magnetic>
+            <Link className="btn btn-ghost btn-lg" href="/tools">
+              Browse tools
+            </Link>
+          </Reveal>
+        </div>
 
-          <section className="grid gap-6">
-            <div className="workspace-hero rounded-2xl p-6">
-              <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-accent/70">
-                    Decision workspace
-                  </p>
-                  <h2 className="mt-3 max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">
-                    Continue from the last AI buying decision.
-                  </h2>
-                  <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-                    Review liked tools, reopen saved audits, and start the next
-                    pilot brief without returning to a blank page.
-                  </p>
-                </div>
-                <MotionLink className="primary-button min-h-12" href="/audit/questions">
-                  Start new audit
-                  <ArrowRight aria-hidden="true" size={16} />
-                </MotionLink>
-              </div>
-            </div>
+        <Stagger className="mt-14 grid grid-cols-2 gap-6 md:max-w-xl" delay={0.35}>
+          {[
+            { label: "Saved briefs", value: auditRuns.length },
+            { label: "Liked tools", value: likedTools.length }
+          ].map((item) => (
+            <StaggerItem className="border-t border-ink/15 pt-4" key={item.label}>
+              <span className="stat-number block text-[clamp(3rem,6vw,4.5rem)]">
+                <AnimatedNumber value={item.value} />
+              </span>
+              <span className="mt-2 block text-ink/55">{item.label}</span>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
 
-            <div className="grid gap-4 md:grid-cols-3">
-              <DashboardMetric
-                icon={BarChart3}
-                label="Saved audits"
-                value={<AnimatedNumber value={auditRuns.length} />}
-              />
-              <DashboardMetric
-                icon={Heart}
-                label="Liked tools"
-                value={<AnimatedNumber value={likedTools.length} />}
-              />
-              <DashboardMetric
-                icon={Clock3}
-                label="Next action"
-                value={auditRuns.length > 0 ? "Review brief" : "Run audit"}
-              />
-            </div>
-
-            <div className="grid gap-6 xl:grid-cols-[1.06fr_0.94fr]">
-              <section className="workspace-panel rounded-2xl p-5 md:p-6">
-                <PanelHeader
-                  actionHref="/tools"
-                  actionLabel="Browse"
-                  eyebrow="Shortlist"
-                  icon={Heart}
-                  title="Liked tools"
-                />
-                {likedTools.length > 0 ? (
-                  <div className="mt-5 grid gap-3">
-                    {likedTools.map((tool) => (
-                      <LikedToolItem key={tool.id} tool={tool} />
-                    ))}
-                  </div>
-                ) : (
-                  <EmptyState
-                    action={{ href: "/tools", label: "Find tools" }}
-                    className="mt-5"
-                    description="Like tools while browsing and they will appear here as a working shortlist for later comparison."
-                    eyebrow="Shortlist empty"
-                    icon={Heart}
-                    title="No liked tools yet."
+      {/* ---------- Saved briefs ---------- */}
+      <section className="app-container pb-20 md:pb-28">
+        <SectionHead count={auditRuns.length} title="Saved briefs" />
+        {auditRuns.length > 0 ? (
+          <Stagger as="div" className="row-list mt-8" inView>
+            {auditRuns.map((auditRun) => (
+              <StaggerItem key={auditRun.id}>
+                <Link
+                  className="row-item group grid-cols-[auto_minmax(0,1fr)_auto] gap-4 py-5 md:grid-cols-[auto_minmax(0,1fr)_12rem_9rem_auto] md:gap-8 md:py-6"
+                  href={`/audit/r/${auditRun.id}`}
+                >
+                  <ScoreDial
+                    label="Readiness"
+                    size={56}
+                    tone={auditRun.readinessLevel === "Pilot-ready" ? "signal" : "ink"}
+                    value={auditRun.readinessScore ?? 0}
                   />
-                )}
-              </section>
+                  <span className="min-w-0">
+                    <span className="line-clamp-2 block font-display text-[1.2rem] leading-tight md:truncate font-bold tracking-[-0.03em] transition-transform duration-500 ease-out group-hover:translate-x-1 md:text-[1.5rem]">
+                      {auditRun.topOpportunityName ?? "AI pilot brief"}
+                    </span>
+                    <span className="mt-0.5 block truncate text-sm text-ink/50">
+                      {auditRun.readinessLevel ?? "Readiness saved"}
+                      <span className="md:hidden">
+                        {industries.get(auditRun.id) ? ` · ${industries.get(auditRun.id)}` : ""}
+                        {` · ${formatDate(auditRun.createdAt)}`}
+                      </span>
+                    </span>
+                  </span>
+                  <span className="hidden truncate text-ink/60 md:block">
+                    {industries.get(auditRun.id) ?? "Industry not set"}
+                  </span>
+                  <span className="hidden font-mono text-xs uppercase tracking-[0.12em] text-ink/45 md:block">
+                    {formatDate(auditRun.createdAt)}
+                  </span>
+                  <span className="row-arrow">
+                    <ArrowRight aria-hidden="true" size={16} />
+                  </span>
+                </Link>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        ) : (
+          <EmptyState
+            action={{ href: "/audit/questions", label: "Start your first audit" }}
+            className="mt-8"
+            description="Run an audit while signed in and the brief is saved here."
+            icon={BarChart3}
+            title="No saved briefs yet."
+          />
+        )}
+      </section>
 
-              <section className="workspace-panel rounded-2xl p-5 md:p-6">
-                <PanelHeader
-                  actionHref="/audit/questions"
-                  actionLabel="Run audit"
-                  eyebrow="History"
-                  icon={ListChecks}
-                  title="Saved briefs"
-                />
-                {auditRuns.length > 0 ? (
-                  <div className="mt-4 divide-y divide-line/70">
-                    {auditRuns.map((auditRun) => (
-                      <AuditRunItem auditRun={auditRun} key={auditRun.id} />
-                    ))}
-                  </div>
-                ) : (
-                  <EmptyState
-                    action={{ href: "/audit/questions", label: "Start first audit" }}
-                    className="mt-5"
-                    description="Run an audit while signed in and SeekSmart will save the brief, shortlist, and readiness context here."
-                    eyebrow="No saved briefs"
-                    icon={BarChart3}
-                    title="Your audit history is empty."
-                  />
-                )}
-              </section>
-            </div>
-          </section>
-        </Reveal>
-      </div>
+      {/* ---------- Liked tools ---------- */}
+      <section className="app-container pb-24 md:pb-32">
+        <SectionHead count={likedTools.length} title="Liked tools" />
+        {likedTools.length > 0 ? (
+          <Stagger as="div" className="row-list mt-8" inView>
+            {likedTools.map((tool) => (
+              <StaggerItem key={tool.id}>
+                <LikedToolRow tool={tool} />
+              </StaggerItem>
+            ))}
+          </Stagger>
+        ) : (
+          <EmptyState
+            action={{ href: "/tools", label: "Find tools" }}
+            className="mt-8"
+            description="Like tools while browsing to build a shortlist."
+            icon={Heart}
+            title="No liked tools yet."
+          />
+        )}
+      </section>
     </main>
   );
 }
 
-type SavedAuditRun = Awaited<ReturnType<typeof listSavedAuditRuns>>[number];
-
-function PanelHeader({
-  actionHref,
-  actionLabel,
-  eyebrow,
-  icon: Icon,
-  title
-}: {
-  actionHref: Route;
-  actionLabel: string;
-  eyebrow: string;
-  icon: LucideIcon;
-  title: string;
-}) {
+function SectionHead({ count, title }: { count: number; title: string }) {
   return (
-    <div className="flex flex-col gap-3 border-b border-line/60 pb-4 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-accent/75">
-          <Icon aria-hidden="true" size={15} />
-          {eyebrow}
-        </p>
-        <h2 className="mt-2 text-2xl font-semibold">{title}</h2>
-      </div>
-      <Link className="secondary-button" href={actionHref}>
-        {actionLabel}
+    <Reveal className="flex items-baseline justify-between gap-4">
+      <h2 className="h2">{title}</h2>
+      <span className="font-mono text-sm text-ink/40 tabular">{String(count).padStart(2, "0")}</span>
+    </Reveal>
+  );
+}
+
+function LikedToolRow({ tool }: { tool: LikedTool }) {
+  return (
+    <div className="row-item row-link grid-cols-[minmax(0,1fr)_auto] gap-4 py-5">
+      <Link className="group flex min-w-0 items-center gap-4" href={`/tools/${tool.slug}`}>
+        <ToolLogo logoUrl={tool.logoUrl} name={tool.name} />
+        <span className="min-w-0">
+          <span className="flex items-center gap-2">
+            <span className="truncate text-lg font-semibold tracking-[-0.01em]">{tool.name}</span>
+            <ArrowUpRight
+              aria-hidden="true"
+              className="shrink-0 text-ink/30 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-ink"
+              size={16}
+            />
+          </span>
+          <span className="block truncate text-sm text-ink/50">
+            {tool.category.name} · {formatPricing(tool.pricingType)}
+            <span className="hidden sm:inline"> · {tool.shortDescription}</span>
+          </span>
+        </span>
       </Link>
+      <ToolLikeButton
+        initialState={tool.like}
+        toolId={tool.id}
+        toolName={tool.name}
+        toolSlug={tool.slug}
+        variant="icon"
+      />
     </div>
   );
 }
 
-function AuditRunItem({ auditRun }: { auditRun: SavedAuditRun }) {
-  return (
-    <Link
-      className="workspace-list-row grid gap-3 py-4 md:grid-cols-[1fr_150px]"
-      href={`/dashboard/audits/${auditRun.id}`}
-    >
-      <div>
-        <h3 className="font-semibold text-ink">{auditRun.title}</h3>
-        <p className="mt-1 text-sm leading-6 text-ink/58">
-          {auditRun.topOpportunityName ?? "Saved AI pilot recommendation"}
-        </p>
-      </div>
-      <div className="text-sm text-ink/55 md:text-right">
-        <p className="font-medium text-ink/70">
-          {auditRun.readinessLevel
-            ? `${auditRun.readinessLevel} (${auditRun.readinessScore ?? "-"})`
-            : "Readiness saved"}
-        </p>
-        <p className="mt-1 text-xs">{formatDate(auditRun.createdAt)}</p>
-      </div>
-    </Link>
-  );
-}
+// Saved-run summaries do not carry the industry; read it from the stored
+// answers for the handful of runs on screen.
+async function loadIndustryNames(ids: string[]) {
+  const names = new Map<string, string>();
+  if (ids.length === 0) {
+    return names;
+  }
 
-function LikedToolItem({ tool }: { tool: LikedTool }) {
-  return (
-    <article className="workspace-list-card">
-      <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
-        <Link
-          className="flex min-w-0 items-start gap-3"
-          href={`/tools/${tool.slug}`}
-        >
-          <ToolLogo logoUrl={tool.logoUrl} name={tool.name} />
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-semibold text-ink">{tool.name}</h3>
-              <span className="status-pill">{formatPricing(tool.pricingType)}</span>
-            </div>
-            <p className="mt-1 text-sm leading-6 text-ink/60">
-              {tool.shortDescription}
-            </p>
-            <p className="mt-2 text-xs font-medium text-ink/45">
-              {tool.category.name} · Liked {formatDate(tool.likedAt)}
-            </p>
-          </div>
-        </Link>
-        <div className="flex items-center md:justify-end">
-          <ToolLikeButton
-            initialState={tool.like}
-            toolId={tool.id}
-            toolName={tool.name}
-            toolSlug={tool.slug}
-            variant="dashboard"
-          />
-        </div>
-      </div>
-    </article>
-  );
-}
+  const runs = await prisma.auditRun.findMany({
+    select: { id: true, input: true },
+    where: { id: { in: ids } }
+  });
+  const slugs = new Map<string, string>();
+  for (const run of runs) {
+    const slug = (run.input as { industrySlug?: unknown } | null)?.industrySlug;
+    if (typeof slug === "string") {
+      slugs.set(run.id, slug);
+    }
+  }
+  const industries = await prisma.industry.findMany({
+    select: { name: true, slug: true },
+    where: { slug: { in: [...new Set(slugs.values())] } }
+  });
+  const bySlug = new Map(industries.map((industry) => [industry.slug, industry.name]));
 
-function DashboardMetric({
-  icon: Icon,
-  label,
-  value
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: ReactNode;
-}) {
-  return (
-    <div className="workspace-metric rounded-xl p-4">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-xs font-semibold uppercase text-ink/48">{label}</p>
-        <Icon aria-hidden="true" className="text-accent" size={18} />
-      </div>
-      <p className="mt-2 truncate font-semibold">{value}</p>
-    </div>
-  );
-}
+  for (const [id, slug] of slugs) {
+    names.set(id, getFeaturedIndustry(slug)?.label ?? bySlug.get(slug) ?? slug);
+  }
 
-function formatRole(role: string) {
-  return role === "ADMIN" ? "Admin" : "User";
+  return names;
 }
 
 function formatPricing(pricingType: LikedTool["pricingType"]) {
@@ -320,7 +258,6 @@ function formatPricing(pricingType: LikedTool["pricingType"]) {
 
 function formatDate(value: Date) {
   return new Intl.DateTimeFormat("en-IN", {
-    dateStyle: "medium",
-    timeStyle: "short"
+    dateStyle: "medium"
   }).format(value);
 }

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Link2, Printer, RotateCcw } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { Check, Link2, Printer, RotateCcw, UserPlus } from "lucide-react";
 
 export function AuditShareBar({
   isSignedIn,
@@ -25,31 +26,39 @@ export function AuditShareBar({
 
   return (
     <div className="no-print flex flex-wrap items-center gap-2">
-      <button className="secondary-button min-h-10" onClick={copyLink} type="button">
-        {copied ? (
-          <Check aria-hidden="true" size={15} />
-        ) : (
-          <Link2 aria-hidden="true" size={15} />
-        )}
-        {copied ? "Link copied" : "Copy link"}
+      <button className="btn btn-primary btn-sm" onClick={copyLink} type="button">
+        <AnimatePresence initial={false} mode="wait">
+          <motion.span
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2"
+            exit={{ opacity: 0, y: -6 }}
+            initial={{ opacity: 0, y: 6 }}
+            key={copied ? "copied" : "copy"}
+            transition={{ duration: 0.2 }}
+          >
+            {copied ? (
+              <Check aria-hidden="true" size={15} />
+            ) : (
+              <Link2 aria-hidden="true" size={15} />
+            )}
+            {copied ? "Copied" : "Copy link"}
+          </motion.span>
+        </AnimatePresence>
       </button>
-      <button
-        className="secondary-button min-h-10"
-        onClick={() => window.print()}
-        type="button"
-      >
+      <button className="btn btn-ghost btn-sm" onClick={() => window.print()} type="button">
         <Printer aria-hidden="true" size={15} />
-        Print or save PDF
+        Save PDF
       </button>
-      <Link className="secondary-button min-h-10" href="/audit/questions">
+      <Link className="btn btn-ghost btn-sm" href="/audit/questions">
         <RotateCcw aria-hidden="true" size={15} />
         Adjust answers
       </Link>
       {!isSignedIn ? (
         <Link
-          className="secondary-button min-h-10"
+          className="btn btn-ghost btn-sm"
           href={`/login?callbackUrl=${encodeURIComponent(new URL(shareUrl).pathname)}`}
         >
+          <UserPlus aria-hidden="true" size={15} />
           Save to account
         </Link>
       ) : null}

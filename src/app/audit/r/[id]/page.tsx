@@ -75,17 +75,21 @@ export default async function AuditRunPage({ params }: AuditRunPageProps) {
   return (
     <AuditResultView
       actions={
-        <div className="grid gap-3">
-          {ownedByViewer ? (
-            <p className="flex items-center gap-2 text-sm text-ink/62">
-              <CheckCircle2 aria-hidden="true" className="text-accent" size={16} />
-              Saved to your dashboard.
-            </p>
-          ) : null}
-          {unlocked ? (
-            <AuditShareBar isSignedIn={Boolean(userId)} shareUrl={shareUrl} />
-          ) : null}
-        </div>
+        ownedByViewer || unlocked ? (
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            {unlocked ? (
+              <AuditShareBar isSignedIn={Boolean(userId)} shareUrl={shareUrl} />
+            ) : (
+              <span />
+            )}
+            {ownedByViewer ? (
+              <p className="flex items-center gap-2 text-sm text-ink/55">
+                <CheckCircle2 aria-hidden="true" className="text-success" size={16} />
+                Saved to your dashboard
+              </p>
+            ) : null}
+          </div>
+        ) : null
       }
       analytics={
         <AuditAnalyticsEvent

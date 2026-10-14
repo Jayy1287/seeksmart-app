@@ -41,7 +41,7 @@ export function AuditAnalyticsEvent({
 export function AuditSubmitButton() {
   return (
     <MotionButton
-      className="primary-button min-h-12"
+      className="btn btn-primary btn-lg"
       onClick={() => trackAuditEvent("audit_questions_submitted")}
       type="submit"
     >
