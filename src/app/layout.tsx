@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
 import { Suspense, type ReactNode } from "react";
 import { PageTransition } from "@/components/page-transition";
+import { RouteProgress } from "@/components/route-progress";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { AppSessionProvider } from "@/components/session-provider";
 import { SiteFooter } from "@/components/site-footer";
@@ -86,6 +87,9 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <Suspense fallback={null}>
           <SiteAnalytics />
+        </Suspense>
+        <Suspense fallback={null}>
+          <RouteProgress />
         </Suspense>
         <AppSessionProvider>
           <ToolLikeProvider>

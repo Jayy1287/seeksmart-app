@@ -161,7 +161,7 @@ textarea {
     font-size: clamp(3.1rem, 6.6vw, 6.6rem);
     font-weight: 700;
     line-height: 0.92;
-    letter-spacing: -0.05em;
+    letter-spacing: -0.042em;
     font-variation-settings: "opsz" 96;
     text-wrap: balance;
   }
@@ -901,6 +901,10 @@ textarea {
     position: sticky;
     top: 0;
     z-index: 60;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
     padding-top: 0.75rem;
     transition: padding 300ms var(--ease-out);
   }

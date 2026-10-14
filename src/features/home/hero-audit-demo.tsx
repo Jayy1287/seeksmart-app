@@ -175,7 +175,7 @@ export function HeroAuditDemo() {
                   layout
                   transition={{ duration: 0.5, ease, delay: rank * 0.06 }}
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-start gap-3">
                     <span
                       className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full font-mono text-[0.7rem] ${
                         rank === 0 ? "bg-signal text-white" : "bg-white/10 text-white/70"
@@ -183,7 +183,7 @@ export function HeroAuditDemo() {
                     >
                       {rank + 1}
                     </span>
-                    <span className="min-w-0 flex-1 truncate text-[0.88rem] text-white/90">
+                    <span className="min-w-0 flex-1 text-[0.88rem] leading-snug text-white/90">
                       {opportunity.name}
                     </span>
                     <span className="font-mono text-sm text-white tabular">

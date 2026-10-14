@@ -33,8 +33,8 @@ export function renderOgImage({
           justifyContent: "space-between",
           padding: "64px 72px",
           background:
-            "linear-gradient(135deg, #f3f8f6 0%, #ffffff 50%, #e6f4f1 100%)",
-          color: "#17212b",
+            "radial-gradient(circle at 92% 8%, #5a2412 0%, #0c0c0e 46%)",
+          color: "#f4f2ed",
           fontFamily: "sans-serif"
         }}
       >
@@ -44,7 +44,7 @@ export function renderOgImage({
               width: 56,
               height: 56,
               borderRadius: 999,
-              background: "#087e8b",
+              background: "#ff5c26",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -57,8 +57,8 @@ export function renderOgImage({
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ fontSize: 30, fontWeight: 700 }}>SeekSmart</div>
-            <div style={{ fontSize: 18, color: "#4d5b67" }}>
-              Decide where AI belongs before you buy another tool
+            <div style={{ fontSize: 18, color: "#8d8a84" }}>
+              Know where AI pays back
             </div>
           </div>
         </div>
@@ -67,7 +67,7 @@ export function renderOgImage({
             style={{
               fontSize: 22,
               fontWeight: 700,
-              color: "#087e8b",
+              color: "#ff5c26",
               textTransform: "uppercase",
               letterSpacing: 2
             }}
@@ -79,13 +79,13 @@ export function renderOgImage({
               fontSize: safeTitle.length > 50 ? 56 : 68,
               fontWeight: 700,
               lineHeight: 1.05,
-              letterSpacing: -1
+              letterSpacing: -2.5
             }}
           >
             {safeTitle}
           </div>
           {safeDescription ? (
-            <div style={{ fontSize: 28, color: "#4d5b67", lineHeight: 1.35 }}>
+            <div style={{ fontSize: 28, color: "#a19e97", lineHeight: 1.35 }}>
               {safeDescription}
             </div>
           ) : null}
@@ -95,7 +95,7 @@ export function renderOgImage({
             display: "flex",
             justifyContent: "space-between",
             fontSize: 22,
-            color: "#4d5b67"
+            color: "#8d8a84"
           }}
         >
           <div>{footer}</div>
@@ -104,12 +104,12 @@ export function renderOgImage({
               display: "flex",
               padding: "8px 18px",
               borderRadius: 999,
-              border: "2px solid #e76f51",
-              color: "#b84d3b",
+              border: "2px solid #ff5c26",
+              color: "#ff5c26",
               fontWeight: 700
             }}
           >
-            Workflow-first AI decisions
+            Free three-minute AI audit
           </div>
         </div>
       </div>

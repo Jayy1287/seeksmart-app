@@ -61,7 +61,7 @@ export default async function Home() {
           <div className="grid-lines absolute inset-0 mask-fade-b opacity-60 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]" />
           <div className="glow-orb -right-40 top-10 h-[34rem] w-[34rem] opacity-30" />
         </div>
-        <div className="app-container relative grid items-center gap-14 pb-20 pt-12 md:pt-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-10 lg:pb-28">
+        <div className="app-container relative grid items-center gap-14 pb-20 pt-12 md:pt-20 lg:grid-cols-2 lg:gap-12 lg:pb-28">
           <div>
             <Stagger>
               <StaggerItem>
