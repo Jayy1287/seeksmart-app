@@ -127,22 +127,22 @@ Business differentiation:
 Routes:
 
 - `/audit`: landing page (indexable, FAQ structured data, industry quick starts).
-- `/audit/questions`: 11-step client wizard (`src/features/audit/audit-wizard.tsx`). No login. Accepts `?industry=` and `?function=` presets. Draft answers are kept in `sessionStorage`.
-- `/audit/r/[id]`: permanent results page for a stored run. Free: readiness score, first workflow, top 3 opportunities. Email unlocks the pilot plan, opportunity detail, tool shortlists, readiness detail, checklist, and print/share.
-- `/audit/results`: compatibility route for the old GET form; scores once, stores a run, redirects to `/audit/r/[id]`.
+- `/audit/questions`: 11-step client wizard (`src/features/audit/audit-wizard.tsx`). **Requires sign-in** (`requireUser` in `src/server/auth/require-user.ts` redirects to `/login?callbackUrl=...`, keeping presets). Accepts `?industry=` and `?function=` presets. Draft answers are kept in `sessionStorage`.
+- `/audit/r/[id]`: permanent results page for a stored run. The owner (and anyone with the link, since owned runs are unlocked) sees the full brief. Older anonymous runs that were never unlocked show the summary plus a sign-in prompt (`audit-sign-in-panel.tsx`); signing in claims them if they were created in that browser.
+- `/audit/results`: compatibility route for the old GET form; requires sign-in, scores once, stores a run, redirects to `/audit/r/[id]`.
 - `/audit/start` and `/dashboard/audits/[id]`: permanent redirects.
 
 Flow:
 
-1. The wizard calls the server action `submitAuditAction` (`src/server/audit-runs/actions.ts`), which validates with Zod, maps wizard answers to the engine input (`src/shared/recommendations/wizard.ts`), scores with `scoreAudit`, stores an `AuditRun`, remembers the run id in the `seeksmart_audit_runs` cookie, and redirects.
-2. Anonymous runs expire after 30 days (`expires_at`). Unlocking with an email (`unlockAuditAction`) sets `email`, `unlocked_at`, clears the expiry, and stores the email in the `seeksmart_audit_email` cookie so later runs in the same browser unlock automatically.
-3. Signed-in users get runs stored against their account (upsert on `userId + ruleVersion + inputHash`). On sign-in, runs created in the same browser or unlocked with the same email are claimed (`claimAuditRun`, `claimAuditRunsByEmail` in `src/auth.ts`).
+1. The wizard calls the server action `submitAuditAction` (`src/server/audit-runs/actions.ts`). It rejects requests without a session (`needsSignIn`; the wizard keeps its draft and sends the user to login), validates with Zod, maps wizard answers to the engine input (`src/shared/recommendations/wizard.ts`), scores with `scoreAudit`, stores the `AuditRun` against the user, and redirects.
+2. Runs are stored per account (upsert on `userId + ruleVersion + inputHash`) and are always unlocked. There are no new anonymous runs and no email unlock any more (removed Oct 2026).
+3. Legacy anonymous runs (from before the login requirement) can still be claimed: on sign-in by email (`claimAuditRunsByEmail` in `src/auth.ts`), or on the result page if the run id is in this browser's `seeksmart_audit_runs` cookie (`claimAuditRun`).
 
 The rules version is `audit-rules-v3.0` (`src/server/recommendations/scoring.ts`). Changes from v2.3: keyword specificity bonus, payback bonus, penalty for opportunities mapped only to other industries, deterministic tiebreaks, a distinct closing reason per opportunity, strictly decreasing displayed scores in the top 3, and placeholder tool copy ("mapped based on current curated use-case data", "Teams that want to pilot this use case") is never shown as a reason.
 
 Featured industries for the questionnaire: `ecommerce`, `retail-and-hospitality`, `local-services` (see `featuredIndustries` in `src/shared/recommendations/wizard.ts`).
 
-Analytics events: `audit_questions_viewed`, `audit_step_completed`, `audit_questions_submitted`, `audit_completed` (server), `audit_results_viewed` (with `unlocked`), `audit_unlock_viewed`, `audit_unlocked` (server).
+Analytics events: `audit_questions_viewed`, `audit_step_completed`, `audit_questions_submitted`, `audit_completed` (server), `audit_results_viewed` (with `unlocked`), `audit_unlock_viewed` (sign-in prompt on a locked legacy brief). `audit_unlocked` is no longer emitted.
 
 ### Authentication And User Workspace
 
