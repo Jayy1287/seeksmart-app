@@ -121,9 +121,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         ? "Sign in to open the full brief. If you ran it on this device, it moves to your dashboard."
         : "Keep briefs and shortlists attached to your account.";
   const headline: [string, string] = isAuditCallback
-    ? ["Sign in to", "run the audit."]
+    ? ["Sign in", "to start."]
     : isBriefCallback
-      ? ["Sign in to", "see the plan."]
+      ? ["Sign in", "for the plan."]
       : ["Welcome", "back."];
 
   return (
