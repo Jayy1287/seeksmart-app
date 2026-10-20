@@ -48,6 +48,13 @@ if (process.env.NODE_ENV === "production") {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    // Pre-rendering ~250 pages against a remote pooled database: keep
+    // concurrency low and retry transient connection-pool timeouts.
+    cpus: 1,
+    staticGenerationMaxConcurrency: 2,
+    staticGenerationRetryCount: 3
+  },
   typedRoutes: true,
   devIndicators: false,
   skipTrailingSlashRedirect: true,
