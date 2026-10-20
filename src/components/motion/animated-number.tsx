@@ -23,7 +23,7 @@ export function AnimatedNumber({
   value
 }: AnimatedNumberProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const isInView = useInView(ref, { once: true, margin: "100000px 0px -48px 0px" });
   const shouldReduceMotion = useReducedMotion();
   const displayValueRef = useRef(value);
   const [displayValue, setDisplayValue] = useState(value);

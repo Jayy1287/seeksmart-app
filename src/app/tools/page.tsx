@@ -1,17 +1,15 @@
 import type { Metadata } from "next";
 import type { UrlObject } from "node:url";
 import Link from "next/link";
-import { Filter, SearchX, SlidersHorizontal } from "lucide-react";
-import { auth } from "@/auth";
+import { ArrowLeft, ArrowRight, SearchX } from "lucide-react";
 import { listToolsQuerySchema } from "@/lib/validation";
 import { listCategories } from "@/server/categories/queries";
-import { attachToolLikeStates } from "@/server/tools/likes";
 import { searchPublishedTools } from "@/server/tools/queries";
-import { ToolCard } from "@/features/tools/tool-card";
 import { ToolFilterBar } from "@/features/tools/tool-filter-bar";
+import { ToolList, formatPricing } from "@/features/tools/tool-row";
+import { AnimatedNumber } from "@/components/motion/animated-number";
 import { Reveal } from "@/components/motion/reveal";
-import { Stagger, StaggerItem } from "@/components/motion/stagger";
-import { EmptyState } from "@/components/state-surfaces";
+import { SplitReveal } from "@/components/motion/split-reveal";
 
 export const dynamic = "force-dynamic";
 
@@ -43,8 +41,7 @@ type ToolsPageProps = {
 export default async function ToolsPage({ searchParams }: ToolsPageProps) {
   const rawParams = await searchParams;
   const params = listToolsQuerySchema.parse(rawParams);
-  const [session, result, categories] = await Promise.all([
-    auth(),
+  const [result, categories] = await Promise.all([
     searchPublishedTools({
       query: params.q,
       categorySlug: params.category,
@@ -54,44 +51,49 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
     }),
     listCategories()
   ]);
-  const tools = await attachToolLikeStates(result.tools, session?.user?.id);
-  const isSignedIn = Boolean(session?.user);
+  const tools = result.tools;
   const activeCategory = categories.find(
     (category) => category.slug === params.category
   );
-  const activeFilterCount = [
-    params.q,
-    params.category,
-    params.pricing
-  ].filter(Boolean).length;
+  const activeFilters = [
+    params.q ? `“${params.q}”` : null,
+    activeCategory?.name ?? null,
+    params.pricing ? formatPricing(params.pricing) : null
+  ].filter((value): value is string => Boolean(value));
   const startResult =
     result.total === 0 ? 0 : (result.page - 1) * result.limit + 1;
   const endResult = Math.min(result.page * result.limit, result.total);
 
   return (
-    <main className="page-shell">
-      <section className="app-container">
-        <Reveal className="mb-7 flex flex-col gap-5 border-b border-line/50 pb-7 md:flex-row md:items-end md:justify-between">
+    <main>
+      <section className="app-container page-hero">
+        <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="eyebrow">
-              <SlidersHorizontal aria-hidden="true" size={14} />
-              Tool directory
-            </p>
-            <h1 className="mt-3 max-w-[16ch] text-3xl font-semibold leading-tight sm:max-w-none sm:text-4xl">
-              Compare tools with a clear use case in mind
-            </h1>
-            <p className="mt-3 max-w-[21rem] leading-7 text-ink/65 sm:max-w-2xl">
-              Filter by category, pricing, and fit once you know what problem
-              you are solving.
-            </p>
+            <Reveal y={12}>
+              <p className="eyebrow">Tool directory</p>
+            </Reveal>
+            <SplitReveal
+              className="h1 mt-6"
+              delay={0.05}
+              lines={[["Every tool,"], [{ text: "scored and priced.", className: "ghost-word" }]]}
+            />
+            <Reveal delay={0.35} y={16}>
+              <p className="lead mt-6">Filter by the job, the budget, or the name.</p>
+            </Reveal>
           </div>
-          <div className="metric-tile rounded-2xl px-4 py-3 text-sm text-ink/60">
-            <span className="font-semibold text-ink">{result.total}</span>{" "}
-            matching tools
-          </div>
-        </Reveal>
+          <Reveal className="shrink-0 md:text-right" delay={0.3} y={16}>
+            <p className="stat-number text-[clamp(3.5rem,8vw,6rem)]">
+              <AnimatedNumber value={result.total} />
+            </p>
+            <p className="mt-2 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink/50">
+              {activeFilters.length > 0 ? "Matching tools" : "Tools listed"}
+            </p>
+          </Reveal>
+        </div>
+      </section>
 
-        <Reveal delay={0.05}>
+      <section className="app-container pb-24 md:pb-32">
+        <Reveal delay={0.2} y={16}>
           <ToolFilterBar
             categories={categories}
             initialCategory={params.category}
@@ -100,46 +102,32 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
           />
         </Reveal>
 
-        <div className="my-5 flex flex-col gap-3 text-sm md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-wrap gap-2">
-            {params.q ? <FilterChip label={`Search: ${params.q}`} /> : null}
-            {activeCategory ? (
-              <FilterChip label={`Category: ${activeCategory.name}`} />
+        <div className="mb-6 mt-10 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-sm md:mt-14">
+          <p className="text-ink/55">
+            {tools.length > 0 ? (
+              <>
+                <span className="font-mono tabular text-ink">
+                  {startResult}&ndash;{endResult}
+                </span>{" "}
+                of <span className="font-mono tabular text-ink">{result.total}</span>
+              </>
+            ) : (
+              "No results"
+            )}
+            {activeFilters.length > 0 ? (
+              <span className="text-ink/45"> &middot; {activeFilters.join(" · ")}</span>
             ) : null}
-            {params.pricing ? (
-              <FilterChip label={`Pricing: ${formatPricing(params.pricing)}`} />
-            ) : null}
-            {activeFilterCount === 0 ? (
-              <span className="inline-flex items-center gap-2 text-ink/55">
-                <Filter aria-hidden="true" size={15} />
-                Showing all published tools
-              </span>
-            ) : null}
-          </div>
-          {activeFilterCount > 0 ? (
-            <Link className="font-medium text-accent" href="/tools">
-              Reset filters
+          </p>
+          {activeFilters.length > 0 ? (
+            <Link className="link-underline text-ink/70 hover:text-ink" href="/tools">
+              Clear filters
             </Link>
           ) : null}
         </div>
 
         {tools.length > 0 ? (
           <>
-            <div className="mb-4 flex flex-col gap-2 border-y border-line/40 py-3 text-sm text-ink/55 sm:flex-row sm:items-center sm:justify-between">
-              <span>
-                Showing {startResult}-{endResult} of {result.total}
-              </span>
-              <span className="text-ink/45">
-                Sorted to help you build a shortlist faster.
-              </span>
-            </div>
-            <Stagger className="grid gap-x-8 gap-y-8 md:grid-cols-2 lg:grid-cols-3">
-              {tools.map((tool) => (
-                <StaggerItem key={tool.id}>
-                  <ToolCard isSignedIn={isSignedIn} tool={tool} />
-                </StaggerItem>
-              ))}
-            </Stagger>
+            <ToolList tools={tools} />
             <Pagination
               currentPage={result.page}
               hasNextPage={result.hasNextPage}
@@ -149,25 +137,24 @@ export default async function ToolsPage({ searchParams }: ToolsPageProps) {
             />
           </>
         ) : (
-          <EmptyState
-            action={{ href: "/tools", label: "Reset filters" }}
-            description="No published tools match the current filter set. Remove one constraint or search by a broader workflow term."
-            eyebrow="No matching tools"
-            icon={SearchX}
-            secondaryAction={{ href: "/audit/start", label: "Run the audit" }}
-            title="This shortlist is too narrow."
-          />
+          <Reveal className="empty-state" y={16}>
+            <span className="empty-state-icon">
+              <SearchX aria-hidden="true" size={22} />
+            </span>
+            <h2 className="empty-state-title">Nothing matches that.</h2>
+            <p className="empty-state-copy">Drop a filter or try a broader word.</p>
+            <div className="empty-state-actions">
+              <Link className="btn btn-primary" href="/tools">
+                Clear filters
+              </Link>
+              <Link className="btn btn-ghost" href="/audit/questions">
+                Run the audit
+              </Link>
+            </div>
+          </Reveal>
         )}
       </section>
     </main>
-  );
-}
-
-function FilterChip({ label }: { label: string }) {
-  return (
-    <span className="rounded-full bg-accent/10 px-3 py-1.5 font-medium text-accent ring-1 ring-accent/15">
-      {label}
-    </span>
   );
 }
 
@@ -195,36 +182,92 @@ function Pagination({
     return null;
   }
 
+  const pages = pageWindow(currentPage, totalPages);
+
   return (
     <nav
       aria-label="Tool results pagination"
-      className="surface-panel mt-8 flex items-center justify-between rounded-xl p-4 text-sm"
+      className="mt-12 flex items-center justify-between gap-4"
     >
       {hasPreviousPage ? (
         <Link
-          className="font-medium text-accent"
+          aria-label="Previous page"
+          className="btn btn-ghost"
           href={buildToolsHref(params, currentPage - 1)}
         >
-          Previous
+          <ArrowLeft aria-hidden="true" size={16} />
+          <span className="hidden sm:inline">Previous</span>
         </Link>
       ) : (
-        <span className="text-ink/35">Previous</span>
+        <span aria-hidden="true" className="btn btn-ghost pointer-events-none opacity-35">
+          <ArrowLeft size={16} />
+          <span className="hidden sm:inline">Previous</span>
+        </span>
       )}
-      <span className="text-ink/60">
-        Page {currentPage} of {totalPages}
-      </span>
+
+      <ol className="flex items-center gap-1 font-mono text-sm tabular">
+        {pages.map((page, index) =>
+          page === null ? (
+            <li aria-hidden="true" className="px-1 text-ink/35" key={`gap-${index}`}>
+              &hellip;
+            </li>
+          ) : (
+            <li key={page}>
+              {page === currentPage ? (
+                <span
+                  aria-current="page"
+                  className="flex h-10 min-w-10 items-center justify-center rounded-full bg-ink px-3 text-paper"
+                >
+                  {page}
+                </span>
+              ) : (
+                <Link
+                  aria-label={`Page ${page}`}
+                  className="flex h-10 min-w-10 items-center justify-center rounded-full px-3 text-ink/55 transition-colors hover:bg-ink/[0.06] hover:text-ink"
+                  href={buildToolsHref(params, page)}
+                >
+                  {page}
+                </Link>
+              )}
+            </li>
+          )
+        )}
+      </ol>
+
       {hasNextPage ? (
         <Link
-          className="font-medium text-accent"
+          aria-label="Next page"
+          className="btn btn-primary"
           href={buildToolsHref(params, currentPage + 1)}
         >
-          Next
+          <span className="hidden sm:inline">Next</span>
+          <ArrowRight aria-hidden="true" size={16} />
         </Link>
       ) : (
-        <span className="text-ink/35">Next</span>
+        <span aria-hidden="true" className="btn btn-ghost pointer-events-none opacity-35">
+          <span className="hidden sm:inline">Next</span>
+          <ArrowRight size={16} />
+        </span>
       )}
     </nav>
   );
+}
+
+// First, last, and the pages around the current one; null marks a gap.
+function pageWindow(current: number, total: number): Array<number | null> {
+  const pages = new Set([1, total, current - 1, current, current + 1]);
+  const sorted = [...pages].filter((page) => page >= 1 && page <= total).sort((a, b) => a - b);
+  const result: Array<number | null> = [];
+
+  for (const page of sorted) {
+    const previous = result[result.length - 1];
+    if (typeof previous === "number" && page - previous > 1) {
+      result.push(null);
+    }
+    result.push(page);
+  }
+
+  return result;
 }
 
 function buildToolsHref(params: PaginationProps["params"], page: number) {
@@ -250,16 +293,4 @@ function buildToolsHref(params: PaginationProps["params"], page: number) {
     pathname: "/tools",
     query: Object.fromEntries(searchParams)
   } satisfies UrlObject;
-}
-
-function formatPricing(pricingType: "FREE" | "PAID" | "FREEMIUM") {
-  if (pricingType === "FREEMIUM") {
-    return "Freemium";
-  }
-
-  if (pricingType === "FREE") {
-    return "Free";
-  }
-
-  return "Paid";
 }

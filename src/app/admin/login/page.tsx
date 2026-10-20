@@ -9,6 +9,7 @@ import {
 } from "@/server/admin/auth";
 import { MotionButton } from "@/components/motion/motion-button";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitReveal } from "@/components/motion/split-reveal";
 
 export const metadata: Metadata = {
   title: "Admin Sign In",
@@ -51,49 +52,58 @@ export default async function AdminLoginPage() {
   }
 
   return (
-    <main className="page-shell">
-      <div className="app-container grid max-w-3xl gap-6">
-        <Reveal className="surface-strong rounded-2xl p-6">
+    <main className="app-container page-hero grid grid-cols-[minmax(0,1fr)] gap-12 pb-24 md:pb-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,28rem)] lg:items-start lg:gap-20">
+      <div>
+        <Reveal y={10}>
           <p className="eyebrow">Admin</p>
-          <h1 className="mt-2 text-4xl font-semibold">Review workspace</h1>
-          <p className="mt-3 leading-7 text-ink/65">
-            Sign in with the Google admin account, or use the temporary admin
-            password fallback while it remains configured.
-          </p>
-          {session?.user ? (
-            <div className="mt-5 rounded-xl border border-signal/25 bg-signal/10 p-4 text-sm leading-6 text-ink/70">
-              <p className="font-semibold text-signal">
-                {session.user.email ?? "This Google account"} is signed in but
-                does not have admin access.
-              </p>
-              <p className="mt-1">
-                Sign out, then continue with Google and choose
-                seeksmartapp@gmail.com.
-              </p>
-              <form action={signOutCurrentUser} className="mt-4">
-                <MotionButton className="secondary-button" type="submit">
-                  Sign out current Google account
-                </MotionButton>
-              </form>
-            </div>
-          ) : (
-            <form action={signInWithGoogle} className="mt-5">
-              <MotionButton className="primary-button" type="submit">
-                <LogIn aria-hidden="true" size={17} />
-                Continue with Google
+        </Reveal>
+        <SplitReveal
+          className="h1 mt-6"
+          delay={0.05}
+          lines={[["Review"], [{ text: "workspace.", className: "ghost-word" }]]}
+        />
+        <Reveal delay={0.35} y={14}>
+          <p className="lead mt-6">Google admin account, or the temporary password fallback.</p>
+        </Reveal>
+      </div>
+
+      <Reveal className="surface grid gap-6 p-6 md:p-8" delay={0.2} y={24}>
+        {session?.user ? (
+          <div className="grid gap-4">
+            <p className="flex items-start gap-2 text-sm">
+              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-danger" />
+              <span>
+                <span className="font-medium">{session.user.email ?? "This Google account"}</span>{" "}
+                <span className="text-ink/60">has no admin access. Sign out, then choose seeksmartapp@gmail.com.</span>
+              </span>
+            </p>
+            <form action={signOutCurrentUser}>
+              <MotionButton className="btn btn-ghost w-full" type="submit">
+                Sign out current Google account
               </MotionButton>
             </form>
-          )}
-        </Reveal>
+          </div>
+        ) : (
+          <form action={signInWithGoogle}>
+            <MotionButton className="btn btn-primary btn-lg w-full" type="submit">
+              <LogIn aria-hidden="true" size={17} />
+              Continue with Google
+            </MotionButton>
+          </form>
+        )}
+        <div className="flex items-center gap-4 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink/40">
+          <span className="h-px flex-1 bg-ink/10" />
+          or
+          <span className="h-px flex-1 bg-ink/10" />
+        </div>
         {isConfigured ? (
           <AdminLoginForm />
         ) : (
-          <div className="surface-panel rounded-xl border-signal/30 p-5 text-sm leading-6 text-signal">
-            Admin auth is not configured. Add ADMIN_PASSWORD to the environment
-            before using the review workspace.
-          </div>
+          <p className="text-sm font-medium text-danger">
+            Admin auth is not configured. Add ADMIN_PASSWORD to the environment.
+          </p>
         )}
-      </div>
+      </Reveal>
     </main>
   );
 }

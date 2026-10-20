@@ -124,6 +124,9 @@ export const updateAdminToolSchema = z.object({
   status: statusSchema,
   metaTitle: optionalTrimmedString(120),
   metaDescription: optionalTrimmedString(220),
+  pricingNote: optionalTrimmedString(300),
+  bestFor: optionalTrimmedString(300),
+  notFor: optionalTrimmedString(300),
   featureIds: idListSchema,
   useCaseIds: idListSchema
 });

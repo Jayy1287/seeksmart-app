@@ -17,10 +17,10 @@ function normalizePostHogHost(host: string | undefined) {
   return trimmedHost.replace(/\/$/, "");
 }
 
-if (posthogKey) {
+function initPostHog(key: string) {
   const apiHost = normalizePostHogHost(process.env.NEXT_PUBLIC_POSTHOG_HOST);
 
-  posthog.init(posthogKey, {
+  posthog.init(key, {
     api_host: apiHost,
     ui_host:
       apiHost === DEFAULT_POSTHOG_PROXY_PATH
@@ -34,4 +34,14 @@ if (posthogKey) {
     disable_session_recording: true,
     debug: process.env.NODE_ENV === "development"
   });
+}
+
+// Analytics never needs to compete with first paint. Initialise once the
+// browser is idle; events captured before that are queued by posthog-js.
+if (posthogKey) {
+  if (typeof window.requestIdleCallback === "function") {
+    window.requestIdleCallback(() => initPostHog(posthogKey), { timeout: 3000 });
+  } else {
+    window.setTimeout(() => initPostHog(posthogKey), 1500);
+  }
 }

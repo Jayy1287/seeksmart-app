@@ -53,6 +53,14 @@ export type PublicToolDetail = PublicToolCard & {
   longDescription: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
+  pricingNote: string | null;
+  startingPrice: number | null;
+  bestFor: string | null;
+  notFor: string | null;
+  integrations: string[];
+  vendor: string | null;
+  screenshotUrl: string | null;
+  contentUpdatedAt: string | null;
   features: PublicTaxonomyItem[];
   useCases: Array<
     PublicTaxonomyItem & {

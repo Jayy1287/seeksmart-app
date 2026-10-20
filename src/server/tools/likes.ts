@@ -76,7 +76,7 @@ export async function countLikedToolsForUser(userId: string) {
   });
 }
 
-async function getToolLikeStates(
+export async function getToolLikeStates(
   toolIds: string[],
   userId?: string
 ): Promise<Map<string, ToolLikeState>> {

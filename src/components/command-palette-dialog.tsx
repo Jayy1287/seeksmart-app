@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Command } from "cmdk";
 import * as Dialog from "@radix-ui/react-dialog";
 import { capturePostHogEvent } from "@/features/analytics/posthog-client";
+import "@/styles/content.css";
 import {
   BarChart3,
   BookOpen,
@@ -16,7 +17,9 @@ import {
   Search,
   Settings,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  ArrowRight,
+  CornerDownLeft
 } from "lucide-react";
 import type {
   CommandSearchGroup,
@@ -109,12 +112,13 @@ export function CommandPaletteDialog({
 
   return (
     <Command.Dialog
-      contentClassName="command-dialog"
+      className="flex max-h-[min(34rem,calc(100dvh-6rem))] flex-col"
+      contentClassName="ss-palette fixed left-1/2 top-[max(1rem,12vh)] z-[100] w-[calc(100vw-1.5rem)] max-w-[40rem] -translate-x-1/2 overflow-hidden rounded-[1.5rem] border border-ink/10 bg-paper shadow-[0_40px_120px_-30px_rgb(14_14_16/0.55)] outline-none"
       label="SeekSmart command palette"
       loop
       onOpenChange={onOpenChange}
       open={isOpen}
-      overlayClassName="command-overlay"
+      overlayClassName="ss-palette-overlay fixed inset-0 z-[99] bg-night/40 backdrop-blur-md"
       shouldFilter
     >
       <Dialog.Title className="sr-only">SeekSmart command palette</Dialog.Title>
@@ -122,71 +126,109 @@ export function CommandPaletteDialog({
         Search and open SeekSmart pages, tools, use cases, industries, playbooks,
         dashboards, and admin shortcuts.
       </Dialog.Description>
-      <div className="command-input-shell">
-        <Search aria-hidden="true" className="text-ink/42" size={18} />
+      <div className="flex items-center gap-3 border-b border-ink/10 px-5">
+        <Search aria-hidden="true" className="shrink-0 text-ink/40" size={20} />
         <Command.Input
           autoFocus
-          className="command-input"
+          className="h-16 min-w-0 flex-1 bg-transparent font-display text-xl tracking-[-0.02em] outline-none focus-visible:outline-none placeholder:text-ink/35 md:text-[1.4rem]"
           onValueChange={setQuery}
-          placeholder="Search pages, tools, use cases..."
+          placeholder="Search pages, tools, use cases"
           value={query}
         />
+        {isPending ? (
+          <span aria-hidden="true" className="pulse-dot h-2 w-2 shrink-0 rounded-full bg-signal" />
+        ) : null}
+        <span className="kbd hidden shrink-0 sm:inline-flex">Esc</span>
       </div>
-      <Command.List className="command-list">
-        <Command.Empty className="command-empty">
-          No matching paths found.
+      <Command.List className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-2 pb-2 pt-1 [scrollbar-width:thin]">
+        <Command.Empty className="px-4 py-12 text-center">
+          <span className="font-display text-xl font-bold tracking-[-0.03em]">Nothing found.</span>
+          <span className="mt-1 block text-sm text-ink/50">Try a tool name or a task.</span>
         </Command.Empty>
-        <Command.Group className="command-group" heading="Go To">
+        <Command.Group className={groupClass} heading="Go to">
           {staticCommands.map((command) => {
             const Icon = command.icon;
 
             return (
               <Command.Item
-                className="command-item"
+                className={itemClass}
                 key={command.href}
                 onSelect={() => openHref(command.href, command.label, "static")}
                 value={`${command.label} ${command.description}`}
               >
-                <Icon aria-hidden="true" size={17} />
-                <span>
-                  <strong>{command.label}</strong>
-                  <small>{command.description}</small>
+                <span className={iconClass}>
+                  <Icon aria-hidden="true" size={16} />
                 </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate font-medium">{command.label}</span>
+                  <span className="block truncate text-[0.8rem] text-ink/50 group-data-[selected=true]/item:text-paper/55">{command.description}</span>
+                </span>
+                <CornerDownLeft aria-hidden="true" className={enterClass} size={15} />
               </Command.Item>
             );
           })}
         </Command.Group>
         {isPending ? (
-          <Command.Loading className="command-loading">
-            Searching...
+          <Command.Loading className="px-4 py-3 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink/40">
+            Searching
           </Command.Loading>
         ) : null}
         {groups.map((group) => (
           <Command.Group
-            className="command-group"
+            className={groupClass}
             heading={group.heading}
             key={group.heading}
           >
             {group.items.map((item) => (
               <Command.Item
-                className="command-item"
+                className={itemClass}
                 key={`${item.type}-${item.id}`}
                 onSelect={() => openHref(item.href, item.label, item.type)}
                 value={`${item.label} ${item.description ?? ""} ${item.type}`}
               >
-                <Sparkles aria-hidden="true" size={17} />
-                <span>
-                  <strong>{item.label}</strong>
-                  <small>{item.description ?? item.href}</small>
+                <span className={iconClass}>
+                  <ArrowRight aria-hidden="true" size={15} />
                 </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate font-medium">{item.label}</span>
+                  <span className="block truncate text-[0.8rem] text-ink/50 group-data-[selected=true]/item:text-paper/55">{item.description ?? item.href}</span>
+                </span>
+                <CornerDownLeft aria-hidden="true" className={enterClass} size={15} />
               </Command.Item>
             ))}
           </Command.Group>
         ))}
       </Command.List>
+      <div className="hidden items-center gap-4 border-t border-ink/10 bg-ink/[0.03] px-5 py-3 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-ink/45 sm:flex">
+        <span className="flex items-center gap-1.5">
+          <span className="kbd">↑</span>
+          <span className="kbd">↓</span>
+          Move
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="kbd">↵</span>
+          Open
+        </span>
+        <span className="ml-auto flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-signal" />
+          SeekSmart
+        </span>
+      </div>
     </Command.Dialog>
   );
 }
+
+const groupClass =
+  "pt-2 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pb-2 [&_[cmdk-group-heading]]:pt-3 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[0.68rem] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.14em] [&_[cmdk-group-heading]]:text-ink/40";
+
+const itemClass =
+  "group/item relative flex min-h-[3.25rem] cursor-pointer select-none items-center gap-3 rounded-2xl px-3 py-2 text-[0.95rem] text-ink/80 transition-colors duration-150 data-[selected=true]:bg-ink data-[selected=true]:text-paper data-[disabled=true]:opacity-40";
+
+const iconClass =
+  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-ink/[0.05] text-ink/60 transition-colors duration-150 group-data-[selected=true]/item:bg-signal group-data-[selected=true]/item:text-white";
+
+const enterClass =
+  "shrink-0 opacity-0 transition-opacity duration-150 group-data-[selected=true]/item:opacity-60";
 
 function buildStaticCommands({
   isAdmin,
@@ -198,7 +240,7 @@ function buildStaticCommands({
   const commands: StaticCommand[] = [
     {
       description: "Start or continue an AI audit",
-      href: "/audit/start",
+      href: "/audit/questions",
       icon: Gauge,
       label: "Run AI audit"
     },

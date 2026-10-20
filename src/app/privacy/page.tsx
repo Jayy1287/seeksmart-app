@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LegalPage, type LegalSection } from "@/features/content/legal-page";
 
 export const metadata: Metadata = {
   title: "Privacy",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
   }
 };
 
-const privacySections = [
+const privacySections: LegalSection[] = [
   {
     title: "Who this notice covers",
     body: [
@@ -117,38 +118,13 @@ const privacySections = [
 
 export default function PrivacyPage() {
   return (
-    <main className="page-shell">
-      <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6">
-          <p className="eyebrow">Privacy</p>
-          <h1 className="mt-3 text-4xl font-semibold">Privacy and cookies</h1>
-          <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-            SeekSmart is in public beta. This notice explains what the app
-            currently collects, how cookies and product analytics are used, how
-            signed-in audit history is handled, and how to contact us about
-            privacy requests.
-          </p>
-          <p className="mt-4 text-sm font-medium text-ink/55">
-            Last updated: June 17, 2026
-          </p>
-        </section>
-
-        <section className="surface-panel mt-6 grid gap-6 rounded-xl p-6">
-          {privacySections.map((section) => (
-            <div
-              className="border-b border-line pb-6 last:border-b-0 last:pb-0"
-              key={section.title}
-            >
-              <h2 className="text-xl font-semibold">{section.title}</h2>
-              <div className="mt-3 grid gap-3 leading-7 text-ink/65">
-                {section.body.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-              </div>
-            </div>
-          ))}
-        </section>
-      </div>
-    </main>
+    <LegalPage
+      eyebrow="Privacy"
+      lead="What the beta collects, why, and how to ask us to delete it."
+      lines={[["Privacy"], [{ text: "and cookies.", className: "ghost-word" }]]}
+      sections={privacySections}
+      sibling={{ href: "/terms", label: "Read the terms" }}
+      updated="17 Jun 2026"
+    />
   );
 }

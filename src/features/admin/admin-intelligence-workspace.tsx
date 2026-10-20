@@ -16,7 +16,7 @@ export function AdminIntelligenceWorkspace({
   workspace
 }: AdminIntelligenceWorkspaceProps) {
   return (
-    <div className="grid gap-6">
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-20">
       <Section
         count={workspace.businessFunctions.length}
         description="Business functions group use cases and opportunities by operating area."
@@ -95,19 +95,18 @@ function Section({
   title: string;
 }) {
   return (
-    <section className="surface-panel rounded-xl p-5">
-      <div className="flex flex-col gap-3 border-b border-line pb-4 md:flex-row md:items-end md:justify-between">
+    <section>
+      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h2 className="text-xl font-semibold">{title}</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-ink/60">
-            {description}
-          </p>
+          <h2 className="h3">{title}</h2>
+          <p className="mt-2 max-w-2xl text-sm text-ink/55">{description}</p>
         </div>
-        <div className="metric-tile w-fit rounded-xl px-4 py-3 text-sm">
-          <span className="font-semibold">{count}</span> records
-        </div>
+        <p className="flex items-baseline gap-2">
+          <span className="stat-number text-[2.6rem]">{count}</span>
+          <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink/45">records</span>
+        </p>
       </div>
-      <div className="mt-5 grid gap-4">{children}</div>
+      <div className="row-list mt-6">{children}</div>
     </section>
   );
 }
@@ -381,17 +380,22 @@ function RecordForm({
   }
 
   return (
-    <details className="metric-tile rounded-xl p-4" open={method === "POST" ? false : undefined}>
-      <summary className="cursor-pointer font-semibold">{title}</summary>
-      <form className="mt-4 grid gap-4" onSubmit={handleSubmit}>
-        <div className="grid gap-4 md:grid-cols-2">{children}</div>
+    <details className="group/record border-b border-ink/[0.12] open:bg-surface/60" open={method === "POST" ? false : undefined}>
+      <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-1 py-4 font-medium transition-colors hover:text-accent [&::-webkit-details-marker]:hidden">
+        <span className="min-w-0 truncate">{title}</span>
+        <span aria-hidden="true" className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-ink/[0.12] text-ink/60 transition-transform duration-300 group-open/record:rotate-45">
+          <Plus size={15} />
+        </span>
+      </summary>
+      <form className="grid grid-cols-[minmax(0,1fr)] gap-5 px-1 pb-8 pt-2" onSubmit={handleSubmit}>
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-5 md:grid-cols-2">{children}</div>
         <div className="flex items-center gap-3">
-          <button className="primary-button" disabled={state === "submitting"}>
+          <button className="btn btn-primary" disabled={state === "submitting"}>
             {method === "POST" ? <Plus aria-hidden="true" size={17} /> : <Save aria-hidden="true" size={17} />}
             {state === "submitting" ? "Saving" : method === "POST" ? "Create" : "Save"}
           </button>
           {message ? (
-            <p className={state === "error" ? "text-sm text-signal" : "text-sm text-accent"}>
+            <p className={state === "error" ? "text-sm font-medium text-danger" : "text-sm font-medium text-success"}>
               {message}
             </p>
           ) : null}
@@ -413,10 +417,10 @@ function TextInput({
   required?: boolean;
 }) {
   return (
-    <label className="grid gap-2">
-      <span className="text-sm font-medium">{label}</span>
+    <label className="block">
+      <span className="field-label">{label}</span>
       <input
-        className="control-field"
+        className="field"
         defaultValue={defaultValue ?? ""}
         name={name}
         required={required}
@@ -435,10 +439,10 @@ function NumberInput({
   name: string;
 }) {
   return (
-    <label className="grid gap-2">
-      <span className="text-sm font-medium">{label}</span>
+    <label className="block">
+      <span className="field-label">{label}</span>
       <input
-        className="control-field"
+        className="field"
         defaultValue={defaultValue}
         min={0}
         name={name}
@@ -458,10 +462,10 @@ function TextArea({
   name: string;
 }) {
   return (
-    <label className="grid gap-2 md:col-span-2">
-      <span className="text-sm font-medium">{label}</span>
+    <label className="block md:col-span-2">
+      <span className="field-label">{label}</span>
       <textarea
-        className="control-field min-h-24 py-3"
+        className="field min-h-24 py-3"
         defaultValue={defaultValue ?? ""}
         name={name}
       />
@@ -479,9 +483,9 @@ function Select({
   name: string;
 }) {
   return (
-    <label className="grid gap-2">
-      <span className="text-sm font-medium">{label}</span>
-      <select className="control-field" defaultValue={defaultValue} name={name}>
+    <label className="block">
+      <span className="field-label">{label}</span>
+      <select className="field" defaultValue={defaultValue} name={name}>
         <option value="PUBLISHED">Published</option>
         <option value="DRAFT">Draft</option>
         <option value="PENDING_REVIEW">Pending review</option>
@@ -502,9 +506,9 @@ function LevelSelect({
   name: string;
 }) {
   return (
-    <label className="grid gap-2">
-      <span className="text-sm font-medium">{label}</span>
-      <select className="control-field" defaultValue={defaultValue} name={name}>
+    <label className="block">
+      <span className="field-label">{label}</span>
+      <select className="field" defaultValue={defaultValue} name={name}>
         <option value="LOW">Low</option>
         <option value="MEDIUM">Medium</option>
         <option value="HIGH">High</option>
@@ -525,9 +529,9 @@ function SelectOptions({
   name: string;
 }) {
   return (
-    <label className="grid gap-2">
-      <span className="text-sm font-medium">{label}</span>
-      <select className="control-field" defaultValue={defaultValue} name={name}>
+    <label className="block">
+      <span className="field-label">{label}</span>
+      <select className="field" defaultValue={defaultValue} name={name}>
         <option value="">None</option>
         {items.map((item) => (
           <option key={item.id} value={item.id}>
@@ -553,7 +557,7 @@ function CheckboxGroup({
   return (
     <fieldset className="grid gap-2 md:col-span-2">
       <legend className="text-sm font-medium">{title}</legend>
-      <div className="grid max-h-56 gap-2 overflow-auto rounded-lg border border-line bg-surface/70 p-3 md:grid-cols-2">
+      <div className="grid max-h-56 gap-2 overflow-auto rounded-2xl border border-ink/10 bg-surface p-3 md:grid-cols-2">
         {items.map((item) => (
           <label className="inline-flex items-start gap-2 text-sm" key={item.id}>
             <input

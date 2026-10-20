@@ -1,48 +1,13 @@
 import type { Metadata } from "next";
 import type { Route } from "next";
 import Link from "next/link";
-import {
-  ArrowRight,
-  BookOpen,
-  Clock3,
-  Compass,
-  FileCheck2,
-  Layers3,
-  SearchCheck,
-  ShieldCheck,
-  Sparkles
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { articles } from "@/lib/articles";
 import { absoluteUrl } from "@/lib/site";
-
-const articleVisuals = {
-  "ai-automation-ideas-by-department": {
-    accent: "bg-accent/10 text-accent ring-accent/15",
-    icon: Layers3,
-    label: "Automation map"
-  },
-  "ai-tool-evaluation-checklist": {
-    accent: "bg-signal/10 text-signal ring-signal/15",
-    icon: ShieldCheck,
-    label: "Vendor checklist"
-  },
-  "best-ai-tools-for-small-business": {
-    accent: "bg-ink/5 text-ink/70 ring-ink/10",
-    icon: Sparkles,
-    label: "Small business"
-  },
-  "chatgpt-vs-ai-tools-for-business": {
-    accent: "bg-accent/10 text-accent ring-accent/15",
-    icon: FileCheck2,
-    label: "Tool decision"
-  },
-  "how-to-choose-ai-tools-for-business": {
-    accent: "bg-signal/10 text-signal ring-signal/15",
-    icon: Compass,
-    label: "Buying guide"
-  }
-};
+import { ContentHero } from "@/features/content/content-hero";
+import { formatShortDate, pad } from "@/features/content/slug";
 
 export const metadata: Metadata = {
   title: "AI Articles and Practical Buying Guides",
@@ -74,145 +39,82 @@ export default function ArticlesPage() {
   };
 
   return (
-    <main className="page-shell">
+    <main>
       <script
         dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
         type="application/ld+json"
       />
-      <div className="app-container">
-        <Reveal className="surface-strong rounded-2xl p-6 md:p-8">
-          <p className="eyebrow">
-            <BookOpen aria-hidden="true" size={14} />
-            AI articles
-          </p>
-          <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_320px] lg:items-end">
-            <div>
-              <h1 className="max-w-4xl text-4xl font-semibold leading-tight md:text-5xl">
-                Practical guides for choosing AI tools without the noise.
-              </h1>
-              <p className="mt-4 max-w-2xl leading-7 text-ink/65">
-                Deep, useful articles for buyers who need to compare AI tools,
-                plan a first automation, and avoid expensive software mistakes.
-              </p>
-            </div>
-            <div className="metric-tile rounded-xl p-4">
-              <SearchCheck aria-hidden="true" className="text-accent" size={22} />
-              <p className="mt-3 text-sm leading-6 text-ink/60">
-                Written around real buying questions: tool fit, workflow value,
-                rollout risk, data controls, pricing, and ROI.
-              </p>
-            </div>
-          </div>
-        </Reveal>
+      <ContentHero
+        eyebrow="Articles"
+        lead="Plain-English buying guides. Fit, risk, price and payback."
+        lines={[["Read before"], [{ text: "you buy.", className: "ghost-word" }]]}
+      />
 
-        <Reveal className="mt-6">
+      <section className="app-container pb-24 md:pb-32">
+        <Reveal>
           <Link
-            className="surface-panel group relative flex h-full overflow-hidden rounded-2xl p-6 transition hover:-translate-y-1 hover:border-accent md:p-7"
+            className="group relative block overflow-hidden rounded-[2rem] bg-surface px-6 py-10 transition-shadow duration-500 hover:shadow-[0_30px_60px_-30px_rgb(14_14_16/0.35)] sm:px-10 md:rounded-[2.5rem] md:px-14 md:py-16"
             href={`/articles/${featuredArticle.slug}` as Route}
           >
-            <span className="absolute inset-y-0 left-0 w-1 bg-accent" />
-            <div className="grid w-full gap-6 lg:grid-cols-[1fr_260px] lg:items-end">
-              <div>
-                <ArticleLabel article={featuredArticle} />
-                <h2 className="mt-4 max-w-3xl text-3xl font-semibold leading-tight md:text-4xl">
+            <div
+              aria-hidden="true"
+              className="grid-lines absolute inset-0 opacity-70 [mask-image:radial-gradient(ellipse_at_100%_0%,black,transparent_65%)]"
+            />
+            <div
+              aria-hidden="true"
+              className="glow-orb -right-32 -top-32 h-80 w-80 opacity-0 transition-opacity duration-700 group-hover:opacity-40"
+            />
+            <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="tag tag-signal">Start here</span>
+                  <span className="font-mono text-xs uppercase tracking-[0.12em] text-ink/45">
+                    {formatShortDate(featuredArticle.updatedAt)} · {featuredArticle.readingTime}
+                  </span>
+                </div>
+                <h2 className="mt-7 max-w-4xl font-display text-[clamp(2.2rem,5vw,4.4rem)] font-bold leading-[0.98] tracking-[-0.045em]">
                   {featuredArticle.title}
                 </h2>
-                <p className="mt-4 max-w-2xl leading-7 text-ink/65">
-                  {featuredArticle.description}
-                </p>
-                <ArticleMeta article={featuredArticle} />
+                <p className="mt-6 max-w-2xl text-lg text-ink/60">{featuredArticle.description}</p>
               </div>
-              <div className="rounded-xl border border-line bg-surface/70 p-4">
-                <p className="text-xs font-semibold uppercase text-ink/45">
-                  Best first read
-                </p>
-                <p className="mt-2 text-sm leading-6 text-ink/62">
-                  A plain buying framework before users compare vendors,
-                  pricing, demos, or AI feature claims.
-                </p>
-                <span className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-accent transition group-hover:translate-x-0.5">
-                  Read guide
-                  <ArrowRight aria-hidden="true" size={14} />
-                </span>
-              </div>
+              <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-ink text-paper transition-transform duration-500 ease-out group-hover:-rotate-45 md:h-20 md:w-20">
+                <ArrowRight aria-hidden="true" size={24} />
+              </span>
             </div>
           </Link>
         </Reveal>
 
-        <Reveal className="mt-6 grid gap-4 md:grid-cols-2">
-          {restArticles.map((article) => (
-            <ArticleCard article={article} key={article.slug} />
+        <Stagger as="ol" className="row-list mt-14 md:mt-20" gap={0.05} inView>
+          {restArticles.map((article, index) => (
+            <StaggerItem as="li" key={article.slug}>
+              <Link
+                className="row-item group grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-3 py-7 md:grid-cols-[10.5rem_minmax(0,1fr)_7rem_auto] md:gap-x-8 md:py-9"
+                href={`/articles/${article.slug}` as Route}
+              >
+                <span className="col-span-2 whitespace-nowrap font-mono text-xs uppercase tracking-[0.12em] text-ink/45 tabular md:col-span-1">
+                  <span className="text-ink/30">{pad(index + 1)}</span>
+                  <span className="mx-2 text-ink/20">/</span>
+                  {formatShortDate(article.updatedAt)}
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-display text-[1.55rem] font-bold leading-[1.04] tracking-[-0.04em] transition-transform duration-500 ease-out group-hover:translate-x-2 md:text-[2.2rem]">
+                    {article.title}
+                  </span>
+                  <span className="mt-3 line-clamp-2 block max-w-2xl text-[0.95rem] leading-relaxed text-ink/55">
+                    {article.description}
+                  </span>
+                </span>
+                <span className="hidden font-mono text-xs uppercase tracking-[0.12em] text-ink/45 md:block">
+                  {article.readingTime}
+                </span>
+                <span className="row-arrow self-start md:self-center">
+                  <ArrowRight aria-hidden="true" size={16} />
+                </span>
+              </Link>
+            </StaggerItem>
           ))}
-        </Reveal>
-      </div>
+        </Stagger>
+      </section>
     </main>
   );
-}
-
-function ArticleCard({ article }: { article: (typeof articles)[number] }) {
-  return (
-    <Link
-      className="surface-panel group relative flex h-full flex-col overflow-hidden rounded-xl p-5 transition hover:-translate-y-1 hover:border-accent"
-      href={`/articles/${article.slug}` as Route}
-    >
-      <span className="absolute inset-x-0 top-0 h-1 bg-accent/75" />
-      <ArticleLabel article={article} />
-      <h2 className="mt-3 text-2xl font-semibold leading-tight">
-        {article.title}
-      </h2>
-      <p className="mt-3 flex-1 leading-7 text-ink/65">
-        {article.description}
-      </p>
-      <ArticleMeta article={article} />
-      <span className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-accent transition group-hover:translate-x-0.5">
-        Read article
-        <ArrowRight aria-hidden="true" size={14} />
-      </span>
-    </Link>
-  );
-}
-
-function ArticleLabel({ article }: { article: (typeof articles)[number] }) {
-  const visual =
-    articleVisuals[article.slug as keyof typeof articleVisuals] ??
-    articleVisuals["how-to-choose-ai-tools-for-business"];
-  const Icon = visual.icon;
-
-  return (
-    <div className="flex flex-wrap items-center gap-3">
-      <span
-        className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ring-1 ${visual.accent}`}
-      >
-        <Icon aria-hidden="true" size={18} />
-      </span>
-      <span>
-        <span className="block text-xs font-semibold uppercase text-accent">
-          {visual.label}
-        </span>
-        <span className="mt-0.5 block text-xs font-medium text-ink/45">
-          {article.audience}
-        </span>
-      </span>
-    </div>
-  );
-}
-
-function ArticleMeta({ article }: { article: (typeof articles)[number] }) {
-  return (
-    <div className="mt-5 flex flex-wrap items-center gap-3 text-xs font-medium text-ink/45">
-      <span>{formatDate(article.updatedAt)}</span>
-      <span className="inline-flex items-center gap-1">
-        <Clock3 aria-hidden="true" size={13} />
-        {article.readingTime}
-      </span>
-    </div>
-  );
-}
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en", {
-    day: "numeric",
-    month: "short",
-    year: "numeric"
-  }).format(new Date(value));
 }

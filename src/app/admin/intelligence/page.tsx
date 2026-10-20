@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { AdminIntelligenceWorkspace } from "@/features/admin/admin-intelligence-workspace";
+import { AdminHeader, AdminNav } from "@/features/admin/admin-shell";
 import { isAdminAuthenticated } from "@/server/admin/auth";
 import { getAdminIntelligenceWorkspace } from "@/server/admin/queries";
 
@@ -24,35 +25,27 @@ export default async function AdminIntelligencePage() {
   const workspace = await getAdminIntelligenceWorkspace();
 
   return (
-    <main className="page-shell">
-      <div className="app-container grid gap-6">
-        <section className="surface-strong rounded-2xl p-6">
-          <Link
-            className="inline-flex items-center gap-2 text-sm font-medium text-accent"
-            href="/admin"
-          >
-            <ArrowLeft aria-hidden="true" size={16} />
-            Admin
-          </Link>
-          <div className="mt-5 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="eyebrow">Intelligence</p>
-              <h1 className="mt-3 text-4xl font-semibold">
-                Business taxonomy workspace
-              </h1>
-              <p className="mt-3 max-w-3xl leading-7 text-ink/65">
-                Manage the structured data that turns SeekSmart from a tool
-                catalog into an explainable business decision platform.
-              </p>
-            </div>
-            <Link className="secondary-button" href="/opportunities">
+    <main className="app-container page-hero grid grid-cols-[minmax(0,1fr)] gap-10 pb-24">
+      <AdminHeader
+        actions={
+          <>
+            <AdminNav current="intelligence" />
+            <Link className="link-underline ml-2 text-sm" href="/opportunities">
               Public opportunities
+              <ArrowUpRight aria-hidden="true" size={14} />
             </Link>
-          </div>
-        </section>
+          </>
+        }
+        eyebrow="Intelligence"
+        lead="The structured data behind every recommendation."
+        title={
+          <>
+            Business <span className="ghost-word">taxonomy.</span>
+          </>
+        }
+      />
 
-        <AdminIntelligenceWorkspace workspace={workspace} />
-      </div>
+      <AdminIntelligenceWorkspace workspace={workspace} />
     </main>
   );
 }

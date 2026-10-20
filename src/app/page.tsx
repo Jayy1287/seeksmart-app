@@ -1,511 +1,272 @@
-import type { Route } from "next";
-import {
-  ArrowRight,
-  BarChart3,
-  CheckCircle2,
-  ChevronDown,
-  ClipboardList,
-  Gauge,
-  Layers3,
-  Search,
-  ShieldCheck,
-  Target
-} from "lucide-react";
-import {
-  businessGoals,
-  methodologySignals,
-  playbooks
-} from "@/lib/platform-content";
-import { auth } from "@/auth";
-import { HomepageLottieVisual } from "@/features/home/homepage-lottie-visual";
-import { TypewriterRotator } from "@/features/home/typewriter-rotator";
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { HeroAuditDemo } from "@/features/home/hero-audit-demo";
+import { HowItWorks } from "@/features/home/how-it-works";
+import { playbooks } from "@/lib/platform-content";
 import { listCategorySummaries } from "@/server/categories/queries";
-import {
-  listIndustrySummaries,
-  listOpportunitySummaries
-} from "@/server/intelligence/queries";
-import {
-  listRecentlyAddedTools,
-  listTrendingTools
-} from "@/server/tools/queries";
-import { ToolLogo } from "@/features/tools/tool-logo";
-import { RecentToolsMarquee } from "@/features/home/recent-tools-marquee";
-import { AnimatedBar } from "@/components/motion/animated-bar";
+import { listIndustrySummaries } from "@/server/intelligence/queries";
+import { listToolLogos } from "@/server/tools/queries";
+import { listUseCaseSummaries } from "@/server/use-cases/queries";
 import { AnimatedNumber } from "@/components/motion/animated-number";
-import { MotionLink } from "@/components/motion/motion-link";
+import { Magnetic } from "@/components/motion/magnetic";
+import { Marquee } from "@/components/motion/marquee";
 import { Reveal } from "@/components/motion/reveal";
+import { RotatingWords } from "@/components/motion/rotating-words";
+import { SplitReveal } from "@/components/motion/split-reveal";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
-export const dynamic = "force-dynamic";
+// Home is content-driven; refresh every 10 minutes instead of on every request.
+export const revalidate = 600;
 
-const decisionPath = [
+const verticals = [
   {
-    title: "Business context",
-    summary: "We start with the way your team works today.",
-    description:
-      "The audit looks at your industry, team function, urgency, budget range, technical comfort, approval style, data sensitivity, and existing tools. Those inputs help rule out ideas that may be too risky, too expensive, or too heavy for the first pilot."
+    slug: "ecommerce",
+    name: "Online stores",
+    firstWin: "Support replies and product copy, reviewed before they ship."
   },
   {
-    title: "Opportunity ranking",
-    summary: "Then we score the most practical places to use AI.",
-    description:
-      "SeekSmart compares mapped business opportunities by likely impact, implementation effort, operating risk, confidence, time to value, and fit with your stated goals. The result is a ranked list that explains why one workflow should come before another."
+    slug: "retail-and-hospitality",
+    name: "Shops, cafes & venues",
+    firstWin: "Reviews answered, posts drafted, the week summarized."
   },
   {
-    title: "Workflow plan",
-    summary: "Finally, we turn the ranking into a first move.",
-    description:
-      "The brief recommends one starting workflow, the use cases that support it, a pilot checklist, cautions to watch, success metrics, and a shortlist of tools to compare after the workflow is clear."
+    slug: "local-services",
+    name: "Local services",
+    firstWin: "Enquiries answered with a quote in minutes, not days."
   }
 ];
 
+const principles = [
+  { title: "Readable rules", body: "Same scoring for everyone. No black box." },
+  { title: "A reason for every pick", body: "Each recommendation says why it ranked." },
+  { title: "A person signs off", body: "Nothing reaches a customer unreviewed." }
+];
+
 export default async function Home() {
-  const session = await auth();
-  const [categories, trendingTools, recentTools, industries, opportunities] =
-    await Promise.all([
-      listCategorySummaries(),
-      listTrendingTools(3),
-      listRecentlyAddedTools(10),
-      listIndustrySummaries(),
-      listOpportunitySummaries()
-    ]);
-  const toolCount = categories.reduce(
-    (total, category) => total + category.toolCount,
-    0
-  );
-  const startAuditHref = session?.user ? "/audit/start" : "/login?callbackUrl=/audit/start";
+  const [categories, useCases, industries, logos] = await Promise.all([
+    listCategorySummaries(),
+    listUseCaseSummaries(),
+    listIndustrySummaries(),
+    listToolLogos(36)
+  ]);
+  const toolCount = categories.reduce((total, category) => total + category.toolCount, 0);
+  const half = Math.ceil(logos.length / 2);
 
   return (
     <main>
-      <section className="relative overflow-hidden py-14 md:py-20">
-        <div className="app-container grid gap-12 lg:grid-cols-[minmax(0,1fr)_440px] lg:items-center">
-          <Stagger>
-            <StaggerItem>
-              <p className="eyebrow">
-                <ShieldCheck aria-hidden="true" size={15} />
-                AI decisions, made practical
-              </p>
-            </StaggerItem>
-            <StaggerItem>
-              <h1 className="mt-7 max-w-4xl text-5xl font-semibold leading-[0.98] text-ink md:text-7xl">
-                Decide where AI belongs before you buy another tool.
-              </h1>
-            </StaggerItem>
-            <StaggerItem>
-              <TypewriterRotator />
-            </StaggerItem>
-            <StaggerItem>
-              <p className="mt-7 max-w-2xl text-lg leading-8 text-ink/68 md:text-xl md:leading-9">
-                SeekSmart helps you find the right workflow to improve, the
-                safest place to start, and the tools worth comparing only after
-                the business case is clear.
-              </p>
-            </StaggerItem>
-            <StaggerItem>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <MotionLink className="primary-button min-h-12" href={startAuditHref}>
-                  Start AI audit
-                  <ArrowRight aria-hidden="true" size={18} />
-                </MotionLink>
-                <MotionLink className="secondary-button min-h-12" href="/opportunities">
-                  Explore opportunities
-                </MotionLink>
-              </div>
-            </StaggerItem>
-            <StaggerItem>
-              <form
-                action="/tools"
-                className="mt-9 grid max-w-2xl gap-2 rounded-[1.75rem] border border-line/60 bg-white/55 p-2 shadow-[0_18px_54px_rgb(13_48_92/0.08)] backdrop-blur sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-3 sm:rounded-full sm:p-2"
-              >
-                <label className="relative min-w-0 w-full">
-                  <span className="sr-only">Search AI tools</span>
-                  <Search
-                    aria-hidden="true"
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/34"
-                    size={18}
+      {/* ---------- Hero ---------- */}
+      <section className="relative overflow-hidden">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="grid-lines absolute inset-0 mask-fade-b opacity-60 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]" />
+          <div className="glow-orb -right-40 top-10 h-[34rem] w-[34rem] opacity-30" />
+        </div>
+        <div className="app-container relative grid items-center gap-14 pb-20 pt-12 md:pt-20 lg:grid-cols-2 lg:gap-12 lg:pb-28">
+          <div>
+            <Stagger>
+              <StaggerItem>
+                <span className="inline-flex items-center gap-2 rounded-full border border-ink/10 bg-surface/70 py-1 pl-1 pr-3 text-[0.8rem] text-ink/70 backdrop-blur">
+                  <span className="rounded-full bg-ink px-2 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-paper">
+                    Free
+                  </span>
+                  A three-minute AI audit
+                </span>
+              </StaggerItem>
+            </Stagger>
+            <SplitReveal
+              className="display mt-7"
+              delay={0.1}
+              lines={[["Know where AI"], ["pays back", { text: ".", className: "accent-word" }]]}
+            />
+            <Stagger delay={0.55}>
+              <StaggerItem>
+                <p className="lead mt-7">
+                  Ranked AI workflows for your
+                  <br />
+                  <RotatingWords
+                    className="font-semibold text-ink"
+                    words={["online store", "café", "salon", "clinic", "agency", "shop"]}
                   />
-                  <input
-                    className="min-h-12 w-full min-w-0 rounded-full border border-transparent bg-transparent pl-11 pr-4 text-base outline-none transition focus:border-accent"
-                    name="q"
-                    placeholder="Search AI tools"
-                    type="search"
-                  />
-                </label>
-                <button className="search-button min-h-12 w-full sm:w-auto" type="submit">
-                  Search
-                </button>
-              </form>
-            </StaggerItem>
-          </Stagger>
-
-          <Reveal className="relative self-center" delay={0.16}>
-            <HomepageLottieVisual />
+                  , before you spend a cent on tools.
+                </p>
+              </StaggerItem>
+              <StaggerItem>
+                <div className="mt-9 flex flex-wrap items-center gap-3">
+                  <Magnetic>
+                    <Link className="btn btn-primary btn-lg" href="/audit/questions">
+                      Start the audit
+                      <ArrowRight aria-hidden="true" size={18} />
+                    </Link>
+                  </Magnetic>
+                  <Link className="btn btn-ghost btn-lg" href="/methodology">
+                    How it scores
+                  </Link>
+                </div>
+                <p className="mt-5 flex items-center gap-2 text-sm text-ink/50">
+                  <span className="h-1.5 w-1.5 rounded-full bg-success" />
+                  Free account. Results in three minutes.
+                </p>
+              </StaggerItem>
+            </Stagger>
+          </div>
+          <Reveal delay={0.35} y={40}>
+            <HeroAuditDemo />
           </Reveal>
         </div>
       </section>
 
-      <Reveal className="app-container pb-12">
-        <div className="grid gap-8 border-y border-line/50 py-8 lg:grid-cols-[1.35fr_0.65fr] lg:items-center">
-          <div>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="text-xs font-extrabold uppercase text-accent">
-                  What you get
-                </p>
-                <h2 className="mt-1 text-2xl font-semibold">
-                  First workflow brief
-                </h2>
-              </div>
-              <span className="status-pill w-fit">Clear next steps</span>
-            </div>
-            <p className="mt-5 max-w-2xl text-sm leading-6 text-ink/62">
-              You get one recommended starting workflow, the reason it ranked
-              first, the risks to watch, and the tools worth comparing next.
+      {/* ---------- Logo marquee ---------- */}
+      {logos.length > 0 ? (
+        <section aria-label="Tools in the directory" className="border-y border-ink/[0.08] py-10">
+          <div className="app-container mb-7 flex flex-wrap items-baseline justify-between gap-3">
+            <p className="eyebrow eyebrow-plain">
+              {toolCount} tools researched, priced and compared
             </p>
-            <details className="group mt-5 rounded-2xl border border-line/60 bg-white/45 p-4">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-ink [&::-webkit-details-marker]:hidden">
-                <span>How were these recommendations generated?</span>
-                <ChevronDown
-                  aria-hidden="true"
-                  className="shrink-0 transition group-open:rotate-180"
-                  size={17}
-                />
-              </summary>
-              <div className="mt-6 grid gap-6 md:grid-cols-3">
-                {decisionPath.map((step, index) => (
-                  <div
-                    className="relative border-t border-line/70 pt-5"
-                    key={step.title}
-                  >
-                    <span className="absolute -top-4 flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white shadow-lg shadow-ink/10">
-                      {index + 1}
-                    </span>
-                    <h3 className="mt-3 font-semibold">{step.title}</h3>
-                    <p className="mt-2 text-sm font-medium leading-6 text-ink/72">
-                      {step.summary}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-ink/58">
-                      {step.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </details>
+            <Link className="link-underline text-sm" href="/tools">
+              Browse the directory
+              <ArrowUpRight aria-hidden="true" size={14} />
+            </Link>
           </div>
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-            <Stat label="Curated tools" value={toolCount} />
-            <Stat label="Opportunity maps" value={opportunities.length} />
-            <Stat label="Decision paths" value={playbooks.length} />
-          </div>
-        </div>
-      </Reveal>
-
-      <Reveal className="section-band">
-        <div className="app-container grid gap-8 py-12 lg:grid-cols-[0.72fr_1.28fr]">
-          <div>
-            <p className="eyebrow">
-              <Target aria-hidden="true" size={14} />
-              Start with the outcome
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold">
-              Pick the business result, then the workflow, then the tool.
-            </h2>
-            <p className="mt-4 leading-7 text-ink/62">
-              Start with what needs to improve, narrow to a practical workflow,
-              and only then compare the software that supports it.
-            </p>
-            <MotionLink className="secondary-button mt-6" href="/use-cases">
-              Browse use cases
-              <ArrowRight aria-hidden="true" size={16} />
-            </MotionLink>
-          </div>
-          <div className="grid gap-x-8 gap-y-6 md:grid-cols-2">
-            {businessGoals.map((goal) => (
-              <MotionLink
-                className="group border-t border-line/70 pt-5 transition hover:border-accent"
-                href={goal.href as Route}
-                key={goal.title}
-              >
-                <span className="status-pill">{goal.signal}</span>
-                <h3 className="mt-4 text-lg font-semibold">{goal.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-ink/62">
-                  {goal.description}
-                </p>
-                <span className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-accent transition group-hover:translate-x-0.5">
-                  Explore path
-                  <ArrowRight aria-hidden="true" size={14} />
-                </span>
-              </MotionLink>
-            ))}
-          </div>
-        </div>
-      </Reveal>
-
-      <Reveal className="app-container py-12">
-        <div className="grid gap-8 lg:grid-cols-[1fr_1fr]">
-          <div className="py-2">
-            <p className="eyebrow">
-              <Layers3 aria-hidden="true" size={14} />
-              How it works
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold">
-              Clear inputs, better recommendations.
-            </h2>
-            <p className="mt-4 leading-7 text-ink/62">
-              SeekSmart brings together business context, opportunity maps, and
-              tool guidance so the recommendation feels actionable instead of vague.
-            </p>
-            <div className="mt-6 grid gap-3">
-              <LayerRow
-                icon={ClipboardList}
-                label="Context"
-                title="Your team, workflow, and constraints"
-              />
-              <LayerRow
-                icon={BarChart3}
-                label="Prioritize"
-                title="Ranked opportunities with visible tradeoffs"
-              />
-              <LayerRow
-                icon={CheckCircle2}
-                label="Recommend"
-                title="A shortlist, pilot plan, and guardrails"
-              />
-            </div>
-          </div>
-
-          <div>
-            <div className="mb-4 flex items-end justify-between gap-4">
-              <div>
-                <p className="text-sm font-extrabold uppercase text-accent">
-                  Industries
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold">
-                  Starter maps for practical teams
-                </h2>
-              </div>
-              <MotionLink className="secondary-button" href="/industries">
-                View all
-              </MotionLink>
-            </div>
-            <div className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
-              {industries.slice(0, 6).map((industry) => (
-                <MotionLink
-                  className="group border-t border-line/70 pt-4 transition hover:border-accent"
-                  href={`/industries/${industry.slug}`}
-                  key={industry.slug}
-                >
-                  <h3 className="font-semibold transition group-hover:text-accent">
-                    {industry.name}
-                  </h3>
-                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-ink/60">
-                    {industry.description}
-                  </p>
-                </MotionLink>
+          <div className="grid gap-3">
+            <Marquee duration={60} gap="0.75rem">
+              {logos.slice(0, half).map((tool) => (
+                <LogoPill key={tool.slug} {...tool} />
               ))}
-            </div>
+            </Marquee>
+            <Marquee duration={70} gap="0.75rem" reverse>
+              {logos.slice(half).map((tool) => (
+                <LogoPill key={tool.slug} {...tool} />
+              ))}
+            </Marquee>
           </div>
-        </div>
-      </Reveal>
-
-      <Reveal className="section-band">
-        <div className="app-container grid gap-8 py-12 lg:grid-cols-[1.05fr_0.95fr]">
-          <div>
-            <div className="mb-5 flex items-end justify-between gap-4">
-              <div>
-                <p className="text-sm font-extrabold uppercase text-accent">
-                  Recommended tools
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold">
-                  Compare tools once the path is clear
-                </h2>
-              </div>
-              <MotionLink className="secondary-button" href="/tools">
-                Browse tools
-              </MotionLink>
-            </div>
-            {trendingTools.length > 0 ? (
-              <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-1">
-                {trendingTools.map((tool) => (
-                  <MotionLink
-                    className="group grid gap-4 border-t border-line/70 pt-4 transition hover:border-accent md:grid-cols-[1fr_auto]"
-                    href={`/tools/${tool.slug}`}
-                    key={tool.id}
-                  >
-                    <div className="flex min-w-0 items-start gap-3">
-                      <ToolLogo logoUrl={tool.logoUrl} name={tool.name} />
-                      <div className="min-w-0">
-                        <h3 className="font-semibold transition group-hover:text-accent">
-                          {tool.name}
-                        </h3>
-                        <p className="mt-2 text-sm leading-6 text-ink/62">
-                          {tool.shortDescription}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="rounded-2xl border border-line/50 bg-white/42 px-3 py-2 backdrop-blur md:w-28">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <span className="text-[0.68rem] font-extrabold uppercase text-muted-text/70">
-                          Signal
-                        </span>
-                        <span className="text-lg font-semibold text-ink">
-                          <AnimatedNumber value={tool.popularityScore} />
-                        </span>
-                      </div>
-                      <div
-                        aria-hidden="true"
-                        className="mt-2 h-1.5 overflow-hidden rounded-full bg-white"
-                      >
-                        <AnimatedBar
-                          className="h-full rounded-full bg-signal"
-                          value={tool.popularityScore}
-                        />
-                      </div>
-                    </div>
-                  </MotionLink>
-                ))}
-              </div>
-            ) : (
-              <EmptyPanel message="Seed the database to start showing recommended tools." />
-            )}
-          </div>
-
-          <div>
-            <div className="mb-5 flex items-end justify-between gap-4">
-              <div>
-                <p className="text-sm font-extrabold uppercase text-accent">
-                  Playbooks
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold">
-                  Practical rollout guides
-                </h2>
-              </div>
-              <MotionLink className="secondary-button" href="/playbooks">
-                View all
-              </MotionLink>
-            </div>
-            <div className="grid gap-3">
-              {playbooks.map((playbook) => {
-                const Icon = playbook.icon;
-
-                return (
-                  <MotionLink
-                    className="group border-t border-line/70 py-4 transition hover:border-accent"
-                    href={`/playbooks/${playbook.slug}`}
-                    key={playbook.slug}
-                  >
-                    <div className="flex items-start gap-3">
-                      <Icon
-                        aria-hidden="true"
-                        className="mt-0.5 shrink-0 text-accent"
-                        size={20}
-                      />
-                      <div>
-                        <h3 className="font-semibold transition group-hover:text-accent">
-                          {playbook.title}
-                        </h3>
-                        <p className="mt-2 text-sm leading-6 text-ink/62">
-                          {playbook.description}
-                        </p>
-                      </div>
-                    </div>
-                  </MotionLink>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </Reveal>
-
-      <Reveal className="app-container py-12">
-        <div className="grid gap-8 border-y border-line/50 py-10 md:grid-cols-[0.85fr_1.15fr] md:items-center">
-          <div>
-            <p className="eyebrow">
-              <Gauge aria-hidden="true" size={14} />
-              Why teams trust it
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold">
-              Advice you can review before you act on it.
-            </h2>
-            <p className="mt-4 leading-7 text-ink/62">
-              SeekSmart is built to make the decision clearer: what to pilot,
-              what to measure, and what to watch before you commit.
-            </p>
-          </div>
-          <div className="grid gap-x-6 gap-y-5 sm:grid-cols-2">
-            {methodologySignals.map((signal) => {
-              const Icon = signal.icon;
-
-              return (
-                <MotionLink
-                  className="group border-t border-line/70 pt-4 transition hover:border-accent"
-                  href="/methodology"
-                  key={signal.title}
-                >
-                  <Icon aria-hidden="true" className="text-accent" size={20} />
-                  <h3 className="mt-3 font-semibold transition group-hover:text-accent">
-                    {signal.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-ink/60">
-                    {signal.description}
-                  </p>
-                </MotionLink>
-              );
-            })}
-          </div>
-        </div>
-      </Reveal>
-
-      {recentTools.length > 0 ? (
-        <Reveal className="app-container pb-12">
-          <div className="flex flex-wrap items-center gap-3 border-t border-line pt-6 text-sm">
-            <span className="font-bold text-accent">
-              Recently added tools
-            </span>
-            <RecentToolsMarquee tools={recentTools} />
-          </div>
-        </Reveal>
+        </section>
       ) : null}
+
+      {/* ---------- How it works ---------- */}
+      <section className="app-container section">
+        <HowItWorks />
+      </section>
+
+      {/* ---------- Industries ---------- */}
+      <section className="app-container pb-24 md:pb-36">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <Reveal>
+              <p className="eyebrow">Built for</p>
+            </Reveal>
+            <SplitReveal
+              as="h2"
+              className="h2 mt-5 max-w-2xl"
+              inView
+              lines={[["Businesses that do"], [{ text: "the work themselves.", className: "ghost-word" }]]}
+            />
+          </div>
+          <Reveal>
+            <Link className="link-underline" href="/industries">
+              All {industries.length} industries
+              <ArrowUpRight aria-hidden="true" size={15} />
+            </Link>
+          </Reveal>
+        </div>
+        <Stagger as="div" className="row-list mt-12" inView>
+          {verticals.map((vertical, index) => (
+            <StaggerItem key={vertical.slug}>
+              <Link
+                className="row-item group grid-cols-[auto_1fr_auto] gap-5 py-7 md:grid-cols-[5rem_minmax(0,1fr)_minmax(0,1fr)_auto] md:gap-8 md:py-9"
+                href={`/industries/${vertical.slug}`}
+              >
+                <span className="font-mono text-sm text-ink/40">0{index + 1}</span>
+                <span className="font-display text-[1.7rem] font-bold leading-none tracking-[-0.04em] transition-transform duration-500 ease-out group-hover:translate-x-2 md:text-[2.6rem]">
+                  {vertical.name}
+                </span>
+                <span className="col-span-3 col-start-2 row-start-2 text-ink/55 md:col-span-1 md:col-start-3 md:row-start-1">
+                  {vertical.firstWin}
+                </span>
+                <span className="row-arrow col-start-3 row-start-1 md:col-start-4">
+                  <ArrowRight aria-hidden="true" size={16} />
+                </span>
+              </Link>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
+
+      {/* ---------- Principles (night) ---------- */}
+      <section className="app-container pb-24 md:pb-36">
+        <div className="night spotlight spotlight-strong rounded-[2rem] px-6 py-14 sm:px-10 md:rounded-[2.5rem] md:px-16 md:py-24" data-spotlight>
+          <div aria-hidden="true" className="dot-grid absolute inset-0 opacity-50 [mask-image:radial-gradient(ellipse_at_80%_20%,black,transparent_60%)]" />
+          <div className="relative grid gap-14 lg:grid-cols-[1fr_1fr] lg:items-end">
+            <div>
+              <p className="eyebrow">Method</p>
+              <SplitReveal
+                as="h2"
+                className="mt-6 font-display text-[clamp(3rem,8vw,6.5rem)] font-bold leading-[0.9] tracking-[-0.05em] text-white"
+                inView
+                lines={[["Not a"], [{ text: "chatbot.", className: "text-signal" }]]}
+              />
+            </div>
+            <Stagger as="ol" className="grid gap-px overflow-hidden rounded-3xl bg-white/10" inView>
+              {principles.map((principle, index) => (
+                <StaggerItem as="li" className="flex gap-5 bg-night p-6 md:p-7" key={principle.title}>
+                  <span className="font-mono text-sm text-signal">0{index + 1}</span>
+                  <div>
+                    <p className="text-lg font-medium text-white">{principle.title}</p>
+                    <p className="mt-1 text-sm text-white/50">{principle.body}</p>
+                  </div>
+                </StaggerItem>
+              ))}
+            </Stagger>
+          </div>
+          <Link className="link-underline relative mt-12 text-white/80 hover:text-white" href="/methodology">
+            Read the methodology
+            <ArrowUpRight aria-hidden="true" size={15} />
+          </Link>
+        </div>
+      </section>
+
+      {/* ---------- Numbers ---------- */}
+      <section className="app-container pb-24 md:pb-36">
+        <Stagger className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4" inView>
+          {[
+            { count: toolCount, label: "Tools", href: "/tools" as const },
+            { count: useCases.length, label: "Workflows", href: "/use-cases" as const },
+            { count: industries.length, label: "Industries", href: "/industries" as const },
+            { count: playbooks.length, label: "Playbooks", href: "/playbooks" as const }
+          ].map((item) => (
+            <StaggerItem key={item.label}>
+              <Link className="group block border-t border-ink/15 pt-5" href={item.href}>
+                <span className="stat-number block text-[clamp(3.5rem,8vw,6.5rem)] transition-colors duration-300 group-hover:text-signal">
+                  <AnimatedNumber value={item.count} />
+                </span>
+                <span className="mt-3 flex items-center gap-1.5 text-ink/60 group-hover:text-ink">
+                  {item.label}
+                  <ArrowUpRight
+                    aria-hidden="true"
+                    className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    size={15}
+                  />
+                </span>
+              </Link>
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </section>
     </main>
   );
 }
 
-function Stat({ label, value }: { label: number | string; value: number | string }) {
+function LogoPill({ logoUrl, name, slug }: { logoUrl: string | null; name: string; slug: string }) {
   return (
-    <div className="metric-tile rounded-2xl px-5 py-4">
-      <div className="text-2xl font-semibold">
-        {typeof value === "number" ? <AnimatedNumber value={value} /> : value}
-      </div>
-      <div className="mt-1 text-xs font-bold uppercase text-ink/48">{label}</div>
-    </div>
-  );
-}
-
-function LayerRow({
-  icon: Icon,
-  label,
-  title
-}: {
-  icon: typeof ClipboardList;
-  label: string;
-  title: string;
-}) {
-  return (
-    <div className="grid grid-cols-[2.5rem_1fr_auto] items-center gap-3 border-t border-line/70 py-4">
-      <Icon aria-hidden="true" className="text-accent" size={22} />
-      <h3 className="font-semibold">{title}</h3>
-      <span className="status-pill">{label}</span>
-    </div>
-  );
-}
-
-function EmptyPanel({ message }: { message: string }) {
-  return (
-    <div className="surface-panel rounded-xl p-8 text-center">
-      <h2 className="font-semibold">Nothing to show yet</h2>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
-        {message}
-      </p>
-    </div>
+    <Link
+      className="flex shrink-0 items-center gap-2.5 rounded-full border border-ink/[0.08] bg-surface py-2 pl-2 pr-4 text-sm font-medium text-ink/75 transition-colors hover:border-ink/30 hover:text-ink"
+      href={`/tools/${slug}`}
+    >
+      <span className="relative h-7 w-7 overflow-hidden rounded-full bg-white ring-1 ring-ink/5">
+        {logoUrl ? (
+          <Image alt="" className="object-contain p-1" fill sizes="28px" src={logoUrl} unoptimized />
+        ) : null}
+      </span>
+      {name}
+    </Link>
   );
 }

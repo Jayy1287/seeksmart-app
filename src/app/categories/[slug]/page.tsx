@@ -1,17 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Boxes, Search } from "lucide-react";
-import { auth } from "@/auth";
-import { ToolCard } from "@/features/tools/tool-card";
+import { ArrowUpRight, Search } from "lucide-react";
+import { ToolList } from "@/features/tools/tool-row";
 import {
   getCategoryBySlug,
   getCategorySummaryBySlug
 } from "@/server/categories/queries";
+import { listCategories } from "@/server/categories/queries";
 import { listPublishedTools } from "@/server/tools/queries";
-import { attachToolLikeStates } from "@/server/tools/likes";
+import { AnimatedNumber } from "@/components/motion/animated-number";
+import { Reveal } from "@/components/motion/reveal";
+import { SplitReveal } from "@/components/motion/split-reveal";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  try {
+    const categories = await listCategories();
+    return categories.map((category) => ({ slug: category.slug }));
+  } catch {
+    return [];
+  }
+}
 
 type CategoryPageProps = {
   params: Promise<{
@@ -48,8 +59,7 @@ export async function generateMetadata({
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const { slug } = await params;
-  const [session, category, toolsResult] = await Promise.all([
-    auth(),
+  const [category, tools] = await Promise.all([
     getCategorySummaryBySlug(slug),
     listPublishedTools({ categorySlug: slug })
   ]);
@@ -58,79 +68,73 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound();
   }
 
-  const tools = await attachToolLikeStates(toolsResult, session?.user?.id);
-  const isSignedIn = Boolean(session?.user);
-
   return (
-    <main className="page-shell">
-      <div className="app-container">
-      <section className="surface-strong rounded-2xl p-6">
-        <Link className="text-sm font-medium text-accent" href="/categories">
-          Categories
-        </Link>
-        <div className="mt-3 grid gap-6 md:grid-cols-[1fr_260px] md:items-end">
-          <div>
-            <h1 className="text-4xl font-semibold">
-              {category.name} AI tools
-            </h1>
+    <main>
+      <section className="app-container page-hero">
+        <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
+          <div className="min-w-0">
+            <Reveal y={10}>
+              <nav
+                aria-label="Breadcrumb"
+                className="flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink/45"
+              >
+                <Link className="transition-colors hover:text-ink" href="/categories">
+                  Categories
+                </Link>
+                <span aria-hidden="true">/</span>
+                <span className="truncate text-ink/70">{category.name}</span>
+              </nav>
+            </Reveal>
+            <SplitReveal
+              className="h1 mt-6 break-words"
+              delay={0.05}
+              lines={[[category.name], [{ text: "tools.", className: "ghost-word" }]]}
+            />
             {category.description ? (
-              <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-                {category.description}
-              </p>
+              <Reveal delay={0.35} y={16}>
+                <p className="lead mt-6">{category.description}</p>
+              </Reveal>
             ) : null}
           </div>
-          <div className="metric-tile rounded-xl p-4">
-            <div className="flex items-center gap-2">
-              <Boxes aria-hidden="true" className="text-accent" size={18} />
-              <span className="text-2xl font-semibold">
-                {category.toolCount}
-              </span>
-            </div>
-            <p className="mt-1 text-sm text-ink/55">Published tools</p>
-          </div>
+          <Reveal className="shrink-0 md:text-right" delay={0.3} y={16}>
+            <p className="stat-number text-[clamp(3.5rem,8vw,6rem)]">
+              <AnimatedNumber value={category.toolCount} />
+            </p>
+            <p className="mt-2 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink/50">
+              Tools listed
+            </p>
+            <Link
+              className="link-underline mt-5 text-sm"
+              href={`/tools?category=${category.slug}`}
+            >
+              Filter in the directory
+              <ArrowUpRight aria-hidden="true" size={14} />
+            </Link>
+          </Reveal>
         </div>
       </section>
 
-      <section className="mt-6">
+      <section className="app-container pb-24 md:pb-32">
         {tools.length > 0 ? (
-          <>
-            <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <h2 className="text-xl font-semibold">Recommended tools</h2>
-              <Link
-                className="secondary-button"
-                href={`/tools?category=${category.slug}`}
-              >
-                Search this category
-                <ArrowRight aria-hidden="true" size={16} />
+          <ToolList tools={tools} />
+        ) : (
+          <Reveal className="empty-state" y={16}>
+            <span className="empty-state-icon">
+              <Search aria-hidden="true" size={22} />
+            </span>
+            <h2 className="empty-state-title">No tools here yet.</h2>
+            <p className="empty-state-copy">Know a good one? Send it in.</p>
+            <div className="empty-state-actions">
+              <Link className="btn btn-primary" href="/submit">
+                Submit a tool
+              </Link>
+              <Link className="btn btn-ghost" href="/categories">
+                All categories
               </Link>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {tools.map((tool) => (
-                <ToolCard isSignedIn={isSignedIn} key={tool.id} tool={tool} />
-              ))}
-            </div>
-          </>
-        ) : (
-          <div className="surface-panel rounded-xl p-8 text-center">
-            <Search
-              aria-hidden="true"
-              className="mx-auto mb-4 text-accent"
-              size={24}
-            />
-            <h2 className="font-semibold">No published tools yet</h2>
-            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
-              This category is ready for curated listings.
-            </p>
-            <Link
-              className="primary-button mt-5"
-              href="/submit"
-            >
-              Submit a tool
-            </Link>
-          </div>
+          </Reveal>
         )}
       </section>
-      </div>
     </main>
   );
 }

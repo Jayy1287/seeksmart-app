@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { SubmissionReviewActions } from "@/features/admin/submission-review-actions";
+import { AdminHeader } from "@/features/admin/admin-shell";
 import { isAdminAuthenticated } from "@/server/admin/auth";
 import {
   findSubmissionDuplicateCandidates,
@@ -57,89 +57,64 @@ export default async function AdminSubmissionPage({
   ]);
 
   return (
-    <main className="page-shell">
-      <div className="app-container grid gap-6">
-      <section className="surface-strong rounded-2xl p-6">
-        <Link
-          className="inline-flex items-center gap-2 text-sm font-medium text-accent"
-          href="/admin"
-        >
-          <ArrowLeft aria-hidden="true" size={16} />
-          Review queue
-        </Link>
-        <div className="mt-5 grid gap-5 md:grid-cols-[1fr_260px] md:items-start">
-          <div>
-            <p className="text-sm font-medium uppercase text-accent">
-              {submission.status}
-            </p>
-            <h1 className="mt-2 text-4xl font-semibold">
-              {submission.toolName}
-            </h1>
-            <p className="mt-3 max-w-3xl leading-7 text-ink/65">
-              {submission.description || "No description provided."}
-            </p>
-            <a
-              className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-accent"
-              href={submission.websiteUrl}
-              rel="noreferrer"
-              target="_blank"
-            >
-              Visit website
-              <ExternalLink aria-hidden="true" size={15} />
-            </a>
-          </div>
-          <div className="metric-tile grid gap-3 rounded-xl p-4 text-sm">
-            <div>
-              <div className="text-ink/50">Submitted</div>
-              <div className="font-medium">{formatDate(submission.createdAt)}</div>
-            </div>
-            <div>
-              <div className="text-ink/50">Reviewed</div>
-              <div className="font-medium">{formatDate(submission.reviewedAt)}</div>
-            </div>
-            <div>
-              <div className="text-ink/50">Submitter</div>
-              <div className="break-words font-medium">
-                {submission.submitterEmail}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+    <main className="app-container page-hero grid grid-cols-[minmax(0,1fr)] gap-10 pb-24">
+      <AdminHeader
+        actions={
+          <a
+            className="btn btn-ghost"
+            href={submission.websiteUrl}
+            rel="noreferrer"
+            target="_blank"
+          >
+            Visit website
+            <ExternalLink aria-hidden="true" size={15} />
+          </a>
+        }
+        back={{ href: "/admin", label: "Review queue" }}
+        eyebrow={submission.status}
+        lead={submission.description || "No description provided."}
+        title={submission.toolName}
+      />
 
-      <section className="surface-panel rounded-xl p-5">
-        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h2 className="font-semibold">Duplicate check</h2>
-            <p className="mt-1 text-sm text-ink/60">
-              Review likely matches before approving a new public listing.
-            </p>
+      <dl className="grid gap-px overflow-hidden rounded-2xl bg-ink/10 sm:grid-cols-3">
+        {[
+          { label: "Submitted", value: formatDate(submission.createdAt) },
+          { label: "Reviewed", value: formatDate(submission.reviewedAt) },
+          { label: "Submitter", value: submission.submitterEmail }
+        ].map((item) => (
+          <div className="min-w-0 bg-paper p-5" key={item.label}>
+            <dt className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink/45">{item.label}</dt>
+            <dd className="mt-2 break-words font-medium">{item.value}</dd>
           </div>
-          <span className="status-pill">
+        ))}
+      </dl>
+
+      <section>
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <h2 className="h3">Duplicate check</h2>
+          <span className={duplicateCandidates.length > 0 ? "tag tag-warning" : "tag tag-success"}>
             {duplicateCandidates.length} matches
           </span>
         </div>
         {duplicateCandidates.length > 0 ? (
-          <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <ul className="row-list mt-5">
             {duplicateCandidates.map((candidate) => (
-              <div
-                className="metric-tile rounded-xl p-4 text-sm"
+              <li
+                className="row-item grid-cols-[minmax(0,1fr)_auto] gap-x-4 py-4"
                 key={`${candidate.type}-${candidate.id}`}
               >
-                <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
                   <div className="font-medium">{candidate.label}</div>
-                  <span className="shrink-0 rounded-full bg-muted px-2.5 py-1 text-xs">
-                    {candidate.type} · {candidate.status}
-                  </span>
+                  <p className="mt-1 break-words text-sm text-ink/55">{candidate.detail}</p>
                 </div>
-                <p className="mt-2 break-words text-ink/55">
-                  {candidate.detail}
-                </p>
-              </div>
+                <span className="tag">
+                  {candidate.type} · {candidate.status}
+                </span>
+              </li>
             ))}
-          </div>
+          </ul>
         ) : (
-          <p className="mt-4 text-sm text-ink/60">
+          <p className="mt-3 text-sm text-ink/55">
             No existing tools or submissions match this name or website.
           </p>
         )}
@@ -148,15 +123,13 @@ export default async function AdminSubmissionPage({
       {submission.status === "PENDING" ? (
         <SubmissionReviewActions submission={submission} taxonomy={taxonomy} />
       ) : (
-        <section className="surface-panel rounded-xl p-8 text-center">
-          <h2 className="font-semibold">Review complete</h2>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink/60">
-            This submission has already been reviewed and cannot be changed from
-            this screen.
+        <div className="border-y border-ink/10 py-14 text-center">
+          <p className="font-display text-2xl font-bold tracking-[-0.03em]">Review complete.</p>
+          <p className="mx-auto mt-2 max-w-md text-sm text-ink/55">
+            This submission has already been reviewed.
           </p>
-        </section>
+        </div>
       )}
-      </div>
     </main>
   );
 }

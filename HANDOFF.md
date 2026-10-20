@@ -1,15 +1,21 @@
 # SeekSmart Handoff
 
-Last updated: 2026-06-17
+Last updated: 2026-10-10
 
 ## Current State
 
 SeekSmart is a full-stack Next.js app for helping practical business teams decide where AI belongs before buying tools. The product positioning is intentionally broader than an AI tool directory: it is a decision engine for AI adoption with tool shortlists, use cases, opportunities, industries, playbooks, and a rules-based AI workflow audit.
 
-Canonical repo:
+Canonical repo (macOS checkout):
 
 ```text
 /Users/sanrajak/Desktop/SSP/seeksmart-app
+```
+
+Windows checkout used for the October 2026 review:
+
+```text
+C:\Users\sanja\Downloads\ss\seeksmart-app
 ```
 
 Do not use or depend on `seeksmart-app-baseline`. The current working app is this repo only.
@@ -23,8 +29,10 @@ main
 Current implementation checkpoint:
 
 ```text
-2026-06-17 Passwordless email auth, safer login flow, and submission duplicate-check fix
+2026-10-10 Revamp phase 0: technical SEO, ISR, fonts, OG images, 404 (branch revamp/phase-0-technical-seo)
 ```
+
+Revamp review, findings, and the phased plan: `docs/REVAMP_PLAN.md`.
 
 Expected local changes after committing this handoff:
 
@@ -97,7 +105,8 @@ Business differentiation:
 
 ### Public Product Surfaces
 
-- `/`: homepage with positioning, audit preview, categories, industries, opportunities, playbooks, and recent/trending tools.
+- `/`: homepage with positioning, a static brief preview, categories, industries, opportunities, playbooks, and recent/trending tools. Served with ISR (10 minutes).
+- Rendering model: every public content page is static with hourly ISR (`revalidate = 3600` plus `generateStaticParams`), except `/tools` (search params), the audit results page, login, dashboard, and admin. PostHog initialises on idle (`instrumentation-client.ts`).
 - `/tools`: searchable/filterable AI tool directory.
 - `/tools/[slug]`: tool detail pages with use-case fit, alternatives, website CTA, like button, and comparison information.
 - `/categories` and `/categories/[slug]`: category browsing.
@@ -117,40 +126,23 @@ Business differentiation:
 
 Routes:
 
-- `/audit`
-- `/audit/start`
-- `/audit/questions`
-- `/audit/results`
-- `/dashboard/audits/[id]`
+- `/audit`: landing page (indexable, FAQ structured data, industry quick starts).
+- `/audit/questions`: 11-step client wizard (`src/features/audit/audit-wizard.tsx`). **Requires sign-in** (`requireUser` in `src/server/auth/require-user.ts` redirects to `/login?callbackUrl=...`, keeping presets). Accepts `?industry=` and `?function=` presets. Draft answers are kept in `sessionStorage`.
+- `/audit/r/[id]`: permanent results page for a stored run. The owner (and anyone with the link, since owned runs are unlocked) sees the full brief. Older anonymous runs that were never unlocked show the summary plus a sign-in prompt (`audit-sign-in-panel.tsx`); signing in claims them if they were created in that browser.
+- `/audit/results`: compatibility route for the old GET form; requires sign-in, scores once, stores a run, redirects to `/audit/r/[id]`.
+- `/audit/start` and `/dashboard/audits/[id]`: permanent redirects.
 
-The audit is rules-based and does not call an AI model in-app. It uses structured inputs such as industry, business function, goals, pain points, budget, technical comfort, data sensitivity, urgency, workflow maturity, approval mode, integration needs, workflow volume, data readiness, decision owner, existing tools, and success metrics.
+Flow:
 
-Main logic:
+1. The wizard calls the server action `submitAuditAction` (`src/server/audit-runs/actions.ts`). It rejects requests without a session (`needsSignIn`; the wizard keeps its draft and sends the user to login), validates with Zod, maps wizard answers to the engine input (`src/shared/recommendations/wizard.ts`), scores with `scoreAudit`, stores the `AuditRun` against the user, and redirects.
+2. Runs are stored per account (upsert on `userId + ruleVersion + inputHash`) and are always unlocked. There are no new anonymous runs and no email unlock any more (removed Oct 2026).
+3. Legacy anonymous runs (from before the login requirement) can still be claimed: on sign-in by email (`claimAuditRunsByEmail` in `src/auth.ts`), or on the result page if the run id is in this browser's `seeksmart_audit_runs` cookie (`claimAuditRun`).
 
-```text
-src/server/recommendations/scoring.ts
-src/server/recommendations/input.ts
-src/server/recommendations/queries.ts
-src/shared/recommendations/audit.ts
-```
+The rules version is `audit-rules-v3.0` (`src/server/recommendations/scoring.ts`). Changes from v2.3: keyword specificity bonus, payback bonus, penalty for opportunities mapped only to other industries, deterministic tiebreaks, a distinct closing reason per opportunity, strictly decreasing displayed scores in the top 3, and placeholder tool copy ("mapped based on current curated use-case data", "Teams that want to pilot this use case") is never shown as a reason.
 
-The current rules version is:
+Featured industries for the questionnaire: `ecommerce`, `retail-and-hospitality`, `local-services` (see `featuredIndustries` in `src/shared/recommendations/wizard.ts`).
 
-```text
-audit-rules-v2.3
-```
-
-Audit output includes:
-
-- Executive brief.
-- Readiness score and readiness level.
-- Ranked top opportunities.
-- Recommended use cases.
-- Tool recommendations.
-- Pilot plan.
-- Checklist and cautions.
-
-Signed-in users can save audit runs. Saved runs are stored in the `audit_runs` table and shown in the dashboard.
+Analytics events: `audit_questions_viewed`, `audit_step_completed`, `audit_questions_submitted`, `audit_completed` (server), `audit_results_viewed` (with `unlocked`), `audit_unlock_viewed` (sign-in prompt on a locked legacy brief). `audit_unlocked` is no longer emitted.
 
 ### Authentication And User Workspace
 
@@ -173,7 +165,7 @@ User-facing behavior:
 - Google sign-in.
 - Database-backed sessions.
 - Dashboard requires login.
-- Dashboard shows saved audit runs and liked tools.
+- Dashboard shows saved audit runs (linking to `/audit/r/[id]`) and liked tools.
 - Users can like and unlike tools.
 - Likes require login.
 - If not signed in, liking sends users to login with a callback URL.
@@ -185,7 +177,26 @@ Admin role:
 - Google accounts whose email is in `ADMIN_EMAILS` get effective admin access.
 - There is also legacy password admin auth through `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET`.
 
+### Tool Catalogue (v2)
+
+The catalogue has two layers:
+
+- Base seed: `prisma/seed.ts` (90 hand-entered tools, categories, use cases, features, industries, opportunities).
+- Researched tools: `prisma/data/tools-v2.json` (the complete researched set, one object per tool with pricing note, best for, not for, integrations, vendor, source URL, use-case fits with scores and notes, feature slugs, alternatives). Loaded idempotently by `npx tsx prisma/seed-tools-v2.ts` (matches by slug, replaces mappings, links alternatives by name).
+
+Pipeline used to build it (all scripts are repeatable):
+
+1. Research batches (JSON arrays, one per category cluster) are merged with `node scripts/merge-tool-research.mjs <dir>`. The script validates every record against the live taxonomy, dedupes by name slug and website domain, clamps numbers, keeps whatever the data file already holds, and writes a merge report.
+2. `node scripts/fetch-logos.mjs` downloads a logo per tool into `public/logos/<slug>.<ext>` (Clearbit, unavatar, icon.horse, uplead, Google favicon, DuckDuckGo in that order, rejecting tiny or non-image responses) and points `logo_url` at the local file. Tools without a usable logo fall back to initials in the UI.
+3. Homepage screenshots are captured with Playwright (`capture-screenshots.mjs`, kept outside the repo) into `public/screenshots/<slug>.jpg` (1280x800, JPEG 60) and attached with `node scripts/sync-screenshots.mjs`.
+
+New Tool columns (migration `add_tool_detail_fields`): `pricing_note`, `best_for`, `not_for`, `integrations[]`, `vendor`, `source_url`, `screenshot_url`, `content_updated_at`. The admin tool form edits pricing note, best for, and not for.
+
+Indexability no longer depends on `isFeatured`: a tool page is indexable (and in the sitemap) when `hasRichToolContent` passes (long description of at least 400 characters plus best-for and not-for), see `src/server/tools/content-quality.ts`.
+
 ### Tool Likes
+
+Like state is resolved on the client. Tool, use-case, and category pages are statically rendered with hourly ISR; `ToolLikeProvider` (`src/features/tools/tool-like-context.tsx`, mounted in the root layout) collects the tool ids on the page and, only when the viewer is signed in, fetches them in one request from `GET /api/v1/tools/likes?ids=...`. The dashboard still passes server-known state through `initialState`.
 
 Database model:
 
@@ -477,14 +488,14 @@ Content source split:
 
 ## Design And UX Direction
 
-The current design direction is a warm, light, premium SaaS interface. Keep the product on the original light theme unless there is a deliberate future dark-mode pass with complete QA.
+Theme v2 (2026-10-11): neutral warm paper, ink (near-black) primary buttons, flat header without glass or pill container, no tinted shadows, and teal reduced to a deep accent used only for kickers, links, and small highlights. The overrides live at the end of `src/app/globals.css` in a second `@layer components` block so they win over the older rules; tokens are in `:root`. Keep new UI inside that system: white surfaces, `rgb(var(--color-ink) / 0.1)` borders, ink shadows at 6 to 12 percent, one accent colour per screen.
 
 Design principles:
 
 - Calm, practical, decision-oriented.
 - Workflow-first information hierarchy.
 - Professional and investor-ready, but not flashy.
-- Muted warm background with dark ink, navy accent, and restrained orange signal color.
+- Neutral paper background with dark ink actions, a deep teal accent used sparingly, and orange only for warnings and the unlock prompt.
 - Cards and panels should support scanning and comparison.
 - Mobile should be fully usable, not an afterthought.
 - Motion should stay subtle: reveals, animated numbers, small hover lift, typewriter text, and progress bars.
@@ -517,9 +528,15 @@ https://logotyp.us/file/*
 
 SEO support currently includes:
 
-- Metadata in route files.
-- `src/app/sitemap.ts` with dynamic URLs for tools, categories, use cases, industries, opportunities, business functions, playbooks, and articles.
-- `src/app/robots.ts` allows public pages and disallows `/api/` and `/admin/`.
+- Metadata in route files, with generated 1200x630 Open Graph images per route type (`src/lib/og.tsx` plus `opengraph-image.tsx` files).
+- Thin-page policy: a tool page is indexable and in the sitemap only when it has rich content (`hasRichToolContent`: long description of 400+ characters plus best-for and not-for). Others are `noindex, follow` until enriched in the admin.
+- Industry guides: `src/lib/industry-guides.ts` holds hand-written depth (answer-first summary, five workflows with measures, skip list, data rules, FAQ with FAQPage JSON-LD) for `ecommerce`, `retail-and-hospitality`, and `local-services`, rendered by `src/features/industries/industry-guide.tsx` on `/industries/[slug]`.
+- JSON-LD via `src/lib/structured-data.tsx`: Organization and WebSite site-wide, SoftwareApplication and BreadcrumbList on tool pages, BreadcrumbList on use-case, industry, and opportunity pages, Article on articles.
+- Self-hosted Plus Jakarta Sans through `next/font` (`--font-sans`).
+- Custom `src/app/not-found.tsx`.
+- Login-gated pages (`/audit/start`, `/audit/questions`, `/audit/results`, `/submit`, `/dashboard`) are `noindex` and excluded from the sitemap.
+- `src/app/sitemap.ts` with real `lastmod` dates from the database (`src/server/seo/queries.ts`), revalidated hourly.
+- `src/app/robots.ts` disallows `/api/`, `/admin/`, `/dashboard/`, `/login`, audit results/questions, `/submit`, and search/pagination parameters.
 - Five hardcoded SEO articles in `src/lib/articles.ts`.
 - Articles are linked in the footer, not the header, to keep the primary app navigation product-focused.
 
@@ -630,6 +647,25 @@ npm run test:recommendations
 npm run test:smoke
 ```
 
+## Local Development Without Supabase
+
+Used for the October 2026 review on Windows when no Supabase credentials were available.
+
+1. PostgreSQL 15 is installed at `C:\Program Files\PostgreSQL\15`. Create an isolated cluster so no existing password is needed:
+
+```bash
+"/c/Program Files/PostgreSQL/15/bin/initdb.exe" -D <scratch>/pgdata -U postgres -A trust -E UTF8 --locale=C
+"/c/Program Files/PostgreSQL/15/bin/pg_ctl.exe" -D <scratch>/pgdata -o "-p 5433 -c listen_addresses=127.0.0.1" -l <scratch>/pg.log start
+"/c/Program Files/PostgreSQL/15/bin/psql.exe" -h 127.0.0.1 -p 5433 -U postgres -c "CREATE DATABASE seeksmart;"
+```
+
+2. `.env` (ignored) sets both `DATABASE_URL` and `DIRECT_URL` to `postgresql://postgres@127.0.0.1:5433/seeksmart`, a random `AUTH_SECRET`, placeholder Google OAuth values, and `ADMIN_EMAILS`.
+3. `npx prisma generate && npx prisma migrate deploy && npm run db:seed` then `npm run build && npm run start` (or `npm run dev`).
+4. Google login does not work with placeholder OAuth values. To test signed-in pages, insert a `users` row and a `sessions` row with a random `session_token`, then send cookie `authjs.session-token=<token>`.
+5. Node 25 works. `tsx` scripts cannot use top-level await here (CJS output); wrap in an async `main()`.
+
+Known caveat: the Lottie hero and PostHog are still in the client bundle; see `docs/REVAMP_PLAN.md` section 4.6.
+
 ## Security Posture
 
 Implemented protections:
@@ -651,6 +687,7 @@ Implemented protections:
 - Basic in-memory rate limiting for submissions, tool list API, and likes.
 - API responses use a consistent error envelope.
 - Dashboard and admin routes require auth.
+- The root layout no longer reads the session; header account state comes from `next-auth/react` `useSession` via `src/components/session-provider.tsx`, so content pages can be cached (ISR).
 - `/robots.txt` disallows `/api/` and `/admin/`.
 
 Important limitations:

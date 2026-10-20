@@ -7,28 +7,32 @@ type ToolLogoProps = {
   className?: string;
   logoUrl: string | null;
   name: string;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
 };
 
 const sizeClasses = {
-  sm: "h-8 w-8 text-xs",
-  md: "h-11 w-11 text-sm",
-  lg: "h-16 w-16 text-lg"
+  sm: "h-8 w-8 rounded-full text-[0.7rem]",
+  md: "h-11 w-11 rounded-full text-sm",
+  lg: "h-16 w-16 rounded-[1.1rem] text-lg",
+  xl: "h-20 w-20 rounded-[1.4rem] text-2xl md:h-24 md:w-24 md:rounded-[1.6rem]"
 };
 
-export function ToolLogo({
-  className,
-  logoUrl,
-  name,
-  size = "md"
-}: ToolLogoProps) {
+const paddingClasses = {
+  sm: "p-1",
+  md: "p-1.5",
+  lg: "p-2.5",
+  xl: "p-3 md:p-3.5"
+};
+
+export function ToolLogo({ className, logoUrl, name, size = "md" }: ToolLogoProps) {
   const [failed, setFailed] = useState(false);
   const showImage = Boolean(logoUrl) && !failed;
 
   return (
     <span
       className={[
-        "tool-mark relative flex shrink-0 items-center justify-center overflow-hidden rounded-full font-semibold ring-1 ring-line/40",
+        "relative flex shrink-0 items-center justify-center overflow-hidden font-display font-bold tracking-[-0.03em]",
+        showImage ? "bg-white ring-1 ring-ink/[0.08]" : "bg-ink text-paper",
         sizeClasses[size],
         className
       ]
@@ -38,12 +42,12 @@ export function ToolLogo({
       {showImage ? (
         <Image
           alt={`${name} logo`}
-          className="h-full w-full bg-white object-contain p-1.5"
+          className={`h-full w-full object-contain ${paddingClasses[size]}`}
           fill
           loading="eager"
           onError={() => setFailed(true)}
           referrerPolicy="no-referrer"
-          sizes="64px"
+          sizes="96px"
           src={logoUrl as string}
           unoptimized
         />

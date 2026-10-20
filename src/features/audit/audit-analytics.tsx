@@ -7,12 +7,14 @@ import { capturePostHogEvent } from "@/features/analytics/posthog-client";
 type AuditAnalyticsEventName =
   | "audit_start_viewed"
   | "audit_questions_viewed"
+  | "audit_step_completed"
   | "audit_questions_submitted"
-  | "audit_results_viewed";
+  | "audit_results_viewed"
+  | "audit_unlock_viewed";
 
 type AuditAnalyticsPayload = {
   event: AuditAnalyticsEventName;
-  version: "audit-rules-v2.3";
+  version: string;
   properties?: Record<string, string | number | boolean | string[]>;
 };
 
@@ -39,7 +41,7 @@ export function AuditAnalyticsEvent({
 export function AuditSubmitButton() {
   return (
     <MotionButton
-      className="primary-button min-h-12"
+      className="btn btn-primary btn-lg"
       onClick={() => trackAuditEvent("audit_questions_submitted")}
       type="submit"
     >
@@ -54,7 +56,7 @@ export function trackAuditEvent(
 ) {
   const payload: AuditAnalyticsPayload = {
     event,
-    version: "audit-rules-v2.3",
+    version: "audit-rules-v3.0",
     properties
   };
 

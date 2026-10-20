@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { Route } from "next";
 import { AuthError } from "next-auth";
 import { UserRole } from "@prisma/client";
-import { Mail, LogIn, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { redirect } from "next/navigation";
 import { auth, signIn, signOut } from "@/auth";
 import {
@@ -11,6 +11,8 @@ import {
 } from "@/server/auth/email";
 import { MotionButton } from "@/components/motion/motion-button";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitReveal } from "@/components/motion/split-reveal";
+import { LoginVisual } from "@/features/account/login-visual";
 
 export const metadata: Metadata = {
   title: "Sign In",
@@ -37,9 +39,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const isAdminCallback =
     callbackUrl === "/admin" || callbackUrl.startsWith("/admin/");
   const isAuditCallback =
-    callbackUrl === "/audit/start" ||
-    callbackUrl === "/audit/questions" ||
+    callbackUrl.startsWith("/audit/questions") ||
+    callbackUrl.startsWith("/audit/start") ||
     callbackUrl.startsWith("/audit/results");
+  const isBriefCallback = callbackUrl.startsWith("/audit/r/");
   const isSignedInWithoutAdminAccess =
     Boolean(session?.user) &&
     isAdminCallback &&
@@ -110,139 +113,129 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     });
   }
 
+  const lead = isSignedInWithoutAdminAccess
+    ? `${signedInEmail} does not have admin access. Sign out and use the approved admin account.`
+    : isAuditCallback
+      ? "The audit is free with an account. Your brief saves to your dashboard."
+      : isBriefCallback
+        ? "Sign in to open the full brief. If you ran it on this device, it moves to your dashboard."
+        : "Keep briefs and shortlists attached to your account.";
+  const headline: [string, string] = isAuditCallback
+    ? ["Sign in", "to start."]
+    : isBriefCallback
+      ? ["Sign in", "for the plan."]
+      : ["Welcome", "back."];
+
   return (
-    <main className="page-shell">
-      <div className="app-container grid max-w-6xl gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
-        <Reveal className="surface-strong rounded-[2rem] p-6 md:p-8">
-          <p className="eyebrow">
-            <LogIn aria-hidden="true" size={14} />
-            Sign in
-          </p>
-          <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-tight md:text-5xl">
-            Save your AI decisions and come back with context intact.
-          </h1>
-          <p className="mt-4 max-w-2xl leading-7 text-ink/65">
-            {isSignedInWithoutAdminAccess
-              ? `${signedInEmail} is signed in but does not have admin access. Choose the approved admin account to continue.`
-              : isAuditCallback
-                ? "Sign in to continue your audit. SeekSmart will return you to the flow and save the result to your workspace automatically."
-                : "Use email or Google to keep audit briefs, shortlists, and decision history attached to your account."}
-          </p>
+    <main className="app-container pb-16 pt-4 md:pb-24 md:pt-8">
+      <div className="grid gap-4 lg:min-h-[calc(100svh-9rem)] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-6">
+        {/* ---------- Night statement ---------- */}
+        <Reveal className="order-2 lg:order-1" y={32}>
+          <div
+            className="night spotlight spotlight-strong flex h-full flex-col justify-between gap-12 rounded-[2rem] px-6 py-10 sm:px-10 md:rounded-[2.5rem] md:px-12 md:py-14"
+            data-spotlight
+          >
+            <div
+              aria-hidden="true"
+              className="dot-grid absolute inset-0 opacity-50 [mask-image:radial-gradient(ellipse_at_20%_10%,black,transparent_60%)]"
+            />
+            <div className="relative">
+              <p className="eyebrow">Workspace</p>
+              <SplitReveal
+                as="p"
+                className="mt-6 font-display text-[clamp(2.4rem,5vw,4.5rem)] font-bold leading-[0.92] tracking-[-0.05em] text-white"
+                delay={0.2}
+                lines={[["Every brief,"], [{ text: "kept.", className: "text-signal" }]]}
+              />
+            </div>
+            <div className="relative max-w-md">
+              <LoginVisual />
+            </div>
+          </div>
+        </Reveal>
 
-          <div className="mt-8 grid gap-4 rounded-[1.6rem] border border-line/65 bg-white/70 p-4 shadow-[0_20px_60px_rgb(13_48_92/0.07)] backdrop-blur md:p-5">
-            {errorMessage ? (
-              <div className="rounded-2xl border border-signal/25 bg-signal/10 px-4 py-3 text-sm leading-6 text-ink/72">
-                {errorMessage}
-              </div>
-            ) : null}
+        {/* ---------- Form ---------- */}
+        <div className="order-1 flex items-center lg:order-2">
+          <div className="mx-auto w-full max-w-md px-1 py-8 sm:py-12 lg:px-6">
+            <Reveal>
+              <p className="eyebrow">Sign in</p>
+            </Reveal>
+            <SplitReveal
+              className="h1 mt-6"
+              delay={0.1}
+              lines={[[headline[0]], [{ text: headline[1], className: "ghost-word" }]]}
+            />
+            <Reveal delay={0.3}>
+              <p className="mt-5 text-ink/55">{lead}</p>
+            </Reveal>
 
-            {isSignedInWithoutAdminAccess ? (
-              <form action={signOutCurrentUser}>
-                <MotionButton
-                  className="secondary-button min-h-12 w-full justify-center"
-                  type="submit"
+            <Reveal className="mt-10" delay={0.4}>
+              {errorMessage ? (
+                <p
+                  className="mb-6 flex items-start gap-3 rounded-2xl bg-danger/[0.07] px-4 py-3 text-sm text-danger"
+                  role="alert"
                 >
-                  Sign out current account
-                </MotionButton>
-              </form>
-            ) : (
-              <>
-                <section className="rounded-[1.4rem] border border-line/60 bg-white/82 p-4">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/8 text-accent">
-                      <Mail aria-hidden="true" size={18} />
-                    </span>
-                    <div>
-                      <h2 className="text-lg font-semibold">Continue with email</h2>
-                      <p className="text-sm leading-6 text-ink/58">
-                        We’ll send a secure sign-in link. No password required.
-                      </p>
-                    </div>
-                  </div>
-                  {isEmailConfigured ? (
-                    <form action={signInWithEmail} className="mt-4 grid gap-3">
-                      <label className="grid gap-2">
-                        <span className="text-sm font-medium">Work email</span>
-                        <input
-                          autoComplete="email"
-                          className="control-field min-h-12"
-                          inputMode="email"
-                          maxLength={320}
-                          name="email"
-                          placeholder="you@company.com"
-                          required
-                          type="email"
-                        />
-                      </label>
-                      <MotionButton
-                        className="primary-button min-h-12 w-full justify-center"
-                        type="submit"
-                      >
-                        Email me a sign-in link
-                      </MotionButton>
-                    </form>
-                  ) : (
-                    <div className="mt-4 rounded-2xl border border-line/60 bg-paper/80 px-4 py-3 text-sm leading-6 text-ink/60">
-                      Email sign-in is not configured yet in this environment.
-                    </div>
-                  )}
-                </section>
+                  <span aria-hidden="true" className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-danger" />
+                  {errorMessage}
+                </p>
+              ) : null}
 
-                <div className="flex items-center gap-3 px-1 text-xs font-semibold uppercase tracking-[0.16em] text-ink/35">
-                  <span className="h-px flex-1 bg-line/70" />
-                  Or
-                  <span className="h-px flex-1 bg-line/70" />
-                </div>
-
-                <section className="rounded-[1.4rem] border border-line/60 bg-white/82 p-4">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/8 text-accent">
-                      <Sparkles aria-hidden="true" size={18} />
-                    </span>
-                    <div>
-                      <h2 className="text-lg font-semibold">Continue with Google</h2>
-                      <p className="text-sm leading-6 text-ink/58">
-                        Fastest path if your work already lives in Google.
-                      </p>
-                    </div>
-                  </div>
-                  <form action={signInWithGoogle} className="mt-4">
+              {isSignedInWithoutAdminAccess ? (
+                <form action={signOutCurrentUser}>
+                  <MotionButton className="btn btn-primary btn-lg w-full" type="submit">
+                    Sign out current account
+                  </MotionButton>
+                </form>
+              ) : (
+                <div className="grid gap-6">
+                  <form action={signInWithGoogle}>
                     <MotionButton
-                      className="google-auth-button w-full justify-center"
+                      className="btn btn-lg w-full border border-ink/15 bg-surface text-ink hover:border-ink/40"
                       type="submit"
                     >
                       <GoogleMark />
                       Continue with Google
                     </MotionButton>
                   </form>
-                </section>
-              </>
-            )}
-          </div>
-        </Reveal>
 
-        <Reveal className="surface-panel rounded-[2rem] p-6" delay={0.06}>
-          <div className="flex items-center gap-3">
-            <ShieldCheck aria-hidden="true" className="text-accent" size={22} />
-            <h2 className="font-semibold">What gets saved</h2>
+                  <div className="flex items-center gap-4 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-ink/35">
+                    <span className="h-px flex-1 bg-ink/10" />
+                    or email
+                    <span className="h-px flex-1 bg-ink/10" />
+                  </div>
+
+                  {isEmailConfigured ? (
+                    <form action={signInWithEmail} className="grid gap-3">
+                      <label className="sr-only" htmlFor="login-email">
+                        Work email
+                      </label>
+                      <input
+                        autoComplete="email"
+                        className="field min-h-[3.4rem] rounded-full px-5"
+                        id="login-email"
+                        inputMode="email"
+                        maxLength={320}
+                        name="email"
+                        placeholder="you@company.com"
+                        required
+                        type="email"
+                      />
+                      <MotionButton className="btn btn-primary btn-lg w-full" type="submit">
+                        Email me a sign-in link
+                        <ArrowRight aria-hidden="true" size={18} />
+                      </MotionButton>
+                      <p className="text-center text-xs text-ink/45">No password. The link expires quickly.</p>
+                    </form>
+                  ) : (
+                    <p className="rounded-2xl bg-ink/[0.04] px-4 py-3 text-sm text-ink/55">
+                      Email sign-in is not configured in this environment.
+                    </p>
+                  )}
+                </div>
+              )}
+            </Reveal>
           </div>
-          <div className="mt-5 grid gap-4 text-sm leading-6 text-ink/62">
-            <p>
-              Signed-in audit results are saved to your account automatically so
-              you can revisit readiness scores, top opportunities, and tool
-              shortlists later.
-            </p>
-            <p>
-              Liked tools stay attached to your workspace, which makes the
-              dashboard useful as an actual buying desk instead of a one-time
-              report.
-            </p>
-            <p>
-              Public pages remain browseable, but running an audit or submitting
-              a tool requires sign-in so every saved artifact has a secure owner.
-            </p>
-          </div>
-        </Reveal>
+        </div>
       </div>
     </main>
   );

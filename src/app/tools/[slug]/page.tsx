@@ -2,34 +2,41 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  ArrowRight,
-  BadgeCheck,
-  CheckCircle2,
-  ClipboardCheck,
-  ExternalLink,
-  Gauge,
-  GitCompareArrows,
-  Layers3,
-  SearchX,
-  ShieldAlert,
-  ShieldCheck,
-  Sparkles,
-  Table2
-} from "lucide-react";
-import { auth } from "@/auth";
+import { ArrowRight, ArrowUpRight, Check, ExternalLink, GitCompareArrows, X } from "lucide-react";
 import { TrackedExternalLink } from "@/features/analytics/tracked-link";
 import { ToolLikeButton } from "@/features/tools/tool-like-button";
 import { ToolLogo } from "@/features/tools/tool-logo";
-import { attachToolLikeStates } from "@/server/tools/likes";
-import { getPublishedToolBySlug } from "@/server/tools/queries";
-import type { PublicToolDetail, ToolLikeState } from "@/shared/domain";
+import { ToolList, formatPricing } from "@/features/tools/tool-row";
+import { ToolScreenshot } from "@/features/tools/tool-screenshot";
+import {
+  getPublishedToolBySlug,
+  listPublishedTools
+} from "@/server/tools/queries";
+import type { PublicToolDetail } from "@/shared/domain";
+import { hasRichToolContent } from "@/server/tools/content-quality";
 import { AnimatedBar } from "@/components/motion/animated-bar";
 import { AnimatedNumber } from "@/components/motion/animated-number";
+import { Magnetic } from "@/components/motion/magnetic";
 import { Reveal } from "@/components/motion/reveal";
-import { EmptyState } from "@/components/state-surfaces";
+import { SplitReveal } from "@/components/motion/split-reveal";
+import { Stagger, StaggerItem } from "@/components/motion/stagger";
+import { ScoreDial } from "@/components/ui/score-dial";
+import {
+  JsonLd,
+  breadcrumbJsonLd,
+  softwareApplicationJsonLd
+} from "@/lib/structured-data";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  try {
+    const tools = await listPublishedTools({ limit: 100 });
+    return tools.map((tool) => ({ slug: tool.slug }));
+  } catch {
+    return [];
+  }
+}
 
 type ToolDetailPageProps = {
   params: Promise<{
@@ -52,6 +59,10 @@ export async function generateMetadata({
   return {
     title: tool.metaTitle ?? `${tool.name} Review, Use Cases, and Alternatives`,
     description: tool.metaDescription ?? tool.shortDescription,
+    // Only editorially featured tools carry enough original content to be
+    // worth indexing; the rest stay crawlable but out of the index until
+    // their write-ups are enriched (see docs/REVAMP_PLAN.md, Phase 2).
+    robots: hasRichToolContent(tool) ? undefined : { index: false, follow: true },
     alternates: {
       canonical: `/tools/${tool.slug}`
     },
@@ -66,24 +77,15 @@ export async function generateMetadata({
 
 export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
   const { slug } = await params;
-  const [session, toolResult] = await Promise.all([
-    auth(),
-    getPublishedToolBySlug(slug)
-  ]);
+  const tool = await getPublishedToolBySlug(slug);
 
-  if (!toolResult) {
+  if (!tool) {
     notFound();
   }
 
-  const [tool] = await attachToolLikeStates([toolResult], session?.user?.id);
-  const alternatives = await attachToolLikeStates(
-    tool.alternatives,
-    session?.user?.id
-  );
-  const isSignedIn = Boolean(session?.user);
-  const topUseCase = [...tool.useCases].sort(
-    (a, b) => b.fitScore - a.fitScore
-  )[0];
+  const alternatives = tool.alternatives;
+  const useCases = [...tool.useCases].sort((a, b) => b.fitScore - a.fitScore);
+  const topUseCase = useCases[0];
   const averageFit =
     tool.useCases.length > 0
       ? Math.round(
@@ -91,616 +93,475 @@ export default async function ToolDetailPage({ params }: ToolDetailPageProps) {
             tool.useCases.length
         )
       : null;
+  const dialValue = averageFit ?? tool.popularityScore;
+  const opportunities = uniqueOpportunities(tool);
+  const pricingLine =
+    tool.startingPrice !== null
+      ? `${formatPricing(tool.pricingType)}, from $${tool.startingPrice}/mo`
+      : formatPricing(tool.pricingType);
 
   return (
-    <main className="page-shell">
-      <div className="app-container">
-        <Reveal className="tool-detail-hero rounded-2xl p-6 md:p-7">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
-            <div>
-              <div className="flex flex-wrap items-center gap-3 text-sm">
-                <Link className="font-medium text-accent" href="/tools">
+    <main>
+      <JsonLd
+        data={[
+          softwareApplicationJsonLd(tool),
+          breadcrumbJsonLd([
+            { name: "Tools", path: "/tools" },
+            { name: tool.category.name, path: `/categories/${tool.category.slug}` },
+            { name: tool.name, path: `/tools/${tool.slug}` }
+          ])
+        ]}
+      />
+
+      {/* ---------- Hero ---------- */}
+      <section className="relative overflow-hidden">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="grid-lines absolute inset-0 opacity-50 [mask-image:radial-gradient(ellipse_at_top_left,black_10%,transparent_60%)]" />
+        </div>
+        <div className="app-container page-hero relative grid gap-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)] lg:items-center lg:gap-16">
+          <div className="min-w-0">
+            <Reveal y={10}>
+              <nav aria-label="Breadcrumb" className="flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-ink/45">
+                <Link className="transition-colors hover:text-ink" href="/tools">
                   Tools
                 </Link>
-                <span className="text-ink/30">/</span>
+                <span aria-hidden="true">/</span>
                 <Link
-                  className="text-ink/55 hover:text-accent"
+                  className="truncate transition-colors hover:text-ink"
                   href={`/categories/${tool.category.slug}`}
                 >
                   {tool.category.name}
                 </Link>
-              </div>
-              <div className="mt-5 flex flex-col gap-4 sm:flex-row sm:items-center">
-                <ToolLogo logoUrl={tool.logoUrl} name={tool.name} size="lg" />
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-accent/70">
-                    Tool review
-                  </p>
-                  <h1 className="mt-2 text-4xl font-semibold leading-tight md:text-5xl">
-                    {tool.name}
-                  </h1>
+              </nav>
+            </Reveal>
+            <Reveal delay={0.05} y={20}>
+              <ToolLogo className="mt-8" logoUrl={tool.logoUrl} name={tool.name} size="xl" />
+            </Reveal>
+            <SplitReveal
+              className="display mt-7 break-words"
+              delay={0.1}
+              lines={[[tool.name, { text: ".", className: "accent-word" }]]}
+            />
+            <Stagger delay={0.4}>
+              <StaggerItem>
+                <p className="lead mt-6 max-w-2xl">{tool.shortDescription}</p>
+              </StaggerItem>
+              <StaggerItem>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  <span className="tag">{formatPricing(tool.pricingType)}</span>
+                  {tool.hasFreePlan ? <span className="tag">Free plan</span> : null}
+                  {tool.isVerified ? <span className="tag tag-success">Verified</span> : null}
+                  {tool.isFeatured ? <span className="tag tag-signal">Featured</span> : null}
+                  {tool.vendor ? <span className="tag">by {tool.vendor}</span> : null}
                 </div>
-              </div>
-              <p className="mt-5 max-w-3xl text-lg leading-8 text-ink/70">
-                {tool.shortDescription}
-              </p>
-              <div className="mt-6 flex flex-wrap gap-2">
-                <span className="status-pill">{formatPricing(tool.pricingType)}</span>
-                {tool.hasFreePlan ? <span className="status-pill">Free plan</span> : null}
-                {tool.isVerified ? (
-                  <span className="status-pill">
-                    <ShieldCheck aria-hidden="true" size={16} />
-                    Verified
-                  </span>
-                ) : null}
-                {tool.isFeatured ? (
-                  <span className="status-pill">
-                    <Sparkles aria-hidden="true" size={16} />
-                    Featured
-                  </span>
-                ) : null}
-              </div>
-              <div className="mt-6 flex flex-wrap items-center gap-3">
-                <ToolLikeButton
-                  isSignedIn={isSignedIn}
-                  state={tool.like}
-                  toolId={tool.id}
-                  toolName={tool.name}
-                  toolSlug={tool.slug}
-                  variant="detail"
-                />
-                <TrackedExternalLink
-                  className="secondary-button min-h-12"
-                  event="tool_website_clicked"
-                  href={tool.websiteUrl}
-                  properties={{
-                    toolSlug: tool.slug,
-                    source: "tool_detail_hero"
-                  }}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  Visit website
-                  <ExternalLink aria-hidden="true" size={17} />
-                </TrackedExternalLink>
-              </div>
-            </div>
+              </StaggerItem>
+              <StaggerItem>
+                <div className="mt-9 flex flex-wrap items-center gap-3">
+                  <Magnetic>
+                    <TrackedExternalLink
+                      className="btn btn-primary btn-lg"
+                      event="tool_website_clicked"
+                      href={tool.websiteUrl}
+                      properties={{
+                        toolSlug: tool.slug,
+                        source: "tool_detail_hero"
+                      }}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      Visit website
+                      <ExternalLink aria-hidden="true" size={17} />
+                    </TrackedExternalLink>
+                  </Magnetic>
+                  <ToolLikeButton
+                    toolId={tool.id}
+                    toolName={tool.name}
+                    toolSlug={tool.slug}
+                    variant="detail"
+                  />
+                  {alternatives.length > 0 ? (
+                    <a className="btn btn-ghost btn-lg" href="#alternatives">
+                      <GitCompareArrows aria-hidden="true" size={17} />
+                      Compare
+                    </a>
+                  ) : null}
+                </div>
+              </StaggerItem>
+            </Stagger>
+          </div>
 
-            <aside className="tool-detail-rail">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-accent/70">
-                    At a glance
-                  </p>
-                  <h2 className="mt-2 text-xl font-semibold">
-                    {topUseCase ? "Shortlist ready" : "Research mode"}
-                  </h2>
+          <Reveal delay={0.3} y={40}>
+            <aside
+              className="night night-panel spotlight p-6 shadow-[0_40px_80px_-40px_rgb(14_14_16/0.7)] sm:p-8"
+              data-spotlight
+            >
+              <div className="relative z-[1] flex items-center gap-6">
+                <div className="relative">
+                  <ScoreDial
+                    label={averageFit !== null ? "Average fit" : "Score"}
+                    showValue={false}
+                    size={148}
+                    stroke={9}
+                    tone="light"
+                    value={dialValue}
+                  />
+                  <div aria-hidden="true" className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="stat-number text-[3.4rem] text-white">
+                      <AnimatedNumber value={dialValue} />
+                    </span>
+                    <span className="mt-1 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-white/45">
+                      {averageFit !== null ? "Avg fit" : "Score"}
+                    </span>
+                  </div>
                 </div>
-                <div className="fit-dial">
-                  <strong>
-                    {averageFit ? <AnimatedNumber value={averageFit} /> : "--"}
-                  </strong>
-                  <span>Avg fit</span>
+                <div className="min-w-0">
+                  <p className="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-white/45">
+                    {averageFit !== null ? "Best fit" : "Status"}
+                  </p>
+                  <p className="mt-2 font-display text-xl font-bold leading-tight tracking-[-0.02em] text-white">
+                    {topUseCase ? topUseCase.name : "Not mapped to a workflow yet"}
+                  </p>
+                  {topUseCase ? (
+                    <p className="mt-1 font-mono text-sm text-signal tabular">
+                      {topUseCase.fitScore}/100
+                    </p>
+                  ) : null}
                 </div>
               </div>
-              <p className="mt-4 text-sm leading-6 text-ink/62">
-                Use this page to decide whether this tool belongs on your
-                shortlist, needs a closer comparison, or should stay in research.
-              </p>
-              <dl className="mt-5 grid gap-3 text-sm">
-                <SnapshotRow label="Category" value={tool.category.name} />
-                <SnapshotRow label="Pricing" value={formatPricing(tool.pricingType)} />
-                <SnapshotRow
-                  label="Best-fit workflow"
-                  value={topUseCase ? `${topUseCase.name} (${topUseCase.fitScore})` : "Needs curation"}
-                />
-                <SnapshotRow
-                  label="Listing status"
-                  value={tool.isVerified ? "Verified listing" : "Needs verification"}
+              <dl className="relative z-[1] mt-8 grid text-sm">
+                <GlanceRow label="Category" value={tool.category.name} />
+                <GlanceRow label="Pricing" value={pricingLine} />
+                {averageFit !== null ? (
+                  <GlanceRow label="Popularity" value={`${tool.popularityScore}/100`} />
+                ) : null}
+                <GlanceRow label="Setup" value={estimateSetupEffort(tool)} />
+                <GlanceRow
+                  label="Listing"
+                  value={tool.isVerified ? "Verified" : "Needs verification"}
                 />
               </dl>
             </aside>
-          </div>
-        </Reveal>
+          </Reveal>
+        </div>
+      </section>
 
-        <Reveal className="mt-6 grid gap-4 md:grid-cols-4">
-          <DecisionMetric
-            label="Average fit"
-            score={averageFit ?? undefined}
-            value={
-              averageFit ? (
-                <>
-                  <AnimatedNumber value={averageFit} />
-                  /100
-                </>
-              ) : (
-                "Unmapped"
-              )
+      {/* ---------- Screenshot ---------- */}
+      {tool.screenshotUrl ? (
+        <section className="app-container pb-20 md:pb-28">
+          <ToolScreenshot
+            caption={
+              tool.contentUpdatedAt
+                ? `Homepage, captured ${formatMonth(tool.contentUpdatedAt)}`
+                : undefined
             }
+            name={tool.name}
+            src={tool.screenshotUrl}
+            websiteUrl={tool.websiteUrl}
           />
-          <DecisionMetric label="Pricing" value={formatPricing(tool.pricingType)} />
-          <DecisionMetric
-            label="Setup effort"
-            value={estimateSetupEffort(tool)}
-          />
-          <DecisionMetric
-            label="Decision stage"
-            value={tool.useCases.length > 0 ? "Shortlist" : "Research"}
-          />
-        </Reveal>
+        </section>
+      ) : null}
 
-        <Reveal className="mt-6 grid gap-6 lg:grid-cols-[1fr_0.86fr]">
-          <div className="tool-detail-section rounded-xl p-6">
-            <div className="flex items-center gap-2">
-              <Layers3 aria-hidden="true" className="text-accent" size={20} />
-              <h2 className="text-xl font-semibold">Overview</h2>
-            </div>
-            <p className="mt-4 leading-8 text-ink/70">
+      {/* ---------- Overview ---------- */}
+      <section className="app-container pb-20 md:pb-28">
+        <SectionHeading eyebrow="Overview" lines={[["What it does."]]} />
+        <div className="mt-10 grid gap-12 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-20">
+          <Reveal>
+            <p className="max-w-[40rem] whitespace-pre-line text-[1.08rem] leading-[1.75] text-ink/75 md:text-[1.15rem]">
               {tool.longDescription ?? tool.shortDescription}
             </p>
-            {tool.features.length > 0 ? (
-              <div className="mt-5 flex flex-wrap gap-2">
-                {tool.features.slice(0, 8).map((feature) => (
-                  <span className="status-pill" key={feature.id}>
-                    <BadgeCheck aria-hidden="true" size={14} />
-                    {feature.name}
+          </Reveal>
+          <Reveal delay={0.1}>
+            <dl className="row-list">
+              {tool.pricingNote ? (
+                <FactRow label="Pricing">{tool.pricingNote}</FactRow>
+              ) : (
+                <FactRow label="Pricing">{pricingLine}</FactRow>
+              )}
+              {tool.integrations.length > 0 ? (
+                <FactRow label="Works with">
+                  <span className="flex flex-wrap gap-1.5">
+                    {tool.integrations.map((integration) => (
+                      <span className="tag" key={integration}>
+                        {integration}
+                      </span>
+                    ))}
                   </span>
-                ))}
-              </div>
-            ) : null}
-          </div>
-          <div className="tool-detail-section rounded-xl p-6">
-            <div className="flex items-center gap-2">
-              <ClipboardCheck
-                aria-hidden="true"
-                className="text-accent"
-                size={20}
-              />
-              <h2 className="text-xl font-semibold">Best for</h2>
-            </div>
-            <div className="mt-4 grid gap-3">
-              {bestForSignals(tool).map((signal) => (
-                <ChecklistItem key={signal}>{signal}</ChecklistItem>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-
-        {tool.useCases.length > 0 ? (
-          <Reveal className="surface-strong mt-6 rounded-2xl p-6">
-            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-              <div>
-                <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase text-accent">
-                  <Table2 aria-hidden="true" size={16} />
-                  Fit matrix
-                </p>
-                <h2 className="mt-1 text-xl font-semibold">
-                  Use-case, budget, and risk fit
-                </h2>
-              </div>
-              {topUseCase ? (
-                <Link
-                  className="secondary-button"
-                  href={`/use-cases/${topUseCase.slug}`}
-                >
-                  Open top use case
-                  <ArrowRight aria-hidden="true" size={16} />
-                </Link>
+                </FactRow>
               ) : null}
-            </div>
+              {tool.features.length > 0 ? (
+                <FactRow label="Features">
+                  <span className="flex flex-wrap gap-1.5">
+                    {tool.features.slice(0, 8).map((feature) => (
+                      <span className="tag" key={feature.id}>
+                        {feature.name}
+                      </span>
+                    ))}
+                  </span>
+                </FactRow>
+              ) : null}
+              {tool.contentUpdatedAt ? (
+                <FactRow label="Checked">
+                  <span className="font-mono text-sm tabular">{formatMonth(tool.contentUpdatedAt)}</span>
+                </FactRow>
+              ) : null}
+            </dl>
+          </Reveal>
+        </div>
+      </section>
 
-            <div className="mt-5 grid gap-3 md:hidden">
-              {tool.useCases.map((useCase) => (
-                <Link
-                  className="comparison-mobile-card"
-                  href={`/use-cases/${useCase.slug}`}
-                  key={useCase.id}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h3 className="font-semibold">{useCase.name}</h3>
-                      <p className="mt-1 text-xs leading-5 text-ink/50">
-                        {useCase.timeToValue ?? "Time to value varies"} ·{" "}
-                        {formatLevel(useCase.effortLevel)} effort ·{" "}
-                        {formatLevel(useCase.riskLevel)} risk
-                      </p>
-                    </div>
-                    <span className="fit-score-badge">
-                      <AnimatedNumber value={useCase.fitScore} />
-                    </span>
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-ink/62">
-                    {useCase.recommendationNote ??
-                      "Aligned to the current curated use-case library."}
-                  </p>
+      {/* ---------- Fit matrix ---------- */}
+      {useCases.length > 0 ? (
+        <section className="app-container pb-20 md:pb-28">
+          <SectionHeading
+            action={
+              topUseCase ? (
+                <Link className="link-underline" href={`/use-cases/${topUseCase.slug}`}>
+                  Open top use case
+                  <ArrowUpRight aria-hidden="true" size={15} />
                 </Link>
-              ))}
+              ) : null
+            }
+            eyebrow="Fit"
+            lines={[["Where it fits"], [{ text: "best.", className: "ghost-word" }]]}
+          />
+          <div className="mt-10">
+            <div
+              aria-hidden="true"
+              className="hidden grid-cols-[minmax(0,1fr)_12rem_5.5rem_5.5rem_2.25rem] gap-x-8 pb-3 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-ink/40 md:grid"
+            >
+              <span>Use case</span>
+              <span>Fit</span>
+              <span>Effort</span>
+              <span>Risk</span>
+              <span />
             </div>
-
-            <div className="comparison-table-shell mt-5 hidden md:block">
-              <table className="decision-table">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-3">Use case</th>
-                    <th className="px-4 py-3">Fit</th>
-                    <th className="px-4 py-3">Effort</th>
-                    <th className="px-4 py-3">Risk</th>
-                    <th className="px-4 py-3">Budget note</th>
-                    <th className="px-4 py-3">Why it fits</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tool.useCases.map((useCase) => (
-                    <tr key={useCase.id}>
-                      <td className="px-4 py-4">
-                        <Link
-                          className="font-semibold text-accent hover:underline"
-                          href={`/use-cases/${useCase.slug}`}
-                        >
+            <Stagger as="ul" className="row-list" gap={0.05} inView>
+              {useCases.map((useCase, index) => {
+                const note = useCase.recommendationNote && !isPlaceholderCopy(useCase.recommendationNote)
+                  ? useCase.recommendationNote
+                  : null;
+                return (
+                  <StaggerItem as="li" key={useCase.id}>
+                    <Link
+                      className="row-item group grid-cols-[minmax(0,1fr)_2.25rem] gap-x-5 gap-y-3 py-6 md:grid-cols-[minmax(0,1fr)_12rem_5.5rem_5.5rem_2.25rem] md:gap-x-8"
+                      href={`/use-cases/${useCase.slug}`}
+                    >
+                      <div className="min-w-0">
+                        <p className="font-display text-[1.25rem] font-bold leading-tight tracking-[-0.03em] transition-transform duration-500 ease-out group-hover:translate-x-1 md:text-[1.45rem]">
                           {useCase.name}
-                        </Link>
-                        <p className="mt-1 text-xs leading-5 text-ink/50">
-                          {useCase.timeToValue ?? "Time to value varies"}
                         </p>
-                      </td>
-                      <td className="px-4 py-4">
-                        <div className="grid min-w-28 gap-2">
-                          <span className="fit-score-badge w-fit">
-                            {fitLabel(useCase.fitScore)} {useCase.fitScore}
+                        {note ? (
+                          <p className="mt-1.5 line-clamp-2 max-w-2xl text-[0.92rem] leading-snug text-ink/55">
+                            {note}
+                          </p>
+                        ) : null}
+                        <p className="mt-2 text-[0.82rem] text-ink/45">
+                          {useCase.timeToValue ? `${useCase.timeToValue} to value` : "Time to value varies"}
+                          <span className="md:hidden">
+                            {" "}
+                            &middot; {formatLevel(useCase.effortLevel)} effort &middot;{" "}
+                            {formatLevel(useCase.riskLevel)} risk
                           </span>
-                          <span className="mini-meter" aria-hidden="true">
-                            <span style={{ width: `${useCase.fitScore}%` }} />
+                          <span className="hidden lg:inline">
+                            {" "}
+                            &middot; {useCase.pricingSuitability ?? pricingSuitability(tool)}
+                          </span>
+                        </p>
+                      </div>
+                      <div className="col-span-2 row-start-2 md:col-span-1 md:col-start-2 md:row-start-1">
+                        <div className="flex items-baseline justify-between gap-3">
+                          <span className="font-mono text-lg font-medium tabular">
+                            <AnimatedNumber value={useCase.fitScore} />
+                          </span>
+                          <span className={`text-[0.78rem] font-medium ${useCase.fitScore >= 85 ? "text-accent" : "text-ink/50"}`}>
+                            {fitLabel(useCase.fitScore)}
                           </span>
                         </div>
-                      </td>
-                      <td className="px-4 py-4">{formatLevel(useCase.effortLevel)}</td>
-                      <td className="px-4 py-4">{formatLevel(useCase.riskLevel)}</td>
-                      <td className="px-4 py-4">
-                        {useCase.pricingSuitability ??
-                          pricingSuitability(tool)}
-                      </td>
-                      <td className="px-4 py-4">
-                        {useCase.recommendationNote ??
-                          "Aligned to the current curated use-case library."}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        <div className={`meter mt-2 ${index === 0 ? "meter-signal" : ""}`}>
+                          <AnimatedBar value={useCase.fitScore} />
+                        </div>
+                      </div>
+                      <span className="hidden text-sm text-ink/70 md:block">{formatLevel(useCase.effortLevel)}</span>
+                      <span className="hidden text-sm text-ink/70 md:block">{formatLevel(useCase.riskLevel)}</span>
+                      <span aria-hidden="true" className="row-arrow col-start-2 row-start-1 md:col-start-5">
+                        <ArrowRight size={15} />
+                      </span>
+                    </Link>
+                  </StaggerItem>
+                );
+              })}
+            </Stagger>
+          </div>
+        </section>
+      ) : null}
+
+      {/* ---------- Best for / not for ---------- */}
+      <section className="app-container pb-20 md:pb-28">
+        <SectionHeading eyebrow="Verdict" lines={[["Who it suits."], [{ text: "Who it doesn’t.", className: "ghost-word" }]]} />
+        <div className="mt-10 grid gap-12 md:grid-cols-2 md:gap-16">
+          <VerdictList items={bestForSignals(tool)} kind="yes" title="Best for" />
+          <VerdictList items={notIdealSignals(tool)} kind="no" title="Not ideal for" />
+        </div>
+      </section>
+
+      {/* ---------- Opportunities ---------- */}
+      {opportunities.length > 0 ? (
+        <section className="app-container pb-20 md:pb-28">
+          <SectionHeading
+            action={
+              <Link className="link-underline" href="/audit/questions">
+                Run the audit
+                <ArrowUpRight aria-hidden="true" size={15} />
+              </Link>
+            }
+            eyebrow="Pays back on"
+            lines={[["Related"], [{ text: "opportunities.", className: "ghost-word" }]]}
+          />
+          <Stagger as="ul" className="row-list mt-10" inView>
+            {opportunities.slice(0, 6).map((opportunity, index) => (
+              <StaggerItem as="li" key={opportunity.id}>
+                <Link
+                  className="row-item group grid-cols-[2.5rem_minmax(0,1fr)_auto] gap-4 py-5 md:grid-cols-[4rem_minmax(0,1fr)_auto]"
+                  href={`/opportunities/${opportunity.slug}`}
+                >
+                  <span className="font-mono text-sm text-ink/40">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="font-display text-[1.2rem] font-bold leading-tight tracking-[-0.03em] transition-transform duration-500 ease-out group-hover:translate-x-1 md:text-[1.5rem]">
+                    {opportunity.name}
+                  </span>
+                  <span aria-hidden="true" className="row-arrow">
+                    <ArrowRight size={15} />
+                  </span>
+                </Link>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </section>
+      ) : null}
+
+      {/* ---------- Alternatives ---------- */}
+      <section className="app-container scroll-mt-28 pb-24 md:pb-32" id="alternatives">
+        <SectionHeading
+          action={
+            <Link className="link-underline" href={`/categories/${tool.category.slug}`}>
+              All {tool.category.name.toLowerCase()} tools
+              <ArrowUpRight aria-hidden="true" size={15} />
+            </Link>
+          }
+          eyebrow="Compare"
+          lines={[["Alternatives."]]}
+        />
+        {alternatives.length > 0 ? (
+          <ToolList
+            className="mt-10"
+            inView
+            tools={alternatives}
+            websiteSource="tool_detail_comparison_mobile"
+          />
+        ) : (
+          <Reveal className="mt-10 border-t border-ink/10 pt-6 text-ink/55">
+            No curated alternatives yet.{" "}
+            <Link className="link-underline text-ink" href="/tools">
+              Browse the directory
+              <ArrowUpRight aria-hidden="true" size={14} />
+            </Link>
           </Reveal>
-        ) : null}
-
-        <Reveal className="mt-6 grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
-          <div className="surface-panel rounded-xl p-6">
-            <div className="flex items-center gap-2">
-              <ShieldAlert aria-hidden="true" className="text-signal" size={20} />
-              <h2 className="text-xl font-semibold">Not ideal for</h2>
-            </div>
-            <div className="mt-4 grid gap-3">
-              {notIdealSignals(tool).map((signal) => (
-                <ChecklistItem key={signal}>{signal}</ChecklistItem>
-              ))}
-            </div>
-          </div>
-
-          <div className="surface-strong rounded-xl p-6">
-            <div className="flex items-center gap-2">
-              <Gauge aria-hidden="true" className="text-accent" size={20} />
-              <h2 className="text-xl font-semibold">Adoption checklist</h2>
-            </div>
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
-              {[
-                "Pick one mapped use case and success metric.",
-                "Test with recent real examples before rollout.",
-                "Define who reviews outputs and when.",
-                "Compare one alternative for price, fit, and risk."
-              ].map((item) => (
-                <ChecklistItem key={item}>{item}</ChecklistItem>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-
-        <Reveal className="surface-panel mt-6 rounded-xl p-6">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase text-accent">
-                Related paths
-              </p>
-              <h2 className="mt-1 text-xl font-semibold">
-                Opportunities this tool may support
-              </h2>
-            </div>
-            <Link className="secondary-button" href="/audit/start">
-              Run audit first
-              <ArrowRight aria-hidden="true" size={16} />
-            </Link>
-          </div>
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
-            {uniqueOpportunities(tool).length > 0 ? (
-              uniqueOpportunities(tool)
-                .slice(0, 3)
-                .map((opportunity) => (
-                  <Link
-                    className="rounded-xl border border-line bg-surface/72 p-4 transition hover:-translate-y-0.5 hover:border-accent"
-                    href={`/opportunities/${opportunity.slug}`}
-                    key={opportunity.id}
-                  >
-                    <h3 className="font-semibold">{opportunity.name}</h3>
-                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent">
-                      Review opportunity
-                      <ArrowRight aria-hidden="true" size={14} />
-                    </span>
-                  </Link>
-                ))
-            ) : (
-              <p className="text-sm leading-6 text-ink/60">
-                Related opportunities are not mapped yet.
-              </p>
-            )}
-          </div>
-        </Reveal>
-
-        <section className="surface-strong mt-8 rounded-2xl p-6">
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="inline-flex items-center gap-2 text-sm font-semibold uppercase text-accent">
-                <GitCompareArrows aria-hidden="true" size={16} />
-                Compare
-              </p>
-              <h2 className="mt-2 text-xl font-semibold">Comparable tools</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/60">
-                Use this table to compare shortlist options before you leave
-                SeekSmart and start vendor research.
-              </p>
-            </div>
-            <Link className="secondary-button" href="/tools">
-              Browse all
-            </Link>
-          </div>
-          {alternatives.length > 0 ? (
-            <ComparableToolsTable
-              alternatives={alternatives}
-              isSignedIn={isSignedIn}
-            />
-          ) : (
-            <EmptyState
-              className="mt-5"
-              description="This tool does not have curated alternatives yet. Use the full directory to compare tools in the same category."
-              eyebrow="Comparison pending"
-              icon={SearchX}
-              secondaryAction={{ href: "/tools", label: "Browse tools" }}
-              title="Alternatives are not mapped yet."
-            />
-          )}
-        </section>
-
-        <section className="surface-panel mt-6 rounded-xl p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 className="text-xl font-semibold">Editorial trust note</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-ink/60">
-                Tool pages are decision support, not paid placement. Verified
-                means the listing passed current editorial checks; it does not
-                guarantee fit for every workflow.
-              </p>
-            </div>
-            <span className="status-pill">
-              {tool.isVerified ? "Verified listing" : "Needs verification"}
-            </span>
-          </div>
-        </section>
-      </div>
+        )}
+        <p className="mt-12 max-w-xl text-[0.82rem] leading-relaxed text-ink/45">
+          Not paid placement. Verified means the listing passed our current editorial checks; it
+          does not guarantee fit for every workflow.
+        </p>
+      </section>
     </main>
   );
 }
 
-type ComparableTool = PublicToolDetail["alternatives"][number] & {
-  like?: ToolLikeState;
-};
-
-function ComparableToolsTable({
-  alternatives,
-  isSignedIn
+function SectionHeading({
+  action,
+  eyebrow,
+  lines
 }: {
-  alternatives: ComparableTool[];
-  isSignedIn: boolean;
+  action?: ReactNode;
+  eyebrow: string;
+  lines: Parameters<typeof SplitReveal>[0]["lines"];
 }) {
   return (
-    <>
-      <div className="mt-5 grid gap-3 md:hidden">
-        {alternatives.map((alternative) => (
-          <article className="comparison-mobile-card" key={alternative.id}>
-            <div className="flex items-start justify-between gap-3">
-              <Link
-                className="flex min-w-0 items-start gap-3"
-                href={`/tools/${alternative.slug}`}
-              >
-                <ToolLogo
-                  logoUrl={alternative.logoUrl}
-                  name={alternative.name}
-                  size="sm"
-                />
-                <div className="min-w-0">
-                  <h3 className="font-semibold text-ink">{alternative.name}</h3>
-                  <p className="mt-1 text-xs text-ink/50">
-                    {alternative.category.name}
-                  </p>
-                </div>
-              </Link>
-              <span className="fit-score-badge">
-                {alternative.popularityScore}
-              </span>
-            </div>
-            <p className="mt-3 text-sm leading-6 text-ink/62">
-              {alternative.shortDescription}
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              <span className="status-pill">
-                {formatPricing(alternative.pricingType)}
-              </span>
-              {alternative.isVerified ? (
-                <span className="status-pill">Verified</span>
-              ) : null}
-            </div>
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <Link className="secondary-button" href={`/tools/${alternative.slug}`}>
-                Details
-              </Link>
-              <TrackedExternalLink
-                className="secondary-button"
-                event="tool_website_clicked"
-                href={alternative.websiteUrl}
-                properties={{
-                  source: "tool_detail_comparison_mobile",
-                  toolSlug: alternative.slug
-                }}
-                rel="noreferrer"
-                target="_blank"
-              >
-                Website
-              </TrackedExternalLink>
-            </div>
-          </article>
+    <div className="flex flex-col gap-6 border-t border-ink/10 pt-10 md:flex-row md:items-end md:justify-between md:pt-14">
+      <div>
+        <Reveal y={10}>
+          <p className="eyebrow">{eyebrow}</p>
+        </Reveal>
+        <SplitReveal as="h2" className="h2 mt-5 max-w-3xl" inView lines={lines} />
+      </div>
+      {action ? <Reveal className="shrink-0">{action}</Reveal> : null}
+    </div>
+  );
+}
+
+function GlanceRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-baseline justify-between gap-6 border-t border-white/10 py-3">
+      <dt className="text-white/45">{label}</dt>
+      <dd className="text-right font-medium text-white/90">{value}</dd>
+    </div>
+  );
+}
+
+function FactRow({ children, label }: { children: ReactNode; label: string }) {
+  return (
+    <div className="grid gap-2 border-b border-ink/10 py-5 sm:grid-cols-[7.5rem_minmax(0,1fr)] sm:gap-6">
+      <dt className="font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink/45 sm:pt-1">{label}</dt>
+      <dd className="min-w-0 text-[0.95rem] leading-relaxed text-ink/80">{children}</dd>
+    </div>
+  );
+}
+
+function VerdictList({
+  items,
+  kind,
+  title
+}: {
+  items: string[];
+  kind: "yes" | "no";
+  title: string;
+}) {
+  const Icon = kind === "yes" ? Check : X;
+
+  return (
+    <div>
+      <h3 className="h3 flex items-center gap-3">
+        <span
+          aria-hidden="true"
+          className={`flex h-8 w-8 items-center justify-center rounded-full ${
+            kind === "yes" ? "bg-ink text-paper" : "bg-ink/[0.07] text-ink/60"
+          }`}
+        >
+          <Icon size={16} strokeWidth={2.4} />
+        </span>
+        {title}
+      </h3>
+      <Stagger as="ul" className="mt-6 border-t border-ink/10" inView>
+        {items.map((item) => (
+          <StaggerItem as="li" className="flex gap-3 border-b border-ink/10 py-4" key={item}>
+            <Icon
+              aria-hidden="true"
+              className={`mt-1 shrink-0 ${kind === "yes" ? "text-signal" : "text-ink/35"}`}
+              size={16}
+              strokeWidth={2.4}
+            />
+            <span className="text-[1rem] leading-relaxed text-ink/80">{item}</span>
+          </StaggerItem>
         ))}
-      </div>
-
-      <div className="comparison-table-shell mt-5 hidden md:block">
-        <table className="decision-table">
-          <thead>
-            <tr>
-              <th className="px-4 py-3">Tool</th>
-              <th className="px-4 py-3">Score</th>
-              <th className="px-4 py-3">Pricing</th>
-              <th className="px-4 py-3">Category</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {alternatives.map((alternative) => (
-              <tr key={alternative.id}>
-                <td className="px-4 py-4">
-                  <Link
-                    className="flex min-w-0 items-start gap-3"
-                    href={`/tools/${alternative.slug}`}
-                  >
-                    <ToolLogo
-                      logoUrl={alternative.logoUrl}
-                      name={alternative.name}
-                      size="sm"
-                    />
-                    <div className="min-w-0">
-                      <span className="font-semibold text-ink">
-                        {alternative.name}
-                      </span>
-                      <p className="mt-1 line-clamp-2 max-w-md text-xs leading-5 text-ink/52">
-                        {alternative.shortDescription}
-                      </p>
-                    </div>
-                  </Link>
-                </td>
-                <td className="px-4 py-4">
-                  <div className="grid min-w-28 gap-2">
-                    <span className="fit-score-badge w-fit">
-                      {alternative.popularityScore}
-                    </span>
-                    <span className="mini-meter" aria-hidden="true">
-                      <span
-                        style={{ width: `${alternative.popularityScore}%` }}
-                      />
-                    </span>
-                  </div>
-                </td>
-                <td className="px-4 py-4">
-                  {formatPricing(alternative.pricingType)}
-                  {alternative.hasFreePlan ? (
-                    <p className="mt-1 text-xs text-ink/48">Free plan</p>
-                  ) : null}
-                </td>
-                <td className="px-4 py-4">{alternative.category.name}</td>
-                <td className="px-4 py-4">
-                  {alternative.isVerified ? "Verified" : "Needs verification"}
-                </td>
-                <td className="px-4 py-4">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Link
-                      className="secondary-button"
-                      href={`/tools/${alternative.slug}`}
-                    >
-                      Details
-                    </Link>
-                    {alternative.like ? (
-                      <ToolLikeButton
-                        isSignedIn={isSignedIn}
-                        state={alternative.like}
-                        toolId={alternative.id}
-                        toolName={alternative.name}
-                        toolSlug={alternative.slug}
-                      />
-                    ) : null}
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </>
-  );
-}
-
-function SnapshotRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-start justify-between gap-4 border-b border-line pb-3 last:border-b-0 last:pb-0">
-      <dt className="text-ink/55">{label}</dt>
-      <dd className="text-right font-medium">{value}</dd>
-    </div>
-  );
-}
-
-function DecisionMetric({
-  label,
-  score,
-  value
-}: {
-  label: string;
-  score?: number;
-  value: ReactNode;
-}) {
-  return (
-    <div className="metric-tile rounded-xl p-4">
-      <p className="text-xs font-semibold uppercase text-ink/48">{label}</p>
-      <p className="mt-2 font-semibold">{value}</p>
-      {typeof score === "number" ? (
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white">
-          <AnimatedBar className="h-full rounded-full bg-signal" value={score} />
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function ChecklistItem({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex items-start gap-3 rounded-lg border border-line bg-surface/70 p-3 text-sm leading-6">
-      <CheckCircle2
-        aria-hidden="true"
-        className="mt-0.5 shrink-0 text-accent"
-        size={16}
-      />
-      <span>{children}</span>
+      </Stagger>
     </div>
   );
 }
 
 function bestForSignals(tool: PublicToolDetail) {
   const mappedSignals = uniqueStrings(
-    tool.useCases
-      .map((useCase) => useCase.bestFor)
+    [tool.bestFor, ...tool.useCases.map((useCase) => useCase.bestFor)]
       .filter((value): value is string => Boolean(value))
-  ).slice(0, 3);
+      .filter((value) => !isPlaceholderCopy(value))
+  ).slice(0, 4);
 
   if (mappedSignals.length > 0) {
     return mappedSignals;
@@ -715,10 +576,10 @@ function bestForSignals(tool: PublicToolDetail) {
 
 function notIdealSignals(tool: PublicToolDetail) {
   const mappedSignals = uniqueStrings(
-    tool.useCases
-      .map((useCase) => useCase.limitations)
+    [tool.notFor, ...tool.useCases.map((useCase) => useCase.limitations)]
       .filter((value): value is string => Boolean(value))
-  ).slice(0, 3);
+      .filter((value) => !isPlaceholderCopy(value))
+  ).slice(0, 4);
 
   if (mappedSignals.length > 0) {
     return mappedSignals;
@@ -733,6 +594,24 @@ function notIdealSignals(tool: PublicToolDetail) {
 
 function uniqueStrings(values: string[]) {
   return Array.from(new Set(values));
+}
+
+const placeholderFragments = [
+  "current curated use-case data",
+  "current curated use-case library",
+  "teams that want to pilot this use case",
+  "validate fit against your workflow"
+];
+
+function isPlaceholderCopy(value: string) {
+  const normalized = value.toLowerCase();
+  return placeholderFragments.some((fragment) => normalized.includes(fragment));
+}
+
+function formatMonth(value: string) {
+  return new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric" }).format(
+    new Date(value)
+  );
 }
 
 function uniqueOpportunities(tool: PublicToolDetail) {
@@ -785,16 +664,4 @@ function fitLabel(score: number) {
 
 function formatLevel(value: string) {
   return value.charAt(0) + value.slice(1).toLowerCase();
-}
-
-function formatPricing(pricingType: string) {
-  if (pricingType === "FREEMIUM") {
-    return "Freemium";
-  }
-
-  if (pricingType === "FREE") {
-    return "Free";
-  }
-
-  return "Paid";
 }

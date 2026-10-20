@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { Command as CommandIcon } from "lucide-react";
+import { Search } from "lucide-react";
+import { useSession } from "next-auth/react";
 import { capturePostHogEvent } from "@/features/analytics/posthog-client";
 
 const CommandPaletteDialog = dynamic(
@@ -16,18 +17,15 @@ const CommandPaletteDialog = dynamic(
 );
 
 type CommandPaletteProps = {
-  isAdmin: boolean;
-  isSignedIn: boolean;
-  trigger?: "footer" | "none";
+  trigger?: "header" | "none";
 };
 
-export function CommandPalette({
-  isAdmin,
-  isSignedIn,
-  trigger = "none"
-}: CommandPaletteProps) {
+export function CommandPalette({ trigger = "none" }: CommandPaletteProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [shortcutLabel, setShortcutLabel] = useState("Ctrl K");
+  const { data: session } = useSession();
+  const isSignedIn = Boolean(session?.user);
+  const isAdmin = session?.user?.role === "ADMIN";
 
   useEffect(() => {
     const isMac =
@@ -62,21 +60,21 @@ export function CommandPalette({
 
   return (
     <>
-      {trigger === "footer" ? (
+      {trigger === "header" ? (
         <button
-          aria-label="Open command palette"
-          className="command-easter-egg"
+          aria-label="Search SeekSmart"
+          className="group inline-flex h-10 items-center gap-2 rounded-full px-3 text-sm text-ink/55 transition-colors hover:bg-ink/[0.05] hover:text-ink"
           onClick={() => {
             capturePostHogEvent("command_palette_opened", {
-              trigger: "footer_button"
+              trigger: "header_button"
             });
             setIsOpen(true);
           }}
           type="button"
         >
-          <CommandIcon aria-hidden="true" size={14} />
-          <span>Try quick search</span>
-          <kbd>{shortcutLabel}</kbd>
+          <Search aria-hidden="true" size={16} />
+          <span className="hidden xl:inline">Search</span>
+          <kbd className="kbd hidden xl:inline-flex">{shortcutLabel}</kbd>
         </button>
       ) : null}
       {isOpen ? (

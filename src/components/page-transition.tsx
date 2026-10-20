@@ -2,32 +2,15 @@
 
 import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
+// Enter-only route transition, done in CSS so the server-rendered page is
+// never hidden waiting for hydration (see .page-enter in globals.css).
 export function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <AnimatePresence initial={false} mode="wait">
-      <motion.div
-        animate={{ opacity: 1, filter: "blur(0px)", scale: 1, y: 0 }}
-        className="flex-1"
-        exit={
-          shouldReduceMotion
-            ? { opacity: 1 }
-            : { opacity: 0, filter: "blur(6px)", scale: 0.995, y: -6 }
-        }
-        initial={
-          shouldReduceMotion
-            ? { opacity: 1 }
-            : { opacity: 0, filter: "blur(8px)", scale: 0.998, y: 10 }
-        }
-        key={pathname}
-        transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <div className="page-enter flex-1" key={pathname}>
+      {children}
+    </div>
   );
 }

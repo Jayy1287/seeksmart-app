@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import type { Route } from "next";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Search, X } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { Loader2, Search, X } from "lucide-react";
+import { motion } from "motion/react";
 import type { PricingType, PublicCategory } from "@/shared/domain";
 
 type ToolFilterBarProps = {
@@ -15,6 +15,13 @@ type ToolFilterBarProps = {
 };
 
 const searchDelayMs = 260;
+
+const pricingOptions: Array<{ label: string; value: "" | PricingType }> = [
+  { label: "All", value: "" },
+  { label: "Free", value: "FREE" },
+  { label: "Freemium", value: "FREEMIUM" },
+  { label: "Paid", value: "PAID" }
+];
 
 export function ToolFilterBar({
   categories,
@@ -28,13 +35,23 @@ export function ToolFilterBar({
   const searchParamString = searchParams.toString();
   const [isPending, startTransition] = useTransition();
   const [query, setQuery] = useState(initialQuery ?? "");
-
-  const categoryValue = initialCategory ?? "";
-  const pricingValue = initialPricing ?? "";
+  // Optimistic copies so chips and the segmented pill respond instantly while
+  // the server re-renders the results.
+  const [category, setCategory] = useState(initialCategory ?? "");
+  const [pricing, setPricing] = useState<string>(initialPricing ?? "");
+  const chipScroller = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setQuery(initialQuery ?? "");
   }, [initialQuery]);
+
+  useEffect(() => {
+    setCategory(initialCategory ?? "");
+  }, [initialCategory]);
+
+  useEffect(() => {
+    setPricing(initialPricing ?? "");
+  }, [initialPricing]);
 
   const currentParams = useMemo(
     () => new URLSearchParams(searchParamString),
@@ -55,91 +72,120 @@ export function ToolFilterBar({
     return () => window.clearTimeout(timeout);
   }, [currentParams, pathname, query, router, startTransition]);
 
+  // Bring a pre-selected category chip into view without scrolling the page.
+  useEffect(() => {
+    const scroller = chipScroller.current;
+    const active = scroller?.querySelector<HTMLElement>('[data-active="true"]');
+    if (!scroller || !active) return;
+    const offset = active.offsetLeft - scroller.clientWidth / 2 + active.clientWidth / 2;
+    scroller.scrollLeft = Math.max(0, offset);
+    // Only on mount: later selections are already in view.
+  }, []);
+
+  function chooseCategory(value: string) {
+    setCategory(value);
+    updateFilters(currentParams, pathname, router, startTransition, {
+      category: value,
+      q: query
+    });
+  }
+
+  function choosePricing(value: string) {
+    setPricing(value);
+    updateFilters(currentParams, pathname, router, startTransition, {
+      pricing: value,
+      q: query
+    });
+  }
+
   return (
-    <div className="tool-filter-shell">
-      <div className="tool-filter-grid">
-        <label className="filter-control filter-control-search">
-          <span className="relative block">
-            <Search
-              aria-hidden="true"
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-ink/40"
-              size={18}
-            />
-            <input
-              aria-label="Search tools"
-              className="control-field w-full pl-10 pr-10"
-              name="q"
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Tool, category, workflow"
-              type="search"
-              value={query}
-            />
-            {query ? (
+    <div className="grid gap-4">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center">
+        <label className="search-field min-w-0 flex-1">
+          <Search aria-hidden="true" size={19} />
+          <input
+            aria-label="Search tools"
+            className="field pr-14"
+            name="q"
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search tools or workflows"
+            type="search"
+            value={query}
+          />
+          <span className="absolute right-2 flex h-10 w-10 items-center justify-center">
+            {isPending ? (
+              <Loader2 aria-hidden="true" className="animate-spin text-ink/45" size={17} />
+            ) : query ? (
               <button
                 aria-label="Clear search"
-                className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full text-ink/45 transition hover:bg-accent/10 hover:text-accent"
+                className="flex h-10 w-10 items-center justify-center rounded-full text-ink/45 transition-colors hover:bg-ink/[0.06] hover:text-ink"
                 onClick={() => setQuery("")}
                 type="button"
               >
-                <X aria-hidden="true" size={16} />
+                <X aria-hidden="true" size={17} />
               </button>
             ) : null}
           </span>
         </label>
-        <label className="filter-control">
-          <select
-            aria-label="Filter by category"
-            className="control-field w-full"
-            name="category"
-            onChange={(event) =>
-              updateFilters(currentParams, pathname, router, startTransition, {
-                category: event.target.value,
-                q: query
-              })
-            }
-            value={categoryValue}
-          >
-            <option value="">All categories</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.slug}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="filter-control">
-          <select
-            aria-label="Filter by pricing"
-            className="control-field w-full"
-            name="pricing"
-            onChange={(event) =>
-              updateFilters(currentParams, pathname, router, startTransition, {
-                pricing: event.target.value,
-                q: query
-              })
-            }
-            value={pricingValue}
-          >
-            <option value="">Any pricing</option>
-            <option value="FREE">Free</option>
-            <option value="FREEMIUM">Freemium</option>
-            <option value="PAID">Paid</option>
-          </select>
-        </label>
+
+        <div aria-label="Pricing" className="segmented self-start md:self-auto" role="radiogroup">
+          {pricingOptions.map((option) => {
+            const active = pricing === option.value;
+            return (
+              <button
+                aria-checked={active}
+                className="segmented-item"
+                data-active={active}
+                key={option.label}
+                onClick={() => choosePricing(option.value)}
+                role="radio"
+                type="button"
+              >
+                {active ? (
+                  <motion.span
+                    className="segmented-pill"
+                    layoutId="tools-pricing-pill"
+                    transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                  />
+                ) : null}
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
-      <span aria-live="polite" className="sr-only">
-        <AnimatePresence initial={false}>
-          {isPending ? (
-            <motion.span
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -3 }}
-              initial={{ opacity: 0, y: 3 }}
-              transition={{ duration: 0.16 }}
+
+      <div
+        className="-mx-[clamp(1rem,4vw,2.5rem)] overflow-x-auto px-[clamp(1rem,4vw,2.5rem)] pb-1 [mask-image:linear-gradient(90deg,transparent,black_1rem,black_calc(100%-3rem),transparent)] [scrollbar-width:none] lg:mx-0 lg:px-0 lg:[mask-image:linear-gradient(90deg,black_calc(100%-4rem),transparent)] [&::-webkit-scrollbar]:hidden"
+        ref={chipScroller}
+      >
+        <div aria-label="Category" className="flex w-max gap-2 pr-10" role="group">
+          <button
+            aria-pressed={category === ""}
+            className="chip"
+            data-active={category === ""}
+            onClick={() => chooseCategory("")}
+            type="button"
+          >
+            All categories
+          </button>
+          {categories.map((item) => (
+            <button
+              aria-pressed={category === item.slug}
+              className="chip"
+              data-active={category === item.slug}
+              key={item.id}
+              onClick={() => chooseCategory(category === item.slug ? "" : item.slug)}
+              type="button"
             >
-              Updating results
-            </motion.span>
-          ) : null}
-        </AnimatePresence>
+              {item.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <span aria-live="polite" className="sr-only">
+        {isPending ? "Updating results" : ""}
       </span>
     </div>
   );

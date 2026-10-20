@@ -2,6 +2,8 @@ import {
   auditGoalOptions,
   auditIntegrationNeeds,
   auditPainPointOptions,
+  effortLevelWeights,
+  riskLevelWeights,
   type AuditInput,
   type AuditOpportunityRecommendation,
   type AuditPilotPlan,
@@ -11,7 +13,7 @@ import {
   type AuditUseCaseRecommendation
 } from "@/shared/recommendations/audit";
 
-export const AUDIT_RULE_VERSION = "audit-rules-v2.3";
+export const AUDIT_RULE_VERSION = "audit-rules-v3.0";
 
 export type AuditDataset = {
   industries: Array<{
@@ -77,17 +79,8 @@ export type AuditDatasetToolFit = {
   };
 };
 
-const effortWeights: Record<string, number> = {
-  LOW: 92,
-  MEDIUM: 72,
-  HIGH: 46
-};
-
-const riskWeights: Record<string, number> = {
-  LOW: 92,
-  MEDIUM: 70,
-  HIGH: 38
-};
+const effortWeights = effortLevelWeights;
+const riskWeights = riskLevelWeights;
 
 export function scoreAudit(
   input: AuditInput,
@@ -109,8 +102,10 @@ export function scoreAudit(
         selectedFunctionSlug: businessFunction?.slug
       })
     )
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 3);
+    .sort(compareOpportunities)
+    .slice(0, 3)
+    .map(stripRankingFields)
+    .map(enforceDistinctScores);
 
   const firstOpportunity = scoredOpportunities[0];
   const firstUseCase = firstOpportunity?.useCases[0];
@@ -148,9 +143,10 @@ function scoreOpportunity({
   input: AuditInput;
   selectedIndustrySlug?: string;
   selectedFunctionSlug?: string;
-}): AuditOpportunityRecommendation {
+}): AuditOpportunityRecommendation & { industryPriority: number } {
   const reasons: string[] = [];
   const cautions: string[] = [];
+  const matchedKeywords = new Set<string>();
   const opportunityText = normalize(
     [
       opportunity.name,
@@ -174,13 +170,23 @@ function scoreOpportunity({
     Boolean(opportunity.businessFunction?.slug) &&
     opportunity.businessFunction?.slug !== selectedFunctionSlug;
 
-  let impactScore = 42;
+  let impactScore = 38;
   const industryMatch = opportunity.industries.find(
     (industry) => industry.slug === selectedIndustrySlug
   );
   if (industryMatch) {
     impactScore += Math.max(12, 24 - industryMatch.priority * 3);
     reasons.push("Matches your selected industry.");
+  } else if (opportunity.industries.length > 0) {
+    // Mapped to other specific industries but not this one: still possible,
+    // but it should not outrank a general or industry-matched opportunity.
+    impactScore -= 8;
+    cautions.push(
+      `Usually seen in ${opportunity.industries
+        .slice(0, 2)
+        .map((industry) => industry.name.toLowerCase())
+        .join(" and ")}; check the examples translate to your business.`
+    );
   }
 
   if (opportunity.businessFunction?.slug === selectedFunctionSlug) {
@@ -192,7 +198,13 @@ function scoreOpportunity({
 
   const goalHits = auditGoalOptions.filter((goal) =>
     input.goals.includes(goal.id)
-      ? goal.keywords.some((keyword) => opportunityText.includes(keyword))
+      ? goal.keywords.some((keyword) => {
+          const hit = opportunityText.includes(keyword);
+          if (hit) {
+            matchedKeywords.add(keyword);
+          }
+          return hit;
+        })
       : false
   );
   if (goalHits.length > 0) {
@@ -204,7 +216,13 @@ function scoreOpportunity({
 
   const painHits = auditPainPointOptions.filter((painPoint) =>
     input.painPoints.includes(painPoint.id)
-      ? painPoint.keywords.some((keyword) => opportunityText.includes(keyword))
+      ? painPoint.keywords.some((keyword) => {
+          const hit = opportunityText.includes(keyword);
+          if (hit) {
+            matchedKeywords.add(keyword);
+          }
+          return hit;
+        })
       : false
   );
   if (painHits.length > 0) {
@@ -218,7 +236,13 @@ function scoreOpportunity({
 
   const integrationHits = auditIntegrationNeeds.filter((need) =>
     input.integrationNeeds.includes(need.id)
-      ? need.keywords.some((keyword) => opportunityText.includes(keyword))
+      ? need.keywords.some((keyword) => {
+          const hit = opportunityText.includes(keyword);
+          if (hit) {
+            matchedKeywords.add(keyword);
+          }
+          return hit;
+        })
       : false
   );
   if (integrationHits.length > 0) {
@@ -230,6 +254,17 @@ function scoreOpportunity({
     );
   } else if (requestedIntegrationText && opportunityText.includes("workflow")) {
     impactScore += 3;
+  }
+
+  // Specificity: the more distinct words in the opportunity that match what
+  // the user actually said, the more confident the ranking should be. This is
+  // what separates two opportunities that tick the same boxes.
+  impactScore += Math.min(matchedKeywords.size, 6);
+
+  // Faster payback is worth more, especially for small teams.
+  const paybackWeeks = parsePaybackWeeks(opportunity.timeToValue);
+  if (paybackWeeks !== null) {
+    impactScore += Math.max(0, 8 - paybackWeeks);
   }
 
   if (input.urgency === "urgent") {
@@ -339,14 +374,22 @@ function scoreOpportunity({
         riskScore * 0.18 +
         confidenceScore * 0.2
     ),
-    94
+    99
   );
   if (functionMismatch) {
-    score = Math.min(score, 82);
+    score = Math.min(score, 84);
   }
 
   if (reasons.length === 0) {
     reasons.push("Included as a general business opportunity from the taxonomy.");
+  }
+
+  // Always end with something specific to this opportunity so two
+  // opportunities never show an identical explanation.
+  if (opportunity.expectedBenefit) {
+    reasons.push(`Expected result: ${opportunity.expectedBenefit}`);
+  } else if (opportunity.painPoint) {
+    reasons.push(`Solves: ${opportunity.painPoint}`);
   }
 
   return {
@@ -371,8 +414,73 @@ function scoreOpportunity({
     cautions,
     successMetrics: opportunity.successMetrics,
     useCases: opportunity.useCases.slice(0, 3).map(toAuditUseCase),
-    tools: recommendTools(opportunity, input)
+    tools: recommendTools(opportunity, input),
+    industryPriority: industryMatch?.priority ?? 99
   };
+}
+
+type RankedOpportunity = AuditOpportunityRecommendation & {
+  industryPriority: number;
+};
+
+/** Parse "2-4 weeks" style strings to the upper bound in weeks. */
+function parsePaybackWeeks(value: string | null) {
+  if (!value) {
+    return null;
+  }
+  const numbers = value.match(/\d+/g)?.map(Number) ?? [];
+  if (numbers.length === 0) {
+    return null;
+  }
+  const weeks = Math.max(...numbers);
+  return value.toLowerCase().includes("day") ? weeks / 7 : weeks;
+}
+
+/**
+ * Presentation rule: a ranked list must show strictly decreasing fit scores.
+ * Ordering is already decided by compareOpportunities; this only nudges a
+ * tied display score down by one so the ranking reads as a ranking.
+ */
+function enforceDistinctScores(
+  opportunity: AuditOpportunityRecommendation,
+  index: number,
+  ranked: AuditOpportunityRecommendation[]
+) {
+  if (index === 0) {
+    return opportunity;
+  }
+  const previous = ranked[index - 1];
+  const score = Math.min(opportunity.score, previous.score - 1);
+  if (score === opportunity.score) {
+    return opportunity;
+  }
+  const adjusted = { ...opportunity, score: Math.max(score, 0) };
+  ranked[index] = adjusted;
+  return adjusted;
+}
+
+function stripRankingFields(
+  ranked: RankedOpportunity
+): AuditOpportunityRecommendation {
+  const { industryPriority, ...opportunity } = ranked;
+  void industryPriority;
+  return opportunity;
+}
+
+function compareOpportunities(a: RankedOpportunity, b: RankedOpportunity) {
+  if (b.score !== a.score) {
+    return b.score - a.score;
+  }
+  if (a.industryPriority !== b.industryPriority) {
+    return a.industryPriority - b.industryPriority;
+  }
+  if (b.confidenceScore !== a.confidenceScore) {
+    return b.confidenceScore - a.confidenceScore;
+  }
+  if (b.impactScore !== a.impactScore) {
+    return b.impactScore - a.impactScore;
+  }
+  return a.name.localeCompare(b.name);
 }
 
 function toAuditUseCase(
@@ -461,8 +569,8 @@ function recommendTools(
       hasFreePlan: fit.tool.hasFreePlan,
       fitScore: clamp(fit.adjustedScore),
       reason: buildToolReason(fit, opportunity),
-      bestFor: fit.bestFor,
-      limitation: fit.limitations
+      bestFor: isPlaceholderCopy(fit.bestFor) ? null : fit.bestFor,
+      limitation: isPlaceholderCopy(fit.limitations) ? null : fit.limitations
     });
     if (recommendations.length === 3) {
       break;
@@ -599,23 +707,40 @@ function adjustToolFitScore(fit: AuditDatasetToolFit, input: AuditInput) {
   return score;
 }
 
+const placeholderToolCopy = [
+  "current curated use-case data",
+  "teams that want to pilot this use case",
+  "validate fit against your workflow"
+];
+
+export function isPlaceholderCopy(value: string | null | undefined) {
+  if (!value) {
+    return true;
+  }
+  const normalized = value.toLowerCase();
+  return placeholderToolCopy.some((fragment) => normalized.includes(fragment));
+}
+
 function buildToolReason(
   fit: AuditDatasetToolFit & { adjustedScore: number },
   opportunity: AuditDataset["opportunities"][number]
 ) {
-  if (fit.bestFor) {
-    return fit.bestFor;
+  if (!isPlaceholderCopy(fit.bestFor)) {
+    return fit.bestFor as string;
   }
 
-  if (
-    fit.recommendationNote &&
-    !fit.recommendationNote.includes("current curated use-case data")
-  ) {
-    return fit.recommendationNote;
+  if (!isPlaceholderCopy(fit.recommendationNote)) {
+    return fit.recommendationNote as string;
   }
 
   const category = fit.tool.category.name.toLowerCase();
-  return `Use ${fit.tool.name} as the ${category} layer for ${opportunity.name.toLowerCase()}, then compare output quality against the pilot examples.`;
+  const pricing =
+    fit.tool.pricingType === "FREE"
+      ? "It is free, so test it on real examples first."
+      : fit.tool.hasFreePlan
+        ? "The free plan is enough for a pilot."
+        : "It is paid only, so run the trial on your pilot examples before committing.";
+  return `${fit.tool.name} is the ${category} option for ${opportunity.name.toLowerCase()}. ${pricing}`;
 }
 
 function buildExecutiveBrief(

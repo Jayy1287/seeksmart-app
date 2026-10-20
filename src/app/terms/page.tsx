@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LegalPage, type LegalSection } from "@/features/content/legal-page";
 
 export const metadata: Metadata = {
   title: "Terms",
@@ -8,7 +9,7 @@ export const metadata: Metadata = {
   }
 };
 
-const termsSections = [
+const termsSections: LegalSection[] = [
   {
     title: "Agreement to these terms",
     body: [
@@ -147,38 +148,13 @@ const termsSections = [
 
 export default function TermsPage() {
   return (
-    <main className="page-shell">
-      <div className="app-container">
-        <section className="surface-strong rounded-2xl p-6">
-          <p className="eyebrow">Terms</p>
-          <h1 className="mt-3 text-4xl font-semibold">Public beta terms</h1>
-          <p className="mt-3 max-w-2xl leading-7 text-ink/65">
-            These terms describe how SeekSmart should be used during the public
-            beta, including signed-in audit history, essential cookies, tool
-            information, product analytics, submissions, and recommendation
-            limits.
-          </p>
-          <p className="mt-4 text-sm font-medium text-ink/55">
-            Last updated: June 17, 2026
-          </p>
-        </section>
-
-        <section className="surface-panel mt-6 grid gap-6 rounded-xl p-6">
-          {termsSections.map((section) => (
-            <div
-              className="border-b border-line pb-6 last:border-b-0 last:pb-0"
-              key={section.title}
-            >
-              <h2 className="text-xl font-semibold">{section.title}</h2>
-              <div className="mt-3 grid gap-3 leading-7 text-ink/65">
-                {section.body.map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
-              </div>
-            </div>
-          ))}
-        </section>
-      </div>
-    </main>
+    <LegalPage
+      eyebrow="Terms"
+      lead="How to use SeekSmart during the public beta, and what it is not."
+      lines={[["Public beta"], [{ text: "terms.", className: "ghost-word" }]]}
+      sections={termsSections}
+      sibling={{ href: "/privacy", label: "Read the privacy notice" }}
+      updated="17 Jun 2026"
+    />
   );
 }

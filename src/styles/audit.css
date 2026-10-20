@@ -1,0 +1,17 @@
+/* Audit brief: print / save-as-PDF. Scoped to pages that render the brief. */
+@media print {
+  body:has(.audit-brief) header,
+  body:has(.audit-brief) footer,
+  .audit-brief .no-print {
+    display: none !important;
+  }
+
+  .audit-brief .night {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .audit-brief section {
+    break-inside: avoid-page;
+  }
+}
