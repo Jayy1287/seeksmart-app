@@ -598,6 +598,8 @@ Netlify:
 netlify.toml
 ```
 
+Build-time database access: `next build` pre-renders about 250 pages. Set `BUILD_DATABASE_URL` in Netlify to the session pooler (port 5432) with `?connection_limit=4&pool_timeout=60`; `src/lib/prisma.ts` uses it only during the build phase, while runtime keeps the transaction pooler in `DATABASE_URL`. `next.config.mjs` also pins the build to one worker with two concurrent renders and three retries. Without this the pooler resets connections mid-build.
+
 Current build command:
 
 ```bash
