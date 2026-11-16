@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/session-provider";
 import { capturePostHogEvent } from "@/features/analytics/posthog-client";
 
 const CommandPaletteDialog = dynamic(

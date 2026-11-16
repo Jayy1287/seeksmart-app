@@ -3,8 +3,10 @@ import type { Route } from "next";
 import { AuthError } from "next-auth";
 import { UserRole } from "@prisma/client";
 import { ArrowRight } from "lucide-react";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth, signIn, signOut } from "@/auth";
+import { SESSION_HINT_COOKIE } from "@/components/session-provider";
 import {
   isEmailAuthConfigured,
   normalizeEmail
@@ -60,6 +62,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   async function signInWithGoogle() {
     "use server";
 
+    const cookieStore = await cookies();
+    cookieStore.set(SESSION_HINT_COOKIE, "1", {
+      httpOnly: false,
+      maxAge: 60 * 60 * 24 * 30,
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production"
+    });
     await signIn(
       "google",
       {
@@ -90,6 +100,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
     }
 
     try {
+    const cookieStore = await cookies();
+    cookieStore.set(SESSION_HINT_COOKIE, "1", {
+      httpOnly: false,
+      maxAge: 60 * 60 * 24 * 30,
+      path: "/",
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production"
+    });
       await signIn("resend", {
         email,
         redirectTo: callbackUrl

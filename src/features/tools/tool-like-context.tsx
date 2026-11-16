@@ -10,7 +10,7 @@ import {
   useState,
   type ReactNode
 } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/components/session-provider";
 import type { ToolLikeState } from "@/shared/domain";
 
 // Like state used to be resolved on the server for every page that showed a

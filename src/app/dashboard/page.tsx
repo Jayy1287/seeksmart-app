@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowRight, ArrowUpRight, BarChart3, Heart, Plus } from "lucide-react";
 import { auth } from "@/auth";
+import { SessionHint } from "@/components/session-provider";
 import { prisma } from "@/lib/prisma";
 import { listSavedAuditRuns } from "@/server/audit-runs/queries";
 import { listLikedToolsForUser, type LikedTool } from "@/server/tools/likes";
@@ -44,6 +45,7 @@ export default async function DashboardPage() {
 
   return (
     <main>
+      <SessionHint signedIn />
       {/* ---------- Hero ---------- */}
       <section className="app-container page-hero">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">

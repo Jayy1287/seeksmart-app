@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight, LogOut } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "@/components/session-provider";
 import { CommandPalette } from "@/components/command-palette";
 import { navigationLinks } from "@/components/site-navigation";
 
@@ -57,6 +57,7 @@ export function SiteHeader() {
                 height={32}
                 priority
                 src="/brand/seeksmart-logo-v3.png"
+                unoptimized
                 width={32}
               />
             </span>

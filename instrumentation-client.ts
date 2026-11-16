@@ -10,7 +10,12 @@ function normalizePostHogHost(host: string | undefined) {
     return DEFAULT_POSTHOG_PROXY_PATH;
   }
 
-  if (/^https:\/\/(app|us|eu)(\.i)?\.posthog\.com$/i.test(trimmedHost)) {
+  // Proxying through /ingest routes every analytics event through Netlify,
+  // which is metered. Only do that when explicitly requested.
+  if (
+    process.env.NEXT_PUBLIC_POSTHOG_PROXY === "true" &&
+    /^https:\/\/(app|us|eu)(\.i)?\.posthog\.com$/i.test(trimmedHost)
+  ) {
     return DEFAULT_POSTHOG_PROXY_PATH;
   }
 

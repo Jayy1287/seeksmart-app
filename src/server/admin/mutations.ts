@@ -1,4 +1,5 @@
 import { PublishStatus } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { slugify } from "@/lib/slug";
 import {
@@ -59,6 +60,12 @@ async function assertToolUniqueness(
 }
 
 export async function updateAdminTool(toolId: string, input: unknown) {
+  const result = await updateAdminToolRecord(toolId, input);
+  revalidatePath("/", "layout");
+  return result;
+}
+
+async function updateAdminToolRecord(toolId: string, input: unknown) {
   const tool = await prisma.tool.findUnique({
     where: {
       id: toolId

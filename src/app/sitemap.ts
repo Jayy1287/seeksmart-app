@@ -4,7 +4,7 @@ import { playbooks } from "@/lib/platform-content";
 import { siteConfig } from "@/lib/site";
 import { latestDate, listSitemapEntries } from "@/server/seo/queries";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 // Static editorial pages use a fixed "last meaningful change" date rather than
 // the request time, so crawlers are not told everything changed every day.
@@ -13,7 +13,12 @@ const editorialLastModified = new Date("2026-10-10");
 type Entry = { slug: string; updatedAt: Date };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const entries = await listSitemapEntries();
+  // Never fail a build because the database is unreachable: fall back to the
+  // static routes and let the next revalidation fill in the rest.
+  const entries = await listSitemapEntries().catch((error: unknown) => {
+    console.warn("Sitemap: database unavailable, emitting static routes only.", error);
+    return { tools: [], categories: [], useCases: [], industries: [], opportunities: [] };
+  });
   const toolsLastModified = latestDate(entries.tools, editorialLastModified);
   const useCasesLastModified = latestDate(entries.useCases, editorialLastModified);
   const industriesLastModified = latestDate(entries.industries, editorialLastModified);

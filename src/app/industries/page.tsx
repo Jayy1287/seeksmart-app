@@ -7,7 +7,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { SplitReveal } from "@/components/motion/split-reveal";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
-export const revalidate = 3600;
+export const revalidate = 21600;
 
 export const metadata: Metadata = {
   title: "AI by Industry",

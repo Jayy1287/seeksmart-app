@@ -668,6 +668,19 @@ Used for the October 2026 review on Windows when no Supabase credentials were av
 
 Known caveat: the Lottie hero and PostHog are still in the client bundle; see `docs/REVAMP_PLAN.md` section 4.6.
 
+## Netlify Cost Controls
+
+Netlify meters function invocations, function compute time, image transformations, bandwidth, and build minutes. On a low-traffic site the biggest burners were full page re-renders in functions (bots hitting pages whose ISR window had expired), a session API call on every page view, image CDN transformations for screenshots, analytics proxied through Netlify, and long prerender builds. Controls now in the code:
+
+- Long ISR windows: detail pages 24 hours, listings 6 hours, home 1 hour, sitemap 24 hours. Admin tool edits purge the cache; after seeding or bulk changes call `POST /api/admin/revalidate` with the admin session cookie, or redeploy.
+- The session is fetched only when the `ss_auth` hint cookie exists (set at sign-in, cleared at sign-out), so anonymous page views make no `/api/auth/session` call. See `src/components/session-provider.tsx`.
+- Screenshots and the header logo are served as static files (`unoptimized`), not through the image CDN.
+- PostHog sends events directly to its own host unless `NEXT_PUBLIC_POSTHOG_PROXY=true`.
+- `SKIP_BUILD_PRERENDER=1` makes builds skip database-backed prerendering (pages render on first request and then cache). Recommended on Netlify.
+- Robots block every filtered or paginated `/tools?` variant.
+
+Netlify dashboard settings that also matter: turn off deploy previews and branch deploys (Site configuration, Build and deploy, Deploy contexts), keep `DATABASE_URL` on the transaction pooler with `&connection_limit=5`, set `BUILD_DATABASE_URL` and `SKIP_BUILD_PRERENDER=1`, and check Usage to see which meter is actually being consumed.
+
 ## Security Posture
 
 Implemented protections:

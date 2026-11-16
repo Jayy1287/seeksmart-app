@@ -71,11 +71,48 @@ const nextConfig = {
     ];
   },
   async headers() {
+    // Content pages change rarely. Tell Netlify's CDN to keep them for a day
+    // and serve stale for a week while revalidating, so bots and visitors are
+    // answered from the edge instead of a serverless render.
+    const cdnCacheHeaders = [
+      {
+        key: "Netlify-CDN-Cache-Control",
+        value:
+          "public, s-maxage=86400, stale-while-revalidate=604800, durable"
+      }
+    ];
+    const cachedContentPaths = [
+      "/",
+      "/tools/:slug",
+      "/use-cases",
+      "/use-cases/:slug",
+      "/categories",
+      "/categories/:slug",
+      "/industries",
+      "/industries/:slug",
+      "/opportunities",
+      "/opportunities/:slug",
+      "/business-functions",
+      "/playbooks",
+      "/playbooks/:slug",
+      "/articles",
+      "/articles/:slug",
+      "/methodology",
+      "/resources",
+      "/audit",
+      "/privacy",
+      "/terms"
+    ];
+
     return [
       {
         headers: securityHeaders,
         source: "/:path*"
-      }
+      },
+      ...cachedContentPaths.map((source) => ({
+        headers: cdnCacheHeaders,
+        source
+      }))
     ];
   },
   images: {

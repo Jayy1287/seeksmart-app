@@ -27,9 +27,14 @@ import {
   softwareApplicationJsonLd
 } from "@/lib/structured-data";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
+  // Netlify: set SKIP_BUILD_PRERENDER=1 to render these on demand instead of
+  // at build time (saves build minutes and build-time database load).
+  if (process.env.SKIP_BUILD_PRERENDER === "1") {
+    return [];
+  }
   try {
     const tools = await listPublishedTools({ limit: 100 });
     return tools.map((tool) => ({ slug: tool.slug }));

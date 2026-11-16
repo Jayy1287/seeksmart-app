@@ -13,9 +13,14 @@ import { AnimatedNumber } from "@/components/motion/animated-number";
 import { Reveal } from "@/components/motion/reveal";
 import { SplitReveal } from "@/components/motion/split-reveal";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
+  // Netlify: set SKIP_BUILD_PRERENDER=1 to render these on demand instead of
+  // at build time (saves build minutes and build-time database load).
+  if (process.env.SKIP_BUILD_PRERENDER === "1") {
+    return [];
+  }
   try {
     const categories = await listCategories();
     return categories.map((category) => ({ slug: category.slug }));

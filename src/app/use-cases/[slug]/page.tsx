@@ -21,9 +21,14 @@ import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { ScoreDial } from "@/components/ui/score-dial";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
+  // Netlify: set SKIP_BUILD_PRERENDER=1 to render these on demand instead of
+  // at build time (saves build minutes and build-time database load).
+  if (process.env.SKIP_BUILD_PRERENDER === "1") {
+    return [];
+  }
   try {
     const useCases = await listUseCaseSummaries();
     return useCases.map((useCase) => ({ slug: useCase.slug }));

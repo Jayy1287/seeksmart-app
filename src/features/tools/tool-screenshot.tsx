@@ -75,6 +75,7 @@ export function ToolScreenshot({ caption, name, src, websiteUrl }: ToolScreensho
               onError={() => setFailed(true)}
               sizes="(min-width: 1344px) 1280px, 100vw"
               src={src}
+              unoptimized
             />
           </motion.div>
         </div>

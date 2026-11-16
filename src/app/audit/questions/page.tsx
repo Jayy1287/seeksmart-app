@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AuditAnalyticsEvent } from "@/features/audit/audit-analytics";
 import { AuditWizard } from "@/features/audit/audit-wizard";
+import { SessionHint } from "@/components/session-provider";
 import { requireUser } from "@/server/auth/require-user";
 import { getAuditOptions } from "@/server/recommendations/queries";
 
@@ -48,6 +49,7 @@ export default async function AuditQuestionsPage({
 
   return (
     <main>
+      <SessionHint signedIn />
       <AuditAnalyticsEvent event="audit_questions_viewed" />
       <AuditWizard
         businessFunctions={options.businessFunctions}

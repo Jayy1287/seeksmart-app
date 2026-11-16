@@ -17,7 +17,7 @@ import { SplitReveal } from "@/components/motion/split-reveal";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 
 // Home is content-driven; refresh every 10 minutes instead of on every request.
-export const revalidate = 600;
+export const revalidate = 3600;
 
 const verticals = [
   {

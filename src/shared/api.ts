@@ -7,7 +7,8 @@ export type ApiErrorCode =
   | "PAYLOAD_TOO_LARGE"
   | "RATE_LIMITED"
   | "NOT_FOUND"
-  | "INTERNAL_SERVER_ERROR";
+  | "INTERNAL_SERVER_ERROR"
+  | "SERVICE_UNAVAILABLE";
 
 export type ApiSuccess<T> = {
   ok: true;
