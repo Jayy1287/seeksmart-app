@@ -56,9 +56,10 @@ export async function generateMetadata({
   const tool = await getPublishedToolBySlug(slug);
 
   if (!tool) {
-    return {
-      title: "Tool not found"
-    };
+    // Resolve the 404 here, before the loading boundary starts streaming;
+    // otherwise the response is already a 200 by the time the page body
+    // calls notFound(), and the CDN caches a soft 404 for a day.
+    notFound();
   }
 
   return {

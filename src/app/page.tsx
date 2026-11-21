@@ -258,6 +258,7 @@ export default async function Home() {
 function LogoPill({ logoUrl, name, slug }: { logoUrl: string | null; name: string; slug: string }) {
   return (
     <Link
+      prefetch={false}
       className="flex shrink-0 items-center gap-2.5 rounded-full border border-ink/[0.08] bg-surface py-2 pl-2 pr-4 text-sm font-medium text-ink/75 transition-colors hover:border-ink/30 hover:text-ink"
       href={`/tools/${slug}`}
     >
