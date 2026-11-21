@@ -1,0 +1,19 @@
+name: Keep database awake
+
+# Free-tier Postgres providers pause a project after a week without traffic.
+# One request a day to the health endpoint, which runs SELECT 1, keeps it up.
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Health check with database
+        run: |
+          curl --fail --silent --show-error --max-time 60 \
+            "https://seeksmart.in/api/v1/health?db=1"

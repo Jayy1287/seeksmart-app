@@ -1,0 +1,25 @@
+name: Bug report
+description: Something is broken on the site or in the code
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What did you do, what did you expect, what happened instead?
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Page or endpoint
+      placeholder: https://seeksmart.in/tools/...
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: 1. Go to ... 2. Click ... 3. See ...
+  - type: input
+    id: env
+    attributes:
+      label: Browser and device, or Node version if local

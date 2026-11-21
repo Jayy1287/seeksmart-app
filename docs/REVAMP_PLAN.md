@@ -3,7 +3,7 @@
 Last updated: 2026-10-10
 Status: Phases 0, 1, and 3 shipped, plus the first slice of Phase 2 (industry guides for the three focus verticals and the thin-page noindex policy), all on branch `revamp/phase-0-technical-seo` (2026-10-10). On 2026-10-11/12 the catalogue was expanded with a researched, structured set of tools (see HANDOFF.md, Tool Catalogue v2): local logos, homepage screenshots, checked pricing, best-for/not-for, integrations, use-case fits with notes, and alternatives. Remaining Phase 2 work: alternatives/vs pages, and enriching the 90 base-seed tools to the same standard so they become indexable.
 
-This document records what the October 2026 review found, what was changed, and the recommended direction. It is written for Matteo and for whoever picks up the code next.
+This document records what the October 2026 review found, what was changed, and the recommended direction. It is written for the project owner and for whoever picks up the code next.
 
 ## 1. What the product is today
 
@@ -154,7 +154,7 @@ Keep the visual language (it is distinctive and calm) but simplify the system:
 | 3 (done) | Hero shows a static brief preview, typewriter removed, use-cases listing is grouped rows, like-state moved to a client fetch so tool, use-case, and category pages are static with ISR, PostHog deferred to idle. Still open (cosmetic): one hero pattern everywhere, opportunities and industries listings as rows | shipped 2026-10-10 | Phase 1 |
 | 4 | Monetization: validated-audit checkout, partner matching, newsletter | after Phase 1 traffic data | Decision D |
 
-## 6. Decisions needed from Matteo
+## 6. Decisions needed from the owner
 
 - A. Ungate the audit: decided yes (2026-10-10). Shipped.
 - B. Keep the rules engine or add an LLM step for narrative only? Open. Recommendation unchanged: rules for ranking; an LLM only for prose, clearly labelled.
