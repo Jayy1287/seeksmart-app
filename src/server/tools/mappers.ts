@@ -1,4 +1,5 @@
 import type { Prisma } from "@prisma/client";
+import { resolveMediaUrl } from "@/lib/media";
 import type { PublicToolCard, PublicToolDetail } from "@/shared/domain";
 
 export const toolCardInclude = {
@@ -70,7 +71,7 @@ export function toPublicToolCard(tool: ToolCardPayload): PublicToolCard {
     slug: tool.slug,
     shortDescription: tool.shortDescription,
     websiteUrl: tool.websiteUrl,
-    logoUrl: tool.logoUrl,
+    logoUrl: resolveMediaUrl(tool.logoUrl),
     pricingType: tool.pricingType,
     hasFreePlan: tool.hasFreePlan,
     isVerified: tool.isVerified,
@@ -97,7 +98,7 @@ export function toPublicToolDetail(tool: ToolDetailPayload): PublicToolDetail {
     notFor: tool.notFor,
     integrations: tool.integrations,
     vendor: tool.vendor,
-    screenshotUrl: tool.screenshotUrl,
+    screenshotUrl: resolveMediaUrl(tool.screenshotUrl),
     contentUpdatedAt: tool.contentUpdatedAt?.toISOString() ?? null,
     features: tool.toolFeatures.map(({ feature }) => ({
       id: feature.id,

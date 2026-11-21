@@ -11,6 +11,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const outDir = path.join(process.cwd(), "public", "logos");
+mkdirSync(outDir, { recursive: true });
 const force = process.argv.includes("--force");
 
 function domainOf(url) {

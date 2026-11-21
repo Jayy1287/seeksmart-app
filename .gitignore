@@ -16,3 +16,9 @@ test-results
 posthog-setup-report.md
 .env.local-db.bak
 .env.supabase
+
+# Third-party tool logos and homepage screenshots are not distributed with the
+# source (see NOTICE.md). Generate them with scripts/fetch-logos.mjs and
+# scripts/capture-screenshots.mjs, or serve them from an object store.
+public/logos/
+public/screenshots/

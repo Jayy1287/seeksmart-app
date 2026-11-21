@@ -1,4 +1,5 @@
 import { PublishStatus } from "@prisma/client";
+import { resolveMediaUrl } from "@/lib/media";
 import { prisma } from "@/lib/prisma";
 import {
   toPublicToolCard,
@@ -170,7 +171,7 @@ export async function getPublishedToolBySlug(
 
 // Lightweight list for the homepage logo marquee: top tools that have a logo.
 export async function listToolLogos(limit = 36) {
-  return prisma.tool.findMany({
+  const tools = await prisma.tool.findMany({
     where: {
       status: PublishStatus.PUBLISHED,
       logoUrl: { not: null }
@@ -179,4 +180,5 @@ export async function listToolLogos(limit = 36) {
     orderBy: [{ popularityScore: "desc" }, { name: "asc" }],
     take: Math.min(limit, 60)
   });
+  return tools.map((tool) => ({ ...tool, logoUrl: resolveMediaUrl(tool.logoUrl) }));
 }

@@ -1,3 +1,4 @@
+import { resolveMediaUrl } from "@/lib/media";
 import {
   auditGoalOptions,
   auditIntegrationNeeds,
@@ -563,7 +564,7 @@ function recommendTools(
       id: fit.tool.id,
       name: fit.tool.name,
       slug: fit.tool.slug,
-      logoUrl: fit.tool.logoUrl,
+      logoUrl: resolveMediaUrl(fit.tool.logoUrl),
       categoryName: fit.tool.category.name,
       pricingType: fit.tool.pricingType,
       hasFreePlan: fit.tool.hasFreePlan,

@@ -27,6 +27,10 @@ const securityHeaders = [
   }
 ];
 
+// Tool logos and screenshots may be served from an object store (see src/lib/media.ts).
+const mediaBase = process.env.NEXT_PUBLIC_TOOL_MEDIA_BASE_URL;
+const mediaOrigin = mediaBase ? new URL(mediaBase).origin : null;
+
 if (process.env.NODE_ENV === "production") {
   securityHeaders.push({
     key: "Content-Security-Policy",
@@ -38,7 +42,7 @@ if (process.env.NODE_ENV === "production") {
       "form-action 'self'",
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: https://www.google.com https://*.gstatic.com https://logotyp.us",
+      ["img-src 'self' data: https://www.google.com https://*.gstatic.com https://logotyp.us", mediaOrigin].filter(Boolean).join(" "),
       "font-src 'self' data:",
       "connect-src 'self' https://eu.i.posthog.com https://eu-assets.i.posthog.com",
       "upgrade-insecure-requests"

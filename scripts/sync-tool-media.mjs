@@ -16,7 +16,7 @@ const shotDir = path.join(process.cwd(), "public", "screenshots");
 
 async function main() {
   const logoFiles = new Map();
-  for (const file of readdirSync(logoDir)) {
+  for (const file of (existsSync(logoDir) ? readdirSync(logoDir) : [])) {
     const slug = file.replace(/\.[a-z0-9]+$/i, "");
     logoFiles.set(slug, `/logos/${file}`);
   }
