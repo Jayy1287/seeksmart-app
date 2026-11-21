@@ -672,12 +672,12 @@ Known caveat: the Lottie hero and PostHog are still in the client bundle; see `d
 
 Netlify meters function invocations, function compute time, image transformations, bandwidth, and build minutes. On a low-traffic site the biggest burners were full page re-renders in functions (bots hitting pages whose ISR window had expired), a session API call on every page view, image CDN transformations for screenshots, analytics proxied through Netlify, and long prerender builds. Controls now in the code:
 
-- Long ISR windows: detail pages 24 hours, listings 6 hours, home 1 hour, sitemap 24 hours. Admin tool edits purge the cache; after seeding or bulk changes call `POST /api/admin/revalidate` with the admin session cookie, or redeploy.
+- CDN cache tiers (`Netlify-CDN-Cache-Control` in `next.config.mjs`): detail pages and evergreen pages a week, home and listings (including the dynamic `/tools` directory and its filter variants) a day, public read API an hour; every tier serves stale for a week while one background render refreshes it. Next ISR windows underneath: detail pages 24 hours, listings 6 hours, home 1 hour, sitemap 24 hours. Admin tool edits purge the cache; after seeding or bulk changes call `POST /api/admin/revalidate` with the admin session cookie, or redeploy (a deploy also flushes the durable cache).
 - The session is fetched only when the `ss_auth` hint cookie exists (set at sign-in, cleared at sign-out), so anonymous page views make no `/api/auth/session` call. See `src/components/session-provider.tsx`.
 - Screenshots and the header logo are served as static files (`unoptimized`), not through the image CDN.
 - PostHog sends events directly to its own host unless `NEXT_PUBLIC_POSTHOG_PROXY=true`.
 - `SKIP_BUILD_PRERENDER=1` makes builds skip database-backed prerendering (pages render on first request and then cache). Recommended on Netlify.
-- Robots block every filtered or paginated `/tools?` variant.
+- Robots block every filtered or paginated `/tools?` variant. `public/favicon.ico` exists so browser and bot favicon requests are static hits, not function 404s.
 
 Production database (since 2026-11-21): Supabase project `fqfrcawcquvbxzqmpzlq` in eu-central-1, Data API disabled, pooler host `aws-1-eu-central-1.pooler.supabase.com` (transaction pooler on 6543 for `DATABASE_URL`, session pooler on 5432 for `DIRECT_URL` and `BUILD_DATABASE_URL`). The previous project auto-paused on the free plan and its restore came back empty, so the database was rebuilt from migrations, `prisma/seed.ts`, `prisma/seed-tools-v2.ts`, `scripts/sync-tool-media.mjs --all`, and a CSV export of users, accounts, likes, audit runs, and submissions. Keep the daily `GET /api/v1/health?db=1` ping running so the free-plan database never pauses again.
 

@@ -71,31 +71,24 @@ const nextConfig = {
     ];
   },
   async headers() {
-    // Content pages change rarely. Tell Netlify's CDN to keep them for a day
-    // and serve stale for a week while revalidating, so bots and visitors are
-    // answered from the edge instead of a serverless render.
-    const cdnCacheHeaders = [
+    // Serve content from Netlify's CDN instead of a serverless render.
+    // Detail pages change only through admin edits (which purge the cache)
+    // or a deploy, so they can sit at the edge for a week. Listings and the
+    // home page pick up new tools within a day. Every tier serves stale for
+    // a week while one background render refreshes the entry.
+    const cdnCache = (seconds) => [
       {
         key: "Netlify-CDN-Cache-Control",
-        value:
-          "public, s-maxage=86400, stale-while-revalidate=604800, durable"
+        value: `public, s-maxage=${seconds}, stale-while-revalidate=604800, durable`
       }
     ];
-    const cachedContentPaths = [
-      "/",
+    const weekLongPaths = [
       "/tools/:slug",
-      "/use-cases",
       "/use-cases/:slug",
-      "/categories",
       "/categories/:slug",
-      "/industries",
       "/industries/:slug",
-      "/opportunities",
       "/opportunities/:slug",
-      "/business-functions",
-      "/playbooks",
       "/playbooks/:slug",
-      "/articles",
       "/articles/:slug",
       "/methodology",
       "/resources",
@@ -103,16 +96,28 @@ const nextConfig = {
       "/privacy",
       "/terms"
     ];
+    const dayLongPaths = [
+      "/",
+      "/tools",
+      "/use-cases",
+      "/categories",
+      "/industries",
+      "/opportunities",
+      "/business-functions",
+      "/playbooks",
+      "/articles"
+    ];
+    // Public read-only JSON endpoints: nothing user-specific in them.
+    const hourLongPaths = ["/api/v1/tools", "/api/v1/categories", "/api/v1/search"];
 
     return [
       {
         headers: securityHeaders,
         source: "/:path*"
       },
-      ...cachedContentPaths.map((source) => ({
-        headers: cdnCacheHeaders,
-        source
-      }))
+      ...weekLongPaths.map((source) => ({ headers: cdnCache(604800), source })),
+      ...dayLongPaths.map((source) => ({ headers: cdnCache(86400), source })),
+      ...hourLongPaths.map((source) => ({ headers: cdnCache(3600), source }))
     ];
   },
   images: {
