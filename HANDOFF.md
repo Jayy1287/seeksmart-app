@@ -679,6 +679,8 @@ Netlify meters function invocations, function compute time, image transformation
 - `SKIP_BUILD_PRERENDER=1` makes builds skip database-backed prerendering (pages render on first request and then cache). Recommended on Netlify.
 - Robots block every filtered or paginated `/tools?` variant.
 
+Production database (since 2026-11-21): Supabase project `fqfrcawcquvbxzqmpzlq` in eu-central-1, Data API disabled, pooler host `aws-1-eu-central-1.pooler.supabase.com` (transaction pooler on 6543 for `DATABASE_URL`, session pooler on 5432 for `DIRECT_URL` and `BUILD_DATABASE_URL`). The previous project auto-paused on the free plan and its restore came back empty, so the database was rebuilt from migrations, `prisma/seed.ts`, `prisma/seed-tools-v2.ts`, `scripts/sync-tool-media.mjs --all`, and a CSV export of users, accounts, likes, audit runs, and submissions. Keep the daily `GET /api/v1/health?db=1` ping running so the free-plan database never pauses again.
+
 Netlify dashboard settings that also matter: turn off deploy previews and branch deploys (Site configuration, Build and deploy, Deploy contexts), keep `DATABASE_URL` on the transaction pooler with `&connection_limit=5`, set `BUILD_DATABASE_URL` and `SKIP_BUILD_PRERENDER=1`, and check Usage to see which meter is actually being consumed.
 
 ## Security Posture
